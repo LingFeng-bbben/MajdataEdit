@@ -13,6 +13,8 @@
             <ColumnDefinition Width="427*"/>
             <ColumnDefinition Width="424*"/>
         </Grid.ColumnDefinitions>
+        <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,179,60" Width="255" Grid.Column="1" Height="255" VerticalAlignment="Bottom" d:IsLocked="True"/>
+
         <Menu Height="19" VerticalAlignment="Top" Grid.ColumnSpan="2">
             <MenuItem Header="文件">
                 <MenuItem x:Name="Menu_Open" Header="打开" Click="Menu_Open_Click"/>
@@ -23,11 +25,12 @@
                 <MenuItem Header="一般谱面信息"/>
             </MenuItem>
         </Menu>
-        <Image Source="Image/QQ图片20210701170841.png" Stretch="Fill" Grid.ColumnSpan="2" Height="74" VerticalAlignment="Bottom"/>
+        <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,-438,0" HorizontalAlignment="Left" Width="877"/>
+        <Line StrokeThickness="3" Margin="0,0,357,0" Y2="76" Grid.Column="1" Height="74" VerticalAlignment="Bottom" Stroke="Red"/>
         <Image Grid.Column="1" Margin="0,33,0,0" Source="Image/Tap_01.png" Stretch="Fill" RenderTransformOrigin="0.542,-1.771" HorizontalAlignment="Left" Width="61" Height="61" VerticalAlignment="Top"/>
         <Image Grid.Column="1" Margin="0,94,0,0" Source="Image/Star_01.png" Stretch="Fill" HorizontalAlignment="Left" Width="61" Height="59" VerticalAlignment="Top"/>
         <Image Grid.Column="1" Margin="0,153,373,0" Source="Image/Hold_01.png" Stretch="Fill" Height="99" VerticalAlignment="Top"/>
-        <Grid Grid.Column="1" HorizontalAlignment="Left" Height="355" Margin="69,33,0,0" VerticalAlignment="Top" Width="355">
+        <Grid Grid.Column="1" HorizontalAlignment="Left" Height="355" Margin="69,33,0,0" VerticalAlignment="Top" Width="355" d:IsLocked="True">
             <Image Source="Image/Outline_03.png" Stretch="Fill"/>
             <Label Content="A1" HorizontalAlignment="Left" Height="32" Margin="217,26,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold"/>
             <Label Content="A4" HorizontalAlignment="Left" Height="32" Margin="217,295,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold"/>
@@ -164,7 +167,6 @@
             </Label>
         </Grid>
         <RichTextBox x:Name="FumenContent" HorizontalAlignment="Left" Padding="0,5" FontFamily="Consolas" Background="#FF171717" Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" Margin="10,33,0,0" Width="423" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Height="355" VerticalAlignment="Top" SelectionChanged="FumenContent_SelectionChanged">
-            <FlowDocument/>
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
             </RichTextBox.Resources>
@@ -174,9 +176,10 @@
             <RichTextBox.CommandBindings>
                 <CommandBinding Command="{StaticResource PlayAndPause}" CanExecute="PlayAndPause_CanExecute" Executed="PlayAndPause_Executed"/>
             </RichTextBox.CommandBindings>
+            <FlowDocument/>
         </RichTextBox>
-        <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Left" Height="64" Margin="433,303,0,0" VerticalAlignment="Top" Width="119" Foreground="White" FontFamily="Bahnschrift Light" FontSize="48" Grid.ColumnSpan="2"/>
-        <ComboBox x:Name="LevelSelector" Grid.Column="1" HorizontalAlignment="Left" Margin="0,367,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged">
+        <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Left" Height="64" Margin="433,340,0,0" VerticalAlignment="Top" Width="119" Foreground="White" FontFamily="Bahnschrift Light" FontSize="48" Grid.ColumnSpan="2"/>
+        <ComboBox x:Name="LevelSelector" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,0,74" Width="99" SelectionChanged="ComboBox_SelectionChanged" Height="21" VerticalAlignment="Bottom">
             <ComboBoxItem Content="&amp;lv_1"/>
             <ComboBoxItem Content="&amp;lv_2"/>
             <ComboBoxItem Content="&amp;lv_3"/>
@@ -185,7 +188,6 @@
             <ComboBoxItem Content="&amp;lv_6"/>
             <ComboBoxItem Content="&amp;lv_7"/>
         </ComboBox>
-        <Label Grid.ColumnSpan="2" Content="这个还没用" HorizontalAlignment="Left" Margin="421,425,0,0" Width="78" Foreground="White" Background="Black" Height="27" VerticalAlignment="Top"/>
         <Label Content="这个还没用" HorizontalAlignment="Left" Margin="207,225,0,0" Width="78" Foreground="White" Background="Black" Grid.Column="1" Height="27" VerticalAlignment="Top"/>
 
     </Grid>

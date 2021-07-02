@@ -17,9 +17,10 @@ namespace MajdataEdit
         static public string[] fumens = new string[7];
         static public string[] levels = new string[7];
         static public List<SimaiNote> notelist = new List<SimaiNote>();
+        static public List<SimaiNote> timinglist = new List<SimaiNote>();
         static public void ReadData(string filename)
         {
-            string[] maidataTxt = File.ReadAllLines(filename);
+            string[] maidataTxt = File.ReadAllLines(filename, Encoding.UTF8);
             for (int i = 0; i < maidataTxt.Length; i++)
             {
                 if (maidataTxt[i].StartsWith("&title="))
@@ -69,17 +70,17 @@ namespace MajdataEdit
             {
                 if (levels[i] != null && levels[i] != "")
                 {
-                    maidata.Add("&lv_" + i + "=" + levels[i]);
+                    maidata.Add("&lv_" + (i + 1) + "=" + levels[i]);
                 }
             }
             for (int i = 0; i < fumens.Length; i++)
             {
                 if (fumens[i] != null && fumens[i] != "")
                 {
-                    maidata.Add("&inote_" + i + "=\n" + fumens[i]);
+                    maidata.Add("&inote_" + (i+1) + "=\n" + fumens[i]);
                 }
             }
-            File.WriteAllLines(filename, maidata.ToArray());
+            File.WriteAllLines(filename, maidata.ToArray(),Encoding.UTF8);
         }
         static private string GetValue(string varline)
         {
@@ -88,6 +89,7 @@ namespace MajdataEdit
         static public double getSongTimeAndScan(string text, long position)
         {
             notelist.Clear();
+            timinglist.Clear();
             try
             {
                 int bpm = 0;
@@ -140,6 +142,7 @@ namespace MajdataEdit
                         {
                             notelist.Add(new SimaiNote(time));
                         }
+                        timinglist.Add(new SimaiNote(time));
                         time += (1d / (bpm / 60d)) * 4d / (double)beats;
                         Console.WriteLine(time);
                         haveNote = false;
