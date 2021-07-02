@@ -24,13 +24,14 @@
                 <MenuItem Header="一般谱面信息"/>
             </MenuItem>
         </Menu>
-        <Image HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100"/>
-        <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,-438,0" HorizontalAlignment="Left" Width="877"/>
-        <Line StrokeThickness="3" Margin="0,0,357,0" Y2="76" Grid.Column="1" Height="74" VerticalAlignment="Bottom" Stroke="Red"/>
+        <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,-438,0" HorizontalAlignment="Left" Width="877">
+        
+        </Image>
+        <Line StrokeThickness="3" Margin="0,0,357,0" Y2="56" Grid.Column="1" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15"/>
         <Image Grid.Column="1" Margin="501,33,-128,0" Source="Image/Tap_01.png" Stretch="Fill" RenderTransformOrigin="0.542,-1.771" HorizontalAlignment="Left" Width="61" Height="61" VerticalAlignment="Top"/>
         <Image Grid.Column="1" Margin="501,94,-128,0" Source="Image/Star_01.png" Stretch="Fill" HorizontalAlignment="Left" Width="61" Height="59" VerticalAlignment="Top"/>
         <Image Grid.Column="1" Margin="501,153,-128,0" Source="Image/Hold_01.png" Stretch="Fill" Height="99" VerticalAlignment="Top"/>
-        <Grid Grid.Column="1" HorizontalAlignment="Left" Height="336" Margin="69,52,0,0" VerticalAlignment="Top" Width="336" d:IsLocked="True">
+        <Grid Grid.Column="1" HorizontalAlignment="Left" Height="336" Margin="10,52,0,0" VerticalAlignment="Top" Width="336">
             <Image Source="Image/Outline_03.png" Stretch="Fill"/>
             <Label Content="A1" HorizontalAlignment="Left" Height="30" Margin="206,21,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
             <Label Content="A4" HorizontalAlignment="Left" Height="32" Margin="206,281,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
@@ -166,7 +167,7 @@
                 </Label.Background>
             </Label>
         </Grid>
-        <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,11,91" Width="255" Height="255" VerticalAlignment="Bottom" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
+        <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,14,87" Width="255" Height="255" VerticalAlignment="Bottom" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
             <Image.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -179,15 +180,19 @@
         <RichTextBox x:Name="FumenContent" Padding="0,5" FontFamily="Consolas" Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" Margin="10,52,10,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Height="336" VerticalAlignment="Top" SelectionChanged="FumenContent_SelectionChanged" Grid.ColumnSpan="2">
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
+                <RoutedUICommand x:Key="SaveFile" Text="SaveFile"/>
             </RichTextBox.Resources>
             <RichTextBox.Background>
-                <SolidColorBrush Color="#FF171717" Opacity="0.7"/>
+                <SolidColorBrush Color="#FF171717" Opacity="0.3"/>
             </RichTextBox.Background>
             <RichTextBox.InputBindings>
                 <KeyBinding Gesture="Ctrl+Space" Command="{StaticResource PlayAndPause}"/>
+                <KeyBinding Gesture="Ctrl+s" Command="{StaticResource SaveFile}"/>
             </RichTextBox.InputBindings>
             <RichTextBox.CommandBindings>
                 <CommandBinding Command="{StaticResource PlayAndPause}" CanExecute="PlayAndPause_CanExecute" Executed="PlayAndPause_Executed"/>
+                <CommandBinding Command="{StaticResource SaveFile}" CanExecute="SaveFile_Command_CanExecute"/>
+
             </RichTextBox.CommandBindings>
             <FlowDocument/>
         </RichTextBox>
@@ -201,6 +206,7 @@
             <ComboBoxItem Content="&amp;lv_6"/>
             <ComboBoxItem Content="&amp;lv_7"/>
         </ComboBox>
+        <CheckBox x:Name="SimaiFirst" Content="为Simai加入0.04s提前" HorizontalAlignment="Left" Margin="133,29,0,0" VerticalAlignment="Top" Foreground="White" IsChecked="True"/>
 
     </Grid>
 </Window>

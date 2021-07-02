@@ -16,7 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Un4seen.Bass;
 using System.Drawing;
-
+using System.Media;
 
 namespace MajdataEdit
 {
@@ -45,7 +45,9 @@ namespace MajdataEdit
         {
             if (selectedDifficulty == -1) return;
             SimaiProcess.fumens[selectedDifficulty] = GetRawFumenText();
-            if(writeToDisk)
+            SimaiProcess.simaiFirst = (bool)SimaiFirst.IsChecked;
+            SimaiProcess.SaveData("maidata.bak.txt");
+            if (writeToDisk)
                 SimaiProcess.SaveData("maidata.txt");
         }
 
@@ -70,7 +72,7 @@ namespace MajdataEdit
 
         Timer currentTimeRefreshTimer = new Timer(100);
         Timer clickSoundTimer = new Timer(10);
-        Timer VisualEffectRefreshTimer = new Timer(32);
+        Timer VisualEffectRefreshTimer = new Timer(1);
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var handle = (new WindowInteropHelper(this)).Handle;
@@ -86,67 +88,86 @@ namespace MajdataEdit
             VisualEffectRefreshTimer.Elapsed += VisualEffectRefreshTimer_Elapsed;
             VisualEffectRefreshTimer.Start();
 
+            ReadWaveFromFile();
             DrawWave();
 
             SimaiProcess.ReadData("maidata.txt");
+            SimaiFirst.IsChecked = SimaiProcess.simaiFirst;
+
+            LevelSelector.SelectedItem = LevelSelector.Items[0];
         }
 
-
-        float sampleTime = 0.02f;
-        int zoominPower = 4;
-        private void DrawWave()
+        float[] waveLevels;
+        private void ReadWaveFromFile()
         {
             var bgmDecode = Bass.BASS_StreamCreateFile("track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
             var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmStream));
-            int sampleNumber = (int)((length * 1000) / (sampleTime*1000))/2 + 1;
-            float[] levels = new float[sampleNumber];
+            int sampleNumber = (int)((length * 1000) / (sampleTime * 1000)) / 2 + 1;
+            waveLevels = new float[sampleNumber];
             for (int i = 0; i < sampleNumber; i++)
             {
-                levels[i] = Bass.BASS_ChannelGetLevels(bgmDecode,sampleTime,BASSLevel.BASS_LEVEL_MONO)[0];
+                waveLevels[i] = Bass.BASS_ChannelGetLevels(bgmDecode, sampleTime, BASSLevel.BASS_LEVEL_MONO)[0];
             }
             Bass.BASS_StreamFree(bgmDecode);
+        }
 
-            var writableBitmap = new WriteableBitmap(levels.Length*zoominPower, 74, 72, 72, PixelFormats.Pbgra32, null);
-            MusicWave.Source = writableBitmap;
-            MusicWave.Width = levels.Length * zoominPower;
+        float sampleTime = 0.02f;
+        int zoominPower = 4;
+        bool isDrawing = false;
+        private async void DrawWave()
+        {
+            if (isDrawing) return;
+            isDrawing = true;
+            var writableBitmap = new WriteableBitmap(waveLevels.Length * zoominPower, 74, 72, 72, PixelFormats.Pbgra32, null);
             writableBitmap.Lock();
             //the process starts
-            Bitmap backBitmap = new Bitmap(levels.Length * zoominPower, 74, writableBitmap.BackBufferStride,
-                    System.Drawing.Imaging.PixelFormat.Format32bppArgb, writableBitmap.BackBuffer);
+            Bitmap backBitmap = new Bitmap(waveLevels.Length * zoominPower, 74, writableBitmap.BackBufferStride,
+                        System.Drawing.Imaging.PixelFormat.Format32bppArgb, writableBitmap.BackBuffer);
             Graphics graphics = Graphics.FromImage(backBitmap);
-
-            graphics.Clear(System.Drawing.Color.Black);
             System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.Green, zoominPower);
+            
             var drawoffset = 0;
-            if (sampleTime == 0.02f) drawoffset = -0;
-            for (int i=0;i<levels.Length;i++)
+            await Task.Run(() =>
             {
-                var lv = levels[i] * 37;
-                
-                graphics.DrawLine(pen, (i + drawoffset )* zoominPower , 37 + lv, (i + drawoffset) * zoominPower , 37 - lv);
-            }
+                try
+                {
+                    graphics.Clear(System.Drawing.Color.Black);
+                    for (int i = 0; i < waveLevels.Length; i++)
+                    {
+                        var lv = waveLevels[i] * 35;
 
-            pen = new System.Drawing.Pen(System.Drawing.Color.LightPink, 2);
-            foreach (var note in SimaiProcess.notelist)
-            {
-                float x = (float)(note.time / sampleTime) * zoominPower;
-                graphics.DrawLine(pen, x, 0, x, 75);
-            }
+                        graphics.DrawLine(pen, (i + drawoffset) * zoominPower, 37 + lv, (i + drawoffset) * zoominPower, 37 - lv);
+                    }
 
-            pen = new System.Drawing.Pen(System.Drawing.Color.White, 1);
-            foreach (var note in SimaiProcess.timinglist)
-            {
-                float x = (float)(note.time / sampleTime) * zoominPower;
-                graphics.DrawLine(pen, x, 0, x, 10);
-                graphics.DrawLine(pen, x, 65, x, 75);
-            }
 
+                    pen = new System.Drawing.Pen(System.Drawing.Color.LightPink, 2);
+                    foreach (var note in SimaiProcess.notelist)
+                    {
+                        float x = (float)(note.time / sampleTime) * zoominPower;
+                        graphics.DrawLine(pen, x, 0, x, 75);
+                    }
+
+                    pen = new System.Drawing.Pen(System.Drawing.Color.White, 1);
+                    foreach (var note in SimaiProcess.timinglist)
+                    {
+                        float x = (float)(note.time / sampleTime) * zoominPower;
+                        graphics.DrawLine(pen, x, 0, x, 10);
+                        graphics.DrawLine(pen, x, 65, x, 75);
+                    }
+                }
+                catch { }
+            }
+            );
             graphics.Flush();
             graphics.Dispose();
             backBitmap.Dispose();
-
+            MusicWave.Source = writableBitmap;
+            MusicWave.Width = waveLevels.Length * zoominPower;
             writableBitmap.AddDirtyRect(new Int32Rect(0, 0, writableBitmap.PixelWidth, writableBitmap.PixelHeight));
             writableBitmap.Unlock();
+            isDrawing = false;
+            GC.Collect();
+            
         }
 
         private void VisualEffectRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -175,7 +196,7 @@ namespace MajdataEdit
                     points[i] = new PointF((float)Math.Log10(i+1)*100f, (240 - fft[i] * 256)); //semilog
                 }
 
-                graphics.DrawCurve(new System.Drawing.Pen(System.Drawing.Color.Red, 1), points);
+                graphics.DrawCurve(new System.Drawing.Pen(System.Drawing.Color.LightSkyBlue, 1), points);
 
                 graphics.Flush();
                 graphics.Dispose();
@@ -223,13 +244,11 @@ namespace MajdataEdit
             
         }
 
-        private void FumenContent_TextChanged(object sender, TextChangedEventArgs e)
-        {
 
-        }
 
         private void PlayAndPause_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            SaveRawFumenText();
             Console.WriteLine("Executed");
             var time = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());//scan first
             Console.WriteLine(time);
@@ -255,16 +274,19 @@ namespace MajdataEdit
             }
         }
 
-        private void FumenContent_SelectionChanged(object sender, RoutedEventArgs e)
+        private async void FumenContent_SelectionChanged(object sender, RoutedEventArgs e)
         {
             var time = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
-            Console.WriteLine(time);
             Bass.BASS_ChannelSetPosition(bgmStream, time);
             SimaiProcess.ClearNoteListPlayedState();
+            DrawWave(); 
         }
 
         int selectedDifficulty = -1;
+        private void FumenContent_TextChanged(object sender, TextChangedEventArgs e)
+        {
 
+        }
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SaveRawFumenText();
@@ -287,6 +309,7 @@ namespace MajdataEdit
         private void Menu_Save_Click(object sender, RoutedEventArgs e)
         {
             SaveRawFumenText(true);
+            SystemSounds.Beep.Play();
         }
 
         private void Menu_SaveAs_Click(object sender, RoutedEventArgs e)
@@ -294,5 +317,10 @@ namespace MajdataEdit
 
         }
 
+        private void SaveFile_Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            SaveRawFumenText(true);
+            SystemSounds.Beep.Play();
+        }
     }
 }

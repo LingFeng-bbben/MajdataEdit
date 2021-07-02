@@ -16,6 +16,7 @@ namespace MajdataEdit
         static public float first = 0;
         static public string[] fumens = new string[7];
         static public string[] levels = new string[7];
+        static public bool simaiFirst = false;
         static public List<SimaiNote> notelist = new List<SimaiNote>();
         static public List<SimaiNote> timinglist = new List<SimaiNote>();
         static public void ReadData(string filename)
@@ -54,7 +55,12 @@ namespace MajdataEdit
                 }
 
             }
-            if (first != 0)
+            Console.WriteLine(first);
+            if (first == -0.04f)
+            {
+                simaiFirst = true;
+            }
+            if (first != 0 && first!=-0.04f)
             {
                 MessageBox.Show("本编辑器不想支持offset,请剪好了再来");
             }
@@ -65,7 +71,14 @@ namespace MajdataEdit
             List<string> maidata = new List<string>();
             maidata.Add("&title=" + title);
             maidata.Add("&artist=" + artist);
-            maidata.Add("&first=0");
+            if (simaiFirst)
+            {
+                maidata.Add("&first=-0.04");
+            }
+            else
+            {
+                maidata.Add("&first=0");
+            }
             for (int i = 0; i < levels.Length; i++)
             {
                 if (levels[i] != null && levels[i] != "")
@@ -77,7 +90,7 @@ namespace MajdataEdit
             {
                 if (fumens[i] != null && fumens[i] != "")
                 {
-                    maidata.Add("&inote_" + (i+1) + "=\n" + fumens[i]);
+                    maidata.Add("&inote_" + (i+1) + "=" + fumens[i]);
                 }
             }
             File.WriteAllLines(filename, maidata.ToArray(),Encoding.UTF8);
