@@ -157,6 +157,7 @@ namespace MajdataEdit
                 var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
                 MusicWave.Margin = new Thickness(-currentTime/ sampleTime * zoominPower, Margin.Left, MusicWave.Margin.Right, Margin.Bottom);//Todo:the scale
                 //Draw FFT
+                
                 var writableBitmap = new WriteableBitmap(255, 255, 72, 72, PixelFormats.Pbgra32, null);
                 FFTImage.Source = writableBitmap;
                 writableBitmap.Lock();
@@ -196,7 +197,7 @@ namespace MajdataEdit
             if (currentTime - nearestTime < 0.05 && currentTime - nearestTime > -0.05)
             {
                 Bass.BASS_ChannelPlay(clickStream, true);
-                Console.WriteLine("Tick");
+                //Console.WriteLine("Tick");
                 SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime)[0].havePlayed = true; //Since the data was added as time followed, we modify the first one
             }
         }

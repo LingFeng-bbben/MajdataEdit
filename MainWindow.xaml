@@ -8,12 +8,11 @@
         Title="MainWindow" Height="508" Width="878.434" ResizeMode="NoResize" Loaded="Window_Loaded" Closing="Window_Closing">
 
 
-    <Grid Margin="0" Background="#FF3F3F46">
+    <Grid Margin="0" Background="#FF1F1F1F">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="427*"/>
             <ColumnDefinition Width="424*"/>
         </Grid.ColumnDefinitions>
-        <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,179,60" Width="255" Grid.Column="1" Height="255" VerticalAlignment="Bottom" d:IsLocked="True"/>
 
         <Menu Height="19" VerticalAlignment="Top" Grid.ColumnSpan="2">
             <MenuItem Header="文件">
@@ -25,151 +24,165 @@
                 <MenuItem Header="一般谱面信息"/>
             </MenuItem>
         </Menu>
+        <Image HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100"/>
         <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,-438,0" HorizontalAlignment="Left" Width="877"/>
         <Line StrokeThickness="3" Margin="0,0,357,0" Y2="76" Grid.Column="1" Height="74" VerticalAlignment="Bottom" Stroke="Red"/>
-        <Image Grid.Column="1" Margin="0,33,0,0" Source="Image/Tap_01.png" Stretch="Fill" RenderTransformOrigin="0.542,-1.771" HorizontalAlignment="Left" Width="61" Height="61" VerticalAlignment="Top"/>
-        <Image Grid.Column="1" Margin="0,94,0,0" Source="Image/Star_01.png" Stretch="Fill" HorizontalAlignment="Left" Width="61" Height="59" VerticalAlignment="Top"/>
-        <Image Grid.Column="1" Margin="0,153,373,0" Source="Image/Hold_01.png" Stretch="Fill" Height="99" VerticalAlignment="Top"/>
-        <Grid Grid.Column="1" HorizontalAlignment="Left" Height="355" Margin="69,33,0,0" VerticalAlignment="Top" Width="355" d:IsLocked="True">
+        <Image Grid.Column="1" Margin="501,33,-128,0" Source="Image/Tap_01.png" Stretch="Fill" RenderTransformOrigin="0.542,-1.771" HorizontalAlignment="Left" Width="61" Height="61" VerticalAlignment="Top"/>
+        <Image Grid.Column="1" Margin="501,94,-128,0" Source="Image/Star_01.png" Stretch="Fill" HorizontalAlignment="Left" Width="61" Height="59" VerticalAlignment="Top"/>
+        <Image Grid.Column="1" Margin="501,153,-128,0" Source="Image/Hold_01.png" Stretch="Fill" Height="99" VerticalAlignment="Top"/>
+        <Grid Grid.Column="1" HorizontalAlignment="Left" Height="336" Margin="69,52,0,0" VerticalAlignment="Top" Width="336" d:IsLocked="True">
             <Image Source="Image/Outline_03.png" Stretch="Fill"/>
-            <Label Content="A1" HorizontalAlignment="Left" Height="32" Margin="217,26,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="A4" HorizontalAlignment="Left" Height="32" Margin="217,295,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="A5" HorizontalAlignment="Left" Height="32" Margin="100,295,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="A8" HorizontalAlignment="Left" Height="32" Margin="100,26,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="A7" HorizontalAlignment="Left" Height="32" Margin="26,104,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="A2" HorizontalAlignment="Left" Height="32" Margin="290,104,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold" RenderTransformOrigin="0.421,-0.094"/>
-            <Label Content="A6" HorizontalAlignment="Left" Height="32" Margin="26,216,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="A3" HorizontalAlignment="Left" Height="32" Margin="290,216,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="E1" HorizontalAlignment="Left" Height="32" Margin="165,53,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="14" Opacity="0.5">
+            <Label Content="A1" HorizontalAlignment="Left" Height="30" Margin="206,21,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
+            <Label Content="A4" HorizontalAlignment="Left" Height="32" Margin="206,281,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
+            <Label Content="A5" HorizontalAlignment="Left" Height="32" Margin="92,281,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
+            <Label Content="A8" HorizontalAlignment="Left" Height="30" Margin="92,21,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
+            <Label Content="A7" HorizontalAlignment="Left" Height="32" Margin="21,95,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
+            <Label Content="A2" HorizontalAlignment="Left" Height="32" Margin="277,95,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold" RenderTransformOrigin="0.421,-0.094"/>
+            <Label Content="A6" HorizontalAlignment="Left" Height="32" Margin="21,205,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
+            <Label Content="A3" HorizontalAlignment="Left" Height="32" Margin="277,205,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold"/>
+            <Label Content="E1" HorizontalAlignment="Left" Height="32" Margin="155,45,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="14" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="E2" HorizontalAlignment="Left" Height="32" Margin="244,84,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="14" Opacity="0.5">
+            <Label Content="E2" HorizontalAlignment="Left" Height="30" Margin="233,77,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="14" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="E3" HorizontalAlignment="Left" Height="32" Margin="278,164,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="14" Opacity="0.5">
+            <Label Content="E3" HorizontalAlignment="Left" Height="30" Margin="266,155,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="14" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="E4" HorizontalAlignment="Left" Height="32" Margin="244,243,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="14" Opacity="0.5">
+            <Label Content="E4" HorizontalAlignment="Left" Height="30" Margin="233,231,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="14" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="E5" HorizontalAlignment="Left" Height="32" Margin="165,276,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="14" Opacity="0.5">
+            <Label Content="E5" HorizontalAlignment="Left" Height="32" Margin="155,263,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="14" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="E8" HorizontalAlignment="Left" Height="32" Margin="86,84,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="14" Opacity="0.5">
+            <Label Content="E8" HorizontalAlignment="Left" Height="30" Margin="79,77,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="14" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="E6" HorizontalAlignment="Left" Height="32" Margin="86,243,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="14" Opacity="0.5">
+            <Label Content="E6" HorizontalAlignment="Left" Height="30" Margin="79,231,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="14" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="E7" HorizontalAlignment="Left" Height="32" Margin="53,164,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="14" Opacity="0.5">
+            <Label Content="E7" HorizontalAlignment="Left" Height="30" Margin="46,155,0,0" VerticalAlignment="Top" Width="32" Foreground="White" FontSize="14" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="B1" HorizontalAlignment="Left" Height="32" Margin="194,89,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
+            <Label Content="B1" HorizontalAlignment="Left" Height="30" Margin="184,81,0,0" VerticalAlignment="Top" Width="30" Foreground="White" FontSize="16" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="B2" HorizontalAlignment="Left" Height="32" Margin="237,132,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
+            <Label Content="B2" HorizontalAlignment="Left" Height="32" Margin="225,123,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="B3" HorizontalAlignment="Left" Height="32" Margin="237,193,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
+            <Label Content="B3" HorizontalAlignment="Left" Height="32" Margin="225,181,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="B4" HorizontalAlignment="Left" Height="32" Margin="194,235,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
+            <Label Content="B4" HorizontalAlignment="Left" Height="32" Margin="184,223,0,0" VerticalAlignment="Top" Width="30" Foreground="White" FontSize="16" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="B8" HorizontalAlignment="Left" Height="32" Margin="132,89,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
+            <Label Content="B8" HorizontalAlignment="Left" Height="30" Margin="124,81,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="16" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="B5" HorizontalAlignment="Left" Height="32" Margin="132,235,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
+            <Label Content="B5" HorizontalAlignment="Left" Height="32" Margin="124,223,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="16" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="B7" HorizontalAlignment="Left" Height="32" Margin="89,132,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
+            <Label Content="B7" HorizontalAlignment="Left" Height="32" Margin="81,123,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="B6" HorizontalAlignment="Left" Height="32" Margin="89,193,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
+            <Label Content="B6" HorizontalAlignment="Left" Height="32" Margin="81,181,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="C" HorizontalAlignment="Left" Height="46" Margin="154,154,0,0" VerticalAlignment="Top" Width="47" Foreground="White" FontSize="14" Opacity="0.5" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+            <Label Content="C" HorizontalAlignment="Left" Height="44" Margin="145,145,0,0" VerticalAlignment="Top" Width="45" Foreground="White" FontSize="14" Opacity="0.5" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="D1" HorizontalAlignment="Left" Height="32" Margin="166,10,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="10" Opacity="0.3">
+            <Label Content="D1" HorizontalAlignment="Left" Height="30" Margin="157,5,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="10" Opacity="0.3">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="D5" HorizontalAlignment="Left" Height="32" Margin="166,325,0,-2" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="10" Opacity="0.3">
+            <Label Content="D5" HorizontalAlignment="Left" Height="30" Margin="157,311,0,-5" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="10" Opacity="0.3">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="D2" HorizontalAlignment="Left" Height="32" Margin="278,53,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="10" Opacity="0.3">
+            <Label Content="D2" HorizontalAlignment="Left" Height="32" Margin="266,45,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="10" Opacity="0.3">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="D4" HorizontalAlignment="Left" Height="32" Margin="278,280,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="10" Opacity="0.3">
+            <Label Content="D4" HorizontalAlignment="Left" Height="32" Margin="266,267,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="10" Opacity="0.3">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="D6" HorizontalAlignment="Left" Height="32" Margin="53,280,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="10" Opacity="0.3">
+            <Label Content="D6" HorizontalAlignment="Left" Height="32" Margin="46,267,0,0" VerticalAlignment="Top" Width="32" Foreground="White" FontSize="10" Opacity="0.3">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="D8" HorizontalAlignment="Left" Height="32" Margin="53,53,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="10" Opacity="0.3">
+            <Label Content="D8" HorizontalAlignment="Left" Height="32" Margin="46,45,0,0" VerticalAlignment="Top" Width="32" Foreground="White" FontSize="10" Opacity="0.3">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="D3" HorizontalAlignment="Left" Height="32" Margin="324,166,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="10" Opacity="0.3">
+            <Label Content="D3" HorizontalAlignment="Left" Height="30" Margin="311,157,-4,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="10" Opacity="0.3">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
-            <Label Content="D7" HorizontalAlignment="Left" Height="32" Margin="10,166,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="10" Opacity="0.3">
+            <Label Content="D7" HorizontalAlignment="Left" Height="30" Margin="5,157,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="10" Opacity="0.3">
                 <Label.Background>
                     <SolidColorBrush Color="Transparent" Opacity="0.99"/>
                 </Label.Background>
             </Label>
         </Grid>
-        <RichTextBox x:Name="FumenContent" HorizontalAlignment="Left" Padding="0,5" FontFamily="Consolas" Background="#FF171717" Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" Margin="10,33,0,0" Width="423" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Height="355" VerticalAlignment="Top" SelectionChanged="FumenContent_SelectionChanged">
+        <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,11,91" Width="255" Height="255" VerticalAlignment="Bottom" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
+            <Image.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Image.RenderTransform>
+        </Image>
+        <RichTextBox x:Name="FumenContent" Padding="0,5" FontFamily="Consolas" Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" Margin="10,52,10,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Height="336" VerticalAlignment="Top" SelectionChanged="FumenContent_SelectionChanged" Grid.ColumnSpan="2">
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
             </RichTextBox.Resources>
+            <RichTextBox.Background>
+                <SolidColorBrush Color="#FF171717" Opacity="0.7"/>
+            </RichTextBox.Background>
             <RichTextBox.InputBindings>
                 <KeyBinding Gesture="Ctrl+Space" Command="{StaticResource PlayAndPause}"/>
             </RichTextBox.InputBindings>
@@ -178,8 +191,8 @@
             </RichTextBox.CommandBindings>
             <FlowDocument/>
         </RichTextBox>
-        <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Left" Height="64" Margin="433,340,0,0" VerticalAlignment="Top" Width="119" Foreground="White" FontFamily="Bahnschrift Light" FontSize="48" Grid.ColumnSpan="2"/>
-        <ComboBox x:Name="LevelSelector" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,0,74" Width="99" SelectionChanged="ComboBox_SelectionChanged" Height="21" VerticalAlignment="Bottom">
+        <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Left" Height="64" Margin="305,324,0,0" VerticalAlignment="Top" Width="119" Foreground="White" FontFamily="Bahnschrift Light" FontSize="48" Grid.Column="1"/>
+        <ComboBox x:Name="LevelSelector" Margin="10,26,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="99" Height="21" VerticalAlignment="Top">
             <ComboBoxItem Content="&amp;lv_1"/>
             <ComboBoxItem Content="&amp;lv_2"/>
             <ComboBoxItem Content="&amp;lv_3"/>
@@ -188,7 +201,6 @@
             <ComboBoxItem Content="&amp;lv_6"/>
             <ComboBoxItem Content="&amp;lv_7"/>
         </ComboBox>
-        <Label Content="这个还没用" HorizontalAlignment="Left" Margin="207,225,0,0" Width="78" Foreground="White" Background="Black" Grid.Column="1" Height="27" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
