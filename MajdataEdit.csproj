@@ -117,9 +117,6 @@
     <Resource Include="Image\Star_01.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image\Hold_00.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Image\Hold_01.png" />
   </ItemGroup>
   <ItemGroup>
