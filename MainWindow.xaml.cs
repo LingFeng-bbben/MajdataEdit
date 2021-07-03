@@ -413,9 +413,16 @@ namespace MajdataEdit
             var newList = SimaiProcess.timinglist;
             newList.Sort((x, y) => Math.Abs(destnationTime - x.time).CompareTo(Math.Abs(destnationTime - y.time)));
             var theNote = newList[0];
+            newList.Sort((x, y) => x.time.CompareTo(y.time));
+            var indexOfTheNote = newList.IndexOf(theNote);
+            SimaiNote previoisNote;
+            if (indexOfTheNote > 0)
+                previoisNote = newList[indexOfTheNote - 1];
+            else
+                previoisNote = theNote;
             var pointer = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
-            var pointer1 = pointer.GetPositionAtOffset(1);
-            FumenContent.Selection.Select(pointer, pointer1);
+            var pointer1 = FumenContent.Document.Blocks.ToList()[previoisNote.rawTextPositionY].ContentStart.GetPositionAtOffset(previoisNote.rawTextPositionX + 1);
+            FumenContent.Selection.Select(pointer1, pointer);
             
         }
     }
