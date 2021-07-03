@@ -110,8 +110,20 @@ namespace MajdataEdit
                 double requestedTime = 0;
                 int beats = 4;
                 bool haveNote = false;
+
+                int Ycount=0, Xcount = 0;
+
                 for (int i = 0; i < text.Length; i++)
                 {
+                    if (text[i] == '\n')
+                    {
+                        Ycount++;
+                        Xcount = 0;
+                    }
+                    else
+                    {
+                        Xcount++;
+                    }
                     if (i-1 < position)
                     {
                         requestedTime = time;
@@ -126,10 +138,12 @@ namespace MajdataEdit
                     {
                         string bpm_s = "";
                         i++;
+                        Xcount++;
                         while (text[i] != ')')
                         {
                             bpm_s += text[i];
                             i++;
+                            Xcount++;
                         }
                         bpm = int.Parse(bpm_s);
                         Console.WriteLine("BPM" + bpm);
@@ -140,10 +154,12 @@ namespace MajdataEdit
                     {
                         string beats_s = "";
                         i++;
+                        Xcount++;
                         while (text[i] != '}')
                         {
                             beats_s += text[i];
                             i++;
+                            Xcount++;
                         }
                         beats = int.Parse(beats_s);
                         Console.WriteLine("BEAT" + beats);
@@ -155,7 +171,9 @@ namespace MajdataEdit
                         {
                             notelist.Add(new SimaiNote(time));
                         }
-                        timinglist.Add(new SimaiNote(time));
+                        timinglist.Add(new SimaiNote(time,Xcount,Ycount));
+
+
                         time += (1d / (bpm / 60d)) * 4d / (double)beats;
                         Console.WriteLine(time);
                         haveNote = false;
@@ -184,10 +202,14 @@ namespace MajdataEdit
     {
         public double time;
         public bool havePlayed;
-        public SimaiNote(double _time)
+        public int rawTextPositionX;
+        public int rawTextPositionY;
+        public SimaiNote(double _time,int textposX=0,int textposY=0)
         {
             time = _time;
-        }
+            rawTextPositionX = textposX;
+            rawTextPositionY = textposY;
+    }
         //TODO: add some type here
     }
 }

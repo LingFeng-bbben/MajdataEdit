@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MajdataEdit"
         mc:Ignorable="d"
-        Title="MainWindow" Height="508" Width="878.434" ResizeMode="NoResize" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="MainWindow" Height="508" Width="919" ResizeMode="NoResize" Loaded="Window_Loaded" Closing="Window_Closing">
 
 
     <Grid Margin="0" Background="#FF1F1F1F">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="427*"/>
-            <ColumnDefinition Width="424*"/>
+            <ColumnDefinition Width="437*"/>
+            <ColumnDefinition Width="476*"/>
         </Grid.ColumnDefinitions>
 
         <Menu Height="19" VerticalAlignment="Top" Grid.ColumnSpan="2">
@@ -24,14 +24,14 @@
                 <MenuItem Header="一般谱面信息"/>
             </MenuItem>
         </Menu>
-        <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,-438,0" HorizontalAlignment="Left" Width="877">
-        
+        <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,-401,0" HorizontalAlignment="Left" Width="877" MouseWheel="MusicWave_MouseWheel">
+
         </Image>
         <Line StrokeThickness="3" Margin="0,0,357,0" Y2="56" Grid.Column="1" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15"/>
-        <Image Grid.Column="1" Margin="501,33,-128,0" Source="Image/Tap_01.png" Stretch="Fill" RenderTransformOrigin="0.542,-1.771" HorizontalAlignment="Left" Width="61" Height="61" VerticalAlignment="Top"/>
-        <Image Grid.Column="1" Margin="501,94,-128,0" Source="Image/Star_01.png" Stretch="Fill" HorizontalAlignment="Left" Width="61" Height="59" VerticalAlignment="Top"/>
+        <Image Grid.Column="1" Margin="501,33,-86,0" Source="Image/Tap_01.png" Stretch="Fill" RenderTransformOrigin="0.542,-1.771" HorizontalAlignment="Left" Width="61" Height="61" VerticalAlignment="Top"/>
+        <Image Grid.Column="1" Margin="501,94,-86,0" Source="Image/Star_01.png" Stretch="Fill" HorizontalAlignment="Left" Width="61" Height="59" VerticalAlignment="Top"/>
         <Image Grid.Column="1" Margin="501,153,-128,0" Source="Image/Hold_01.png" Stretch="Fill" Height="99" VerticalAlignment="Top"/>
-        <Grid Grid.Column="1" HorizontalAlignment="Left" Height="336" Margin="10,52,0,0" VerticalAlignment="Top" Width="336">
+        <Grid HorizontalAlignment="Left" Height="336" Margin="40,37,0,0" VerticalAlignment="Top" Width="336">
             <Image Source="Image/Outline_03.png" Stretch="Fill"/>
             <Label Content="A1" HorizontalAlignment="Left" Height="30" Margin="206,21,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
             <Label Content="A4" HorizontalAlignment="Left" Height="32" Margin="206,281,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
@@ -167,7 +167,7 @@
                 </Label.Background>
             </Label>
         </Grid>
-        <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,14,87" Width="255" Height="255" VerticalAlignment="Bottom" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
+        <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,14,92" Width="255" Height="255" VerticalAlignment="Bottom" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
             <Image.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -177,7 +177,7 @@
                 </TransformGroup>
             </Image.RenderTransform>
         </Image>
-        <RichTextBox x:Name="FumenContent" Padding="0,5" FontFamily="Consolas" Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" Margin="10,52,10,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Height="336" VerticalAlignment="Top" SelectionChanged="FumenContent_SelectionChanged" Grid.ColumnSpan="2">
+        <RichTextBox x:Name="FumenContent" Padding="0,5" FontFamily="Consolas" Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" Margin="0,52,10,91" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" SelectionChanged="FumenContent_SelectionChanged" Grid.Column="1">
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
                 <RoutedUICommand x:Key="SaveFile" Text="SaveFile"/>
@@ -186,7 +186,7 @@
                 <SolidColorBrush Color="#FF171717" Opacity="0.3"/>
             </RichTextBox.Background>
             <RichTextBox.InputBindings>
-                <KeyBinding Gesture="Ctrl+Space" Command="{StaticResource PlayAndPause}"/>
+                <KeyBinding Gesture="Ctrl+Shift+c" Command="{StaticResource PlayAndPause}"/>
                 <KeyBinding Gesture="Ctrl+s" Command="{StaticResource SaveFile}"/>
             </RichTextBox.InputBindings>
             <RichTextBox.CommandBindings>
@@ -196,8 +196,8 @@
             </RichTextBox.CommandBindings>
             <FlowDocument/>
         </RichTextBox>
-        <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Left" Height="64" Margin="305,324,0,0" VerticalAlignment="Top" Width="119" Foreground="White" FontFamily="Bahnschrift Light" FontSize="48" Grid.Column="1"/>
-        <ComboBox x:Name="LevelSelector" Margin="10,26,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="99" Height="21" VerticalAlignment="Top">
+        <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Right" Height="64" Margin="0,324,0,0" VerticalAlignment="Top" Width="119" Foreground="White" FontFamily="Bahnschrift Light" FontSize="48" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom"/>
+        <ComboBox x:Name="LevelSelector" Margin="0,24,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="99" Height="21" VerticalAlignment="Top" Grid.Column="1">
             <ComboBoxItem Content="&amp;lv_1"/>
             <ComboBoxItem Content="&amp;lv_2"/>
             <ComboBoxItem Content="&amp;lv_3"/>
@@ -206,7 +206,9 @@
             <ComboBoxItem Content="&amp;lv_6"/>
             <ComboBoxItem Content="&amp;lv_7"/>
         </ComboBox>
-        <CheckBox x:Name="SimaiFirst" Content="为Simai加入0.04s提前" HorizontalAlignment="Left" Margin="133,29,0,0" VerticalAlignment="Top" Foreground="White" IsChecked="True"/>
+        <CheckBox x:Name="SimaiFirst" Content="为Simai加入0.04s提前" HorizontalAlignment="Left" Margin="105,28,0,0" VerticalAlignment="Top" Foreground="White" IsChecked="True" Grid.Column="1" Height="15" Width="141"/>
+        <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="10,0,0,41" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomIn_Click"/>
+        <Button x:Name="WaveViewZoomOut" Content="-" HorizontalAlignment="Left" Height="24" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomOut_Click"/>
 
     </Grid>
 </Window>
