@@ -178,6 +178,7 @@
                 </TransformGroup>
             </Image.RenderTransform>
         </Image>
+        <CheckBox x:Name="FollowPlayCheck" Content="文本跟随播放" HorizontalAlignment="Left" Height="21" Margin="329,0,0,130" VerticalAlignment="Bottom" Width="96" Foreground="White" HorizontalContentAlignment="Right" Click="FollowPlayCheck_Click"/>
         <RichTextBox x:Name="FumenContent" Padding="0,5" FontFamily="Consolas" Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" Margin="0,52,10,91" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" SelectionChanged="FumenContent_SelectionChanged" Grid.Column="1">
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
@@ -216,6 +217,6 @@
         <TextBox x:Name="LevelTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="21" Margin="160,24,0,0" TextWrapping="Wrap" Text="12+" VerticalAlignment="Top" Width="98" VerticalContentAlignment="Center" TextChanged="LevelTextBox_TextChanged"/>
         <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="387,0,0,92" Width="38" Click="PlayAndPauseButton_Click" Height="38" VerticalAlignment="Bottom"/>
         <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="338,0,0,92" VerticalAlignment="Bottom" Width="38" Click="StopButton_Click"/>
-        <Label x:Name="NoteNowText" Content="" HorizontalAlignment="Right" Margin="0,0,12,138" VerticalAlignment="Bottom" Foreground="White" Width="87" HorizontalContentAlignment="Right"/>
+        <Label x:Name="NoteNowText" Content="" HorizontalAlignment="Right" Margin="0,0,12,177" VerticalAlignment="Bottom" Foreground="White" Width="87" HorizontalContentAlignment="Right"/>
     </Grid>
 </Window>

@@ -17,7 +17,7 @@ namespace MajdataEdit
         static public string[] fumens = new string[7];
         static public string[] levels = new string[7];
         static public bool simaiFirst = false;
-        static public List<SimaiTimingPoint> notelist = new List<SimaiTimingPoint>();
+        static public List<SimaiTimingPoint> notelist = new List<SimaiTimingPoint>(); //Todo:封装方法
         static public List<SimaiTimingPoint> timinglist = new List<SimaiTimingPoint>();
         static public void ReadData(string filename)
         {
@@ -224,27 +224,35 @@ namespace MajdataEdit
 
         public List<SimaiNote> getNotes()
         {
-            if (noteContent == "") return null;
+            
             List<SimaiNote> simaiNotes = new List<SimaiNote>();
-            int dummy = 0;
-            if(noteContent.Length==2&&int.TryParse(noteContent,out dummy))
+            if (noteContent == "") return simaiNotes;
+            try
             {
-                simaiNotes.Add(getSingleNote(noteContent[0].ToString()));
-                simaiNotes.Add(getSingleNote(noteContent[1].ToString()));
-            }
-            if (noteContent.Contains('/'))
-            {
-                var notes = noteContent.Split('/');
-                foreach(var note in notes)
+                int dummy = 0;
+                if (noteContent.Length == 2 && int.TryParse(noteContent, out dummy))
                 {
-                    simaiNotes.Add(getSingleNote(note));
+                    simaiNotes.Add(getSingleNote(noteContent[0].ToString()));
+                    simaiNotes.Add(getSingleNote(noteContent[1].ToString()));
                 }
+                if (noteContent.Contains('/'))
+                {
+                    var notes = noteContent.Split('/');
+                    foreach (var note in notes)
+                    {
+                        simaiNotes.Add(getSingleNote(note));
+                    }
+                }
+                else
+                {
+                    simaiNotes.Add(getSingleNote(noteContent));
+                }
+                return simaiNotes;
             }
-            else
+            catch
             {
-                simaiNotes.Add(getSingleNote(noteContent));
+                return new List<SimaiNote>();
             }
-            return simaiNotes;
         }
         
         private SimaiNote getSingleNote(string noteText)

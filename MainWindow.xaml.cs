@@ -314,10 +314,16 @@ namespace MajdataEdit
                 {
                     Bass.BASS_ChannelPlay(clickStream, true);
                     //
-                    Dispatcher.Invoke(() => { NoteNowText.Content = waitToBePlayed[0].noteContent; });
+                    Dispatcher.Invoke(() => { 
+                        NoteNowText.Content = waitToBePlayed[0].noteContent;
+                    if ((bool)FollowPlayCheck.IsChecked)
+                        SeekTextFromTime(); 
+                    });
                     //Console.WriteLine(waitToBePlayed[0].content);
                     SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime)[0].havePlayed = true; //Since the data was added as time followed, we modify the first one
+                    
                 }
+                
             }
             catch { }
         }
@@ -476,8 +482,15 @@ namespace MajdataEdit
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             var destnationTime = time + (0.002d * e.Delta * (1.0d / zoominPower));
             Bass.BASS_ChannelSetPosition(bgmStream, destnationTime);
+
+            SeekTextFromTime();
+        }
+
+        void SeekTextFromTime()
+        {
+            var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             var newList = SimaiProcess.timinglist;
-            newList.Sort((x, y) => Math.Abs(destnationTime - x.time).CompareTo(Math.Abs(destnationTime - y.time)));
+            newList.Sort((x, y) => Math.Abs(time - x.time).CompareTo(Math.Abs(time - y.time)));
             var theNote = newList[0];
             newList.Sort((x, y) => x.time.CompareTo(y.time));
             var indexOfTheNote = newList.IndexOf(theNote);
@@ -507,6 +520,11 @@ namespace MajdataEdit
         {
             System.Diagnostics.Process.Start("https://w.atwiki.jp/simai/pages/25.html");
             //maidata.txtの譜面書式
+        }
+
+        private void FollowPlayCheck_Click(object sender, RoutedEventArgs e)
+        {
+            FumenContent.Focus();
         }
     }
 }
