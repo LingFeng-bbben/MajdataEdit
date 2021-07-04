@@ -38,7 +38,7 @@ namespace MajdataEdit
         {
             string text = "";
             text = new TextRange(FumenContent.Document.ContentStart, FumenContent.Document.ContentEnd).Text;
-            text = text.Replace("\r","");
+            text = text.Replace("\r", "");
             return text;
         }
 
@@ -77,7 +77,7 @@ namespace MajdataEdit
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var handle = (new WindowInteropHelper(this)).Handle;
-            Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS,handle);
+            Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
             bgmStream = Bass.BASS_StreamCreateFile("track.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             clickStream = Bass.BASS_StreamCreateFile("tap.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
 
@@ -133,7 +133,7 @@ namespace MajdataEdit
                         System.Drawing.Imaging.PixelFormat.Format32bppArgb, writableBitmap.BackBuffer);
             Graphics graphics = Graphics.FromImage(backBitmap);
             System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.Green, zoominPower);
-            
+
             var drawoffset = 0;
             await Task.Run(() =>
             {
@@ -146,20 +146,58 @@ namespace MajdataEdit
                         graphics.DrawLine(pen, (i + drawoffset) * zoominPower, 37 + lv, (i + drawoffset) * zoominPower, 37 - lv);
                     }
 
-                    pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(150,200,200,220), 2);
+                    pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(150, 200, 200, 220), 2);
                     PointF[] curvepoints = new PointF[waveLevels.Length];
                     for (int i = 0; i < waveLevels.Length; i++)
                     {
-                        curvepoints[i] = new PointF((i + drawoffset) * zoominPower, (1f - waveEnergies[i]) * 35 +2);
+                        curvepoints[i] = new PointF((i + drawoffset) * zoominPower, (1f - waveEnergies[i]) * 35 + 2);
                     }
                     graphics.DrawCurve(pen, curvepoints);
                     //Draw notes
-                    pen = new System.Drawing.Pen(System.Drawing.Color.LightPink, 2);
+                    
                     foreach (var note in SimaiProcess.notelist)
                     {
                         if (note == null) { break; }
+                        var notes = note.getNotes();
+                        bool isEach = notes.Count > 1;
+
                         float x = (float)(note.time / sampleTime) * zoominPower;
-                        graphics.DrawLine(pen, x, 0, x, 75);
+                        
+                        foreach (var noteD in notes)
+                        {
+                            float y = noteD.startPosition * 6.875f + 8f; //与键位有关
+                            if (noteD.noteType == SimaiNoteType.Tap)
+                            {
+                                pen.Width = 2;
+                                pen.Color = isEach ? System.Drawing.Color.Gold : System.Drawing.Color.LightPink;
+                                graphics.DrawEllipse(pen, x-2.5f, y-2.5f, 5, 5);
+                            }
+                            if(noteD.noteType== SimaiNoteType.Hold)
+                            {
+                                pen.Width = 3;
+                                pen.Color = isEach ? System.Drawing.Color.DarkGoldenrod: System.Drawing.Color.Pink;
+                                
+                                float xRight = x + (float)(noteD.holdTime / sampleTime) * zoominPower;
+                                Console.WriteLine("HoldPixel"+(xRight - x));
+                                if (xRight - x < 1f) xRight = x + 5;
+                                graphics.DrawLine(pen, x, y, xRight, y);
+                            }
+                            if (noteD.noteType == SimaiNoteType.Slide)
+                            {
+                                pen.Width = 3;
+                                pen.Color = System.Drawing.Color.DeepSkyBlue;
+                                System.Drawing.Brush brush = new SolidBrush(pen.Color);
+                                graphics.DrawString("*", new Font("Consolas", 12,System.Drawing.FontStyle.Bold), brush, new PointF(x-7f, y-7f));
+
+                                pen.Color = System.Drawing.Color.SkyBlue;
+                                pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                                float xSlide = (float)(noteD.slideStartTime / sampleTime) * zoominPower;
+                                float xSlideRight = (float)(noteD.slideTime / sampleTime) * zoominPower + xSlide;
+                                graphics.DrawLine(pen, xSlide, y, xSlideRight, y);
+                                pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+                            }
+                        }
+
                     }
 
                     //Draw timing lines
@@ -199,7 +237,7 @@ namespace MajdataEdit
             writableBitmap.Unlock();
             isDrawing = false;
             GC.Collect();
-            
+
         }
 
         private void VisualEffectRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -208,9 +246,9 @@ namespace MajdataEdit
             {
                 //Scroll WaveView
                 var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                MusicWave.Margin = new Thickness(-currentTime/ sampleTime * zoominPower, Margin.Left, MusicWave.Margin.Right, Margin.Bottom);//Todo:the scale
-                //Draw FFT
-                
+                MusicWave.Margin = new Thickness(-currentTime / sampleTime * zoominPower, Margin.Left, MusicWave.Margin.Right, Margin.Bottom);//Todo:the scale
+                                                                                                                                              //Draw FFT
+
                 var writableBitmap = new WriteableBitmap(255, 255, 72, 72, PixelFormats.Pbgra32, null);
                 FFTImage.Source = writableBitmap;
                 writableBitmap.Lock();
@@ -225,7 +263,7 @@ namespace MajdataEdit
                 PointF[] points = new PointF[1024];
                 for (int i = 0; i < fft.Length; i++)
                 {
-                    points[i] = new PointF((float)Math.Log10(i+1)*100f, (240 - fft[i] * 256)); //semilog
+                    points[i] = new PointF((float)Math.Log10(i + 1) * 100f, (240 - fft[i] * 256)); //semilog
                 }
 
                 graphics.DrawCurve(new System.Drawing.Pen(System.Drawing.Color.LightSkyBlue, 1), points);
@@ -233,7 +271,7 @@ namespace MajdataEdit
                 float outputHz = 0;
                 new Visuals().DetectPeakFrequency(bgmStream, out outputHz);
 
-                if (Bass.BASS_ChannelIsActive(bgmStream)==BASSActive.BASS_ACTIVE_PLAYING)
+                if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
                 {
                     try
                     {
@@ -275,7 +313,9 @@ namespace MajdataEdit
                 if (currentTime - nearestTime < 0.05 && currentTime - nearestTime > -0.05)
                 {
                     Bass.BASS_ChannelPlay(clickStream, true);
-                    //Console.WriteLine("Tick");
+                    //
+                    Dispatcher.Invoke(() => { NoteNowText.Content = waitToBePlayed[0].noteContent; });
+                    //Console.WriteLine(waitToBePlayed[0].content);
                     SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime)[0].havePlayed = true; //Since the data was added as time followed, we modify the first one
                 }
             }
@@ -299,41 +339,66 @@ namespace MajdataEdit
             var currentPlayTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             int minute = (int)currentPlayTime / 60;
             double second = currentPlayTime % 60d;
-            Dispatcher.Invoke(new Action(()=>{ TimeLabel.Content = String.Format("{0}:{1:00}", minute, second); }));
-            
+            Dispatcher.Invoke(new Action(() => { TimeLabel.Content = String.Format("{0}:{1:00}", minute, second); }));
+
         }
 
 
         double playStartTime = 0d;
-        private void PlayAndPause_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            SaveRawFumenText();
-            Console.WriteLine("Executed");
-            var CusorTime = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());//scan first
-            var channeltime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-            playStartTime = channeltime;
 
-            Bass.BASS_ChannelPlay(bgmStream, false);
-            SimaiProcess.ClearNoteListPlayedState();
-            DrawWave(CusorTime); //then the wave could be draw
-            clickSoundTimer.Start();
+        void TogglePlayAndPause()
+        {
+            FumenContent.Focus();
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
+            {
+                PlayAndPauseButton.Content = "▶";
+                Bass.BASS_ChannelStop(bgmStream);
+                clickSoundTimer.Stop();
+                DrawWave();
+            }
+            else
+            {
+                PlayAndPauseButton.Content = "  ▌▌ ";
+                SaveRawFumenText();
+                var CusorTime = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());//scan first
+                var channeltime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                playStartTime = channeltime;
+
+                Bass.BASS_ChannelPlay(bgmStream, false);
+                SimaiProcess.ClearNoteListPlayedState();
+                DrawWave(CusorTime); //then the wave could be draw
+                clickSoundTimer.Start();
+            }
+        }
+
+        void ToggleStop()
+        {
+            FumenContent.Focus();
+            PlayAndPauseButton.Content = "▶";
+            Bass.BASS_ChannelStop(bgmStream);
+            clickSoundTimer.Stop();
+            Bass.BASS_ChannelSetPosition(bgmStream, playStartTime);
+            DrawWave();
         }
 
         private void PlayAndPause_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            Console.WriteLine("CanExecute");
-            if (Bass.BASS_ChannelIsActive(bgmStream)==BASSActive.BASS_ACTIVE_PLAYING)
-            {
-                Bass.BASS_ChannelStop(bgmStream);
-                clickSoundTimer.Stop();
-                Bass.BASS_ChannelSetPosition(bgmStream, playStartTime);
-                DrawWave();
-                e.CanExecute = false;
-            }
-            else
-            {
-                e.CanExecute = true;
-            }
+            TogglePlayAndPause();
+        }
+
+        private void PlayAndPauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            TogglePlayAndPause();
+        }
+
+        private void StopPlaying_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            ToggleStop();
+        }
+
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleStop();
         }
 
         private void FumenContent_SelectionChanged(object sender, RoutedEventArgs e)
@@ -365,6 +430,7 @@ namespace MajdataEdit
                     selectedDifficulty = i;
                 }
             }
+            LevelTextBox.Text = SimaiProcess.levels[selectedDifficulty];
         }
 
         private void Menu_Open_Click(object sender, RoutedEventArgs e)
@@ -415,7 +481,7 @@ namespace MajdataEdit
             var theNote = newList[0];
             newList.Sort((x, y) => x.time.CompareTo(y.time));
             var indexOfTheNote = newList.IndexOf(theNote);
-            SimaiNote previoisNote;
+            SimaiTimingPoint previoisNote;
             if (indexOfTheNote > 0)
                 previoisNote = newList[indexOfTheNote - 1];
             else
@@ -423,7 +489,24 @@ namespace MajdataEdit
             var pointer = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
             var pointer1 = FumenContent.Document.Blocks.ToList()[previoisNote.rawTextPositionY].ContentStart.GetPositionAtOffset(previoisNote.rawTextPositionX + 1);
             FumenContent.Selection.Select(pointer1, pointer);
-            
+        }
+
+        private void MenuItem_InfomationEdit_Click(object sender, RoutedEventArgs e)
+        {
+            var infoWindow = new Infomation();
+            infoWindow.ShowDialog(); 
+        }
+
+        private void LevelTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (selectedDifficulty == -1) return;
+            SimaiProcess.levels[selectedDifficulty] = LevelTextBox.Text;
+        }
+
+        private void MenuItem_SimaiWiki_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://w.atwiki.jp/simai/pages/25.html");
+            //maidata.txtの譜面書式
         }
     }
 }

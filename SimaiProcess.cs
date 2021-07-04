@@ -17,8 +17,8 @@ namespace MajdataEdit
         static public string[] fumens = new string[7];
         static public string[] levels = new string[7];
         static public bool simaiFirst = false;
-        static public List<SimaiNote> notelist = new List<SimaiNote>();
-        static public List<SimaiNote> timinglist = new List<SimaiNote>();
+        static public List<SimaiTimingPoint> notelist = new List<SimaiTimingPoint>();
+        static public List<SimaiTimingPoint> timinglist = new List<SimaiTimingPoint>();
         static public void ReadData(string filename)
         {
             string[] maidataTxt = File.ReadAllLines(filename, Encoding.UTF8);
@@ -105,12 +105,12 @@ namespace MajdataEdit
             timinglist.Clear();
             try
             {
-                int bpm = 0;
+                float bpm = 0;
                 double time = 0; //in seconds
                 double requestedTime = 0;
                 int beats = 4;
                 bool haveNote = false;
-
+                string noteTemp = "";
                 int Ycount=0, Xcount = 0;
 
                 for (int i = 0; i < text.Length; i++)
@@ -128,11 +128,6 @@ namespace MajdataEdit
                     {
                         requestedTime = time;
                     }
-                    int dummy;
-                    if (int.TryParse(text[i].ToString(),out dummy))//if has number
-                    {
-                        haveNote = true;
-                    }
                     if (text[i] == '(')
                     //Get bpm
                     {
@@ -145,8 +140,8 @@ namespace MajdataEdit
                             i++;
                             Xcount++;
                         }
-                        bpm = int.Parse(bpm_s);
-                        Console.WriteLine("BPM" + bpm);
+                        bpm = float.Parse(bpm_s);
+                        //Console.WriteLine("BPM" + bpm);
                         continue;
                     }
                     if (text[i] == '{')
@@ -162,25 +157,37 @@ namespace MajdataEdit
                             Xcount++;
                         }
                         beats = int.Parse(beats_s);
-                        Console.WriteLine("BEAT" + beats);
+                        //Console.WriteLine("BEAT" + beats);
                         continue;
+                    }
+                    int dummy;
+                    if (int.TryParse(text[i].ToString(), out dummy))//if has number (not for touch note now)
+                    {
+                        haveNote = true;
+                    }
+                    if (haveNote&& text[i] != ',')
+                    {
+                        noteTemp += text[i];
                     }
                     if (text[i] == ',')
                     {
                         if (haveNote)
                         {
-                            notelist.Add(new SimaiNote(time));
+                            notelist.Add(new SimaiTimingPoint(time, Xcount, Ycount,noteTemp,bpm));
+                            //Console.WriteLine("Note:" + noteTemp);
+                            
+                            noteTemp = "";
                         }
-                        timinglist.Add(new SimaiNote(time,Xcount,Ycount));
+                        timinglist.Add(new SimaiTimingPoint(time,Xcount,Ycount));
 
 
                         time += (1d / (bpm / 60d)) * 4d / (double)beats;
-                        Console.WriteLine(time);
+                        //Console.WriteLine(time);
                         haveNote = false;
                         continue;
                     }
                 }
-                Console.WriteLine(notelist.ToArray());
+                //Console.WriteLine(notelist.ToArray());
                 return requestedTime;
             }
             catch
@@ -198,18 +205,114 @@ namespace MajdataEdit
         }
     }
 
-    class SimaiNote
+    class SimaiTimingPoint
     {
         public double time;
         public bool havePlayed;
         public int rawTextPositionX;
         public int rawTextPositionY;
-        public SimaiNote(double _time,int textposX=0,int textposY=0)
+        public string noteContent;
+        public float currentBpm;
+        public SimaiTimingPoint(double _time, int textposX = 0, int textposY = 0,string _content = "",float bpm=0f)
         {
             time = _time;
             rawTextPositionX = textposX;
             rawTextPositionY = textposY;
+            noteContent = _content;
+            currentBpm = bpm;
+        }
+
+        public List<SimaiNote> getNotes()
+        {
+            if (noteContent == "") return null;
+            List<SimaiNote> simaiNotes = new List<SimaiNote>();
+            int dummy = 0;
+            if(noteContent.Length==2&&int.TryParse(noteContent,out dummy))
+            {
+                simaiNotes.Add(getSingleNote(noteContent[0].ToString()));
+                simaiNotes.Add(getSingleNote(noteContent[1].ToString()));
+            }
+            if (noteContent.Contains('/'))
+            {
+                var notes = noteContent.Split('/');
+                foreach(var note in notes)
+                {
+                    simaiNotes.Add(getSingleNote(note));
+                }
+            }
+            else
+            {
+                simaiNotes.Add(getSingleNote(noteContent));
+            }
+            return simaiNotes;
+        }
+        
+        private SimaiNote getSingleNote(string noteText)
+        {
+            SimaiNote simaiNote = new SimaiNote();
+
+            simaiNote.startPosition = int.Parse(noteText[0].ToString());
+            simaiNote.noteType = SimaiNoteType.Tap; //if nothing happen in following if
+
+
+            //hold
+            if (noteText.Contains('h')) {
+                simaiNote.noteType = SimaiNoteType.Hold;
+                simaiNote.holdTime = getTimeFromBeats(noteText);
+                Console.WriteLine("Hold:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
+            }
+            if (noteText.Contains('b'))
+            {
+                simaiNote.isBreak = true;
+            }
+            if (isSlideNote(noteText)) {
+                simaiNote.noteType = SimaiNoteType.Slide;
+                simaiNote.slideTime = getTimeFromBeats(noteText);
+                var timeOneBeat = 1d / (currentBpm / 60d);
+                simaiNote.slideStartTime = time + timeOneBeat;
+                Console.WriteLine("Slide:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.slideTime);
+            } 
+
+
+            return simaiNote;
+        }
+
+        private bool isSlideNote(string noteText)
+        {
+            string SlideMarks = "-^v<>Vpqszw";
+            foreach(var mark in SlideMarks)
+            {
+                if (noteText.Contains(mark)) return true;
+            }
+            return false;
+        }
+
+        private double getTimeFromBeats(string noteText)
+        {
+            var startIndex = noteContent.IndexOf('[');
+            var overIndex = noteContent.IndexOf(']');
+            var innerString = noteContent.Substring(startIndex + 1, overIndex - startIndex-1);
+            var numbers = innerString.Split(':');   //TODO:customBPM
+            var divide = int.Parse(numbers[0]);
+            var count = int.Parse(numbers[1]);
+            var timeOneBeat = 1d / (currentBpm / 60d);
+
+            return (timeOneBeat*4d / (double)divide) * (double)count; 
+        }
     }
-        //TODO: add some type here
+    enum SimaiNoteType
+    {
+        Tap,Slide,Hold
+    }
+    class SimaiNote
+    {
+        public SimaiNoteType noteType;
+        public bool isBreak = false;
+        //bool isExnote = false;
+        public int startPosition = 1; //键位（1-8）
+        public double holdTime = 0d;
+        public double slideStartTime = 0d;
+        public double slideTime = 0d;
+        //TODO: 增加描述星星形状的类
     }
 }

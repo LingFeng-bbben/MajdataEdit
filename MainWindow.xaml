@@ -16,13 +16,14 @@
 
         <Menu Height="19" VerticalAlignment="Top" Grid.ColumnSpan="2">
             <MenuItem Header="文件">
-                <MenuItem x:Name="Menu_Open" Header="打开" Click="Menu_Open_Click"/>
+                <MenuItem x:Name="Menu_Open" Header="打开" Click="Menu_Open_Click" IsEnabled="False"/>
                 <MenuItem x:Name="Menu_Save" Header="保存" Click="Menu_Save_Click"/>
-                <MenuItem x:Name="Menu_SaveAs" Header="另存为" Click="Menu_SaveAs_Click"/>
+                <MenuItem x:Name="Menu_SaveAs" Header="另存为" Click="Menu_SaveAs_Click" IsEnabled="False"/>
             </MenuItem>
             <MenuItem Header="编辑">
-                <MenuItem Header="一般谱面信息"/>
+                <MenuItem Header="一般谱面信息" Click="MenuItem_InfomationEdit_Click"/>
             </MenuItem>
+            <MenuItem Header="SimaiWiki" Click="MenuItem_SimaiWiki_Click"/>
         </Menu>
         <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,-401,0" HorizontalAlignment="Left" Width="877" MouseWheel="MusicWave_MouseWheel">
 
@@ -181,6 +182,7 @@
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
                 <RoutedUICommand x:Key="SaveFile" Text="SaveFile"/>
+                <RoutedUICommand x:Key="StopPlaying" Text="StopPlaying"/>
             </RichTextBox.Resources>
             <RichTextBox.Background>
                 <SolidColorBrush Color="#FF171717" Opacity="0.3"/>
@@ -188,15 +190,16 @@
             <RichTextBox.InputBindings>
                 <KeyBinding Gesture="Ctrl+Shift+c" Command="{StaticResource PlayAndPause}"/>
                 <KeyBinding Gesture="Ctrl+s" Command="{StaticResource SaveFile}"/>
+                <KeyBinding Gesture="Ctrl+Shift+x" Command="{StaticResource StopPlaying}"/>
             </RichTextBox.InputBindings>
             <RichTextBox.CommandBindings>
-                <CommandBinding Command="{StaticResource PlayAndPause}" CanExecute="PlayAndPause_CanExecute" Executed="PlayAndPause_Executed"/>
+                <CommandBinding Command="{StaticResource PlayAndPause}" CanExecute="PlayAndPause_CanExecute"/>
                 <CommandBinding Command="{StaticResource SaveFile}" CanExecute="SaveFile_Command_CanExecute"/>
-
+                <CommandBinding Command="{StaticResource StopPlaying}" CanExecute="StopPlaying_CanExecute"/>
             </RichTextBox.CommandBindings>
             <FlowDocument/>
         </RichTextBox>
-        <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Right" Height="64" Margin="0,324,0,0" VerticalAlignment="Top" Width="119" Foreground="White" FontFamily="Bahnschrift Light" FontSize="48" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom"/>
+        <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Right" Height="64" Margin="0,24,2,0" VerticalAlignment="Top" Width="119" Foreground="White" FontFamily="Bahnschrift Light" FontSize="48" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom"/>
         <ComboBox x:Name="LevelSelector" Margin="0,24,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="99" Height="21" VerticalAlignment="Top" Grid.Column="1">
             <ComboBoxItem Content="&amp;lv_1"/>
             <ComboBoxItem Content="&amp;lv_2"/>
@@ -206,9 +209,13 @@
             <ComboBoxItem Content="&amp;lv_6"/>
             <ComboBoxItem Content="&amp;lv_7"/>
         </ComboBox>
-        <CheckBox x:Name="SimaiFirst" Content="为Simai加入0.04s提前" HorizontalAlignment="Left" Margin="105,28,0,0" VerticalAlignment="Top" Foreground="White" IsChecked="True" Grid.Column="1" Height="15" Width="141"/>
+        <CheckBox x:Name="SimaiFirst" Content="为Simai加入0.04s提前" HorizontalAlignment="Left" Margin="283,28,0,0" VerticalAlignment="Top" Foreground="White" IsChecked="True" Grid.Column="1" Height="15" Width="141"/>
         <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="10,0,0,41" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomIn_Click"/>
         <Button x:Name="WaveViewZoomOut" Content="-" HorizontalAlignment="Left" Height="24" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomOut_Click"/>
-
+        <Label Content="难度" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="122,22,0,0" VerticalAlignment="Top" Width="33" Foreground="White"/>
+        <TextBox x:Name="LevelTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="21" Margin="160,24,0,0" TextWrapping="Wrap" Text="12+" VerticalAlignment="Top" Width="98" VerticalContentAlignment="Center" TextChanged="LevelTextBox_TextChanged"/>
+        <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="387,0,0,92" Width="38" Click="PlayAndPauseButton_Click" Height="38" VerticalAlignment="Bottom"/>
+        <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="338,0,0,92" VerticalAlignment="Bottom" Width="38" Click="StopButton_Click"/>
+        <Label x:Name="NoteNowText" Content="" HorizontalAlignment="Right" Margin="0,0,12,138" VerticalAlignment="Bottom" Foreground="White" Width="87" HorizontalContentAlignment="Right"/>
     </Grid>
 </Window>

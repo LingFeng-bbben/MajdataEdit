@@ -63,7 +63,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Infomation.xaml.cs">
+      <DependentUpon>Infomation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SimaiProcess.cs" />
+    <Page Include="Infomation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -120,6 +127,7 @@
     <Resource Include="Image\Hold_01.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Image\salt.png" />
     <Content Include="lib\bass.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
