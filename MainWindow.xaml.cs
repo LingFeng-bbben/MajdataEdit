@@ -166,22 +166,67 @@ namespace MajdataEdit
                         foreach (var noteD in notes)
                         {
                             float y = noteD.startPosition * 6.875f + 8f; //与键位有关
+
+                            if (noteD.isHanabi)
+                            {
+                                float xDeltaHanabi = (float)(1f / sampleTime) * zoominPower; //Hanabi is 1s due to frame analyze
+                                RectangleF rectangleF = new RectangleF(x, 0, xDeltaHanabi, 75);
+                                if (noteD.noteType == SimaiNoteType.TouchHold)
+                                {
+                                    rectangleF.X += ((float)(noteD.holdTime / sampleTime) * zoominPower);
+                                }
+                                System.Drawing.Drawing2D.LinearGradientBrush gradientBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
+                                    rectangleF,
+                                    System.Drawing.Color.FromArgb(100, 255, 0, 0),
+                                    System.Drawing.Color.FromArgb(0, 255, 0, 0),
+                                    System.Drawing.Drawing2D.LinearGradientMode.Horizontal
+                                    );
+                                graphics.FillRectangle(gradientBrush, rectangleF);
+                            }
+
                             if (noteD.noteType == SimaiNoteType.Tap)
                             {
                                 pen.Width = 2;
                                 pen.Color = isEach ? System.Drawing.Color.Gold : System.Drawing.Color.LightPink;
                                 graphics.DrawEllipse(pen, x-2.5f, y-2.5f, 5, 5);
                             }
-                            if(noteD.noteType== SimaiNoteType.Hold)
+
+                            if (noteD.noteType == SimaiNoteType.Touch)
+                            {
+                                pen.Width = 2;
+                                pen.Color = isEach ? System.Drawing.Color.Gold : System.Drawing.Color.DeepSkyBlue;
+                                graphics.DrawRectangle(pen, x - 2.5f, y - 2.5f, 5, 5);
+
+                            }
+
+                            if (noteD.noteType== SimaiNoteType.Hold)
                             {
                                 pen.Width = 3;
-                                pen.Color = isEach ? System.Drawing.Color.DarkGoldenrod: System.Drawing.Color.Pink;
-                                
+                                pen.Color = isEach ? System.Drawing.Color.Gold : System.Drawing.Color.LightPink;
+
                                 float xRight = x + (float)(noteD.holdTime / sampleTime) * zoominPower;
-                                Console.WriteLine("HoldPixel"+(xRight - x));
                                 if (xRight - x < 1f) xRight = x + 5;
                                 graphics.DrawLine(pen, x, y, xRight, y);
+
                             }
+
+                            if (noteD.noteType == SimaiNoteType.TouchHold)
+                            {
+                                pen.Width = 3;
+                                float xDelta = ((float)(noteD.holdTime / sampleTime) * zoominPower) / 4;
+                                //Console.WriteLine("HoldPixel"+ xDelta);
+                                if (xDelta < 1f) xDelta = x + 1;
+
+                                pen.Color = System.Drawing.Color.FromArgb(200, 255, 75, 0);
+                                graphics.DrawLine(pen, x, y, x + xDelta * 4f, y);
+                                pen.Color = System.Drawing.Color.FromArgb(200, 255, 241, 0);
+                                graphics.DrawLine(pen, x, y, x + xDelta * 3f, y);
+                                pen.Color = System.Drawing.Color.FromArgb(200, 2, 165, 89);
+                                graphics.DrawLine(pen, x, y, x + xDelta * 2f, y);
+                                pen.Color = System.Drawing.Color.FromArgb(200, 0, 140, 254);
+                                graphics.DrawLine(pen, x, y, x + xDelta, y);
+                            }
+
                             if (noteD.noteType == SimaiNoteType.Slide)
                             {
                                 pen.Width = 3;
@@ -196,6 +241,9 @@ namespace MajdataEdit
                                 graphics.DrawLine(pen, xSlide, y, xSlideRight, y);
                                 pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
                             }
+
+
+
                         }
 
                     }

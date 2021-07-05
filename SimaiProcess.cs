@@ -101,8 +101,8 @@ namespace MajdataEdit
         }
         static public double getSongTimeAndScan(string text, long position)
         {
-            notelist.Clear();
-            timinglist.Clear();
+            List<SimaiTimingPoint> _notelist = new List<SimaiTimingPoint>();
+            List<SimaiTimingPoint> _timinglist = new List<SimaiTimingPoint>();
             try
             {
                 float bpm = 0;
@@ -160,8 +160,7 @@ namespace MajdataEdit
                         //Console.WriteLine("BEAT" + beats);
                         continue;
                     }
-                    int dummy;
-                    if (int.TryParse(text[i].ToString(), out dummy))//if has number (not for touch note now)
+                    if (isNote(text[i]))//if has number (not for touch note now)
                     {
                         haveNote = true;
                     }
@@ -173,12 +172,12 @@ namespace MajdataEdit
                     {
                         if (haveNote)
                         {
-                            notelist.Add(new SimaiTimingPoint(time, Xcount, Ycount,noteTemp,bpm));
+                            _notelist.Add(new SimaiTimingPoint(time, Xcount, Ycount,noteTemp,bpm));
                             //Console.WriteLine("Note:" + noteTemp);
                             
                             noteTemp = "";
                         }
-                        timinglist.Add(new SimaiTimingPoint(time,Xcount,Ycount));
+                        _timinglist.Add(new SimaiTimingPoint(time,Xcount,Ycount));
 
 
                         time += (1d / (bpm / 60d)) * 4d / (double)beats;
@@ -187,6 +186,8 @@ namespace MajdataEdit
                         continue;
                     }
                 }
+                notelist = _notelist;
+                timinglist = _timinglist;
                 //Console.WriteLine(notelist.ToArray());
                 return requestedTime;
             }
@@ -202,6 +203,16 @@ namespace MajdataEdit
             {
                 notelist[i].havePlayed = false;
             }
+        }
+
+        static private bool isNote(char noteText)
+        {
+            string SlideMarks = "1234567890ABCDE"; ///ABCDE for touch
+            foreach (var mark in SlideMarks)
+            {
+                if (noteText==mark) return true;
+            }
+            return false;
         }
     }
 
@@ -259,20 +270,43 @@ namespace MajdataEdit
         {
             SimaiNote simaiNote = new SimaiNote();
 
-            simaiNote.startPosition = int.Parse(noteText[0].ToString());
-            simaiNote.noteType = SimaiNoteType.Tap; //if nothing happen in following if
-
+            if (isTouchNote(noteText))
+            {
+                simaiNote.touchArea = noteText[0];
+                if (simaiNote.touchArea != 'C') simaiNote.startPosition = int.Parse(noteText[1].ToString());
+                else simaiNote.startPosition = 8;
+                simaiNote.noteType = SimaiNoteType.Touch;
+            }
+            else
+            {
+                simaiNote.startPosition = int.Parse(noteText[0].ToString());
+                simaiNote.noteType = SimaiNoteType.Tap; //if nothing happen in following if
+            }
+            if (noteText.Contains('f'))
+            {
+                simaiNote.isHanabi= true;
+            }
 
             //hold
             if (noteText.Contains('h')) {
-                simaiNote.noteType = SimaiNoteType.Hold;
-                simaiNote.holdTime = getTimeFromBeats(noteText);
-                Console.WriteLine("Hold:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
+                if (isTouchNote(noteText)) {
+                    simaiNote.noteType = SimaiNoteType.TouchHold;
+                    simaiNote.holdTime = getTimeFromBeats(noteText);
+                    Console.WriteLine("Hold:" +simaiNote.touchArea+ simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
+                }
+                else
+                {
+                    simaiNote.noteType = SimaiNoteType.Hold;
+                    simaiNote.holdTime = getTimeFromBeats(noteText);
+                    Console.WriteLine("Hold:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
+                }
             }
+            //break
             if (noteText.Contains('b'))
             {
                 simaiNote.isBreak = true;
             }
+            //slide
             if (isSlideNote(noteText)) {
                 simaiNote.noteType = SimaiNoteType.Slide;
                 simaiNote.slideTime = getTimeFromBeats(noteText);
@@ -294,6 +328,15 @@ namespace MajdataEdit
             }
             return false;
         }
+        private bool isTouchNote(string noteText)
+        {
+            string SlideMarks = "ABCDE";
+            foreach (var mark in SlideMarks)
+            {
+                if (noteText.StartsWith(mark.ToString())) return true;
+            }
+            return false;
+        }
 
         private double getTimeFromBeats(string noteText)
         {
@@ -310,14 +353,16 @@ namespace MajdataEdit
     }
     enum SimaiNoteType
     {
-        Tap,Slide,Hold
+        Tap,Slide,Hold,Touch,TouchHold
     }
     class SimaiNote
     {
         public SimaiNoteType noteType;
         public bool isBreak = false;
+        public bool isHanabi = false;
         //bool isExnote = false;
         public int startPosition = 1; //键位（1-8）
+        public char touchArea = ' ';
         public double holdTime = 0d;
         public double slideStartTime = 0d;
         public double slideTime = 0d;
