@@ -574,5 +574,10 @@ namespace MajdataEdit
         {
             FumenContent.Focus();
         }
+
+        private void GitHub_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/LingFeng-bbben/MajdataEdit");
+        }
     }
 }
