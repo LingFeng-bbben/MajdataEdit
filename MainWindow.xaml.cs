@@ -95,11 +95,12 @@ namespace MajdataEdit
             SimaiProcess.ReadData("maidata.txt");
             SimaiFirst.IsChecked = SimaiProcess.simaiFirst;
 
-            LevelSelector.SelectedItem = LevelSelector.Items[0];
+            
             ReadWaveFromFile();
             SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
             DrawWave();
             FumenContent.Focus();
+            LevelSelector.SelectedItem = LevelSelector.Items[0];
         }
 
         float[] waveLevels;
@@ -485,6 +486,8 @@ namespace MajdataEdit
                 }
             }
             LevelTextBox.Text = SimaiProcess.levels[selectedDifficulty];
+            SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
+            DrawWave();
         }
 
         private void Menu_Open_Click(object sender, RoutedEventArgs e)
