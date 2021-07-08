@@ -364,7 +364,7 @@ namespace MajdataEdit
                     Bass.BASS_ChannelPlay(clickStream, true);
                     //
                     Dispatcher.Invoke(() => { 
-                        NoteNowText.Content = waitToBePlayed[0].noteContent;
+                        NoteNowText.Content = waitToBePlayed[0].notesContent;
                     if ((bool)FollowPlayCheck.IsChecked)
                         SeekTextFromTime(); 
                     });
@@ -581,6 +581,18 @@ namespace MajdataEdit
         private void GitHub_Click(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/LingFeng-bbben/MajdataEdit");
+        }
+
+        private void Export_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Majson jsonStruct = new Majson();
+            foreach(var note in SimaiProcess.notelist)
+            {
+                note.noteList = note.getNotes();
+                jsonStruct.timingList.Add(note);
+            }
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonStruct);
+            System.IO.File.WriteAllText("majdata.json",json);
         }
     }
 }

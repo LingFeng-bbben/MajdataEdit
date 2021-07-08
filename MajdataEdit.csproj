@@ -39,6 +39,9 @@
     <Reference Include="Bass.Net">
       <HintPath>..\..\迅雷下载\Bass24.Net\v4.5\Bass.Net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -66,6 +69,7 @@
     <Compile Include="Infomation.xaml.cs">
       <DependentUpon>Infomation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Majson.cs" />
     <Compile Include="SimaiProcess.cs" />
     <Page Include="Infomation.xaml">
       <SubType>Designer</SubType>

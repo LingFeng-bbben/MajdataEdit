@@ -222,14 +222,15 @@ namespace MajdataEdit
         public bool havePlayed;
         public int rawTextPositionX;
         public int rawTextPositionY;
-        public string noteContent;
+        public string notesContent;
         public float currentBpm;
+        public List<SimaiNote> noteList = new List<SimaiNote>(); //used for json
         public SimaiTimingPoint(double _time, int textposX = 0, int textposY = 0,string _content = "",float bpm=0f)
         {
             time = _time;
             rawTextPositionX = textposX;
             rawTextPositionY = textposY;
-            noteContent = _content;
+            notesContent = _content;
             currentBpm = bpm;
         }
 
@@ -237,18 +238,29 @@ namespace MajdataEdit
         {
             
             List<SimaiNote> simaiNotes = new List<SimaiNote>();
-            if (noteContent == "") return simaiNotes;
+            if (notesContent == "") return simaiNotes;
             try
             {
                 int dummy = 0;
-                if (noteContent.Length == 2 && int.TryParse(noteContent, out dummy))
+                if (notesContent.Length == 2 && int.TryParse(notesContent, out dummy))//连写数字
                 {
-                    simaiNotes.Add(getSingleNote(noteContent[0].ToString()));
-                    simaiNotes.Add(getSingleNote(noteContent[1].ToString()));
+                    simaiNotes.Add(getSingleNote(notesContent[0].ToString()));
+                    simaiNotes.Add(getSingleNote(notesContent[1].ToString()));
+                    return simaiNotes;
                 }
-                if (noteContent.Contains('/'))
+                if (notesContent.Contains('*'))
                 {
-                    var notes = noteContent.Split('/');
+                    var notes = notesContent.Split('*');
+                    var note1 = getSingleNote(notes[0]);
+                    var note2text = note1.startPosition + notes[1];
+                    var note2 = getSingleNote(note2text);
+                    simaiNotes.Add(note1);
+                    simaiNotes.Add(note2);
+                    return simaiNotes;
+                }
+                if (notesContent.Contains('/'))
+                {
+                    var notes = notesContent.Split('/');
                     foreach (var note in notes)
                     {
                         simaiNotes.Add(getSingleNote(note));
@@ -256,7 +268,7 @@ namespace MajdataEdit
                 }
                 else
                 {
-                    simaiNotes.Add(getSingleNote(noteContent));
+                    simaiNotes.Add(getSingleNote(notesContent));
                 }
                 return simaiNotes;
             }
@@ -305,6 +317,7 @@ namespace MajdataEdit
             if (noteText.Contains('b'))
             {
                 simaiNote.isBreak = true;
+                noteText.Replace("b", "");
             }
             //slide
             if (isSlideNote(noteText)) {
@@ -313,9 +326,9 @@ namespace MajdataEdit
                 var timeOneBeat = 1d / (currentBpm / 60d);
                 simaiNote.slideStartTime = time + timeOneBeat;
                 Console.WriteLine("Slide:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.slideTime);
-            } 
+            }
 
-
+            simaiNote.noteContent = noteText;
             return simaiNote;
         }
 
@@ -340,9 +353,9 @@ namespace MajdataEdit
 
         private double getTimeFromBeats(string noteText)
         {
-            var startIndex = noteContent.IndexOf('[');
-            var overIndex = noteContent.IndexOf(']');
-            var innerString = noteContent.Substring(startIndex + 1, overIndex - startIndex-1);
+            var startIndex = noteText.IndexOf('[');
+            var overIndex = noteText.IndexOf(']');
+            var innerString = noteText.Substring(startIndex + 1, overIndex - startIndex-1);
             var numbers = innerString.Split(':');   //TODO:customBPM
             var divide = int.Parse(numbers[0]);
             var count = int.Parse(numbers[1]);
@@ -366,6 +379,6 @@ namespace MajdataEdit
         public double holdTime = 0d;
         public double slideStartTime = 0d;
         public double slideTime = 0d;
-        //TODO: 增加描述星星形状的类
+        public string noteContent; //used for star explain
     }
 }
