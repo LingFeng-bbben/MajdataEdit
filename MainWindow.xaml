@@ -218,7 +218,7 @@
         <TextBox x:Name="LevelTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="21" Margin="160,24,0,0" TextWrapping="Wrap" Text="12+" VerticalAlignment="Top" Width="98" VerticalContentAlignment="Center" TextChanged="LevelTextBox_TextChanged"/>
         <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="387,0,0,92" Width="38" Click="PlayAndPauseButton_Click" Height="38" VerticalAlignment="Bottom"/>
         <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="338,0,0,92" VerticalAlignment="Bottom" Width="38" Click="StopButton_Click"/>
-        <Label x:Name="NoteNowText" Content="" HorizontalAlignment="Right" Margin="0,0,12,177" VerticalAlignment="Bottom" Foreground="White" Width="87" HorizontalContentAlignment="Right"/>
-        <Button x:Name="Export_Button" Content="E" Grid.Column="1" Height="28" Margin="0,21,10,0" VerticalAlignment="Top" RenderTransformOrigin="1.1,0.25" HorizontalAlignment="Right" Width="30" Click="Export_Button_Click"/>
+        <Label x:Name="NoteNowText" Content="" HorizontalAlignment="Right" Margin="0,0,5,366" VerticalAlignment="Bottom" Foreground="White" Width="94" HorizontalContentAlignment="Right"/>
+        <Button x:Name="Export_Button" Content="发到查看器" Height="28" Margin="361,0,0,156" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Export_Button_Click" HorizontalAlignment="Left" Width="66"/>
     </Grid>
 </Window>

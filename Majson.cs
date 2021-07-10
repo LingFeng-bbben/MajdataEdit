@@ -10,4 +10,17 @@ namespace MajdataEdit
     {
         public List<SimaiTimingPoint> timingList = new List<SimaiTimingPoint>();
     }
+
+    class EditRequestjson
+    {
+        public EditorControlMethod control;
+        public float startTime;
+        public long startAt;
+        public string jsonPath;
+    }
+
+    enum EditorControlMethod
+    {
+        Start,Stop
+    }
 }

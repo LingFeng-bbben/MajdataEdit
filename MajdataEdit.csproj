@@ -71,6 +71,7 @@
     </Compile>
     <Compile Include="Majson.cs" />
     <Compile Include="SimaiProcess.cs" />
+    <Compile Include="WebControl.cs" />
     <Page Include="Infomation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

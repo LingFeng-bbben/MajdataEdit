@@ -582,9 +582,22 @@ namespace MajdataEdit
         {
             System.Diagnostics.Process.Start("https://github.com/LingFeng-bbben/MajdataEdit");
         }
-
+        bool isExternalRunning = false;
         private void Export_Button_Click(object sender, RoutedEventArgs e)
         {
+            if (isExternalRunning)
+            {
+                Export_Button.Content = "发到查看器";
+                EditRequestjson requestStop = new EditRequestjson();
+                requestStop.control = EditorControlMethod.Stop;
+                string json1 = Newtonsoft.Json.JsonConvert.SerializeObject(requestStop);
+                WebControl.RequestPOST("http://localhost:8013/", json1);
+                isExternalRunning = false;
+                ToggleStop();
+                return;
+            }
+
+            Export_Button.Content = "停止查看器";
             Majson jsonStruct = new Majson();
             foreach(var note in SimaiProcess.notelist)
             {
@@ -593,6 +606,24 @@ namespace MajdataEdit
             }
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonStruct);
             System.IO.File.WriteAllText("majdata.json",json);
+            EditRequestjson request = new EditRequestjson();
+            request.control = EditorControlMethod.Start;
+            request.jsonPath = Environment.CurrentDirectory + "/majdata.json";
+            request.startAt = DateTime.Now.AddSeconds(1).Ticks;
+            request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+            json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            var response = WebControl.RequestPOST("http://localhost:8013/", json);
+            if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return; }
+            Task.Run(() =>
+            {
+                while (DateTime.Now.Ticks < request.startAt);
+                Dispatcher.Invoke(() =>
+                {
+                    TogglePlayAndPause();
+                });
+            });
+            isExternalRunning = true;
+            
         }
     }
 }
