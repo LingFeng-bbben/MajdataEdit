@@ -19,52 +19,61 @@ namespace MajdataEdit
         static public bool simaiFirst = false;
         static public List<SimaiTimingPoint> notelist = new List<SimaiTimingPoint>(); //Todo:封装方法
         static public List<SimaiTimingPoint> timinglist = new List<SimaiTimingPoint>();
-        static public void ReadData(string filename)
+        static public bool ReadData(string filename)
         {
-            string[] maidataTxt = File.ReadAllLines(filename, Encoding.UTF8);
-            for (int i = 0; i < maidataTxt.Length; i++)
+            int i = 0;
+            try
             {
-                if (maidataTxt[i].StartsWith("&title="))
-                    title = GetValue(maidataTxt[i]);
-                if (maidataTxt[i].StartsWith("&artist="))
-                    artist = GetValue(maidataTxt[i]);
-                if (maidataTxt[i].StartsWith("&des="))
-                    designer = GetValue(maidataTxt[i]);
-                if (maidataTxt[i].StartsWith("&first="))
-                    first = float.Parse(GetValue(maidataTxt[i]));
-                for (int j = 1; j < 8 && i < maidataTxt.Length; j++)
+                string[] maidataTxt = File.ReadAllLines(filename, Encoding.UTF8);
+                for (i = 0; i < maidataTxt.Length; i++)
                 {
-                    if (maidataTxt[i].StartsWith("&lv_" + j + "="))
-                        levels[j - 1] = GetValue(maidataTxt[i]);
-                    if (maidataTxt[i].StartsWith("&inote_" + j + "="))
+                    if (maidataTxt[i].StartsWith("&title="))
+                        title = GetValue(maidataTxt[i]);
+                    if (maidataTxt[i].StartsWith("&artist="))
+                        artist = GetValue(maidataTxt[i]);
+                    if (maidataTxt[i].StartsWith("&des="))
+                        designer = GetValue(maidataTxt[i]);
+                    if (maidataTxt[i].StartsWith("&first="))
+                        first = float.Parse(GetValue(maidataTxt[i]));
+                    for (int j = 1; j < 8 && i < maidataTxt.Length; j++)
                     {
-                        string TheNote = "";
-                        TheNote += GetValue(maidataTxt[i]) + "\n";
-                        i++;
-                        for (; i < maidataTxt.Length; i++)
+                        if (maidataTxt[i].StartsWith("&lv_" + j + "="))
+                            levels[j - 1] = GetValue(maidataTxt[i]);
+                        if (maidataTxt[i].StartsWith("&inote_" + j + "="))
                         {
-                            TheNote += maidataTxt[i] + "\n";
-                            if ((i + 1) < maidataTxt.Length)
+                            string TheNote = "";
+                            TheNote += GetValue(maidataTxt[i]) + "\n";
+                            i++;
+                            for (; i < maidataTxt.Length; i++)
                             {
-                                if (maidataTxt[i + 1].StartsWith("&"))
-                                    break;
+                                TheNote += maidataTxt[i] + "\n";
+                                if ((i + 1) < maidataTxt.Length)
+                                {
+                                    if (maidataTxt[i + 1].StartsWith("&"))
+                                        break;
+                                }
                             }
+                            fumens[j - 1] = TheNote;
                         }
-                        fumens[j - 1] = TheNote;
                     }
-                }
 
+                }
+                Console.WriteLine(first);
+                if (first == -0.04f)
+                {
+                    simaiFirst = true;
+                }
+                if (first != 0 && first != -0.04f)
+                {
+                    MessageBox.Show("本编辑器不想支持offset,请剪好了再来");
+                }
+                Console.WriteLine(fumens[5]);
+                return true;
             }
-            Console.WriteLine(first);
-            if (first == -0.04f)
-            {
-                simaiFirst = true;
+            catch (Exception e){
+                MessageBox.Show("在maidata.txt第"+(i+1)+"行:\n"+e.Message, "读取谱面时出现错误");
+                return false;
             }
-            if (first != 0 && first!=-0.04f)
-            {
-                MessageBox.Show("本编辑器不想支持offset,请剪好了再来");
-            }
-            Console.WriteLine(fumens[5]);
         }
         static public void SaveData(string filename)
         {

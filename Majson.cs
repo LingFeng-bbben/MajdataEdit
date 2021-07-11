@@ -17,6 +17,7 @@ namespace MajdataEdit
         public float startTime;
         public long startAt;
         public string jsonPath;
+        public float playSpeed;
     }
 
     enum EditorControlMethod

@@ -14,6 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Diagnostics;
+using System.IO;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using System.Drawing;
@@ -47,9 +49,23 @@ namespace MajdataEdit
             if (selectedDifficulty == -1) return;
             SimaiProcess.fumens[selectedDifficulty] = GetRawFumenText();
             SimaiProcess.simaiFirst = (bool)SimaiFirst.IsChecked;
-            SimaiProcess.SaveData("maidata.bak.txt");
+            if(maidataDir == "")
+            {
+                var saveDialog = new Microsoft.Win32.SaveFileDialog();
+                saveDialog.Filter = "maidata.txt|maidata.txt";
+                saveDialog.OverwritePrompt = true;
+                if ((bool)saveDialog.ShowDialog())
+                {
+                    maidataDir = new FileInfo (saveDialog.FileName).DirectoryName;
+                }
+            }
+            SimaiProcess.SaveData(maidataDir + "/maidata.bak.txt");
             if (writeToDisk)
-                SimaiProcess.SaveData("maidata.txt");
+            {
+                SimaiProcess.SaveData(maidataDir + "/maidata.txt");
+                isSaved = true;
+                TheWindow.Title = "MajdataEdit - " + SimaiProcess.title;
+            }
         }
 
         void SetRawFumenText(string content)
@@ -78,10 +94,8 @@ namespace MajdataEdit
         {
             var handle = (new WindowInteropHelper(this)).Handle;
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
-            bgmStream = Bass.BASS_StreamCreateFile("track.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            clickStream = Bass.BASS_StreamCreateFile("tap.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
 
-            Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, 0.7f);
+            clickStream = Bass.BASS_StreamCreateFile("tap.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
 
             currentTimeRefreshTimer.Elapsed += CurrentTimeRefreshTimer_Elapsed;
             currentTimeRefreshTimer.Start();
@@ -89,25 +103,47 @@ namespace MajdataEdit
             VisualEffectRefreshTimer.Elapsed += VisualEffectRefreshTimer_Elapsed;
             VisualEffectRefreshTimer.Start();
 
+        }
+
+
+        public string maidataDir;
+        void initFromFile(string path)//file name should not be included in path
+        {
+
+            var audioPath = path + "/track.mp3";
+            var dataPath = path + "/maidata.txt";
+            if (!File.Exists(audioPath)) MessageBox.Show("请存入track.mp3", "错误");
+            if (!File.Exists(audioPath)) MessageBox.Show("未找到maidata.txt", "错误");
+            maidataDir = path;
+
+            bgmStream = Bass.BASS_StreamCreateFile(audioPath, 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, 0.7f);
             var info = Bass.BASS_ChannelGetInfo(bgmStream);
             if (info.freq != 44100) MessageBox.Show("Simai可能不支持非44100Hz的mp3文件", "注意");
 
-            SimaiProcess.ReadData("maidata.txt");
+            if (!SimaiProcess.ReadData(dataPath)) {
+
+                return;
+            }
             SimaiFirst.IsChecked = SimaiProcess.simaiFirst;
 
-            
+
             ReadWaveFromFile();
             SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
             DrawWave();
             FumenContent.Focus();
             LevelSelector.SelectedItem = LevelSelector.Items[0];
+            Cover.Visibility = Visibility.Collapsed;
+            MenuEdit.IsEnabled = true;
+            TheWindow.Title = "MajdataEdit - " + SimaiProcess.title;
+            isSaved = true;
         }
 
         float[] waveLevels;
         float[] waveEnergies;
         private void ReadWaveFromFile()
         {
-            var bgmDecode = Bass.BASS_StreamCreateFile("track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
+            var bgmDecode = Bass.BASS_StreamCreateFile(maidataDir+"/track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
             var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmStream));
             int sampleNumber = (int)((length * 1000) / (sampleTime * 1000)) / 2 + 1;
             waveLevels = new float[sampleNumber];
@@ -379,6 +415,12 @@ namespace MajdataEdit
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (!isSaved)
+            {
+                var result = MessageBox.Show("未保存，要保存吗？", "警告", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes) SaveRawFumenText(true);
+                if (result == MessageBoxResult.Cancel) { e.Cancel = true; return; } 
+            }
             currentTimeRefreshTimer.Stop();
             VisualEffectRefreshTimer.Stop();
             Bass.BASS_ChannelStop(bgmStream);
@@ -469,9 +511,11 @@ namespace MajdataEdit
         }
 
         int selectedDifficulty = -1;
+        bool isSaved = false;
         private void FumenContent_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            isSaved = false;
+            TheWindow.Title = "MajdataEdit - (未保存)" + SimaiProcess.title;
         }
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -490,9 +534,36 @@ namespace MajdataEdit
             DrawWave();
         }
 
+        private void Menu_New_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "track.mp3|track.mp3";
+            if ((bool)openFileDialog.ShowDialog())
+            {
+                FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
+                if (File.Exists(fileInfo.DirectoryName + "/maidata.txt"))
+                {
+                    MessageBox.Show("maidata.txt已存在");
+                }
+                else
+                {
+                    File.WriteAllText(fileInfo.DirectoryName + "/maidata.txt",
+                        "&title=请设置标题\n" +
+                        "&artist=请设置艺术家\n" +
+                        "&des=请设置做谱人\n" +
+                        "&first=0\n");
+                }
+                initFromFile(fileInfo.DirectoryName);
+            }
+        }
         private void Menu_Open_Click(object sender, RoutedEventArgs e)
         {
-
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "maidata.txt|maidata.txt";
+            if ((bool)openFileDialog.ShowDialog()) {
+                FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
+                initFromFile(fileInfo.DirectoryName);
+            }
         }
 
         private void Menu_Save_Click(object sender, RoutedEventArgs e)
@@ -541,6 +612,7 @@ namespace MajdataEdit
         {
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             var newList = SimaiProcess.timinglist;
+            if (SimaiProcess.timinglist.Count <= 0) return;
             newList.Sort((x, y) => Math.Abs(time - x.time).CompareTo(Math.Abs(time - y.time)));
             var theNote = newList[0];
             newList.Sort((x, y) => x.time.CompareTo(y.time));
@@ -558,7 +630,8 @@ namespace MajdataEdit
         private void MenuItem_InfomationEdit_Click(object sender, RoutedEventArgs e)
         {
             var infoWindow = new Infomation();
-            infoWindow.ShowDialog(); 
+            infoWindow.ShowDialog();
+            TheWindow.Title = "MajdataEdit - " + SimaiProcess.title;
         }
 
         private void LevelTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -583,8 +656,16 @@ namespace MajdataEdit
             System.Diagnostics.Process.Start("https://github.com/LingFeng-bbben/MajdataEdit");
         }
         bool isExternalRunning = false;
+
         private void Export_Button_Click(object sender, RoutedEventArgs e)
         {
+            /*
+            if (Process.GetProcessesByName("MajdataView").Length == 0)
+            {
+                Process.Start("MajdataView.exe");
+                return;
+            }
+            */
             if (isExternalRunning)
             {
                 Export_Button.Content = "发到查看器";
@@ -605,12 +686,14 @@ namespace MajdataEdit
                 jsonStruct.timingList.Add(note);
             }
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonStruct);
-            System.IO.File.WriteAllText("majdata.json",json);
+            var path = maidataDir + "/majdata.json";
+            System.IO.File.WriteAllText(path,json);
             EditRequestjson request = new EditRequestjson();
             request.control = EditorControlMethod.Start;
-            request.jsonPath = Environment.CurrentDirectory + "/majdata.json";
+            request.jsonPath = path;
             request.startAt = DateTime.Now.AddSeconds(1).Ticks;
             request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+            request.playSpeed = float.Parse(ViewerSpeed.Text);
             json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
             if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return; }
@@ -625,5 +708,7 @@ namespace MajdataEdit
             isExternalRunning = true;
             
         }
+
+
     }
 }
