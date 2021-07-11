@@ -282,10 +282,16 @@ namespace MajdataEdit
                 {
                     var notes = notesContent.Split('*');
                     var note1 = getSingleNote(notes[0]);
-                    var note2text = note1.startPosition + notes[1];
-                    var note2 = getSingleNote(note2text);
                     simaiNotes.Add(note1);
-                    simaiNotes.Add(note2);
+                    var newnotlist = notes.ToList();
+                    newnotlist.RemoveAt(0);
+                    //删除第一个NOTE
+                    foreach (var item in newnotlist)
+                    {
+                        var note2text = note1.startPosition + item;
+                        var note2 = getSingleNote(note2text);
+                        simaiNotes.Add(note2);
+                    }
                     return simaiNotes;
                 }
                 simaiNotes.Add(getSingleNote(notesContent));
