@@ -659,13 +659,13 @@ namespace MajdataEdit
 
         private void Export_Button_Click(object sender, RoutedEventArgs e)
         {
-            /*
+            
             if (Process.GetProcessesByName("MajdataView").Length == 0)
             {
                 Process.Start("MajdataView.exe");
                 return;
             }
-            */
+            
             if (isExternalRunning)
             {
                 Export_Button.Content = "发到查看器";
@@ -694,6 +694,7 @@ namespace MajdataEdit
             request.startAt = DateTime.Now.AddSeconds(1).Ticks;
             request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             request.playSpeed = float.Parse(ViewerSpeed.Text);
+            request.backgroundCover = float.Parse(ViewerCover.Text);
             json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
             if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return; }

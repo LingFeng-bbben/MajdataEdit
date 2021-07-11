@@ -257,6 +257,27 @@ namespace MajdataEdit
                     simaiNotes.Add(getSingleNote(notesContent[1].ToString()));
                     return simaiNotes;
                 }
+                if (notesContent.Contains('/'))
+                {
+                    var notes = notesContent.Split('/');
+                    foreach (var note in notes)
+                    {
+                        if (note.Contains('*'))
+                        {
+                            var notesplit = note.Split('*');
+                            var note1 = getSingleNote(notesplit[0]);
+                            var note2text = note1.startPosition + notesplit[1];
+                            var note2 = getSingleNote(note2text);
+                            simaiNotes.Add(note1);
+                            simaiNotes.Add(note2);
+                        }
+                        else
+                        {
+                            simaiNotes.Add(getSingleNote(note));
+                        }
+                    }
+                    return simaiNotes;
+                }   
                 if (notesContent.Contains('*'))
                 {
                     var notes = notesContent.Split('*');
@@ -267,18 +288,7 @@ namespace MajdataEdit
                     simaiNotes.Add(note2);
                     return simaiNotes;
                 }
-                if (notesContent.Contains('/'))
-                {
-                    var notes = notesContent.Split('/');
-                    foreach (var note in notes)
-                    {
-                        simaiNotes.Add(getSingleNote(note));
-                    }
-                }
-                else
-                {
-                    simaiNotes.Add(getSingleNote(notesContent));
-                }
+                simaiNotes.Add(getSingleNote(notesContent));
                 return simaiNotes;
             }
             catch

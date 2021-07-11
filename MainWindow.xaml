@@ -220,6 +220,8 @@
         <Button x:Name="Export_Button" Content="发到查看器" Height="30" Margin="368,0,0,168" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Export_Button_Click" HorizontalAlignment="Left" Width="87"/>
         <TextBox x:Name="ViewerSpeed" HorizontalAlignment="Left" Height="26" Margin="409,0,0,204" TextWrapping="Wrap" Text="12" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center"/>
         <Label Content="速度" HorizontalAlignment="Left" Height="28" Margin="364,0,0,202" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
+        <TextBox x:Name="ViewerCover" HorizontalAlignment="Left" Height="26" Margin="409,0,0,237" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center"/>
+        <Label Content="暗化" HorizontalAlignment="Left" Height="28" Margin="364,0,0,235" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
         <Rectangle x:Name="Cover" Grid.ColumnSpan="2" Fill="#FF1F1F1F" Margin="0,19,0,0" Stroke="Black" d:IsHidden="True"/>
     </Grid>
 </Window>
