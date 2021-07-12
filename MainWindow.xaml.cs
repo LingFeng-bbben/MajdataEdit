@@ -35,7 +35,7 @@ namespace MajdataEdit
 
         int bgmStream = -1024;
         int clickStream = -8848;
-        double bpm;
+
         string GetRawFumenText()
         {
             string text = "";
@@ -63,8 +63,7 @@ namespace MajdataEdit
             if (writeToDisk)
             {
                 SimaiProcess.SaveData(maidataDir + "/maidata.txt");
-                isSaved = true;
-                TheWindow.Title = "MajdataEdit - " + SimaiProcess.title;
+                SetSavedState(true);
             }
         }
 
@@ -127,22 +126,27 @@ namespace MajdataEdit
             var info = Bass.BASS_ChannelGetInfo(bgmStream);
             if (info.freq != 44100) MessageBox.Show("Simai可能不支持非44100Hz的mp3文件", "注意");
 
+            SimaiProcess.ClearData();
+
             if (!SimaiProcess.ReadData(dataPath)) {
 
                 return;
             }
             SimaiFirst.IsChecked = SimaiProcess.simaiFirst;
 
-
             ReadWaveFromFile();
-            SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
-            DrawWave();
-            FumenContent.Focus();
             LevelSelector.SelectedItem = LevelSelector.Items[0];
+            SetRawFumenText(SimaiProcess.fumens[0]);
+            LevelTextBox.Text = SimaiProcess.levels[0];
+
+          
+            SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
+            FumenContent.Focus();
+            DrawWave();
+
             Cover.Visibility = Visibility.Collapsed;
             MenuEdit.IsEnabled = true;
-            TheWindow.Title = "MajdataEdit - " + SimaiProcess.title;
-            isSaved = true;
+            SetSavedState(true);
         }
 
         float[] waveLevels;
@@ -150,7 +154,7 @@ namespace MajdataEdit
         private void ReadWaveFromFile()
         {
             var bgmDecode = Bass.BASS_StreamCreateFile(maidataDir+"/track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
-            var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmStream));
+            var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmDecode));
             int sampleNumber = (int)((length * 1000) / (sampleTime * 1000)) / 2 + 1;
             waveLevels = new float[sampleNumber];
             waveEnergies = new float[sampleNumber];
@@ -196,8 +200,29 @@ namespace MajdataEdit
                         curvepoints[i] = new PointF((i + drawoffset) * zoominPower, (1f - waveEnergies[i]) * 35 + 2);
                     }
                     graphics.DrawCurve(pen, curvepoints);
-                    //Draw notes
-                    
+
+                    //Draw Bpm lines
+                    var bpm = SimaiProcess.timinglist[0].currentBpm;//TODO:变速支持
+                    double time = 0;
+                    pen = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
+                    for (int i = 0; i < 1000; i++)
+                    {
+                        time += (1d / (bpm / 60d)) * 4d / 1d;
+                        float x = (float)(time / 0.02f) * zoominPower;
+                        graphics.DrawLine(pen, x / 4, 0, x / 4, 15);
+                        graphics.DrawLine(pen, x, 0, x, 75);
+                    }
+
+                    //Draw timing lines
+                    pen = new System.Drawing.Pen(System.Drawing.Color.White, 1);
+                    foreach (var note in SimaiProcess.timinglist)
+                    {
+                        if (note == null) { break; }
+                        float x = (float)(note.time / sampleTime) * zoominPower;
+                        graphics.DrawLine(pen, x, 60, x, 75);
+                    }
+
+                    //Draw notes                    
                     foreach (var note in SimaiProcess.notelist)
                     {
                         if (note == null) { break; }
@@ -289,29 +314,6 @@ namespace MajdataEdit
 
                         }
 
-                    }
-
-                    //Draw timing lines
-
-                    //Draw Bpm lines
-                        if (bpm!=-1)
-                        {
-                            double time = 0;
-                            pen = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
-                            for (int i = 0; i < 1000; i++)
-                            {
-                                time += (1d / (bpm / 60d)) * 4d / 1d;
-                                float x = (float)(time / 0.02f) * zoominPower;
-                                graphics.DrawLine(pen, x / 4, 0, x / 4, 15);
-                                graphics.DrawLine(pen, x, 0, x, 75);
-                            }
-                        }
-                    pen = new System.Drawing.Pen(System.Drawing.Color.White, 1);
-                    foreach (var note in SimaiProcess.timinglist)
-                    {
-                        if (note == null) { break; }
-                        float x = (float)(note.time / sampleTime) * zoominPower;
-                        graphics.DrawLine(pen, x, 60, x, 75);
                     }
 
                     //Draw play Start time
@@ -530,15 +532,29 @@ namespace MajdataEdit
         }
 
         int selectedDifficulty = -1;
-        bool isSaved = false;
+        bool isSaved = true;
+        void SetSavedState(bool state)
+        {
+            if (state)
+            {
+                isSaved = true;
+                LevelSelector.IsEnabled = true;
+                TheWindow.Title = "MajdataEdit - " + SimaiProcess.title;
+            }
+            else
+            {
+                isSaved = false;
+                LevelSelector.IsEnabled = false;
+                TheWindow.Title = "MajdataEdit - (未保存)" + SimaiProcess.title;
+            }
+        }
         private void FumenContent_TextChanged(object sender, TextChangedEventArgs e)
         {
-            isSaved = false;
-            TheWindow.Title = "MajdataEdit - (未保存)" + SimaiProcess.title;
+            if (GetRawFumenText() == "") return;
+            SetSavedState(false);
         }
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SaveRawFumenText();
             ComboBoxItem selected = (ComboBoxItem)LevelSelector.SelectedItem;
             for (int i = 0; i < 7; i++)
             {
@@ -549,10 +565,10 @@ namespace MajdataEdit
                 }
             }
             LevelTextBox.Text = SimaiProcess.levels[selectedDifficulty];
+            SetSavedState(true);
             string Text = GetRawFumenText();
             long position = GetRawFumenPosition();
             SimaiProcess.getSongTimeAndScan(Text, position);
-            bpm = SimaiProcess.getSongBpm(Text, position);
             DrawWave();
 
         }
