@@ -296,16 +296,16 @@ namespace MajdataEdit
                             {
                                 time += (1d / (bpm / 60d)) * 4d / 1d;
                                 float x = (float)(time / 0.02f) * zoominPower;
-                                graphics.DrawLine(pen, x / 4, 0, x / 4, 20);
-                                graphics.DrawLine(pen, x, 55, x, 75);
+                                graphics.DrawLine(pen, x / 4, 0, x / 4, 15);
+                                graphics.DrawLine(pen, x, 0, x, 75);
                             }
                         }
-                    pen = new System.Drawing.Pen(System.Drawing.Color.Red, 1);
+                    pen = new System.Drawing.Pen(System.Drawing.Color.White, 1);
                     foreach (var note in SimaiProcess.timinglist)
                     {
                         if (note == null) { break; }
                         float x = (float)(note.time / sampleTime) * zoominPower;
-                        graphics.DrawLine(pen, x, 65, x, 75);
+                        graphics.DrawLine(pen, x, 60, x, 75);
                     }
 
                     //Draw play Start time
