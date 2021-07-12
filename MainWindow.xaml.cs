@@ -35,7 +35,7 @@ namespace MajdataEdit
 
         int bgmStream = -1024;
         int clickStream = -8848;
-
+        double bpm;
         string GetRawFumenText()
         {
             string text = "";
@@ -286,12 +286,25 @@ namespace MajdataEdit
                     }
 
                     //Draw timing lines
-                    pen = new System.Drawing.Pen(System.Drawing.Color.White, 1);
+
+                    //Draw Bpm lines
+                        if (bpm!=-1)
+                        {
+                            double time = 0;
+                            pen = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
+                            for (int i = 0; i < 1000; i++)
+                            {
+                                time += (1d / (bpm / 60d)) * 4d / 1d;
+                                float x = (float)(time / 0.02f) * zoominPower;
+                                graphics.DrawLine(pen, x / 4, 0, x / 4, 20);
+                                graphics.DrawLine(pen, x, 55, x, 75);
+                            }
+                        }
+                    pen = new System.Drawing.Pen(System.Drawing.Color.Red, 1);
                     foreach (var note in SimaiProcess.timinglist)
                     {
                         if (note == null) { break; }
                         float x = (float)(note.time / sampleTime) * zoominPower;
-                        graphics.DrawLine(pen, x, 0, x, 10);
                         graphics.DrawLine(pen, x, 65, x, 75);
                     }
 
@@ -530,8 +543,12 @@ namespace MajdataEdit
                 }
             }
             LevelTextBox.Text = SimaiProcess.levels[selectedDifficulty];
-            SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
+            string Text = GetRawFumenText();
+            long position = GetRawFumenPosition();
+            SimaiProcess.getSongTimeAndScan(Text, position);
+            bpm = SimaiProcess.getSongBpm(Text, position);
             DrawWave();
+
         }
 
         private void Menu_New_Click(object sender, RoutedEventArgs e)
