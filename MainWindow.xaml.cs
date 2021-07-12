@@ -35,6 +35,7 @@ namespace MajdataEdit
 
         int bgmStream = -1024;
         int clickStream = -8848;
+        int breakStream = -114514;
 
         string GetRawFumenText()
         {
@@ -95,6 +96,7 @@ namespace MajdataEdit
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
 
             clickStream = Bass.BASS_StreamCreateFile("tap.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            breakStream = Bass.BASS_StreamCreateFile("break.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
 
             currentTimeRefreshTimer.Elapsed += CurrentTimeRefreshTimer_Elapsed;
             currentTimeRefreshTimer.Start();
@@ -202,7 +204,7 @@ namespace MajdataEdit
                     graphics.DrawCurve(pen, curvepoints);
 
                     //Draw Bpm lines
-                    var lastbpm = -1f;//TODO:变速支持
+                    var lastbpm = -1f;
                     List<double> bpmChangeTimes = new List<double>();     //在什么时间变成什么值
                     List<float> bpmChangeValues = new List<float>();
                     foreach (var timing in SimaiProcess.timinglist)
@@ -220,7 +222,7 @@ namespace MajdataEdit
                     pen = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
                     for (int i = 1; i < bpmChangeTimes.Count; i++)
                     {
-                        while (time < bpmChangeTimes[i])
+                        while (time < bpmChangeTimes[i])//在那个时间之前都是之前的bpm
                         {
                             var xbase = (float)(time / sampleTime) * zoominPower;
                             var timePerBeat = 1d / (bpmChangeValues[i - 1] / 60d);
@@ -440,7 +442,15 @@ namespace MajdataEdit
                 //Console.WriteLine(nearestTime);
                 if (currentTime - nearestTime < 0.05 && currentTime - nearestTime > -0.05)
                 {
-                    Bass.BASS_ChannelPlay(clickStream, true);
+                    var notes = waitToBePlayed[0].getNotes();
+                    if (notes.FindAll(o => o.isBreak).Count > 0) //may cause delay
+                    {
+                        Bass.BASS_ChannelPlay(breakStream, true);
+                    }
+                    else
+                    {
+                        Bass.BASS_ChannelPlay(clickStream, true);
+                    }
                     //
                     Dispatcher.Invoke(() => { 
                         NoteNowText.Content = waitToBePlayed[0].notesContent;
@@ -449,11 +459,29 @@ namespace MajdataEdit
                     });
                     //Console.WriteLine(waitToBePlayed[0].content);
                     SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime)[0].havePlayed = true; //Since the data was added as time followed, we modify the first one
-                    
+                    foreach(var note in notes)
+                    {
+                        if (note.noteType == SimaiNoteType.Hold)
+                        {
+                            Timer holdClickTimer = new Timer(note.holdTime*1000d);
+                            holdClickTimer.Elapsed += HoldClickTimer_Elapsed;
+                            holdClickTimer.AutoReset = false;
+                            holdClickTimer.Start();
+                        }
+                    }
                 }
                 
             }
             catch { }
+        }
+
+        private void HoldClickTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Console.WriteLine("ELa");
+            Bass.BASS_ChannelPlay(clickStream, true);
+            var father = (Timer)sender;
+            father.Stop();
+            father.Dispose();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -470,6 +498,8 @@ namespace MajdataEdit
             Bass.BASS_StreamFree(bgmStream);
             Bass.BASS_ChannelStop(clickStream);
             Bass.BASS_StreamFree(clickStream);
+            Bass.BASS_ChannelStop(breakStream);
+            Bass.BASS_StreamFree(breakStream);
             Bass.BASS_Stop();
             Bass.BASS_Free();
         }
@@ -597,6 +627,12 @@ namespace MajdataEdit
 
         private void Menu_New_Click(object sender, RoutedEventArgs e)
         {
+            if (!isSaved)
+            {
+                var result = MessageBox.Show("未保存，要保存吗？", "警告", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes) SaveRawFumenText(true);
+                if (result == MessageBoxResult.Cancel) { return; }
+            }
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "track.mp3|track.mp3";
             if ((bool)openFileDialog.ShowDialog())
@@ -619,6 +655,12 @@ namespace MajdataEdit
         }
         private void Menu_Open_Click(object sender, RoutedEventArgs e)
         {
+            if (!isSaved)
+            {
+                var result = MessageBox.Show("未保存，要保存吗？", "警告", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes) SaveRawFumenText(true);
+                if (result == MessageBoxResult.Cancel) { return; }
+            }
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "maidata.txt|maidata.txt";
             if ((bool)openFileDialog.ShowDialog()) {
