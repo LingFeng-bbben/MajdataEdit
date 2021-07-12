@@ -154,7 +154,7 @@ namespace MajdataEdit
         private void ReadWaveFromFile()
         {
             var bgmDecode = Bass.BASS_StreamCreateFile(maidataDir+"/track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
-            var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmDecode));
+            var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmStream));// it is not a mistake
             int sampleNumber = (int)((length * 1000) / (sampleTime * 1000)) / 2 + 1;
             waveLevels = new float[sampleNumber];
             waveEnergies = new float[sampleNumber];
@@ -202,15 +202,37 @@ namespace MajdataEdit
                     graphics.DrawCurve(pen, curvepoints);
 
                     //Draw Bpm lines
-                    var bpm = SimaiProcess.timinglist[0].currentBpm;//TODO:变速支持
-                    double time = 0;
-                    pen = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
-                    for (int i = 0; i < 1000; i++)
+                    var lastbpm = -1f;//TODO:变速支持
+                    List<double> bpmChangeTimes = new List<double>();     //在什么时间变成什么值
+                    List<float> bpmChangeValues = new List<float>();
+                    foreach (var timing in SimaiProcess.timinglist)
                     {
-                        time += (1d / (bpm / 60d)) * 4d / 1d;
-                        float x = (float)(time / 0.02f) * zoominPower;
-                        graphics.DrawLine(pen, x / 4, 0, x / 4, 15);
-                        graphics.DrawLine(pen, x, 0, x, 75);
+                        if (timing.currentBpm != lastbpm)
+                        {
+                            bpmChangeTimes.Add(timing.time);
+                            bpmChangeValues.Add(timing.currentBpm);
+                            lastbpm = timing.currentBpm;
+                        }
+                    }
+                    bpmChangeTimes.Add(Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetLength(bgmStream)));
+                    double time = 0;
+                    int beat = 4; //预留拍号
+                    pen = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
+                    for (int i = 1; i < bpmChangeTimes.Count; i++)
+                    {
+                        while (time < bpmChangeTimes[i])
+                        {
+                            var xbase = (float)(time / sampleTime) * zoominPower;
+                            var timePerBeat = 1d / (bpmChangeValues[i - 1] / 60d);
+                            float x = (float)(timePerBeat / sampleTime) * zoominPower;
+                            for (int j = 0; j < beat; j++)
+                            {
+                                graphics.DrawLine(pen, x * j + xbase, 0, x * j + xbase, 15);
+
+                            }
+                            graphics.DrawLine(pen, x * beat + xbase, 0, x * beat + xbase, 75);
+                            time += timePerBeat * beat;
+                        }
                     }
 
                     //Draw timing lines
@@ -230,7 +252,7 @@ namespace MajdataEdit
                         bool isEach = notes.Count > 1;
 
                         float x = (float)(note.time / sampleTime) * zoominPower;
-                        
+
                         foreach (var noteD in notes)
                         {
                             float y = noteD.startPosition * 6.875f + 8f; //与键位有关
@@ -256,7 +278,7 @@ namespace MajdataEdit
                             {
                                 pen.Width = 2;
                                 pen.Color = isEach ? System.Drawing.Color.Gold : System.Drawing.Color.LightPink;
-                                graphics.DrawEllipse(pen, x-2.5f, y-2.5f, 5, 5);
+                                graphics.DrawEllipse(pen, x - 2.5f, y - 2.5f, 5, 5);
                             }
 
                             if (noteD.noteType == SimaiNoteType.Touch)
@@ -267,7 +289,7 @@ namespace MajdataEdit
 
                             }
 
-                            if (noteD.noteType== SimaiNoteType.Hold)
+                            if (noteD.noteType == SimaiNoteType.Hold)
                             {
                                 pen.Width = 3;
                                 pen.Color = isEach ? System.Drawing.Color.Gold : System.Drawing.Color.LightPink;
@@ -300,7 +322,7 @@ namespace MajdataEdit
                                 pen.Width = 3;
                                 pen.Color = System.Drawing.Color.DeepSkyBlue;
                                 System.Drawing.Brush brush = new SolidBrush(pen.Color);
-                                graphics.DrawString("*", new Font("Consolas", 12,System.Drawing.FontStyle.Bold), brush, new PointF(x-7f, y-7f));
+                                graphics.DrawString("*", new Font("Consolas", 12, System.Drawing.FontStyle.Bold), brush, new PointF(x - 7f, y - 7f));
 
                                 pen.Color = System.Drawing.Color.SkyBlue;
                                 pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
