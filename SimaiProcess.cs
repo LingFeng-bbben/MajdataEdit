@@ -108,6 +108,38 @@ namespace MajdataEdit
         {
             return varline.Split('=')[1];
         }
+        static public double getSongBpm(string text,long position)
+        {
+            try
+            {
+                float bpm = 0;
+                int Ycount = 0, Xcount = 0;
+                for (int i = 0; i < text.Length; i++)
+                {
+                    if (text[i] == '(')
+                    //Get bpm
+                    {
+                        string bpm_s = "";
+                        i++;
+                        Xcount++;
+                        while (text[i] != ')')
+                        {
+                            bpm_s += text[i];
+                            i++;
+                            Xcount++;
+                        }
+                        bpm = float.Parse(bpm_s);
+                        //Console.WriteLine("BPM" + bpm);
+                        return bpm;
+                    }
+                }
+                return -1;
+            }
+            catch (Exception e)
+            {
+                return -1;
+            }
+        }
         static public double getSongTimeAndScan(string text, long position)
         {
             List<SimaiTimingPoint> _notelist = new List<SimaiTimingPoint>();
