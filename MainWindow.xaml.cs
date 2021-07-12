@@ -116,6 +116,12 @@ namespace MajdataEdit
             if (!File.Exists(audioPath)) MessageBox.Show("未找到maidata.txt", "错误");
             maidataDir = path;
 
+            if (bgmStream != -1024)
+            {
+                Bass.BASS_ChannelStop(bgmStream);
+                Bass.BASS_StreamFree(bgmStream);
+            }
+
             bgmStream = Bass.BASS_StreamCreateFile(audioPath, 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, 0.7f);
             var info = Bass.BASS_ChannelGetInfo(bgmStream);
@@ -677,7 +683,7 @@ namespace MajdataEdit
         private void Export_Button_Click(object sender, RoutedEventArgs e)
         {
             
-            if (Process.GetProcessesByName("MajdataView").Length == 0)
+            if (Process.GetProcessesByName("MajdataView").Length == 0 && Process.GetProcessesByName("Unity").Length == 0)
             {
                 Process.Start("MajdataView.exe");
                 return;
