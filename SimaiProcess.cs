@@ -17,8 +17,22 @@ namespace MajdataEdit
         static public string[] fumens = new string[7];
         static public string[] levels = new string[7];
         static public bool simaiFirst = false;
-        static public List<SimaiTimingPoint> notelist = new List<SimaiTimingPoint>(); //Todo:封装方法
+        static public List<SimaiTimingPoint> notelist = new List<SimaiTimingPoint>(); 
         static public List<SimaiTimingPoint> timinglist = new List<SimaiTimingPoint>();
+
+        static public void ClearData()
+        {
+            title = "";
+            artist = "";
+            designer = "";
+            first = 0;
+            fumens = new string[7];
+            levels = new string[7];
+            simaiFirst = false;
+            notelist = new List<SimaiTimingPoint>(); 
+            timinglist = new List<SimaiTimingPoint>();
+        }
+
         static public bool ReadData(string filename)
         {
             int i = 0;
@@ -108,38 +122,6 @@ namespace MajdataEdit
         {
             return varline.Split('=')[1];
         }
-        static public double getSongBpm(string text,long position)
-        {
-            try
-            {
-                float bpm = 0;
-                int Ycount = 0, Xcount = 0;
-                for (int i = 0; i < text.Length; i++)
-                {
-                    if (text[i] == '(')
-                    //Get bpm
-                    {
-                        string bpm_s = "";
-                        i++;
-                        Xcount++;
-                        while (text[i] != ')')
-                        {
-                            bpm_s += text[i];
-                            i++;
-                            Xcount++;
-                        }
-                        bpm = float.Parse(bpm_s);
-                        //Console.WriteLine("BPM" + bpm);
-                        return bpm;
-                    }
-                }
-                return -1;
-            }
-            catch (Exception e)
-            {
-                return -1;
-            }
-        }
         static public double getSongTimeAndScan(string text, long position)
         {
             List<SimaiTimingPoint> _notelist = new List<SimaiTimingPoint>();
@@ -218,7 +200,7 @@ namespace MajdataEdit
                             
                             noteTemp = "";
                         }
-                        _timinglist.Add(new SimaiTimingPoint(time,Xcount,Ycount));
+                        _timinglist.Add(new SimaiTimingPoint(time,Xcount,Ycount,"",bpm));
 
 
                         time += (1d / (bpm / 60d)) * 4d / (double)beats;
@@ -264,7 +246,7 @@ namespace MajdataEdit
         public int rawTextPositionX;
         public int rawTextPositionY;
         public string notesContent;
-        public float currentBpm;
+        public float currentBpm = -1;
         public List<SimaiNote> noteList = new List<SimaiNote>(); //used for json
         public SimaiTimingPoint(double _time, int textposX = 0, int textposY = 0,string _content = "",float bpm=0f)
         {
