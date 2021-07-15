@@ -702,13 +702,35 @@ namespace MajdataEdit
             FumenContent.Focus();
         }
 
-        private void MusicWave_MouseWheel(object sender, MouseWheelEventArgs e)
+        void ScrollWave(double delta)
         {
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-            var destnationTime = time + (0.002d * e.Delta * (1.0d / zoominPower));
+            var destnationTime = time + (0.002d * -delta * (1.0d / zoominPower));
             Bass.BASS_ChannelSetPosition(bgmStream, destnationTime);
 
             SeekTextFromTime();
+        }
+        
+        private void MusicWave_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollWave(e.Delta);
+        }
+
+        double lastMousePointX;
+        private void MusicWave_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //lastMousePointX = e.GetPosition(this).X;
+        }
+
+        private void MusicWave_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                double delta = e.GetPosition(this).X - lastMousePointX;
+                lastMousePointX = e.GetPosition(this).X;
+                ScrollWave(delta*zoominPower*4d);
+            }
+            lastMousePointX = e.GetPosition(this).X;
         }
 
         void SeekTextFromTime()

@@ -27,9 +27,7 @@
             <MenuItem Header="SimaiWiki" Click="MenuItem_SimaiWiki_Click"/>
             <MenuItem Header="GitHub" Click="GitHub_Click"/>
         </Menu>
-        <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,-401,0" HorizontalAlignment="Left" Width="877" MouseWheel="MusicWave_MouseWheel">
-
-        </Image>
+        <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,-401,0" HorizontalAlignment="Left" Width="877" MouseWheel="MusicWave_MouseWheel" PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove"/>
         <Line StrokeThickness="3" Margin="0,0,357,0" Y2="56" Grid.Column="1" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15"/>
         <Grid HorizontalAlignment="Left" Height="336" Margin="18,40,0,0" VerticalAlignment="Top" Width="336">
             <Image Source="Image/Outline_03.png" Stretch="Fill"/>
