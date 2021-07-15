@@ -278,12 +278,7 @@ namespace MajdataEdit
                     {
                         if (note.Contains('*'))
                         {
-                            var notesplit = note.Split('*');
-                            var note1 = getSingleNote(notesplit[0]);
-                            var note2text = note1.startPosition + notesplit[1];
-                            var note2 = getSingleNote(note2text);
-                            simaiNotes.Add(note1);
-                            simaiNotes.Add(note2);
+                            simaiNotes.AddRange(getSameHeadSlide(note));
                         }
                         else
                         {
@@ -294,18 +289,7 @@ namespace MajdataEdit
                 }   
                 if (notesContent.Contains('*'))
                 {
-                    var notes = notesContent.Split('*');
-                    var note1 = getSingleNote(notes[0]);
-                    simaiNotes.Add(note1);
-                    var newnotlist = notes.ToList();
-                    newnotlist.RemoveAt(0);
-                    //删除第一个NOTE
-                    foreach (var item in newnotlist)
-                    {
-                        var note2text = note1.startPosition + item;
-                        var note2 = getSingleNote(note2text);
-                        simaiNotes.Add(note2);
-                    }
+                    simaiNotes.AddRange(getSameHeadSlide(notesContent));
                     return simaiNotes;
                 }
                 simaiNotes.Add(getSingleNote(notesContent));
@@ -317,6 +301,24 @@ namespace MajdataEdit
             }
         }
         
+        private List<SimaiNote> getSameHeadSlide(string content)
+        {
+            List<SimaiNote> simaiNotes = new List<SimaiNote>();
+            var notes1 = content.Split('*');
+            var note1 = getSingleNote(notes1[0]);
+            simaiNotes.Add(note1);
+            var newnotlist = notes1.ToList();
+            newnotlist.RemoveAt(0);
+            //删除第一个NOTE
+            foreach (var item in newnotlist)
+            {
+                var note2text = note1.startPosition + item;
+                var note2 = getSingleNote(note2text);
+                simaiNotes.Add(note2);
+            }
+            return simaiNotes;
+        }
+
         private SimaiNote getSingleNote(string noteText)
         {
             SimaiNote simaiNote = new SimaiNote();
