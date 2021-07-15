@@ -364,8 +364,8 @@ namespace MajdataEdit
             if (isSlideNote(noteText)) {
                 simaiNote.noteType = SimaiNoteType.Slide;
                 simaiNote.slideTime = getTimeFromBeats(noteText);
-                var timeOneBeat = 1d / (currentBpm / 60d);
-                simaiNote.slideStartTime = time + timeOneBeat;
+                var timeStarWait = getStarWaitTime(noteText);
+                simaiNote.slideStartTime = time + timeStarWait;
                 Console.WriteLine("Slide:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.slideTime);
             }
 
@@ -397,12 +397,48 @@ namespace MajdataEdit
             var startIndex = noteText.IndexOf('[');
             var overIndex = noteText.IndexOf(']');
             var innerString = noteText.Substring(startIndex + 1, overIndex - startIndex-1);
+            if (innerString.Count(o => o == '#') == 1)
+            {
+                var times = innerString.Split('#');
+                if (times[1].Contains(':'))
+                {
+                    innerString = times[1];
+                }
+                else
+                {
+                    return double.Parse(times[1]);
+                }
+            }
+            if (innerString.Count(o => o == '#') == 2)
+            {
+                var times = innerString.Split('#');
+                return double.Parse(times[2]);
+            }
             var numbers = innerString.Split(':');   //TODO:customBPM
             var divide = int.Parse(numbers[0]);
             var count = int.Parse(numbers[1]);
             var timeOneBeat = 1d / (currentBpm / 60d);
 
             return (timeOneBeat*4d / (double)divide) * (double)count; 
+        }
+
+        private double getStarWaitTime(string noteText)
+        {
+            var startIndex = noteText.IndexOf('[');
+            var overIndex = noteText.IndexOf(']');
+            var innerString = noteText.Substring(startIndex + 1, overIndex - startIndex - 1);
+            double bpm = currentBpm ;
+            if (innerString.Count(o => o == '#') == 1)
+            {
+                var times = innerString.Split('#');
+                bpm = double.Parse(times[0]);
+            }
+            if (innerString.Count(o => o == '#') == 2)
+            {
+                var times = innerString.Split('#');
+                return double.Parse(times[0]);
+            }
+            return 1d / (bpm / 60d);
         }
     }
     enum SimaiNoteType
