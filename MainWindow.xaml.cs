@@ -835,6 +835,10 @@ namespace MajdataEdit
             
         }
 
-
+        private void BPMtap_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            BPMtap tap = new BPMtap();
+            tap.Show();
+        }
     }
 }

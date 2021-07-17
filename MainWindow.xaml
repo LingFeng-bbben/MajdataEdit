@@ -1,34 +1,69 @@
-﻿<Window x:Name="TheWindow" x:Class="MajdataEdit.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MajdataEdit"
+        xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Name="TheWindow" x:Class="MajdataEdit.MainWindow"
         mc:Ignorable="d"
         Title="MajdataEdit" Height="508" Width="977" ResizeMode="NoResize" Loaded="Window_Loaded" Closing="Window_Closing">
+    <Window.Resources>
+        <ControlTemplate x:Key="DarkButton" TargetType="{x:Type ButtonBase}">
 
+            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsDefaulted" Value="True">
+                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FF595959"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF3C7FB1"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FF878787"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>
+                </Trigger>
+                <Trigger Property="ToggleButton.IsChecked" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFBCDDEE"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF245A83"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" TargetName="border" Value="#FFF4F4F4"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
+                    <Setter Property="Foreground" Value="#FF838383"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Color x:Key="ButtonBackground" R="255" G="255" B="255"/>
+    </Window.Resources>
 
-    <Grid Margin="0" Background="#FF1F1F1F">
+    <Grid Margin="0" Background="{DynamicResource WindowBackground}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="437*"/>
             <ColumnDefinition Width="476*"/>
         </Grid.ColumnDefinitions>
 
-        <Menu Height="19" VerticalAlignment="Top" Grid.ColumnSpan="2">
-            <MenuItem Header="文件">
+        <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,-401,0" HorizontalAlignment="Left" Width="877" MouseWheel="MusicWave_MouseWheel" PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove"/>
+        <Line StrokeThickness="3" Margin="0,0,357,0" Y2="56" Grid.Column="1" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15"/>
+
+        <Menu Height="19" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}">
+            <MenuItem Header="文件" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
                 <MenuItem x:Name="Menu_New" Header="新建" Click="Menu_New_Click"/>
                 <MenuItem x:Name="Menu_Open" Header="打开" Click="Menu_Open_Click"/>
                 <MenuItem x:Name="Menu_Save" Header="保存" Click="Menu_Save_Click"/>
                 <MenuItem x:Name="Menu_SaveAs" Header="另存为" Click="Menu_SaveAs_Click" IsEnabled="False"/>
             </MenuItem>
-            <MenuItem x:Name="MenuEdit" Header="编辑" IsEnabled="False">
+            <MenuItem x:Name="MenuEdit" Header="编辑" IsEnabled="False" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
                 <MenuItem Header="一般谱面信息" Click="MenuItem_InfomationEdit_Click"/>
             </MenuItem>
-            <MenuItem Header="SimaiWiki" Click="MenuItem_SimaiWiki_Click"/>
-            <MenuItem Header="GitHub" Click="GitHub_Click"/>
+            <MenuItem Header="工具" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
+                <MenuItem Header="BPM tap" Click="BPMtap_MenuItem_Click"/>
+            </MenuItem>
+            <MenuItem Header="SimaiWiki" Click="MenuItem_SimaiWiki_Click" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
+            <MenuItem Header="GitHub" Click="GitHub_Click" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
         </Menu>
-        <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,-401,0" HorizontalAlignment="Left" Width="877" MouseWheel="MusicWave_MouseWheel" PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove"/>
-        <Line StrokeThickness="3" Margin="0,0,357,0" Y2="56" Grid.Column="1" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15"/>
         <Grid HorizontalAlignment="Left" Height="336" Margin="18,40,0,0" VerticalAlignment="Top" Width="336">
             <Image Source="Image/Outline_03.png" Stretch="Fill"/>
             <Label Content="A1" HorizontalAlignment="Left" Height="30" Margin="206,21,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
@@ -175,7 +210,7 @@
                 </TransformGroup>
             </Image.RenderTransform>
         </Image>
-        <CheckBox x:Name="FollowPlayCheck" Content="文本跟随" HorizontalAlignment="Left" Height="21" Margin="368,0,0,129" VerticalAlignment="Bottom" Width="87" Foreground="White" HorizontalContentAlignment="Right" Click="FollowPlayCheck_Click"/>
+        <CheckBox x:Name="FollowPlayCheck" Content="文本跟随" HorizontalAlignment="Left" Height="21" Margin="368,0,0,129" VerticalAlignment="Bottom" Width="87" Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Right" Click="FollowPlayCheck_Click" Background="{DynamicResource ButtonsBackground}" Template="{DynamicResource DarkCheck}"/>
         <RichTextBox x:Name="FumenContent" Padding="0,5" FontFamily="Consolas" Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" Margin="0,52,10,91" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" SelectionChanged="FumenContent_SelectionChanged" Grid.Column="1">
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
@@ -198,7 +233,8 @@
             <FlowDocument/>
         </RichTextBox>
         <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Right" Height="64" Margin="0,24,2,0" VerticalAlignment="Top" Width="119" Foreground="White" FontFamily="Bahnschrift Light" FontSize="48" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom"/>
-        <ComboBox x:Name="LevelSelector" Margin="0,24,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="99" Height="21" VerticalAlignment="Top" Grid.Column="1">
+        <ComboBox x:Name="LevelSelector" Margin="0,24,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="99" Height="21" VerticalAlignment="Top" Grid.Column="1" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkComboBox}">
+
             <ComboBoxItem Content="&amp;lv_1"/>
             <ComboBoxItem Content="&amp;lv_2"/>
             <ComboBoxItem Content="&amp;lv_3"/>
@@ -207,18 +243,18 @@
             <ComboBoxItem Content="&amp;lv_6"/>
             <ComboBoxItem Content="&amp;lv_7"/>
         </ComboBox>
-        <CheckBox x:Name="SimaiFirst" Content="为Simai加入0.04s提前" HorizontalAlignment="Left" Margin="283,28,0,0" VerticalAlignment="Top" Foreground="White" IsChecked="True" Grid.Column="1" Height="15" Width="141"/>
-        <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="10,0,0,41" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomIn_Click"/>
-        <Button x:Name="WaveViewZoomOut" Content="-" HorizontalAlignment="Left" Height="24" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomOut_Click"/>
+        <CheckBox x:Name="SimaiFirst" Content="为Simai加入0.04s提前" HorizontalAlignment="Left" Margin="283,28,0,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" IsChecked="True" Grid.Column="1" Height="15" Width="141" Background="{DynamicResource ButtonsBackground}" Template="{DynamicResource DarkCheck}"/>
+        <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="10,0,0,41" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomIn_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
+        <Button x:Name="WaveViewZoomOut" Content="-" HorizontalAlignment="Left" Height="24" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomOut_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
         <Label Content="难度" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="122,22,0,0" VerticalAlignment="Top" Width="33" Foreground="White"/>
-        <TextBox x:Name="LevelTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="21" Margin="160,24,0,0" TextWrapping="Wrap" Text="12+" VerticalAlignment="Top" Width="98" VerticalContentAlignment="Center" TextChanged="LevelTextBox_TextChanged"/>
-        <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="417,0,0,91" Width="38" Click="PlayAndPauseButton_Click" Height="38" VerticalAlignment="Bottom"/>
-        <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="368,0,0,91" VerticalAlignment="Bottom" Width="38" Click="StopButton_Click"/>
+        <TextBox x:Name="LevelTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="21" Margin="160,24,0,0" TextWrapping="Wrap" Text="12+" VerticalAlignment="Top" Width="98" VerticalContentAlignment="Center" TextChanged="LevelTextBox_TextChanged" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
+        <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="417,0,0,91" Width="38" Click="PlayAndPauseButton_Click" Height="38" VerticalAlignment="Bottom" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
+        <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="368,0,0,91" VerticalAlignment="Bottom" Width="38" Click="StopButton_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
         <Label x:Name="NoteNowText" Content="" HorizontalAlignment="Right" Margin="0,0,5,366" VerticalAlignment="Bottom" Foreground="White" Width="94" HorizontalContentAlignment="Right"/>
-        <Button x:Name="Export_Button" Content="发到查看器" Height="30" Margin="368,0,0,168" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Export_Button_Click" HorizontalAlignment="Left" Width="87"/>
-        <TextBox x:Name="ViewerSpeed" HorizontalAlignment="Left" Height="26" Margin="409,0,0,204" TextWrapping="Wrap" Text="12" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center"/>
+        <Button x:Name="Export_Button" Content="发到查看器" Height="30" Margin="368,0,0,168" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Export_Button_Click" HorizontalAlignment="Left" Width="87" Template="{DynamicResource DarkButton}" Foreground="{DynamicResource ButtonForeground}" Background= "{DynamicResource ButtonsBackground}"/>
+        <TextBox x:Name="ViewerSpeed" HorizontalAlignment="Left" Height="26" Margin="409,0,0,204" TextWrapping="Wrap" Text="12" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
         <Label Content="速度" HorizontalAlignment="Left" Height="28" Margin="364,0,0,202" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
-        <TextBox x:Name="ViewerCover" HorizontalAlignment="Left" Height="26" Margin="409,0,0,237" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center"/>
+        <TextBox x:Name="ViewerCover" HorizontalAlignment="Left" Height="26" Margin="409,0,0,237" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
         <Label Content="暗化" HorizontalAlignment="Left" Height="28" Margin="364,0,0,235" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
         <Rectangle x:Name="Cover" Grid.ColumnSpan="2" Fill="#FF1F1F1F" Margin="0,19,0,0" Stroke="Black" d:IsHidden="True"/>
     </Grid>
