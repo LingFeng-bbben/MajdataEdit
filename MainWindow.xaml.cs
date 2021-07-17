@@ -99,7 +99,6 @@ namespace MajdataEdit
                 setWindowPosTimer.AutoReset = false;
                 setWindowPosTimer.Elapsed += SetWindowPosTimer_Elapsed;
                 setWindowPosTimer.Start();
-                return;
             }
 
             var handle = (new WindowInteropHelper(this)).Handle;
