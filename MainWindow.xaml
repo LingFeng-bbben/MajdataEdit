@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MajdataEdit"
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Name="TheWindow" x:Class="MajdataEdit.MainWindow"
         mc:Ignorable="d"
-        Title="MajdataEdit" Height="508" Width="977" ResizeMode="NoResize" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="MajdataEdit" Height="552" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="508" MouseDoubleClick="TheWindow_MouseDoubleClick">
     <Window.Resources>
         <ControlTemplate x:Key="DarkButton" TargetType="{x:Type ButtonBase}">
 
@@ -41,14 +41,14 @@
 
     <Grid Margin="0" Background="{DynamicResource WindowBackground}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="437*"/>
-            <ColumnDefinition Width="476*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,-401,0" HorizontalAlignment="Left" Width="877" MouseWheel="MusicWave_MouseWheel" PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove"/>
-        <Line StrokeThickness="3" Margin="0,0,357,0" Y2="56" Grid.Column="1" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15"/>
+        <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Margin="0,0,-521,0" MouseWheel="MusicWave_MouseWheel" PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove" Grid.Column="1" HorizontalAlignment="Left" Width="877"/>
+        <Line StrokeThickness="3" Y2="56" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15" Grid.Column="1" HorizontalAlignment="Left" Width="45"/>
 
-        <Menu Height="19" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}">
+        <Menu Height="19" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Grid.ColumnSpan="2">
             <MenuItem Header="文件" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
                 <MenuItem x:Name="Menu_New" Header="新建" Click="Menu_New_Click"/>
                 <MenuItem x:Name="Menu_Open" Header="打开" Click="Menu_Open_Click"/>
@@ -64,143 +64,7 @@
             <MenuItem Header="SimaiWiki" Click="MenuItem_SimaiWiki_Click" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
             <MenuItem Header="GitHub" Click="GitHub_Click" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
         </Menu>
-        <Grid HorizontalAlignment="Left" Height="336" Margin="18,40,0,0" VerticalAlignment="Top" Width="336">
-            <Image Source="Image/Outline_03.png" Stretch="Fill"/>
-            <Label Content="A1" HorizontalAlignment="Left" Height="30" Margin="206,21,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="A4" HorizontalAlignment="Left" Height="32" Margin="206,281,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="A5" HorizontalAlignment="Left" Height="32" Margin="92,281,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="A8" HorizontalAlignment="Left" Height="30" Margin="92,21,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="A7" HorizontalAlignment="Left" Height="32" Margin="21,95,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="A2" HorizontalAlignment="Left" Height="32" Margin="277,95,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold" RenderTransformOrigin="0.421,-0.094"/>
-            <Label Content="A6" HorizontalAlignment="Left" Height="32" Margin="21,205,0,0" VerticalAlignment="Top" Width="37" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="A3" HorizontalAlignment="Left" Height="32" Margin="277,205,0,0" VerticalAlignment="Top" Width="38" Foreground="White" FontSize="20" FontWeight="Bold"/>
-            <Label Content="E1" HorizontalAlignment="Left" Height="32" Margin="155,45,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="14" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="E2" HorizontalAlignment="Left" Height="30" Margin="233,77,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="14" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="E3" HorizontalAlignment="Left" Height="30" Margin="266,155,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="14" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="E4" HorizontalAlignment="Left" Height="30" Margin="233,231,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="14" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="E5" HorizontalAlignment="Left" Height="32" Margin="155,263,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="14" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="E8" HorizontalAlignment="Left" Height="30" Margin="79,77,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="14" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="E6" HorizontalAlignment="Left" Height="30" Margin="79,231,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="14" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="E7" HorizontalAlignment="Left" Height="30" Margin="46,155,0,0" VerticalAlignment="Top" Width="32" Foreground="White" FontSize="14" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="B1" HorizontalAlignment="Left" Height="30" Margin="184,81,0,0" VerticalAlignment="Top" Width="30" Foreground="White" FontSize="16" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="B2" HorizontalAlignment="Left" Height="32" Margin="225,123,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="B3" HorizontalAlignment="Left" Height="32" Margin="225,181,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="B4" HorizontalAlignment="Left" Height="32" Margin="184,223,0,0" VerticalAlignment="Top" Width="30" Foreground="White" FontSize="16" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="B8" HorizontalAlignment="Left" Height="30" Margin="124,81,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="16" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="B5" HorizontalAlignment="Left" Height="32" Margin="124,223,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="16" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="B7" HorizontalAlignment="Left" Height="32" Margin="81,123,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="B6" HorizontalAlignment="Left" Height="32" Margin="81,181,0,0" VerticalAlignment="Top" Width="31" Foreground="White" FontSize="16" Opacity="0.5">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="C" HorizontalAlignment="Left" Height="44" Margin="145,145,0,0" VerticalAlignment="Top" Width="45" Foreground="White" FontSize="14" Opacity="0.5" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="D1" HorizontalAlignment="Left" Height="30" Margin="157,5,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="10" Opacity="0.3">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="D5" HorizontalAlignment="Left" Height="30" Margin="157,311,0,-5" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="10" Opacity="0.3">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="D2" HorizontalAlignment="Left" Height="32" Margin="266,45,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="10" Opacity="0.3">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="D4" HorizontalAlignment="Left" Height="32" Margin="266,267,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="10" Opacity="0.3">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="D6" HorizontalAlignment="Left" Height="32" Margin="46,267,0,0" VerticalAlignment="Top" Width="32" Foreground="White" FontSize="10" Opacity="0.3">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="D8" HorizontalAlignment="Left" Height="32" Margin="46,45,0,0" VerticalAlignment="Top" Width="32" Foreground="White" FontSize="10" Opacity="0.3">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="D3" HorizontalAlignment="Left" Height="30" Margin="311,157,-4,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="10" Opacity="0.3">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-            <Label Content="D7" HorizontalAlignment="Left" Height="30" Margin="5,157,0,0" VerticalAlignment="Top" Width="29" Foreground="White" FontSize="10" Opacity="0.3">
-                <Label.Background>
-                    <SolidColorBrush Color="Transparent" Opacity="0.99"/>
-                </Label.Background>
-            </Label>
-        </Grid>
-        <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,14,92" Width="255" Height="255" VerticalAlignment="Bottom" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
+        <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,14,92" Width="255" Height="255" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
             <Image.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -210,8 +74,8 @@
                 </TransformGroup>
             </Image.RenderTransform>
         </Image>
-        <CheckBox x:Name="FollowPlayCheck" Content="文本跟随" HorizontalAlignment="Left" Height="21" Margin="368,0,0,129" VerticalAlignment="Bottom" Width="87" Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Right" Click="FollowPlayCheck_Click" Background="{DynamicResource ButtonsBackground}" Template="{DynamicResource DarkCheck}"/>
-        <RichTextBox x:Name="FumenContent" Padding="0,5" FontFamily="Consolas" Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" Margin="0,52,10,91" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" SelectionChanged="FumenContent_SelectionChanged" Grid.Column="1">
+        <CheckBox x:Name="FollowPlayCheck" Content="文本跟随" HorizontalAlignment="Left" Height="21" Margin="9,0,0,129" VerticalAlignment="Bottom" Width="87" Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Right" Click="FollowPlayCheck_Click" Background="{DynamicResource ButtonsBackground}" Template="{DynamicResource DarkCheck}"/>
+        <RichTextBox x:Name="FumenContent" Padding="0,5" FontFamily="Consolas" Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" Margin="105,30,10,91" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" SelectionChanged="FumenContent_SelectionChanged" Grid.ColumnSpan="2">
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
                 <RoutedUICommand x:Key="SaveFile" Text="SaveFile"/>
@@ -232,8 +96,8 @@
             </RichTextBox.CommandBindings>
             <FlowDocument/>
         </RichTextBox>
-        <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Right" Height="64" Margin="0,24,2,0" VerticalAlignment="Top" Width="119" Foreground="White" FontFamily="Bahnschrift Light" FontSize="48" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom"/>
-        <ComboBox x:Name="LevelSelector" Margin="0,24,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="99" Height="21" VerticalAlignment="Top" Grid.Column="1" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkComboBox}">
+        <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Left" Height="64" Margin="0,17,0,0" VerticalAlignment="Top" Width="105" Foreground="White" FontFamily="Bahnschrift Light" FontSize="50" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+        <ComboBox x:Name="LevelSelector" Margin="10,155,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="87" Height="21" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkComboBox}">
 
             <ComboBoxItem Content="&amp;lv_1"/>
             <ComboBoxItem Content="&amp;lv_2"/>
@@ -243,19 +107,19 @@
             <ComboBoxItem Content="&amp;lv_6"/>
             <ComboBoxItem Content="&amp;lv_7"/>
         </ComboBox>
-        <CheckBox x:Name="SimaiFirst" Content="为Simai加入0.04s提前" HorizontalAlignment="Left" Margin="283,28,0,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" IsChecked="True" Grid.Column="1" Height="15" Width="141" Background="{DynamicResource ButtonsBackground}" Template="{DynamicResource DarkCheck}"/>
+        <CheckBox x:Name="SimaiFirst" Content="Simai 0.04s" HorizontalAlignment="Left" Margin="9,130,0,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" IsChecked="True" Height="15" Width="87" Background="{DynamicResource ButtonsBackground}" Template="{DynamicResource DarkCheck}"/>
         <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="10,0,0,41" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomIn_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
         <Button x:Name="WaveViewZoomOut" Content="-" HorizontalAlignment="Left" Height="24" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomOut_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
-        <Label Content="难度" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="122,22,0,0" VerticalAlignment="Top" Width="33" Foreground="White"/>
-        <TextBox x:Name="LevelTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="21" Margin="160,24,0,0" TextWrapping="Wrap" Text="12+" VerticalAlignment="Top" Width="98" VerticalContentAlignment="Center" TextChanged="LevelTextBox_TextChanged" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
-        <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="417,0,0,91" Width="38" Click="PlayAndPauseButton_Click" Height="38" VerticalAlignment="Bottom" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
-        <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="368,0,0,91" VerticalAlignment="Bottom" Width="38" Click="StopButton_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
-        <Label x:Name="NoteNowText" Content="" HorizontalAlignment="Right" Margin="0,0,5,366" VerticalAlignment="Bottom" Foreground="White" Width="94" HorizontalContentAlignment="Right"/>
-        <Button x:Name="Export_Button" Content="发到查看器" Height="30" Margin="368,0,0,168" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Export_Button_Click" HorizontalAlignment="Left" Width="87" Template="{DynamicResource DarkButton}" Foreground="{DynamicResource ButtonForeground}" Background= "{DynamicResource ButtonsBackground}"/>
-        <TextBox x:Name="ViewerSpeed" HorizontalAlignment="Left" Height="26" Margin="409,0,0,204" TextWrapping="Wrap" Text="12" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
-        <Label Content="速度" HorizontalAlignment="Left" Height="28" Margin="364,0,0,202" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
-        <TextBox x:Name="ViewerCover" HorizontalAlignment="Left" Height="26" Margin="409,0,0,237" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
-        <Label Content="暗化" HorizontalAlignment="Left" Height="28" Margin="364,0,0,235" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
-        <Rectangle x:Name="Cover" Grid.ColumnSpan="2" Fill="#FF1F1F1F" Margin="0,19,0,0" Stroke="Black" d:IsHidden="True"/>
+        <Label Content="难度" HorizontalAlignment="Left" Height="25" Margin="5,184,0,0" VerticalAlignment="Top" Width="33" Foreground="White"/>
+        <TextBox x:Name="LevelTextBox" HorizontalAlignment="Left" Height="25" Margin="50,184,0,0" TextWrapping="Wrap" Text="12+" VerticalAlignment="Top" Width="46" VerticalContentAlignment="Center" TextChanged="LevelTextBox_TextChanged" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
+        <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="58,0,0,91" Width="38" Click="PlayAndPauseButton_Click" Height="38" VerticalAlignment="Bottom" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
+        <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="9,0,0,91" VerticalAlignment="Bottom" Width="38" Click="StopButton_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
+        <Label x:Name="NoteNowText" Content="Current Note" HorizontalAlignment="Left" Margin="0,74,0,0" VerticalAlignment="Top" Foreground="White" Width="105" HorizontalContentAlignment="Center" Height="25"/>
+        <Button x:Name="Export_Button" Content="发到查看器" Height="30" Margin="9,0,0,168" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Export_Button_Click" HorizontalAlignment="Left" Width="87" Template="{DynamicResource DarkButton}" Foreground="{DynamicResource ButtonForeground}" Background= "{DynamicResource ButtonsBackground}"/>
+        <TextBox x:Name="ViewerSpeed" HorizontalAlignment="Left" Height="26" Margin="50,0,0,204" TextWrapping="Wrap" Text="12" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
+        <Label Content="速度" HorizontalAlignment="Left" Height="28" Margin="5,0,0,202" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
+        <TextBox x:Name="ViewerCover" Height="26" Margin="50,0,0,237" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Left" Width="46"/>
+        <Label Content="暗化" HorizontalAlignment="Left" Height="28" Margin="5,0,0,235" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
+        <Rectangle x:Name="Cover" Fill="#FF1F1F1F" Margin="0,19,0,0" Stroke="Black" d:IsHidden="True" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

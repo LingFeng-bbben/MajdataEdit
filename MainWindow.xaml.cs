@@ -92,6 +92,16 @@ namespace MajdataEdit
         Timer VisualEffectRefreshTimer = new Timer(1);
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Process.GetProcessesByName("MajdataView").Length == 0 && Process.GetProcessesByName("Unity").Length == 0)
+            {
+                viewProcess = Process.Start("MajdataView.exe");
+                Timer setWindowPosTimer = new Timer(2000);
+                setWindowPosTimer.AutoReset = false;
+                setWindowPosTimer.Elapsed += SetWindowPosTimer_Elapsed;
+                setWindowPosTimer.Start();
+                return;
+            }
+
             var handle = (new WindowInteropHelper(this)).Handle;
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
 
@@ -106,6 +116,16 @@ namespace MajdataEdit
 
         }
 
+        private void SetWindowPosTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Timer setWindowPosTimer = (Timer)sender;
+            Dispatcher.Invoke(() =>
+            {
+                InternalSwitchWindow();
+            });
+            setWindowPosTimer.Stop();
+            setWindowPosTimer.Dispose();
+        }
 
         public string maidataDir;
         void initFromFile(string path)//file name should not be included in path
@@ -492,6 +512,14 @@ namespace MajdataEdit
                 if (result == MessageBoxResult.Yes) SaveRawFumenText(true);
                 if (result == MessageBoxResult.Cancel) { e.Cancel = true; return; } 
             }
+            var process = Process.GetProcessesByName("MajdataView");
+            if (process.Length > 0)
+            {
+                var result = MessageBox.Show("要关闭View吗？", "警告", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes) 
+                process[0].Kill();
+            }
+
             currentTimeRefreshTimer.Stop();
             VisualEffectRefreshTimer.Stop();
             Bass.BASS_ChannelStop(bgmStream);
@@ -782,15 +810,13 @@ namespace MajdataEdit
         }
         bool isExternalRunning = false;
 
+
+        Process viewProcess;
         private void Export_Button_Click(object sender, RoutedEventArgs e)
         {
-            
-            if (Process.GetProcessesByName("MajdataView").Length == 0 && Process.GetProcessesByName("Unity").Length == 0)
-            {
-                Process.Start("MajdataView.exe");
-                return;
-            }
-            
+
+
+
             if (isExternalRunning)
             {
                 Export_Button.Content = "发到查看器";
@@ -839,6 +865,28 @@ namespace MajdataEdit
         {
             BPMtap tap = new BPMtap();
             tap.Show();
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "MoveWindow")]
+        public static extern bool MoveWindow(System.IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hwnd, int nCmdShow);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern bool SwitchToThisWindow(IntPtr hWnd, bool fAltTab);
+        private void TheWindow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            InternalSwitchWindow();
+        }
+
+        void InternalSwitchWindow()
+        {
+            var windowPtr = FindWindow(null, "MajdataView");
+            MoveWindow(windowPtr, (int)(this.Left - this.Height + 20), (int)this.Top, (int)this.Height - 20, (int)this.Height, true);
+            ShowWindow(windowPtr, 1);//还原窗口
+            SwitchToThisWindow(windowPtr, true);
         }
     }
 }
