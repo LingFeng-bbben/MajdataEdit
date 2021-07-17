@@ -92,14 +92,7 @@ namespace MajdataEdit
         Timer VisualEffectRefreshTimer = new Timer(1);
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Process.GetProcessesByName("MajdataView").Length == 0 && Process.GetProcessesByName("Unity").Length == 0)
-            {
-                viewProcess = Process.Start("MajdataView.exe");
-                Timer setWindowPosTimer = new Timer(2000);
-                setWindowPosTimer.AutoReset = false;
-                setWindowPosTimer.Elapsed += SetWindowPosTimer_Elapsed;
-                setWindowPosTimer.Start();
-            }
+            CheckAndStartView();
 
             var handle = (new WindowInteropHelper(this)).Handle;
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
@@ -814,7 +807,7 @@ namespace MajdataEdit
         private void Export_Button_Click(object sender, RoutedEventArgs e)
         {
 
-
+            if (CheckAndStartView()) return;
 
             if (isExternalRunning)
             {
@@ -866,6 +859,20 @@ namespace MajdataEdit
             tap.Show();
         }
 
+        bool CheckAndStartView()
+        {
+            if (Process.GetProcessesByName("MajdataView").Length == 0 && Process.GetProcessesByName("Unity").Length == 0)
+            {
+                viewProcess = Process.Start("MajdataView.exe");
+                Timer setWindowPosTimer = new Timer(2000);
+                setWindowPosTimer.AutoReset = false;
+                setWindowPosTimer.Elapsed += SetWindowPosTimer_Elapsed;
+                setWindowPosTimer.Start();
+                return true;
+            }
+            return false;
+        }
+
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
@@ -877,6 +884,7 @@ namespace MajdataEdit
         public static extern bool SwitchToThisWindow(IntPtr hWnd, bool fAltTab);
         private void TheWindow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (CheckAndStartView()) return;
             InternalSwitchWindow();
         }
 
