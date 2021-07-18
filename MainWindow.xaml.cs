@@ -92,6 +92,8 @@ namespace MajdataEdit
         Timer VisualEffectRefreshTimer = new Timer(1);
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            CheckAndStartView();
+
             var handle = (new WindowInteropHelper(this)).Handle;
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
 
@@ -106,6 +108,16 @@ namespace MajdataEdit
 
         }
 
+        private void SetWindowPosTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Timer setWindowPosTimer = (Timer)sender;
+            Dispatcher.Invoke(() =>
+            {
+                InternalSwitchWindow();
+            });
+            setWindowPosTimer.Stop();
+            setWindowPosTimer.Dispose();
+        }
 
         public string maidataDir;
         void initFromFile(string path)//file name should not be included in path
@@ -492,6 +504,14 @@ namespace MajdataEdit
                 if (result == MessageBoxResult.Yes) SaveRawFumenText(true);
                 if (result == MessageBoxResult.Cancel) { e.Cancel = true; return; } 
             }
+            var process = Process.GetProcessesByName("MajdataView");
+            if (process.Length > 0)
+            {
+                var result = MessageBox.Show("要关闭View吗？", "警告", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes) 
+                process[0].Kill();
+            }
+
             currentTimeRefreshTimer.Stop();
             VisualEffectRefreshTimer.Stop();
             Bass.BASS_ChannelStop(bgmStream);
@@ -702,13 +722,35 @@ namespace MajdataEdit
             FumenContent.Focus();
         }
 
-        private void MusicWave_MouseWheel(object sender, MouseWheelEventArgs e)
+        void ScrollWave(double delta)
         {
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-            var destnationTime = time + (0.002d * e.Delta * (1.0d / zoominPower));
+            var destnationTime = time + (0.002d * -delta * (1.0d / zoominPower));
             Bass.BASS_ChannelSetPosition(bgmStream, destnationTime);
 
             SeekTextFromTime();
+        }
+        
+        private void MusicWave_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollWave(e.Delta);
+        }
+
+        double lastMousePointX;
+        private void MusicWave_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //lastMousePointX = e.GetPosition(this).X;
+        }
+
+        private void MusicWave_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                double delta = e.GetPosition(this).X - lastMousePointX;
+                lastMousePointX = e.GetPosition(this).X;
+                ScrollWave(delta*zoominPower*4d);
+            }
+            lastMousePointX = e.GetPosition(this).X;
         }
 
         void SeekTextFromTime()
@@ -760,15 +802,13 @@ namespace MajdataEdit
         }
         bool isExternalRunning = false;
 
+
+        Process viewProcess;
         private void Export_Button_Click(object sender, RoutedEventArgs e)
         {
-            
-            if (Process.GetProcessesByName("MajdataView").Length == 0 && Process.GetProcessesByName("Unity").Length == 0)
-            {
-                Process.Start("MajdataView.exe");
-                return;
-            }
-            
+
+            if (CheckAndStartView()) return;
+
             if (isExternalRunning)
             {
                 Export_Button.Content = "发到查看器";
@@ -813,6 +853,47 @@ namespace MajdataEdit
             
         }
 
+        private void BPMtap_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            BPMtap tap = new BPMtap();
+            tap.Show();
+        }
 
+        bool CheckAndStartView()
+        {
+            if (Process.GetProcessesByName("MajdataView").Length == 0 && Process.GetProcessesByName("Unity").Length == 0)
+            {
+                viewProcess = Process.Start("MajdataView.exe");
+                Timer setWindowPosTimer = new Timer(2000);
+                setWindowPosTimer.AutoReset = false;
+                setWindowPosTimer.Elapsed += SetWindowPosTimer_Elapsed;
+                setWindowPosTimer.Start();
+                return true;
+            }
+            return false;
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "MoveWindow")]
+        public static extern bool MoveWindow(System.IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hwnd, int nCmdShow);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern bool SwitchToThisWindow(IntPtr hWnd, bool fAltTab);
+        private void TheWindow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (CheckAndStartView()) return;
+            InternalSwitchWindow();
+        }
+
+        void InternalSwitchWindow()
+        {
+            var windowPtr = FindWindow(null, "MajdataView");
+            MoveWindow(windowPtr, (int)(this.Left - this.Height + 20), (int)this.Top, (int)this.Height - 20, (int)this.Height, true);
+            ShowWindow(windowPtr, 1);//还原窗口
+            SwitchToThisWindow(windowPtr, true);
+        }
     }
 }
