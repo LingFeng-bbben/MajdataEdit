@@ -31,6 +31,11 @@ namespace MajdataEdit
         public MainWindow()
         {
             InitializeComponent();
+            if (Environment.GetCommandLineArgs().Contains("--ForceSoftwareRender"))
+            {
+                MessageBox.Show("正在以软件渲染模式运行");
+                RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+            }
         }
 
         int bgmStream = -1024;
