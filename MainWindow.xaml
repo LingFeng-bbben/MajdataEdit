@@ -87,7 +87,7 @@
             <RichTextBox.InputBindings>
                 <KeyBinding Gesture="Ctrl+Shift+c" Command="{StaticResource PlayAndPause}"/>
                 <KeyBinding Gesture="Ctrl+s" Command="{StaticResource SaveFile}"/>
-                <KeyBinding Gesture="Ctrl+Shift+x" Command="{StaticResource StopPlaying}"/>
+                <KeyBinding Gesture="Ctrl+Shift+x" Command="{StaticResource PlayAndPause}"/>
             </RichTextBox.InputBindings>
             <RichTextBox.CommandBindings>
                 <CommandBinding Command="{StaticResource PlayAndPause}" CanExecute="PlayAndPause_CanExecute"/>

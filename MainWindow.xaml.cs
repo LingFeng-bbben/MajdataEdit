@@ -465,7 +465,7 @@ namespace MajdataEdit
                     }
                     //
                     Dispatcher.Invoke(() => { 
-                        NoteNowText.Content = waitToBePlayed[0].notesContent;
+                        
                     if ((bool)FollowPlayCheck.IsChecked)
                         SeekTextFromTime(); 
                     });
@@ -536,45 +536,65 @@ namespace MajdataEdit
 
         double playStartTime = 0d;
 
-        void TogglePlayAndPause()
+        void TogglePlay()
         {
             FumenContent.Focus();
-            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
-            {
-                PlayAndPauseButton.Content = "▶";
-                Bass.BASS_ChannelStop(bgmStream);
-                clickSoundTimer.Stop();
-                DrawWave();
-            }
-            else
-            {
-                PlayAndPauseButton.Content = "  ▌▌ ";
-                SaveRawFumenText();
-                var CusorTime = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());//scan first
-                var channeltime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                playStartTime = channeltime;
+            PlayAndPauseButton.Content = "  ▌▌ ";
+            SaveRawFumenText();
+            var CusorTime = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());//scan first
+            var channeltime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+            playStartTime = channeltime;
 
-                Bass.BASS_ChannelPlay(bgmStream, false);
-                SimaiProcess.ClearNoteListPlayedState();
-                DrawWave(CusorTime); //then the wave could be draw
-                clickSoundTimer.Start();
-            }
+            Bass.BASS_ChannelPlay(bgmStream, false);
+            SimaiProcess.ClearNoteListPlayedState();
+            DrawWave(CusorTime); //then the wave could be draw
+            clickSoundTimer.Start();
         }
 
+        void TogglePause()
+        {
+            FumenContent.Focus();
+            PlayAndPauseButton.Content = "▶";
+            Bass.BASS_ChannelStop(bgmStream);
+            clickSoundTimer.Stop();
+            sendRequestStop();
+            DrawWave();
+        }
         void ToggleStop()
         {
             FumenContent.Focus();
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
             clickSoundTimer.Stop();
+            sendRequestStop();
             Bass.BASS_ChannelSetPosition(bgmStream, playStartTime);
             DrawWave();
         }
-
-        private void PlayAndPause_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        void TogglePlayAndPause()
         {
-            TogglePlayAndPause();
-            ToggleStop();
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
+            {
+                TogglePause();
+            }
+            else
+            {
+                TogglePlay();
+            }
+        }
+        void TogglePlayAndStop()
+        {
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
+            {
+                ToggleStop();
+            }
+            else
+            {
+                TogglePlay();
+            }
+        }
+        private void PlayAndPause_CanExecute(object sender, CanExecuteRoutedEventArgs e) //快捷键
+        {
+            TogglePlayAndStop();
         }
 
         private void PlayAndPauseButton_Click(object sender, RoutedEventArgs e)
@@ -582,9 +602,9 @@ namespace MajdataEdit
             TogglePlayAndPause();
         }
 
-        private void StopPlaying_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void StopPlaying_CanExecute(object sender, CanExecuteRoutedEventArgs e) //快捷键
         {
-            ToggleStop();
+            TogglePlayAndPause();
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -595,6 +615,9 @@ namespace MajdataEdit
         private void FumenContent_SelectionChanged(object sender, RoutedEventArgs e)
         {
             var time = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
+            NoteNowText.Content = "" + (
+                new TextRange(FumenContent.Document.ContentStart, FumenContent.CaretPosition).Text.
+                Replace("\r", "").Count(o => o == '\n') + 1) + " 行";
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
                 Bass.BASS_ChannelSetPosition(bgmStream, time);
@@ -805,19 +828,20 @@ namespace MajdataEdit
 
         bool sendRequestStop()
         {
+            if (isExternalRunning == false) return false;
             Export_Button.Content = "发到查看器";
             EditRequestjson requestStop = new EditRequestjson();
             requestStop.control = EditorControlMethod.Stop;
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(requestStop);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
             isExternalRunning = false;
-            if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; 
+            if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
             return true;
         }
 
-        bool sendRequestRun(double waitTime)
+        bool sendRequestRun(DateTime StartAt)
         {
-            Export_Button.Content = "停止查看器";
+            
             Majson jsonStruct = new Majson();
             foreach (var note in SimaiProcess.notelist)
             {
@@ -832,41 +856,43 @@ namespace MajdataEdit
             EditRequestjson request = new EditRequestjson();
             request.control = EditorControlMethod.Start;
             request.jsonPath = path;
-            request.startAt = DateTime.Now.AddSeconds(0.5).Ticks;
+            request.startAt = StartAt.Ticks;
             request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             request.playSpeed = float.Parse(ViewerSpeed.Text);
             request.backgroundCover = float.Parse(ViewerCover.Text);
 
             json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
-            isExternalRunning = true;
             if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
+            isExternalRunning = true;
+            Export_Button.Content = "停止查看器";
             return true;
         }
 
-        private void Export_Button_Click(object sender, RoutedEventArgs e)
+        private void ToggleExport()
         {
-
             if (CheckAndStartView()) return;
-
             if (isExternalRunning)
             {
-                sendRequestStop();
-                ToggleStop();
+                ToggleStop();//contains send Request
                 return;
             }
-
+            var startAt = DateTime.Now.AddSeconds(1d);
+            if (!sendRequestRun(startAt)) return;
 
             Task.Run(() =>
             {
-                while (DateTime.Now.Ticks < request.startAt);
+                while (DateTime.Now.Ticks < startAt.Ticks) ;
                 Dispatcher.Invoke(() =>
                 {
                     TogglePlayAndPause();
                 });
             });
-            
-            
+        }
+
+        private void Export_Button_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleExport();
         }
 
         private void BPMtap_MenuItem_Click(object sender, RoutedEventArgs e)
@@ -874,12 +900,12 @@ namespace MajdataEdit
             BPMtap tap = new BPMtap();
             tap.Show();
         }
-
+        
         bool CheckAndStartView()
         {
             if (Process.GetProcessesByName("MajdataView").Length == 0 && Process.GetProcessesByName("Unity").Length == 0)
             {
-                viewProcess = Process.Start("MajdataView.exe");
+                var viewProcess = Process.Start("MajdataView.exe");
                 Timer setWindowPosTimer = new Timer(2000);
                 setWindowPosTimer.AutoReset = false;
                 setWindowPosTimer.Elapsed += SetWindowPosTimer_Elapsed;
