@@ -80,6 +80,7 @@
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
                 <RoutedUICommand x:Key="SaveFile" Text="SaveFile"/>
                 <RoutedUICommand x:Key="StopPlaying" Text="StopPlaying"/>
+                <RoutedUICommand x:Key="SendToView" Text="SendToView"/>
             </RichTextBox.Resources>
             <RichTextBox.Background>
                 <SolidColorBrush Color="#FF171717" Opacity="0.3"/>
@@ -87,12 +88,14 @@
             <RichTextBox.InputBindings>
                 <KeyBinding Gesture="Ctrl+Shift+c" Command="{StaticResource PlayAndPause}"/>
                 <KeyBinding Gesture="Ctrl+s" Command="{StaticResource SaveFile}"/>
-                <KeyBinding Gesture="Ctrl+Shift+x" Command="{StaticResource PlayAndPause}"/>
+                <KeyBinding Gesture="Ctrl+Shift+x" Command="{StaticResource StopPlaying}"/>
+                <KeyBinding Gesture="Ctrl+Shift+z" Command="{StaticResource SendToView}"/>
             </RichTextBox.InputBindings>
             <RichTextBox.CommandBindings>
                 <CommandBinding Command="{StaticResource PlayAndPause}" CanExecute="PlayAndPause_CanExecute"/>
                 <CommandBinding Command="{StaticResource SaveFile}" CanExecute="SaveFile_Command_CanExecute"/>
                 <CommandBinding Command="{StaticResource StopPlaying}" CanExecute="StopPlaying_CanExecute"/>
+                <CommandBinding Command="{StaticResource SendToView}" CanExecute="SendToView_CanExecute"/>
             </RichTextBox.CommandBindings>
             <FlowDocument/>
         </RichTextBox>

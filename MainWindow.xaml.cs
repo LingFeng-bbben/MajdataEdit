@@ -890,6 +890,11 @@ namespace MajdataEdit
             });
         }
 
+        private void SendToView_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            ToggleExport();
+        }
+
         private void Export_Button_Click(object sender, RoutedEventArgs e)
         {
             ToggleExport();
@@ -937,5 +942,7 @@ namespace MajdataEdit
             ShowWindow(windowPtr, 1);//还原窗口
             SwitchToThisWindow(windowPtr, true);
         }
+
+
     }
 }
