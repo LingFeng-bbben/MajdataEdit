@@ -190,6 +190,7 @@ namespace MajdataEdit
         bool isDrawing = false;
         private async void DrawWave(double ghostCusorPositionTime = 0)
         {
+            
             if (isDrawing) return;
             isDrawing = true;
             var writableBitmap = new WriteableBitmap(waveLevels.Length * zoominPower, 74, 72, 72, PixelFormats.Pbgra32, null);
@@ -236,22 +237,28 @@ namespace MajdataEdit
                     bpmChangeTimes.Add(Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetLength(bgmStream)));
                     double time = 0;
                     int beat = 4; //预留拍号
+                    int currentBeat = 1;
                     pen = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
                     for (int i = 1; i < bpmChangeTimes.Count; i++)
                     {
                         while (time < bpmChangeTimes[i])//在那个时间之前都是之前的bpm
                         {
+                            if (currentBeat > beat) currentBeat = 1;
                             var xbase = (float)(time / sampleTime) * zoominPower;
                             var timePerBeat = 1d / (bpmChangeValues[i - 1] / 60d);
-                            float x = (float)(timePerBeat / sampleTime) * zoominPower;
-                            for (int j = 0; j < beat; j++)
+                            float xoneBeat = (float)(timePerBeat / sampleTime) * zoominPower;
+                            if (currentBeat == 1)
                             {
-                                graphics.DrawLine(pen, x * j + xbase, 0, x * j + xbase, 15);
-
+                                graphics.DrawLine(pen, xbase, 0, xbase, 75);
                             }
-                            graphics.DrawLine(pen, x * beat + xbase, 0, x * beat + xbase, 75);
-                            time += timePerBeat * beat;
+                            else
+                            {
+                                graphics.DrawLine(pen, xbase, 0, xbase, 15);
+                            }
+                            currentBeat++;
+                            time += timePerBeat;
                         }
+                        currentBeat = 1;
                     }
 
                     //Draw timing lines
@@ -619,10 +626,12 @@ namespace MajdataEdit
 
         private void FumenContent_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            var time = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
             NoteNowText.Content = "" + (
-                new TextRange(FumenContent.Document.ContentStart, FumenContent.CaretPosition).Text.
-                Replace("\r", "").Count(o => o == '\n') + 1) + " 行";
+                 new TextRange(FumenContent.Document.ContentStart, FumenContent.CaretPosition).Text.
+                 Replace("\r", "").Count(o => o == '\n') + 1) + " 行";
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked)
+                return;
+            var time = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
                 Bass.BASS_ChannelSetPosition(bgmStream, time);

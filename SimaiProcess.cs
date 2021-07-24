@@ -397,12 +397,14 @@ namespace MajdataEdit
             var startIndex = noteText.IndexOf('[');
             var overIndex = noteText.IndexOf(']');
             var innerString = noteText.Substring(startIndex + 1, overIndex - startIndex-1);
+            var timeOneBeat = 1d / (currentBpm / 60d);
             if (innerString.Count(o => o == '#') == 1)
             {
                 var times = innerString.Split('#');
                 if (times[1].Contains(':'))
                 {
                     innerString = times[1];
+                    timeOneBeat = 1d / (double.Parse(times[0]) / 60d);
                 }
                 else
                 {
@@ -417,7 +419,7 @@ namespace MajdataEdit
             var numbers = innerString.Split(':');   //TODO:customBPM
             var divide = int.Parse(numbers[0]);
             var count = int.Parse(numbers[1]);
-            var timeOneBeat = 1d / (currentBpm / 60d);
+            
 
             return (timeOneBeat*4d / (double)divide) * (double)count; 
         }
