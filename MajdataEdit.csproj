@@ -143,13 +143,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="lib\PresentationFramework.Aero2.dll" />
     <Resource Include="favicon.ico" />
-    <Content Include="lib\bass.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\Bass.Net.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="lib\bass.dll" />
+    <Content Include="lib\Bass.Net.dll" />
     <Resource Include="Image\Outline_03.png" />
     <Resource Include="Image\QQ图片20210701170841.png" />
     <Resource Include="Image\salt.png" />
