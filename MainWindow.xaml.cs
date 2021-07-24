@@ -550,6 +550,8 @@ namespace MajdataEdit
 
         void TogglePlay()
         {
+            if (isExternalRunning == false) Export_Button.IsEnabled = false;
+
             FumenContent.Focus();
             PlayAndPauseButton.Content = "  ▌▌ ";
             SaveRawFumenText();
@@ -565,6 +567,8 @@ namespace MajdataEdit
 
         void TogglePause()
         {
+            if (isExternalRunning == false) Export_Button.IsEnabled = true;
+
             FumenContent.Focus();
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
@@ -574,6 +578,9 @@ namespace MajdataEdit
         }
         void ToggleStop()
         {
+            if (isExternalRunning == false) Export_Button.IsEnabled = true;
+
+
             FumenContent.Focus();
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
@@ -687,9 +694,7 @@ namespace MajdataEdit
         {
             if (!isSaved)
             {
-                var result = MessageBox.Show("未保存，要保存吗？", "警告", MessageBoxButton.YesNoCancel);
-                if (result == MessageBoxResult.Yes) SaveRawFumenText(true);
-                if (result == MessageBoxResult.Cancel) { return; }
+                if (!AskSave()) return;
             }
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "track.mp3|track.mp3";
@@ -715,9 +720,7 @@ namespace MajdataEdit
         {
             if (!isSaved)
             {
-                var result = MessageBox.Show("未保存，要保存吗？", "警告", MessageBoxButton.YesNoCancel);
-                if (result == MessageBoxResult.Yes) SaveRawFumenText(true);
-                if (result == MessageBoxResult.Cancel) { return; }
+                if (!AskSave()) return;
             }
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "maidata.txt|maidata.txt";
@@ -725,6 +728,19 @@ namespace MajdataEdit
                 FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
                 initFromFile(fileInfo.DirectoryName);
             }
+        }
+
+        bool AskSave()
+        {
+            var result = MessageBox.Show("未保存，要保存吗？", "警告", MessageBoxButton.YesNoCancel);
+            if (result == MessageBoxResult.Yes) {
+                SaveRawFumenText(true); 
+                return true; 
+            }
+            if (result == MessageBoxResult.Cancel) { 
+                return false; 
+            }
+            return true;
         }
 
         private void Menu_Save_Click(object sender, RoutedEventArgs e)
@@ -885,6 +901,7 @@ namespace MajdataEdit
 
         private void ToggleExport()
         {
+            if (!Export_Button.IsEnabled) return;
             if (CheckAndStartView()) return;
             if (isExternalRunning)
             {
@@ -957,6 +974,34 @@ namespace MajdataEdit
             SwitchToThisWindow(windowPtr, true);
         }
 
+        private void Grid_DragEnter(object sender, DragEventArgs e)
+        {
 
+            e.Effects = DragDropEffects.Move;           
+        }
+
+        private void Grid_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                Console.WriteLine(e.Data.GetData(DataFormats.FileDrop).ToString());
+                if (e.Data.GetData(DataFormats.FileDrop).ToString() == "System.String[]")
+                {
+                    var path = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
+                    if (path.ToLower().Contains("maidata.txt"))
+                    {
+                        if (!isSaved)
+                        {
+                            if (!AskSave()) return;
+                        }
+                        FileInfo fileInfo = new FileInfo(path);
+                        initFromFile(fileInfo.DirectoryName);
+
+                    }
+                    
+                    return;
+                }
+            }
+        }
     }
 }

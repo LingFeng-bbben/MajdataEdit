@@ -7,39 +7,8 @@
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Name="TheWindow" x:Class="MajdataEdit.MainWindow"
         mc:Ignorable="d"
         Title="MajdataEdit" Height="552" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="508" MouseDoubleClick="TheWindow_MouseDoubleClick" WindowStartupLocation="CenterScreen">
-    <Window.Resources>
-        <ControlTemplate x:Key="DarkButton" TargetType="{x:Type ButtonBase}">
 
-            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Button.IsDefaulted" Value="True">
-                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" TargetName="border" Value="#FF595959"/>
-                    <Setter Property="BorderBrush" TargetName="border" Value="#FF3C7FB1"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" TargetName="border" Value="#FF878787"/>
-                    <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>
-                </Trigger>
-                <Trigger Property="ToggleButton.IsChecked" Value="True">
-                    <Setter Property="Background" TargetName="border" Value="#FFBCDDEE"/>
-                    <Setter Property="BorderBrush" TargetName="border" Value="#FF245A83"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" TargetName="border" Value="#FFF4F4F4"/>
-                    <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
-                    <Setter Property="Foreground" Value="#FF838383"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <Color x:Key="ButtonBackground" R="255" G="255" B="255"/>
-    </Window.Resources>
-
-    <Grid Margin="0" Background="{DynamicResource WindowBackground}">
+    <Grid Margin="0" Background="{DynamicResource WindowBackground}" DragEnter="Grid_DragEnter" AllowDrop="True" Drop="Grid_Drop">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
