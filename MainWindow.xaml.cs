@@ -879,6 +879,13 @@ namespace MajdataEdit
                 jsonStruct.timingList.Add(note);
             }
 
+            jsonStruct.title = SimaiProcess.title;
+            jsonStruct.artist = SimaiProcess.artist;
+            jsonStruct.level = SimaiProcess.levels[selectedDifficulty];
+            jsonStruct.designer = SimaiProcess.designer;
+            jsonStruct.difficulty = SimaiProcess.GetDifficultyText(selectedDifficulty);
+            jsonStruct.diffNum = selectedDifficulty;
+
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonStruct);
             var path = maidataDir + "/majdata.json";
             System.IO.File.WriteAllText(path, json);
@@ -909,6 +916,9 @@ namespace MajdataEdit
                 return;
             }
             var startAt = DateTime.Now.AddSeconds(1d);
+            if ((float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream)) == 0f) {
+                startAt = DateTime.Now.AddSeconds(4.4d);
+            }
             if (!sendRequestRun(startAt)) return;
 
             Task.Run(() =>

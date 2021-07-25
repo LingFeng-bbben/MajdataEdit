@@ -227,7 +227,6 @@ namespace MajdataEdit
                 notelist[i].havePlayed = false;
             }
         }
-
         static private bool isNote(char noteText)
         {
             string SlideMarks = "1234567890ABCDE"; ///ABCDE for touch
@@ -236,6 +235,17 @@ namespace MajdataEdit
                 if (noteText==mark) return true;
             }
             return false;
+        }
+        static public string GetDifficultyText(int index)
+        {
+            if (index == 0) return "EASY";
+            if (index == 1) return "BASIC";
+            if (index == 2) return "ADVANCED";
+            if (index == 3) return "EXPERT";
+            if (index == 4) return "MASTER";
+            if (index == 5) return "Re:MASTER";
+            if (index == 6) return "ORIGINAL";
+            return "DEFAULT";
         }
     }
 
