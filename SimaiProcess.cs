@@ -364,12 +364,6 @@ namespace MajdataEdit
                     Console.WriteLine("Hold:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
                 }
             }
-            //break
-            if (noteText.Contains('b'))
-            {
-                simaiNote.isBreak = true;
-                noteText.Replace("b", "");
-            }
             //slide
             if (isSlideNote(noteText)) {
                 simaiNote.noteType = SimaiNoteType.Slide;
@@ -378,7 +372,18 @@ namespace MajdataEdit
                 simaiNote.slideStartTime = time + timeStarWait;
                 Console.WriteLine("Slide:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.slideTime);
             }
-
+            //break
+            if (noteText.Contains('b'))
+            {
+                simaiNote.isBreak = true;
+                noteText = noteText.Replace("b", "");
+            }
+            //EX
+            if (noteText.Contains('x'))
+            {
+                simaiNote.isEx = true;
+                noteText = noteText.Replace("x", "");
+            }
             simaiNote.noteContent = noteText;
             return simaiNote;
         }
@@ -462,7 +467,7 @@ namespace MajdataEdit
         public SimaiNoteType noteType;
         public bool isBreak = false;
         public bool isHanabi = false;
-        //bool isExnote = false;
+        public bool isEx = false;
         public int startPosition = 1; //键位（1-8）
         public char touchArea = ' ';
         public double holdTime = 0d;

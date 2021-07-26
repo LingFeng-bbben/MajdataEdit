@@ -915,7 +915,7 @@ namespace MajdataEdit
                 ToggleStop();//contains send Request
                 return;
             }
-            var startAt = DateTime.Now.AddSeconds(1d);
+            var startAt = DateTime.Now.AddSeconds(0d);
             if ((float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream)) == 0f) {
                 startAt = DateTime.Now.AddSeconds(4.4d);
             }
