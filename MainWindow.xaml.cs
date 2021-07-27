@@ -38,9 +38,7 @@ namespace MajdataEdit
             }
         }
 
-        int bgmStream = -1024;
-        int clickStream = -8848;
-        int breakStream = -114514;
+
 
         string GetRawFumenText()
         {
@@ -95,6 +93,14 @@ namespace MajdataEdit
         Timer currentTimeRefreshTimer = new Timer(100);
         Timer clickSoundTimer = new Timer(10);
         Timer VisualEffectRefreshTimer = new Timer(1);
+
+        int bgmStream = -1024;
+        int clickStream = -8848;
+        int breakStream = -114514;
+        int exStream = -1919;
+        int hanabiStream = -810;
+        int holdRiserStream = -52013;
+        int trackStartStream = 66065;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             CheckAndStartView();
@@ -102,8 +108,12 @@ namespace MajdataEdit
             var handle = (new WindowInteropHelper(this)).Handle;
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
 
-            clickStream = Bass.BASS_StreamCreateFile("tap.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            breakStream = Bass.BASS_StreamCreateFile("break.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            clickStream = Bass.BASS_StreamCreateFile("SFX/tap.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            breakStream = Bass.BASS_StreamCreateFile("SFX/break.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            exStream = Bass.BASS_StreamCreateFile("SFX/ex.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            hanabiStream = Bass.BASS_StreamCreateFile("SFX/hanabi.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            holdRiserStream = Bass.BASS_StreamCreateFile("SFX/touchHold_riser.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            trackStartStream = Bass.BASS_StreamCreateFile("SFX/track_start.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
 
             currentTimeRefreshTimer.Elapsed += CurrentTimeRefreshTimer_Elapsed;
             currentTimeRefreshTimer.Start();
@@ -467,13 +477,23 @@ namespace MajdataEdit
                 if (currentTime - nearestTime < 0.05 && currentTime - nearestTime > -0.05)
                 {
                     var notes = waitToBePlayed[0].getNotes();
+                    Bass.BASS_ChannelPlay(clickStream, true);
+
                     if (notes.FindAll(o => o.isBreak).Count > 0) //may cause delay
                     {
                         Bass.BASS_ChannelPlay(breakStream, true);
                     }
-                    else
+                    if (notes.FindAll(o => o.isHanabi&&o.noteType==SimaiNoteType.Touch).Count > 0) //may cause delay
                     {
-                        Bass.BASS_ChannelPlay(clickStream, true);
+                        Bass.BASS_ChannelPlay(hanabiStream, true);
+                    }
+                    if(notes.FindAll(o => o.isEx).Count > 0)
+                    {
+                        Bass.BASS_ChannelPlay(exStream, true);
+                    }
+                    if(notes.FindAll(o => o.noteType==SimaiNoteType.TouchHold).Count > 0)
+                    {
+                        Bass.BASS_ChannelPlay(holdRiserStream, true);
                     }
                     //
                     Dispatcher.Invoke(() => { 
@@ -492,6 +512,21 @@ namespace MajdataEdit
                             holdClickTimer.AutoReset = false;
                             holdClickTimer.Start();
                         }
+                        if (note.noteType == SimaiNoteType.TouchHold)
+                        {
+                            Timer holdClickTimer = new Timer(note.holdTime * 1000d);
+                            holdClickTimer.Elapsed += HoldRiserTimer_Elapsed;
+                            holdClickTimer.AutoReset = false;
+                            holdClickTimer.Start();
+                        }
+                        if (note.noteType == SimaiNoteType.TouchHold && note.isHanabi)
+                        {
+                            Timer holdClickTimer = new Timer(note.holdTime * 1000d);
+                            holdClickTimer.Elapsed += HoldHanibiTimer_Elapsed;
+                            holdClickTimer.Elapsed += HoldRiserTimer_Elapsed;
+                            holdClickTimer.AutoReset = false;
+                            holdClickTimer.Start();
+                        }
                     }
                 }
                 
@@ -501,8 +536,23 @@ namespace MajdataEdit
 
         private void HoldClickTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine("ELa");
             Bass.BASS_ChannelPlay(clickStream, true);
+            var father = (Timer)sender;
+            father.Stop();
+            father.Dispose();
+        }
+        private void HoldHanibiTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Bass.BASS_ChannelPlay(hanabiStream, true);
+            var father = (Timer)sender;
+            father.Stop();
+            father.Dispose();
+        }
+
+        private void HoldRiserTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Bass.BASS_ChannelStop(holdRiserStream);
+            Console.WriteLine("stop");
             var father = (Timer)sender;
             father.Stop();
             father.Dispose();
@@ -532,6 +582,10 @@ namespace MajdataEdit
             Bass.BASS_StreamFree(clickStream);
             Bass.BASS_ChannelStop(breakStream);
             Bass.BASS_StreamFree(breakStream);
+            Bass.BASS_ChannelStop(exStream);
+            Bass.BASS_StreamFree(exStream);
+            Bass.BASS_ChannelStop(hanabiStream);
+            Bass.BASS_StreamFree(hanabiStream);
             Bass.BASS_Stop();
             Bass.BASS_Free();
         }
@@ -918,6 +972,7 @@ namespace MajdataEdit
             var startAt = DateTime.Now.AddSeconds(0d);
             if ((float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream)) == 0f) {
                 startAt = DateTime.Now.AddSeconds(4.4d);
+                Bass.BASS_ChannelPlay(trackStartStream, true);
             }
             if (!sendRequestRun(startAt)) return;
 
