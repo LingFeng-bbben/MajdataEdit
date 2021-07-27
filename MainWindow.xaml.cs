@@ -108,12 +108,13 @@ namespace MajdataEdit
             var handle = (new WindowInteropHelper(this)).Handle;
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
 
-            clickStream = Bass.BASS_StreamCreateFile("SFX/tap.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            breakStream = Bass.BASS_StreamCreateFile("SFX/break.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            exStream = Bass.BASS_StreamCreateFile("SFX/ex.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            hanabiStream = Bass.BASS_StreamCreateFile("SFX/hanabi.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            holdRiserStream = Bass.BASS_StreamCreateFile("SFX/touchHold_riser.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            trackStartStream = Bass.BASS_StreamCreateFile("SFX/track_start.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            var path = Environment.CurrentDirectory + "/SFX/";
+            clickStream = Bass.BASS_StreamCreateFile(path+"tap.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            breakStream = Bass.BASS_StreamCreateFile(path + "break.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            exStream = Bass.BASS_StreamCreateFile(path + "ex.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            hanabiStream = Bass.BASS_StreamCreateFile(path + "hanabi.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            holdRiserStream = Bass.BASS_StreamCreateFile(path + "touchHold_riser.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            trackStartStream = Bass.BASS_StreamCreateFile(path + "track_start.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
 
             currentTimeRefreshTimer.Elapsed += CurrentTimeRefreshTimer_Elapsed;
             currentTimeRefreshTimer.Start();
