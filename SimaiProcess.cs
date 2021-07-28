@@ -497,6 +497,15 @@ namespace MajdataEdit
             MirrorLR.Add(">", "<");
             MirrorLR.Add("z", "s");
             MirrorLR.Add("s", "z");
+            Dictionary<string, string> MirrorTLR = new Dictionary<string, string>();//Touch左右
+            MirrorTLR.Add("8", "2");
+            MirrorTLR.Add("2", "8");
+            MirrorTLR.Add("3", "7");
+            MirrorTLR.Add("7", "3");
+            MirrorTLR.Add("4", "6");
+            MirrorTLR.Add("6", "4");
+            MirrorTLR.Add("1", "1");
+            MirrorTLR.Add("5", "5");
             char[] a = str.ToCharArray();
             for (int i = 0; i < a.Length; i++)
             {
@@ -518,6 +527,13 @@ namespace MajdataEdit
                     if (MirrorLR.ContainsKey(s1))
                     {
                         s += MirrorLR[s1];
+                    }
+                    else if (a[i] == 'e' || a[i] == 'd' || a[i] == 'E' || a[i] == 'D')
+                    {
+                        s += a[i];
+                        i += 1;
+                        string st = a[i].ToString();
+                        s += MirrorTLR[st];
                     }
                     else
                     {
@@ -546,6 +562,15 @@ namespace MajdataEdit
             MirrorUD.Add("p", "q");
             MirrorUD.Add("z", "s");
             MirrorUD.Add("s", "z");
+            Dictionary<string, string> MirrorTUD = new Dictionary<string, string>();//Touch左右
+            MirrorTUD.Add("4", "2");
+            MirrorTUD.Add("2", "4");
+            MirrorTUD.Add("1", "5");
+            MirrorTUD.Add("5", "1");
+            MirrorTUD.Add("8", "6");
+            MirrorTUD.Add("6", "8");
+            MirrorTUD.Add("3", "3");
+            MirrorTUD.Add("7", "7");
             char[] a = str.ToCharArray();
             for (int i = 0; i < a.Length; i++)
             {
@@ -567,6 +592,13 @@ namespace MajdataEdit
                     if (MirrorUD.ContainsKey(s1))
                     {
                         s += MirrorUD[s1];
+                    }
+                    else if (a[i] == 'e' || a[i] == 'd' || a[i] == 'E' || a[i] == 'D')
+                    {
+                        s += a[i];
+                        i += 1;
+                        string st = a[i].ToString();
+                        s += MirrorTUD[st];
                     }
                     else
                     {
@@ -616,6 +648,13 @@ namespace MajdataEdit
                     if (Mirror180.ContainsKey(s1))
                     {
                         s += Mirror180[s1];
+                    }
+                    else if (a[i] == 'e' || a[i] == 'd'|| a[i] == 'E' || a[i] == 'D')
+                    {
+                        s += a[i];
+                        i += 1;
+                        string st = a[i].ToString();
+                        s += Mirror180[st];
                     }
                     else
                     {
