@@ -20,6 +20,7 @@ using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using System.Drawing;
 using System.Media;
+using System.Text.RegularExpressions;
 
 namespace MajdataEdit
 {
@@ -50,14 +51,14 @@ namespace MajdataEdit
             if (selectedDifficulty == -1) return;
             SimaiProcess.fumens[selectedDifficulty] = GetRawFumenText();
             SimaiProcess.simaiFirst = (bool)SimaiFirst.IsChecked;
-            if(maidataDir == "")
+            if (maidataDir == "")
             {
                 var saveDialog = new Microsoft.Win32.SaveFileDialog();
                 saveDialog.Filter = "maidata.txt|maidata.txt";
                 saveDialog.OverwritePrompt = true;
                 if ((bool)saveDialog.ShowDialog())
                 {
-                    maidataDir = new FileInfo (saveDialog.FileName).DirectoryName;
+                    maidataDir = new FileInfo(saveDialog.FileName).DirectoryName;
                 }
             }
             SimaiProcess.SaveData(maidataDir + "/maidata.bak.txt");
@@ -79,8 +80,81 @@ namespace MajdataEdit
                 paragraph.Inlines.Add(line);
                 FumenContent.Document.Blocks.Add(paragraph);
             }
+            UpdateHightLight();
         }
 
+        List<Paragraph> UpdateHightLight(string str)
+        {
+            List<Paragraph> paragraphs = new List<Paragraph>();
+            string[] lines = str.Split('\n');
+            foreach (var line in lines)
+            {
+                Paragraph paragraph = new Paragraph();
+                foreach (var item in line)
+                {
+                    SolidColorBrush col = new SolidColorBrush(Colors.White);
+                    switch (item)
+                    {
+                        case '(':
+                            col = new SolidColorBrush(Colors.Yellow);
+                            break;
+                        case ')':
+                            col = new SolidColorBrush(Colors.Yellow);
+                            break;
+                        case ',':
+                            col = new SolidColorBrush(Colors.Yellow);
+                            break;
+                        case '{':
+                        case '}':
+                            col = new SolidColorBrush(Colors.Pink);
+                            break;
+                        case '[':
+                        case ']':
+                            col = new SolidColorBrush(Colors.GreenYellow);
+                            break;
+                        case ':':
+                            col = new SolidColorBrush(Colors.Red);
+                            break;
+                        case 'q':
+                        case 'p':
+                        case 'w':
+                        case '-':
+                        case '*':
+                        case 'v':
+                        case '>':
+                        case '<':
+                        case 'h':
+                            col = new SolidColorBrush(Colors.Orange);
+                            break;
+                        case 'b':
+                            col = new SolidColorBrush(Colors.OrangeRed);
+                            break;
+                        case '/':
+                            col = new SolidColorBrush(Colors.AliceBlue);
+                            break;
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            col = new SolidColorBrush(Colors.AliceBlue);
+                            break;
+                        default:
+                            new SolidColorBrush(Colors.White);
+                            break;
+
+                    }
+                    paragraph.Inlines.Add(new Run() { Text = item.ToString(), Foreground = col });
+                }
+                paragraphs.Add(paragraph);
+            }
+            return paragraphs;
+        }
         long GetRawFumenPosition()
         {
             long pos = new TextRange(FumenContent.Document.ContentStart, FumenContent.CaretPosition).Text.Replace("\r", "").Length;
@@ -107,6 +181,7 @@ namespace MajdataEdit
             VisualEffectRefreshTimer.Start();
 
         }
+
 
         private void SetWindowPosTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -142,7 +217,8 @@ namespace MajdataEdit
 
             SimaiProcess.ClearData();
 
-            if (!SimaiProcess.ReadData(dataPath)) {
+            if (!SimaiProcess.ReadData(dataPath))
+            {
 
                 return;
             }
@@ -153,7 +229,7 @@ namespace MajdataEdit
             SetRawFumenText(SimaiProcess.fumens[0]);
             LevelTextBox.Text = SimaiProcess.levels[0];
 
-          
+
             SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
             FumenContent.Focus();
             DrawWave();
@@ -167,7 +243,7 @@ namespace MajdataEdit
         float[] waveEnergies;
         private void ReadWaveFromFile()
         {
-            var bgmDecode = Bass.BASS_StreamCreateFile(maidataDir+"/track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
+            var bgmDecode = Bass.BASS_StreamCreateFile(maidataDir + "/track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
             var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmStream));// it is not a mistake
             int sampleNumber = (int)((length * 1000) / (sampleTime * 1000)) / 2 + 1;
             waveLevels = new float[sampleNumber];
@@ -464,25 +540,26 @@ namespace MajdataEdit
                         Bass.BASS_ChannelPlay(clickStream, true);
                     }
                     //
-                    Dispatcher.Invoke(() => { 
+                    Dispatcher.Invoke(() =>
+                    {
                         NoteNowText.Content = waitToBePlayed[0].notesContent;
-                    if ((bool)FollowPlayCheck.IsChecked)
-                        SeekTextFromTime(); 
+                        if ((bool)FollowPlayCheck.IsChecked)
+                            SeekTextFromTime();
                     });
                     //Console.WriteLine(waitToBePlayed[0].content);
                     SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime)[0].havePlayed = true; //Since the data was added as time followed, we modify the first one
-                    foreach(var note in notes)
+                    foreach (var note in notes)
                     {
                         if (note.noteType == SimaiNoteType.Hold)
                         {
-                            Timer holdClickTimer = new Timer(note.holdTime*1000d);
+                            Timer holdClickTimer = new Timer(note.holdTime * 1000d);
                             holdClickTimer.Elapsed += HoldClickTimer_Elapsed;
                             holdClickTimer.AutoReset = false;
                             holdClickTimer.Start();
                         }
                     }
                 }
-                
+
             }
             catch { }
         }
@@ -502,14 +579,14 @@ namespace MajdataEdit
             {
                 var result = MessageBox.Show("未保存，要保存吗？", "警告", MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Yes) SaveRawFumenText(true);
-                if (result == MessageBoxResult.Cancel) { e.Cancel = true; return; } 
+                if (result == MessageBoxResult.Cancel) { e.Cancel = true; return; }
             }
             var process = Process.GetProcessesByName("MajdataView");
             if (process.Length > 0)
             {
                 var result = MessageBox.Show("要关闭View吗？", "警告", MessageBoxButton.YesNo);
-                if (result == MessageBoxResult.Yes) 
-                process[0].Kill();
+                if (result == MessageBoxResult.Yes)
+                    process[0].Kill();
             }
 
             currentTimeRefreshTimer.Stop();
@@ -586,6 +663,10 @@ namespace MajdataEdit
             ToggleStop();
         }
 
+        private void HightLightCode_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            UpdateHightLight();
+        }
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             ToggleStop();
@@ -623,7 +704,17 @@ namespace MajdataEdit
         private void FumenContent_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (GetRawFumenText() == "") return;
+            if (String.IsNullOrEmpty(GetRawFumenText())) { return; }
             SetSavedState(false);
+        }
+        public void UpdateHightLight()
+        {
+            List<Paragraph> paragraphs = UpdateHightLight(GetRawFumenText());
+            FumenContent.Document.Blocks.Clear();
+            foreach (var item in paragraphs)
+            {
+              FumenContent.Document.Blocks.Add(item);
+            }
         }
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -683,7 +774,8 @@ namespace MajdataEdit
             }
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "maidata.txt|maidata.txt";
-            if ((bool)openFileDialog.ShowDialog()) {
+            if ((bool)openFileDialog.ShowDialog())
+            {
                 FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
                 initFromFile(fileInfo.DirectoryName);
             }
@@ -708,7 +800,7 @@ namespace MajdataEdit
 
         private void WaveViewZoomIn_Click(object sender, RoutedEventArgs e)
         {
-            if (zoominPower <6)
+            if (zoominPower < 6)
                 zoominPower += 1;
             DrawWave();
             FumenContent.Focus();
@@ -716,8 +808,8 @@ namespace MajdataEdit
 
         private void WaveViewZoomOut_Click(object sender, RoutedEventArgs e)
         {
-            if(zoominPower>1)
-            zoominPower -= 1;
+            if (zoominPower > 1)
+                zoominPower -= 1;
             DrawWave();
             FumenContent.Focus();
         }
@@ -730,7 +822,7 @@ namespace MajdataEdit
 
             SeekTextFromTime();
         }
-        
+
         private void MusicWave_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             ScrollWave(e.Delta);
@@ -748,7 +840,7 @@ namespace MajdataEdit
             {
                 double delta = e.GetPosition(this).X - lastMousePointX;
                 lastMousePointX = e.GetPosition(this).X;
-                ScrollWave(delta*zoominPower*4d);
+                ScrollWave(delta * zoominPower * 4d);
             }
             lastMousePointX = e.GetPosition(this).X;
         }
@@ -823,14 +915,14 @@ namespace MajdataEdit
 
             Export_Button.Content = "停止查看器";
             Majson jsonStruct = new Majson();
-            foreach(var note in SimaiProcess.notelist)
+            foreach (var note in SimaiProcess.notelist)
             {
                 note.noteList = note.getNotes();
                 jsonStruct.timingList.Add(note);
             }
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonStruct);
             var path = maidataDir + "/majdata.json";
-            System.IO.File.WriteAllText(path,json);
+            System.IO.File.WriteAllText(path, json);
             EditRequestjson request = new EditRequestjson();
             request.control = EditorControlMethod.Start;
             request.jsonPath = path;
@@ -843,14 +935,14 @@ namespace MajdataEdit
             if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return; }
             Task.Run(() =>
             {
-                while (DateTime.Now.Ticks < request.startAt);
+                while (DateTime.Now.Ticks < request.startAt) ;
                 Dispatcher.Invoke(() =>
                 {
                     TogglePlayAndPause();
                 });
             });
             isExternalRunning = true;
-            
+
         }
 
         private void BPMtap_MenuItem_Click(object sender, RoutedEventArgs e)
@@ -895,5 +987,6 @@ namespace MajdataEdit
             ShowWindow(windowPtr, 1);//还原窗口
             SwitchToThisWindow(windowPtr, true);
         }
+
     }
 }
