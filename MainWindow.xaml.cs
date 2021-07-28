@@ -1035,7 +1035,28 @@ namespace MajdataEdit
         void InternalSwitchWindow()
         {
             var windowPtr = FindWindow(null, "MajdataView");
-            MoveWindow(windowPtr, (int)(this.Left - this.Height + 20), (int)this.Top, (int)this.Height - 20, (int)this.Height, true);
+
+            PresentationSource source = PresentationSource.FromVisual(this);
+
+            double dpiX = 1, dpiY = 1;
+            if (source != null)
+            {
+                dpiX = 96.0 * source.CompositionTarget.TransformToDevice.M11;
+                dpiY = 96.0 * source.CompositionTarget.TransformToDevice.M22;
+            }
+
+            //Console.WriteLine(dpiX+" "+dpiY);
+            dpiX = dpiX / 96d;
+            dpiY = dpiY / 96d;
+
+            var Height = this.Height * dpiY;
+            var Left = this.Left * dpiX;
+            var Top = this.Top * dpiY;
+            MoveWindow(windowPtr, 
+                (int)(Left - Height + 20), 
+                (int)Top, 
+                (int)Height - 20, 
+                (int)Height, true);
             ShowWindow(windowPtr, 1);//还原窗口
             SwitchToThisWindow(windowPtr, true);
         }
