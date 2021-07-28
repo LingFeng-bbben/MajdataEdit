@@ -32,11 +32,14 @@ namespace MajdataEdit
         public MainWindow()
         {
             InitializeComponent();
+            if (Environment.GetCommandLineArgs().Contains("--ForceSoftwareRender"))
+            {
+                MessageBox.Show("正在以软件渲染模式运行");
+                RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+            }
         }
 
-        int bgmStream = -1024;
-        int clickStream = -8848;
-        int breakStream = -114514;
+
 
         string GetRawFumenText()
         {
@@ -164,6 +167,14 @@ namespace MajdataEdit
         Timer currentTimeRefreshTimer = new Timer(100);
         Timer clickSoundTimer = new Timer(10);
         Timer VisualEffectRefreshTimer = new Timer(1);
+
+        int bgmStream = -1024;
+        int clickStream = -8848;
+        int breakStream = -114514;
+        int exStream = -1919;
+        int hanabiStream = -810;
+        int holdRiserStream = -52013;
+        int trackStartStream = 66065;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             CheckAndStartView();
@@ -171,8 +182,13 @@ namespace MajdataEdit
             var handle = (new WindowInteropHelper(this)).Handle;
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
 
-            clickStream = Bass.BASS_StreamCreateFile("tap.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            breakStream = Bass.BASS_StreamCreateFile("break.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            var path = Environment.CurrentDirectory + "/SFX/";
+            clickStream = Bass.BASS_StreamCreateFile(path+"tap.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            breakStream = Bass.BASS_StreamCreateFile(path + "break.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            exStream = Bass.BASS_StreamCreateFile(path + "ex.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            hanabiStream = Bass.BASS_StreamCreateFile(path + "hanabi.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            holdRiserStream = Bass.BASS_StreamCreateFile(path + "touchHold_riser.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            trackStartStream = Bass.BASS_StreamCreateFile(path + "track_start.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
 
             currentTimeRefreshTimer.Elapsed += CurrentTimeRefreshTimer_Elapsed;
             currentTimeRefreshTimer.Start();
@@ -261,6 +277,7 @@ namespace MajdataEdit
         bool isDrawing = false;
         private async void DrawWave(double ghostCusorPositionTime = 0)
         {
+            
             if (isDrawing) return;
             isDrawing = true;
             var writableBitmap = new WriteableBitmap(waveLevels.Length * zoominPower, 74, 72, 72, PixelFormats.Pbgra32, null);
@@ -307,22 +324,28 @@ namespace MajdataEdit
                     bpmChangeTimes.Add(Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetLength(bgmStream)));
                     double time = 0;
                     int beat = 4; //预留拍号
+                    int currentBeat = 1;
                     pen = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
                     for (int i = 1; i < bpmChangeTimes.Count; i++)
                     {
                         while (time < bpmChangeTimes[i])//在那个时间之前都是之前的bpm
                         {
+                            if (currentBeat > beat) currentBeat = 1;
                             var xbase = (float)(time / sampleTime) * zoominPower;
                             var timePerBeat = 1d / (bpmChangeValues[i - 1] / 60d);
-                            float x = (float)(timePerBeat / sampleTime) * zoominPower;
-                            for (int j = 0; j < beat; j++)
+                            float xoneBeat = (float)(timePerBeat / sampleTime) * zoominPower;
+                            if (currentBeat == 1)
                             {
-                                graphics.DrawLine(pen, x * j + xbase, 0, x * j + xbase, 15);
-
+                                graphics.DrawLine(pen, xbase, 0, xbase, 75);
                             }
-                            graphics.DrawLine(pen, x * beat + xbase, 0, x * beat + xbase, 75);
-                            time += timePerBeat * beat;
+                            else
+                            {
+                                graphics.DrawLine(pen, xbase, 0, xbase, 15);
+                            }
+                            currentBeat++;
+                            time += timePerBeat;
                         }
+                        currentBeat = 1;
                     }
 
                     //Draw timing lines
@@ -531,20 +554,29 @@ namespace MajdataEdit
                 if (currentTime - nearestTime < 0.05 && currentTime - nearestTime > -0.05)
                 {
                     var notes = waitToBePlayed[0].getNotes();
+                    Bass.BASS_ChannelPlay(clickStream, true);
+
                     if (notes.FindAll(o => o.isBreak).Count > 0) //may cause delay
                     {
                         Bass.BASS_ChannelPlay(breakStream, true);
                     }
-                    else
+                    if (notes.FindAll(o => o.isHanabi&&o.noteType==SimaiNoteType.Touch).Count > 0) //may cause delay
                     {
-                        Bass.BASS_ChannelPlay(clickStream, true);
+                        Bass.BASS_ChannelPlay(hanabiStream, true);
+                    }
+                    if(notes.FindAll(o => o.isEx).Count > 0)
+                    {
+                        Bass.BASS_ChannelPlay(exStream, true);
+                    }
+                    if(notes.FindAll(o => o.noteType==SimaiNoteType.TouchHold).Count > 0)
+                    {
+                        Bass.BASS_ChannelPlay(holdRiserStream, true);
                     }
                     //
-                    Dispatcher.Invoke(() =>
-                    {
-                        NoteNowText.Content = waitToBePlayed[0].notesContent;
-                        if ((bool)FollowPlayCheck.IsChecked)
-                            SeekTextFromTime();
+                    Dispatcher.Invoke(() => { 
+                        
+                    if ((bool)FollowPlayCheck.IsChecked)
+                        SeekTextFromTime(); 
                     });
                     //Console.WriteLine(waitToBePlayed[0].content);
                     SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime)[0].havePlayed = true; //Since the data was added as time followed, we modify the first one
@@ -557,6 +589,21 @@ namespace MajdataEdit
                             holdClickTimer.AutoReset = false;
                             holdClickTimer.Start();
                         }
+                        if (note.noteType == SimaiNoteType.TouchHold)
+                        {
+                            Timer holdClickTimer = new Timer(note.holdTime * 1000d);
+                            holdClickTimer.Elapsed += HoldRiserTimer_Elapsed;
+                            holdClickTimer.AutoReset = false;
+                            holdClickTimer.Start();
+                        }
+                        if (note.noteType == SimaiNoteType.TouchHold && note.isHanabi)
+                        {
+                            Timer holdClickTimer = new Timer(note.holdTime * 1000d);
+                            holdClickTimer.Elapsed += HoldHanibiTimer_Elapsed;
+                            holdClickTimer.Elapsed += HoldRiserTimer_Elapsed;
+                            holdClickTimer.AutoReset = false;
+                            holdClickTimer.Start();
+                        }
                     }
                 }
 
@@ -566,8 +613,23 @@ namespace MajdataEdit
 
         private void HoldClickTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine("ELa");
             Bass.BASS_ChannelPlay(clickStream, true);
+            var father = (Timer)sender;
+            father.Stop();
+            father.Dispose();
+        }
+        private void HoldHanibiTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Bass.BASS_ChannelPlay(hanabiStream, true);
+            var father = (Timer)sender;
+            father.Stop();
+            father.Dispose();
+        }
+
+        private void HoldRiserTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Bass.BASS_ChannelStop(holdRiserStream);
+            Console.WriteLine("stop");
             var father = (Timer)sender;
             father.Stop();
             father.Dispose();
@@ -597,6 +659,10 @@ namespace MajdataEdit
             Bass.BASS_StreamFree(clickStream);
             Bass.BASS_ChannelStop(breakStream);
             Bass.BASS_StreamFree(breakStream);
+            Bass.BASS_ChannelStop(exStream);
+            Bass.BASS_StreamFree(exStream);
+            Bass.BASS_ChannelStop(hanabiStream);
+            Bass.BASS_StreamFree(hanabiStream);
             Bass.BASS_Stop();
             Bass.BASS_Free();
         }
@@ -613,44 +679,72 @@ namespace MajdataEdit
 
         double playStartTime = 0d;
 
-        void TogglePlayAndPause()
+        void TogglePlay()
         {
-            FumenContent.Focus();
-            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
-            {
-                PlayAndPauseButton.Content = "▶";
-                Bass.BASS_ChannelStop(bgmStream);
-                clickSoundTimer.Stop();
-                DrawWave();
-            }
-            else
-            {
-                PlayAndPauseButton.Content = "  ▌▌ ";
-                SaveRawFumenText();
-                var CusorTime = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());//scan first
-                var channeltime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                playStartTime = channeltime;
+            if (isExternalRunning == false) Export_Button.IsEnabled = false;
 
-                Bass.BASS_ChannelPlay(bgmStream, false);
-                SimaiProcess.ClearNoteListPlayedState();
-                DrawWave(CusorTime); //then the wave could be draw
-                clickSoundTimer.Start();
-            }
+            FumenContent.Focus();
+            PlayAndPauseButton.Content = "  ▌▌ ";
+            SaveRawFumenText();
+            var CusorTime = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());//scan first
+            var channeltime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+            playStartTime = channeltime;
+
+            Bass.BASS_ChannelPlay(bgmStream, false);
+            SimaiProcess.ClearNoteListPlayedState();
+            DrawWave(CusorTime); //then the wave could be draw
+            clickSoundTimer.Start();
         }
 
-        void ToggleStop()
+        void TogglePause()
         {
+            if (isExternalRunning == false) Export_Button.IsEnabled = true;
+
             FumenContent.Focus();
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
             clickSoundTimer.Stop();
+            sendRequestStop();
+            DrawWave();
+        }
+        void ToggleStop()
+        {
+            if (isExternalRunning == false) Export_Button.IsEnabled = true;
+
+
+            FumenContent.Focus();
+            PlayAndPauseButton.Content = "▶";
+            Bass.BASS_ChannelStop(bgmStream);
+            clickSoundTimer.Stop();
+            sendRequestStop();
             Bass.BASS_ChannelSetPosition(bgmStream, playStartTime);
             DrawWave();
         }
-
-        private void PlayAndPause_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        void TogglePlayAndPause()
         {
-            TogglePlayAndPause();
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
+            {
+                TogglePause();
+            }
+            else
+            {
+                TogglePlay();
+            }
+        }
+        void TogglePlayAndStop()
+        {
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
+            {
+                ToggleStop();
+            }
+            else
+            {
+                TogglePlay();
+            }
+        }
+        private void PlayAndPause_CanExecute(object sender, CanExecuteRoutedEventArgs e) //快捷键
+        {
+            TogglePlayAndStop();
         }
 
         private void PlayAndPauseButton_Click(object sender, RoutedEventArgs e)
@@ -658,9 +752,9 @@ namespace MajdataEdit
             TogglePlayAndPause();
         }
 
-        private void StopPlaying_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void StopPlaying_CanExecute(object sender, CanExecuteRoutedEventArgs e) //快捷键
         {
-            ToggleStop();
+            TogglePlayAndPause();
         }
 
         private void HightLightCode_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -674,6 +768,11 @@ namespace MajdataEdit
 
         private void FumenContent_SelectionChanged(object sender, RoutedEventArgs e)
         {
+            NoteNowText.Content = "" + (
+                 new TextRange(FumenContent.Document.ContentStart, FumenContent.CaretPosition).Text.
+                 Replace("\r", "").Count(o => o == '\n') + 1) + " 行";
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked)
+                return;
             var time = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
@@ -740,9 +839,7 @@ namespace MajdataEdit
         {
             if (!isSaved)
             {
-                var result = MessageBox.Show("未保存，要保存吗？", "警告", MessageBoxButton.YesNoCancel);
-                if (result == MessageBoxResult.Yes) SaveRawFumenText(true);
-                if (result == MessageBoxResult.Cancel) { return; }
+                if (!AskSave()) return;
             }
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "track.mp3|track.mp3";
@@ -768,9 +865,7 @@ namespace MajdataEdit
         {
             if (!isSaved)
             {
-                var result = MessageBox.Show("未保存，要保存吗？", "警告", MessageBoxButton.YesNoCancel);
-                if (result == MessageBoxResult.Yes) SaveRawFumenText(true);
-                if (result == MessageBoxResult.Cancel) { return; }
+                if (!AskSave()) return;
             }
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "maidata.txt|maidata.txt";
@@ -779,6 +874,19 @@ namespace MajdataEdit
                 FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
                 initFromFile(fileInfo.DirectoryName);
             }
+        }
+
+        bool AskSave()
+        {
+            var result = MessageBox.Show("未保存，要保存吗？", "警告", MessageBoxButton.YesNoCancel);
+            if (result == MessageBoxResult.Yes) {
+                SaveRawFumenText(true); 
+                return true; 
+            }
+            if (result == MessageBoxResult.Cancel) { 
+                return false; 
+            }
+            return true;
         }
 
         private void Menu_Save_Click(object sender, RoutedEventArgs e)
@@ -819,6 +927,7 @@ namespace MajdataEdit
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             var destnationTime = time + (0.002d * -delta * (1.0d / zoominPower));
             Bass.BASS_ChannelSetPosition(bgmStream, destnationTime);
+            SimaiProcess.ClearNoteListPlayedState();
 
             SeekTextFromTime();
         }
@@ -894,55 +1003,89 @@ namespace MajdataEdit
         }
         bool isExternalRunning = false;
 
-
-        Process viewProcess;
-        private void Export_Button_Click(object sender, RoutedEventArgs e)
+        bool sendRequestStop()
         {
+            if (isExternalRunning == false) return false;
+            Export_Button.Content = "发到查看器";
+            EditRequestjson requestStop = new EditRequestjson();
+            requestStop.control = EditorControlMethod.Stop;
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(requestStop);
+            var response = WebControl.RequestPOST("http://localhost:8013/", json);
+            isExternalRunning = false;
+            if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
+            return true;
+        }
 
-            if (CheckAndStartView()) return;
-
-            if (isExternalRunning)
-            {
-                Export_Button.Content = "发到查看器";
-                EditRequestjson requestStop = new EditRequestjson();
-                requestStop.control = EditorControlMethod.Stop;
-                string json1 = Newtonsoft.Json.JsonConvert.SerializeObject(requestStop);
-                WebControl.RequestPOST("http://localhost:8013/", json1);
-                isExternalRunning = false;
-                ToggleStop();
-                return;
-            }
-
-            Export_Button.Content = "停止查看器";
+        bool sendRequestRun(DateTime StartAt)
+        {
+            
             Majson jsonStruct = new Majson();
             foreach (var note in SimaiProcess.notelist)
             {
                 note.noteList = note.getNotes();
                 jsonStruct.timingList.Add(note);
             }
+
+            jsonStruct.title = SimaiProcess.title;
+            jsonStruct.artist = SimaiProcess.artist;
+            jsonStruct.level = SimaiProcess.levels[selectedDifficulty];
+            jsonStruct.designer = SimaiProcess.designer;
+            jsonStruct.difficulty = SimaiProcess.GetDifficultyText(selectedDifficulty);
+            jsonStruct.diffNum = selectedDifficulty;
+
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonStruct);
             var path = maidataDir + "/majdata.json";
             System.IO.File.WriteAllText(path, json);
             EditRequestjson request = new EditRequestjson();
             request.control = EditorControlMethod.Start;
             request.jsonPath = path;
-            request.startAt = DateTime.Now.AddSeconds(1).Ticks;
+            request.startAt = StartAt.Ticks;
             request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             request.playSpeed = float.Parse(ViewerSpeed.Text);
             request.backgroundCover = float.Parse(ViewerCover.Text);
+
             json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
-            if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return; }
+            if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
+            isExternalRunning = true;
+            Export_Button.Content = "停止查看器";
+            return true;
+        }
+
+        private void ToggleExport()
+        {
+            if (!Export_Button.IsEnabled) return;
+            if (CheckAndStartView()) return;
+            if (isExternalRunning)
+            {
+                ToggleStop();//contains send Request
+                return;
+            }
+            var startAt = DateTime.Now.AddSeconds(0d);
+            if ((float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream)) == 0f) {
+                startAt = DateTime.Now.AddSeconds(4.4d);
+                Bass.BASS_ChannelPlay(trackStartStream, true);
+            }
+            if (!sendRequestRun(startAt)) return;
+
             Task.Run(() =>
             {
-                while (DateTime.Now.Ticks < request.startAt) ;
+                while (DateTime.Now.Ticks < startAt.Ticks) ;
                 Dispatcher.Invoke(() =>
                 {
                     TogglePlayAndPause();
                 });
             });
-            isExternalRunning = true;
+        }
 
+        private void SendToView_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            ToggleExport();
+        }
+
+        private void Export_Button_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleExport();
         }
 
         private void BPMtap_MenuItem_Click(object sender, RoutedEventArgs e)
@@ -950,12 +1093,12 @@ namespace MajdataEdit
             BPMtap tap = new BPMtap();
             tap.Show();
         }
-
+        
         bool CheckAndStartView()
         {
             if (Process.GetProcessesByName("MajdataView").Length == 0 && Process.GetProcessesByName("Unity").Length == 0)
             {
-                viewProcess = Process.Start("MajdataView.exe");
+                var viewProcess = Process.Start("MajdataView.exe");
                 Timer setWindowPosTimer = new Timer(2000);
                 setWindowPosTimer.AutoReset = false;
                 setWindowPosTimer.Elapsed += SetWindowPosTimer_Elapsed;
@@ -983,10 +1126,78 @@ namespace MajdataEdit
         void InternalSwitchWindow()
         {
             var windowPtr = FindWindow(null, "MajdataView");
-            MoveWindow(windowPtr, (int)(this.Left - this.Height + 20), (int)this.Top, (int)this.Height - 20, (int)this.Height, true);
+
+            PresentationSource source = PresentationSource.FromVisual(this);
+
+            double dpiX = 1, dpiY = 1;
+            if (source != null)
+            {
+                dpiX = 96.0 * source.CompositionTarget.TransformToDevice.M11;
+                dpiY = 96.0 * source.CompositionTarget.TransformToDevice.M22;
+            }
+
+            //Console.WriteLine(dpiX+" "+dpiY);
+            dpiX = dpiX / 96d;
+            dpiY = dpiY / 96d;
+
+            var Height = this.Height * dpiY;
+            var Left = this.Left * dpiX;
+            var Top = this.Top * dpiY;
+            MoveWindow(windowPtr, 
+                (int)(Left - Height + 20), 
+                (int)Top, 
+                (int)Height - 20, 
+                (int)Height, true);
             ShowWindow(windowPtr, 1);//还原窗口
             SwitchToThisWindow(windowPtr, true);
         }
 
+        private void Grid_DragEnter(object sender, DragEventArgs e)
+        {
+
+            e.Effects = DragDropEffects.Move;           
+        }
+
+        private void Grid_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                Console.WriteLine(e.Data.GetData(DataFormats.FileDrop).ToString());
+                if (e.Data.GetData(DataFormats.FileDrop).ToString() == "System.String[]")
+                {
+                    var path = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
+                    if (path.ToLower().Contains("maidata.txt"))
+                    {
+                        if (!isSaved)
+                        {
+                            if (!AskSave()) return;
+                        }
+                        FileInfo fileInfo = new FileInfo(path);
+                        initFromFile(fileInfo.DirectoryName);
+
+                    }
+                    
+                    return;
+                }
+            }
+        }
+
+        private void MirrorLeftRight_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var result = Mirror.NoteMirrorLeftRight(FumenContent.Selection.Text);
+            FumenContent.Selection.Text = result;
+        }
+
+        private void MirrorUpDown_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var result = Mirror.NoteMirrorUpDown(FumenContent.Selection.Text);
+            FumenContent.Selection.Text = result;
+        }
+
+        private void Mirror180_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var result = Mirror.NoteMirror180(FumenContent.Selection.Text);
+            FumenContent.Selection.Text = result;
+        }
     }
 }

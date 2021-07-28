@@ -227,7 +227,6 @@ namespace MajdataEdit
                 notelist[i].havePlayed = false;
             }
         }
-
         static private bool isNote(char noteText)
         {
             string SlideMarks = "1234567890ABCDE"; ///ABCDE for touch
@@ -236,6 +235,17 @@ namespace MajdataEdit
                 if (noteText==mark) return true;
             }
             return false;
+        }
+        static public string GetDifficultyText(int index)
+        {
+            if (index == 0) return "EASY";
+            if (index == 1) return "BASIC";
+            if (index == 2) return "ADVANCED";
+            if (index == 3) return "EXPERT";
+            if (index == 4) return "MASTER";
+            if (index == 5) return "Re:MASTER";
+            if (index == 6) return "ORIGINAL";
+            return "DEFAULT";
         }
     }
 
@@ -354,12 +364,6 @@ namespace MajdataEdit
                     Console.WriteLine("Hold:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
                 }
             }
-            //break
-            if (noteText.Contains('b'))
-            {
-                simaiNote.isBreak = true;
-                noteText.Replace("b", "");
-            }
             //slide
             if (isSlideNote(noteText)) {
                 simaiNote.noteType = SimaiNoteType.Slide;
@@ -368,7 +372,18 @@ namespace MajdataEdit
                 simaiNote.slideStartTime = time + timeStarWait;
                 Console.WriteLine("Slide:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.slideTime);
             }
-
+            //break
+            if (noteText.Contains('b'))
+            {
+                simaiNote.isBreak = true;
+                noteText = noteText.Replace("b", "");
+            }
+            //EX
+            if (noteText.Contains('x'))
+            {
+                simaiNote.isEx = true;
+                noteText = noteText.Replace("x", "");
+            }
             simaiNote.noteContent = noteText;
             return simaiNote;
         }
@@ -397,12 +412,14 @@ namespace MajdataEdit
             var startIndex = noteText.IndexOf('[');
             var overIndex = noteText.IndexOf(']');
             var innerString = noteText.Substring(startIndex + 1, overIndex - startIndex-1);
+            var timeOneBeat = 1d / (currentBpm / 60d);
             if (innerString.Count(o => o == '#') == 1)
             {
                 var times = innerString.Split('#');
                 if (times[1].Contains(':'))
                 {
                     innerString = times[1];
+                    timeOneBeat = 1d / (double.Parse(times[0]) / 60d);
                 }
                 else
                 {
@@ -417,7 +434,7 @@ namespace MajdataEdit
             var numbers = innerString.Split(':');   //TODO:customBPM
             var divide = int.Parse(numbers[0]);
             var count = int.Parse(numbers[1]);
-            var timeOneBeat = 1d / (currentBpm / 60d);
+            
 
             return (timeOneBeat*4d / (double)divide) * (double)count; 
         }
@@ -450,12 +467,165 @@ namespace MajdataEdit
         public SimaiNoteType noteType;
         public bool isBreak = false;
         public bool isHanabi = false;
-        //bool isExnote = false;
+        public bool isEx = false;
         public int startPosition = 1; //键位（1-8）
         public char touchArea = ' ';
         public double holdTime = 0d;
         public double slideStartTime = 0d;
         public double slideTime = 0d;
         public string noteContent; //used for star explain
+    }
+
+    static class Mirror
+    {
+        static public string NoteMirrorLeftRight(string str)
+        {
+
+            string s = "";
+            Dictionary<string, string> MirrorLR = new Dictionary<string, string>();//左右
+            MirrorLR.Add("8", "1");
+            MirrorLR.Add("1", "8");
+            MirrorLR.Add("2", "7");
+            MirrorLR.Add("7", "2");
+            MirrorLR.Add("3", "6");
+            MirrorLR.Add("6", "3");
+            MirrorLR.Add("4", "5");
+            MirrorLR.Add("5", "4");
+            MirrorLR.Add("q", "p");
+            MirrorLR.Add("p", "q");
+            MirrorLR.Add("<", ">");
+            MirrorLR.Add(">", "<");
+            MirrorLR.Add("z", "s");
+            MirrorLR.Add("s", "z");
+            char[] a = str.ToCharArray();
+            for (int i = 0; i < a.Length; i++)
+            {
+                string s1 = a[i].ToString();
+                if (a[i] == '{' || a[i] == '[' || a[i] == '(')
+                {
+                    s += s1;
+
+                    while (i+1<a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+                    {
+                        i += 1;
+                        s += a[i];
+
+
+                    }
+                }
+                else
+                {
+                    if (MirrorLR.ContainsKey(s1))
+                    {
+                        s += MirrorLR[s1];
+                    }
+                    else
+                    {
+                        s += s1;
+                    }
+                }
+
+
+            }
+            return s;
+        }
+        static public string NoteMirrorUpDown(string str)
+        {
+
+            string s = "";
+            Dictionary<string, string> MirrorUD = new Dictionary<string, string>();//上下（全反=上下+左右）
+            MirrorUD.Add("4", "1");
+            MirrorUD.Add("5", "8");
+            MirrorUD.Add("6", "7");
+            MirrorUD.Add("3", "2");
+            MirrorUD.Add("7", "6");
+            MirrorUD.Add("2", "3");
+            MirrorUD.Add("8", "5");
+            MirrorUD.Add("1", "4");
+            MirrorUD.Add("q", "p");
+            MirrorUD.Add("p", "q");
+            MirrorUD.Add("z", "s");
+            MirrorUD.Add("s", "z");
+            char[] a = str.ToCharArray();
+            for (int i = 0; i < a.Length; i++)
+            {
+                string s1 = a[i].ToString();
+                if (a[i] == '{' || a[i] == '[' || a[i] == '(')//跳过括号内内容
+                {
+                    s += s1;
+
+                    while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+                    {
+                        i += 1;
+                        s += a[i];
+
+
+                    }
+                }
+                else
+                {
+                    if (MirrorUD.ContainsKey(s1))
+                    {
+                        s += MirrorUD[s1];
+                    }
+                    else
+                    {
+                        s += s1;
+                    }
+                }
+
+
+            }
+            //     Console.WriteLine(s);
+            //     Console.ReadKey();
+            return s;
+        }
+        static public string NoteMirror180(string str)//翻转180°
+        {
+
+            string s = "";
+            Dictionary<string, string> Mirror180 = new Dictionary<string, string>();
+            Mirror180.Add("5", "1");
+            Mirror180.Add("4", "8");
+            Mirror180.Add("3", "7");
+            Mirror180.Add("6", "2");
+            Mirror180.Add("2", "6");
+            Mirror180.Add("7", "3");
+            Mirror180.Add("1", "5");
+            Mirror180.Add("8", "4");
+            Mirror180.Add("<", ">");
+            Mirror180.Add(">", "<");
+            char[] a = str.ToCharArray();
+            for (int i = 0; i < a.Length; i++)
+            {
+                string s1 = a[i].ToString();
+                if (a[i] == '{' || a[i] == '[' || a[i] == '(')
+                {
+                    s += s1;
+
+                    while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+                    {
+                        i += 1;
+                        s += a[i];
+
+
+                    }
+                }
+                else
+                {
+                    if (Mirror180.ContainsKey(s1))
+                    {
+                        s += Mirror180[s1];
+                    }
+                    else
+                    {
+                        s += s1;
+                    }
+                }
+
+
+            }
+            return s;
+        }
     }
 }

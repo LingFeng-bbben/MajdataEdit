@@ -7,39 +7,8 @@
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Name="TheWindow" x:Class="MajdataEdit.MainWindow"
         mc:Ignorable="d"
         Title="MajdataEdit" Height="552" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="508" MouseDoubleClick="TheWindow_MouseDoubleClick" WindowStartupLocation="CenterScreen">
-    <Window.Resources>
-        <ControlTemplate x:Key="DarkButton" TargetType="{x:Type ButtonBase}">
 
-            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Button.IsDefaulted" Value="True">
-                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" TargetName="border" Value="#FF595959"/>
-                    <Setter Property="BorderBrush" TargetName="border" Value="#FF3C7FB1"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" TargetName="border" Value="#FF878787"/>
-                    <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>
-                </Trigger>
-                <Trigger Property="ToggleButton.IsChecked" Value="True">
-                    <Setter Property="Background" TargetName="border" Value="#FFBCDDEE"/>
-                    <Setter Property="BorderBrush" TargetName="border" Value="#FF245A83"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" TargetName="border" Value="#FFF4F4F4"/>
-                    <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
-                    <Setter Property="Foreground" Value="#FF838383"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <Color x:Key="ButtonBackground" R="255" G="255" B="255"/>
-    </Window.Resources>
-
-    <Grid Margin="0" Background="{DynamicResource WindowBackground}">
+    <Grid Margin="0" Background="{DynamicResource WindowBackground}" DragEnter="Grid_DragEnter" AllowDrop="True" Drop="Grid_Drop">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -56,7 +25,12 @@
                 <MenuItem x:Name="Menu_SaveAs" Header="另存为" Click="Menu_SaveAs_Click" IsEnabled="False"/>
             </MenuItem>
             <MenuItem x:Name="MenuEdit" Header="编辑" IsEnabled="False" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
-                <MenuItem Header="一般谱面信息" Click="MenuItem_InfomationEdit_Click"/>
+                <MenuItem Header="左右翻转选择" Click="MirrorLeftRight_MenuItem_Click"/>
+                <MenuItem Header="上下翻转选择" Click="MirrorUpDown_MenuItem_Click"/>
+                <MenuItem Header="180°翻转选择" Click="Mirror180_MenuItem_Click"/>
+                <Separator/>
+                <MenuItem Header="谱面信息" Click="MenuItem_InfomationEdit_Click"/>
+                
             </MenuItem>
             <MenuItem Header="工具" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
                 <MenuItem Header="BPM tap" Click="BPMtap_MenuItem_Click"/>
@@ -81,6 +55,7 @@
                 <RoutedUICommand x:Key="SaveFile" Text="SaveFile"/>
                 <RoutedUICommand x:Key="StopPlaying" Text="StopPlaying"/>
                 <RoutedUICommand x:Key="HightLightCode" Text="HightLightCode"/>
+                <RoutedUICommand x:Key="SendToView" Text="SendToView"/>
             </RichTextBox.Resources>
             <RichTextBox.Background>
                 <SolidColorBrush Color="#FF171717" Opacity="0.3"/>
@@ -90,12 +65,14 @@
                 <KeyBinding Gesture="Ctrl+s" Command="{StaticResource SaveFile}"/>
                 <KeyBinding Gesture="Ctrl+Shift+x" Command="{StaticResource StopPlaying}"/>
                 <KeyBinding Gesture="Ctrl+f" Command="{StaticResource HightLightCode}"/>
+                <KeyBinding Gesture="Ctrl+Shift+z" Command="{StaticResource SendToView}"/>
             </RichTextBox.InputBindings>
             <RichTextBox.CommandBindings>
                 <CommandBinding Command="{StaticResource PlayAndPause}" CanExecute="PlayAndPause_CanExecute"/>
                 <CommandBinding Command="{StaticResource SaveFile}" CanExecute="SaveFile_Command_CanExecute"/>
                 <CommandBinding Command="{StaticResource StopPlaying}" CanExecute="StopPlaying_CanExecute"/>
                 <CommandBinding Command="{StaticResource HightLightCode}" CanExecute="HightLightCode_CanExecute"/>
+                <CommandBinding Command="{StaticResource SendToView}" CanExecute="SendToView_CanExecute"/>
             </RichTextBox.CommandBindings>
             <FlowDocument/>
         </RichTextBox>

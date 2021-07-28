@@ -5,7 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:MajdataEdit" xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
              mc:Ignorable="d"
-             StartupUri="MainWindow.xaml">
+             StartupUri="MainWindow.xaml"
+             DispatcherUnhandledException="Application_DispatcherUnhandledException">
     <Application.Resources>
 
         
@@ -30,9 +31,9 @@
                     <Setter Property="BorderBrush" TargetName="border" Value="#FF245A83"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" TargetName="border" Value="#FFF4F4F4"/>
-                    <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
-                    <Setter Property="Foreground" Value="#FF838383"/>
+
+                    <Setter Property="Background" TargetName="border" Value="Black"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF5D0000"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>

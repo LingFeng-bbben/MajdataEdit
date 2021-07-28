@@ -13,5 +13,10 @@ namespace MajdataEdit
     /// </summary>
     public partial class App : Application
     {
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show(e.Exception.Source+" At:\n"+e.Exception.Message+"\n"+e.Exception.StackTrace, "发生错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            e.Handled = true;
+        }
     }
 }
