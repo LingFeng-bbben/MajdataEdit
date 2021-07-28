@@ -475,4 +475,157 @@ namespace MajdataEdit
         public double slideTime = 0d;
         public string noteContent; //used for star explain
     }
+
+    static class Mirror
+    {
+        static public string NoteMirrorLeftRight(string str)
+        {
+
+            string s = "";
+            Dictionary<string, string> MirrorLR = new Dictionary<string, string>();//左右
+            MirrorLR.Add("8", "1");
+            MirrorLR.Add("1", "8");
+            MirrorLR.Add("2", "7");
+            MirrorLR.Add("7", "2");
+            MirrorLR.Add("3", "6");
+            MirrorLR.Add("6", "3");
+            MirrorLR.Add("4", "5");
+            MirrorLR.Add("5", "4");
+            MirrorLR.Add("q", "p");
+            MirrorLR.Add("p", "q");
+            MirrorLR.Add("<", ">");
+            MirrorLR.Add(">", "<");
+            MirrorLR.Add("z", "s");
+            MirrorLR.Add("s", "z");
+            char[] a = str.ToCharArray();
+            for (int i = 0; i < a.Length; i++)
+            {
+                string s1 = a[i].ToString();
+                if (a[i] == '{' || a[i] == '[' || a[i] == '(')
+                {
+                    s += s1;
+
+                    while (i+1<a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+                    {
+                        i += 1;
+                        s += a[i];
+
+
+                    }
+                }
+                else
+                {
+                    if (MirrorLR.ContainsKey(s1))
+                    {
+                        s += MirrorLR[s1];
+                    }
+                    else
+                    {
+                        s += s1;
+                    }
+                }
+
+
+            }
+            return s;
+        }
+        static public string NoteMirrorUpDown(string str)
+        {
+
+            string s = "";
+            Dictionary<string, string> MirrorUD = new Dictionary<string, string>();//上下（全反=上下+左右）
+            MirrorUD.Add("4", "1");
+            MirrorUD.Add("5", "8");
+            MirrorUD.Add("6", "7");
+            MirrorUD.Add("3", "2");
+            MirrorUD.Add("7", "6");
+            MirrorUD.Add("2", "3");
+            MirrorUD.Add("8", "5");
+            MirrorUD.Add("1", "4");
+            MirrorUD.Add("q", "p");
+            MirrorUD.Add("p", "q");
+            MirrorUD.Add("z", "s");
+            MirrorUD.Add("s", "z");
+            char[] a = str.ToCharArray();
+            for (int i = 0; i < a.Length; i++)
+            {
+                string s1 = a[i].ToString();
+                if (a[i] == '{' || a[i] == '[' || a[i] == '(')//跳过括号内内容
+                {
+                    s += s1;
+
+                    while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+                    {
+                        i += 1;
+                        s += a[i];
+
+
+                    }
+                }
+                else
+                {
+                    if (MirrorUD.ContainsKey(s1))
+                    {
+                        s += MirrorUD[s1];
+                    }
+                    else
+                    {
+                        s += s1;
+                    }
+                }
+
+
+            }
+            //     Console.WriteLine(s);
+            //     Console.ReadKey();
+            return s;
+        }
+        static public string NoteMirror180(string str)//翻转180°
+        {
+
+            string s = "";
+            Dictionary<string, string> Mirror180 = new Dictionary<string, string>();
+            Mirror180.Add("5", "1");
+            Mirror180.Add("4", "8");
+            Mirror180.Add("3", "7");
+            Mirror180.Add("6", "2");
+            Mirror180.Add("2", "6");
+            Mirror180.Add("7", "3");
+            Mirror180.Add("1", "5");
+            Mirror180.Add("8", "4");
+            Mirror180.Add("<", ">");
+            Mirror180.Add(">", "<");
+            char[] a = str.ToCharArray();
+            for (int i = 0; i < a.Length; i++)
+            {
+                string s1 = a[i].ToString();
+                if (a[i] == '{' || a[i] == '[' || a[i] == '(')
+                {
+                    s += s1;
+
+                    while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+                    {
+                        i += 1;
+                        s += a[i];
+
+
+                    }
+                }
+                else
+                {
+                    if (Mirror180.ContainsKey(s1))
+                    {
+                        s += Mirror180[s1];
+                    }
+                    else
+                    {
+                        s += s1;
+                    }
+                }
+
+
+            }
+            return s;
+        }
+    }
 }

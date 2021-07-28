@@ -836,6 +836,7 @@ namespace MajdataEdit
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             var destnationTime = time + (0.002d * -delta * (1.0d / zoominPower));
             Bass.BASS_ChannelSetPosition(bgmStream, destnationTime);
+            SimaiProcess.ClearNoteListPlayedState();
 
             SeekTextFromTime();
         }
@@ -1089,6 +1090,24 @@ namespace MajdataEdit
                     return;
                 }
             }
+        }
+
+        private void MirrorLeftRight_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var result = Mirror.NoteMirrorLeftRight(FumenContent.Selection.Text);
+            FumenContent.Selection.Text = result;
+        }
+
+        private void MirrorUpDown_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var result = Mirror.NoteMirrorUpDown(FumenContent.Selection.Text);
+            FumenContent.Selection.Text = result;
+        }
+
+        private void Mirror180_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var result = Mirror.NoteMirror180(FumenContent.Selection.Text);
+            FumenContent.Selection.Text = result;
         }
     }
 }
