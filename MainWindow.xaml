@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MajdataEdit"
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Name="TheWindow" x:Class="MajdataEdit.MainWindow"
         mc:Ignorable="d"
-        Title="MajdataEdit" Height="552" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="508" MouseDoubleClick="TheWindow_MouseDoubleClick" WindowStartupLocation="CenterScreen">
+        Title="MajdataEdit" Height="517" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="517" MouseDoubleClick="TheWindow_MouseDoubleClick" WindowStartupLocation="CenterScreen">
 
     <Grid Margin="0" Background="{DynamicResource WindowBackground}" DragEnter="Grid_DragEnter" AllowDrop="True" Drop="Grid_Drop">
         <Grid.ColumnDefinitions>
@@ -79,13 +79,13 @@
         <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Left" Height="64" Margin="0,17,0,0" VerticalAlignment="Top" Width="105" Foreground="White" FontFamily="Bahnschrift Light" FontSize="50" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
         <ComboBox x:Name="LevelSelector" Margin="10,155,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="87" Height="21" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkComboBox}">
 
-            <ComboBoxItem Content="&amp;lv_1"/>
-            <ComboBoxItem Content="&amp;lv_2"/>
-            <ComboBoxItem Content="&amp;lv_3"/>
-            <ComboBoxItem Content="&amp;lv_4"/>
-            <ComboBoxItem Content="&amp;lv_5"/>
-            <ComboBoxItem Content="&amp;lv_6"/>
-            <ComboBoxItem Content="&amp;lv_7"/>
+            <ComboBoxItem Content="EASY"/>
+            <ComboBoxItem Content="BASIC"/>
+            <ComboBoxItem Content="ADVANCED"/>
+            <ComboBoxItem Content="EXPERT"/>
+            <ComboBoxItem Content="MASTER"/>
+            <ComboBoxItem Content="Re:MASTER"/>
+            <ComboBoxItem Content="ORIGINAL"/>
         </ComboBox>
         <CheckBox x:Name="SimaiFirst" Content="Simai 0.04s" HorizontalAlignment="Left" Margin="9,130,0,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" IsChecked="True" Height="15" Width="87" Background="{DynamicResource ButtonsBackground}" Template="{DynamicResource DarkCheck}"/>
         <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="10,0,0,41" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomIn_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>

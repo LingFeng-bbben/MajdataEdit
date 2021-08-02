@@ -266,15 +266,9 @@ namespace MajdataEdit
         }
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBoxItem selected = (ComboBoxItem)LevelSelector.SelectedItem;
-            for (int i = 0; i < 7; i++)
-            {
-                if (selected.Content.ToString() == ("&lv_" + (i + 1)))
-                {
-                    SetRawFumenText(SimaiProcess.fumens[i]);
-                    selectedDifficulty = i;
-                }
-            }
+            int i = LevelSelector.SelectedIndex;
+            SetRawFumenText(SimaiProcess.fumens[i]);
+            selectedDifficulty = i;
             LevelTextBox.Text = SimaiProcess.levels[selectedDifficulty];
             SetSavedState(true);
             string Text = GetRawFumenText();
