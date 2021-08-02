@@ -263,7 +263,7 @@ namespace MajdataEdit
             time = _time;
             rawTextPositionX = textposX;
             rawTextPositionY = textposY;
-            notesContent = _content;
+            notesContent = _content.Replace("\n","").Replace(" ","");
             currentBpm = bpm;
         }
 
