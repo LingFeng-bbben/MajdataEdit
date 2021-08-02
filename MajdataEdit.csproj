@@ -93,6 +93,7 @@
     <Compile Include="Infomation.xaml.cs">
       <DependentUpon>Infomation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindowCore.cs" />
     <Compile Include="Majson.cs" />
     <Compile Include="SimaiProcess.cs" />
     <Compile Include="WebControl.cs" />
