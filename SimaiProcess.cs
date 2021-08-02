@@ -482,30 +482,30 @@ namespace MajdataEdit
         {
 
             string s = "";
-            Dictionary<string, string> MirrorLR = new Dictionary<string, string>();//左右
-            MirrorLR.Add("8", "1");
-            MirrorLR.Add("1", "8");
-            MirrorLR.Add("2", "7");
-            MirrorLR.Add("7", "2");
-            MirrorLR.Add("3", "6");
-            MirrorLR.Add("6", "3");
-            MirrorLR.Add("4", "5");
-            MirrorLR.Add("5", "4");
-            MirrorLR.Add("q", "p");
-            MirrorLR.Add("p", "q");
-            MirrorLR.Add("<", ">");
-            MirrorLR.Add(">", "<");
-            MirrorLR.Add("z", "s");
-            MirrorLR.Add("s", "z");
-            Dictionary<string, string> MirrorTLR = new Dictionary<string, string>();//Touch左右
-            MirrorTLR.Add("8", "2");
-            MirrorTLR.Add("2", "8");
-            MirrorTLR.Add("3", "7");
-            MirrorTLR.Add("7", "3");
-            MirrorTLR.Add("4", "6");
-            MirrorTLR.Add("6", "4");
-            MirrorTLR.Add("1", "1");
-            MirrorTLR.Add("5", "5");
+            Dictionary<string, string> MirrorLeftToRight = new Dictionary<string, string>();//左右
+            MirrorLeftToRight.Add("8", "1");
+            MirrorLeftToRight.Add("1", "8");
+            MirrorLeftToRight.Add("2", "7");
+            MirrorLeftToRight.Add("7", "2");
+            MirrorLeftToRight.Add("3", "6");
+            MirrorLeftToRight.Add("6", "3");
+            MirrorLeftToRight.Add("4", "5");
+            MirrorLeftToRight.Add("5", "4");
+            MirrorLeftToRight.Add("q", "p");
+            MirrorLeftToRight.Add("p", "q");
+            MirrorLeftToRight.Add("<", ">");
+            MirrorLeftToRight.Add(">", "<");
+            MirrorLeftToRight.Add("z", "s");
+            MirrorLeftToRight.Add("s", "z");
+            Dictionary<string, string> MirrorTouchLeftToRight = new Dictionary<string, string>();//Touch左右
+            MirrorTouchLeftToRight.Add("8", "2");
+            MirrorTouchLeftToRight.Add("2", "8");
+            MirrorTouchLeftToRight.Add("3", "7");
+            MirrorTouchLeftToRight.Add("7", "3");
+            MirrorTouchLeftToRight.Add("4", "6");
+            MirrorTouchLeftToRight.Add("6", "4");
+            MirrorTouchLeftToRight.Add("1", "1");
+            MirrorTouchLeftToRight.Add("5", "5");
             char[] a = str.ToCharArray();
             for (int i = 0; i < a.Length; i++)
             {
@@ -524,16 +524,23 @@ namespace MajdataEdit
                 }
                 else
                 {
-                    if (MirrorLR.ContainsKey(s1))
+                    if (MirrorLeftToRight.ContainsKey(s1))
                     {
-                        s += MirrorLR[s1];
+                        s += MirrorLeftToRight[s1];
                     }
                     else if (a[i] == 'e' || a[i] == 'd' || a[i] == 'E' || a[i] == 'D')
                     {
                         s += a[i];
                         i += 1;
                         string st = a[i].ToString();
-                        s += MirrorTLR[st];
+                        if (MirrorTouchLeftToRight.ContainsKey(st))
+                        {  
+                            s += MirrorTouchLeftToRight[st];
+                        }
+                        else
+                        {
+                            s += a[i];
+                        }
                     }
                     else
                     {
@@ -549,28 +556,28 @@ namespace MajdataEdit
         {
 
             string s = "";
-            Dictionary<string, string> MirrorUD = new Dictionary<string, string>();//上下（全反=上下+左右）
-            MirrorUD.Add("4", "1");
-            MirrorUD.Add("5", "8");
-            MirrorUD.Add("6", "7");
-            MirrorUD.Add("3", "2");
-            MirrorUD.Add("7", "6");
-            MirrorUD.Add("2", "3");
-            MirrorUD.Add("8", "5");
-            MirrorUD.Add("1", "4");
-            MirrorUD.Add("q", "p");
-            MirrorUD.Add("p", "q");
-            MirrorUD.Add("z", "s");
-            MirrorUD.Add("s", "z");
-            Dictionary<string, string> MirrorTUD = new Dictionary<string, string>();//Touch左右
-            MirrorTUD.Add("4", "2");
-            MirrorTUD.Add("2", "4");
-            MirrorTUD.Add("1", "5");
-            MirrorTUD.Add("5", "1");
-            MirrorTUD.Add("8", "6");
-            MirrorTUD.Add("6", "8");
-            MirrorTUD.Add("3", "3");
-            MirrorTUD.Add("7", "7");
+            Dictionary<string, string> MirrorUpsideDown = new Dictionary<string, string>();//上下（全反=上下+左右）
+            MirrorUpsideDown.Add("4", "1");
+            MirrorUpsideDown.Add("5", "8");
+            MirrorUpsideDown.Add("6", "7");
+            MirrorUpsideDown.Add("3", "2");
+            MirrorUpsideDown.Add("7", "6");
+            MirrorUpsideDown.Add("2", "3");
+            MirrorUpsideDown.Add("8", "5");
+            MirrorUpsideDown.Add("1", "4");
+            MirrorUpsideDown.Add("q", "p");
+            MirrorUpsideDown.Add("p", "q");
+            MirrorUpsideDown.Add("z", "s");
+            MirrorUpsideDown.Add("s", "z");
+            Dictionary<string, string> MirrorTouchUpsideDown = new Dictionary<string, string>();//Touch左右
+            MirrorTouchUpsideDown.Add("4", "2");
+            MirrorTouchUpsideDown.Add("2", "4");
+            MirrorTouchUpsideDown.Add("1", "5");
+            MirrorTouchUpsideDown.Add("5", "1");
+            MirrorTouchUpsideDown.Add("8", "6");
+            MirrorTouchUpsideDown.Add("6", "8");
+            MirrorTouchUpsideDown.Add("3", "3");
+            MirrorTouchUpsideDown.Add("7", "7");
             char[] a = str.ToCharArray();
             for (int i = 0; i < a.Length; i++)
             {
@@ -589,16 +596,19 @@ namespace MajdataEdit
                 }
                 else
                 {
-                    if (MirrorUD.ContainsKey(s1))
+                    if (MirrorUpsideDown.ContainsKey(s1))
                     {
-                        s += MirrorUD[s1];
+                        s += MirrorUpsideDown[s1];
                     }
                     else if (a[i] == 'e' || a[i] == 'd' || a[i] == 'E' || a[i] == 'D')
                     {
                         s += a[i];
                         i += 1;
                         string st = a[i].ToString();
-                        s += MirrorTUD[st];
+                        if (MirrorTouchUpsideDown.ContainsKey(st))
+                        {
+                            s += MirrorTouchUpsideDown[st];
+                        }
                     }
                     else
                     {
@@ -649,13 +659,7 @@ namespace MajdataEdit
                     {
                         s += Mirror180[s1];
                     }
-                    else if (a[i] == 'e' || a[i] == 'd'|| a[i] == 'E' || a[i] == 'D')
-                    {
-                        s += a[i];
-                        i += 1;
-                        string st = a[i].ToString();
-                        s += Mirror180[st];
-                    }
+                    
                     else
                     {
                         s += s1;
