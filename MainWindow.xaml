@@ -32,6 +32,9 @@
                 <MenuItem Header="谱面信息" Click="MenuItem_InfomationEdit_Click"/>
                 
             </MenuItem>
+            <MenuItem x:Name="MenuSetting" Header="设置" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" IsEnabled="False">
+                <MenuItem Header="调音台" Click="MenuItem_SoundSetting_Click"/>
+            </MenuItem>
             <MenuItem Header="工具" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
                 <MenuItem Header="BPM tap" Click="BPMtap_MenuItem_Click"/>
             </MenuItem>

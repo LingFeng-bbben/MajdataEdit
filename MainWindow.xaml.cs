@@ -109,6 +109,10 @@ namespace MajdataEdit
 
             currentTimeRefreshTimer.Stop();
             VisualEffectRefreshTimer.Stop();
+
+            soundSetting.Close();
+            SaveSetting();
+
             Bass.BASS_ChannelStop(bgmStream);
             Bass.BASS_StreamFree(bgmStream);
             Bass.BASS_ChannelStop(clickStream);
@@ -184,7 +188,7 @@ namespace MajdataEdit
         }
         private void Menu_Save_Click(object sender, RoutedEventArgs e)
         {
-            SaveRawFumenText(true);
+            SaveFumen(true);
             SystemSounds.Beep.Play();
         }
         private void Menu_SaveAs_Click(object sender, RoutedEventArgs e)
@@ -226,6 +230,11 @@ namespace MajdataEdit
         {
             System.Diagnostics.Process.Start("https://github.com/LingFeng-bbben/MajdataView");
         }
+        private void MenuItem_SoundSetting_Click(object sender, RoutedEventArgs e)
+        {
+            soundSetting = new SoundSetting();
+            soundSetting.Show();
+        }
 
         //快捷键
         private void PlayAndPause_CanExecute(object sender, CanExecuteRoutedEventArgs e) //快捷键
@@ -238,7 +247,7 @@ namespace MajdataEdit
         }
         private void SaveFile_Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            SaveRawFumenText(true);
+            SaveFumen(true);
             SystemSounds.Beep.Play();
         }
         private void SendToView_CanExecute(object sender, CanExecuteRoutedEventArgs e)

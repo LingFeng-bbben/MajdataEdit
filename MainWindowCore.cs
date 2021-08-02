@@ -20,25 +20,28 @@ using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using System.Drawing;
 using System.Media;
+using Newtonsoft.Json;
 
 namespace MajdataEdit
 {
     public partial class MainWindow : Window
     {
-
         Timer currentTimeRefreshTimer = new Timer(100);
         Timer clickSoundTimer = new Timer(10);
         Timer VisualEffectRefreshTimer = new Timer(1);
 
-        int bgmStream = -1024;
-        int clickStream = -8848;
-        int breakStream = -114514;
-        int exStream = -1919;
-        int hanabiStream = -810;
-        int holdRiserStream = -52013;
-        int trackStartStream = 66065;
+        SoundSetting soundSetting = new SoundSetting();
+
+        public int bgmStream = -1024;
+        public int clickStream = -8848;
+        public int breakStream = -114514;
+        public int exStream = -1919;
+        public int hanabiStream = -810;
+        public int holdRiserStream = -52013;
+        public int trackStartStream = 66065;
 
         public string maidataDir;
+        const string majSettingFilename = "majSetting.json";
 
         float[] waveLevels;
         float[] waveEnergies;
@@ -62,28 +65,6 @@ namespace MajdataEdit
             text = new TextRange(FumenContent.Document.ContentStart, FumenContent.Document.ContentEnd).Text;
             text = text.Replace("\r", "");
             return text;
-        }
-        void SaveRawFumenText(bool writeToDisk = false)
-        {
-            if (selectedDifficulty == -1) return;
-            SimaiProcess.fumens[selectedDifficulty] = GetRawFumenText();
-            SimaiProcess.simaiFirst = (bool)SimaiFirst.IsChecked;
-            if (maidataDir == "")
-            {
-                var saveDialog = new Microsoft.Win32.SaveFileDialog();
-                saveDialog.Filter = "maidata.txt|maidata.txt";
-                saveDialog.OverwritePrompt = true;
-                if ((bool)saveDialog.ShowDialog())
-                {
-                    maidataDir = new FileInfo(saveDialog.FileName).DirectoryName;
-                }
-            }
-            SimaiProcess.SaveData(maidataDir + "/maidata.bak.txt");
-            if (writeToDisk)
-            {
-                SimaiProcess.SaveData(maidataDir + "/maidata.txt");
-                SetSavedState(true);
-            }
         }
         void SetRawFumenText(string content)
         {
@@ -124,7 +105,6 @@ namespace MajdataEdit
         //*FILE CONTROL
         void initFromFile(string path)//file name should not be included in path
         {
-
             var audioPath = path + "/track.mp3";
             var dataPath = path + "/maidata.txt";
             if (!File.Exists(audioPath)) MessageBox.Show("请存入track.mp3", "错误");
@@ -136,7 +116,7 @@ namespace MajdataEdit
                 Bass.BASS_ChannelStop(bgmStream);
                 Bass.BASS_StreamFree(bgmStream);
             }
-
+            soundSetting.Close();
             bgmStream = Bass.BASS_StreamCreateFile(audioPath, 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, 0.7f);
             var info = Bass.BASS_ChannelGetInfo(bgmStream);
@@ -153,8 +133,7 @@ namespace MajdataEdit
 
             ReadWaveFromFile();
             LevelSelector.SelectedItem = LevelSelector.Items[0];
-            SetRawFumenText(SimaiProcess.fumens[0]);
-            LevelTextBox.Text = SimaiProcess.levels[0];
+            ReadSetting();
 
 
             SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
@@ -163,6 +142,7 @@ namespace MajdataEdit
 
             Cover.Visibility = Visibility.Collapsed;
             MenuEdit.IsEnabled = true;
+            MenuSetting.IsEnabled = true;
             SetSavedState(true);
         }
         private void ReadWaveFromFile()
@@ -203,7 +183,7 @@ namespace MajdataEdit
             var result = MessageBox.Show("未保存，要保存吗？", "警告", MessageBoxButton.YesNoCancel);
             if (result == MessageBoxResult.Yes)
             {
-                SaveRawFumenText(true);
+                SaveFumen(true);
                 return true;
             }
             if (result == MessageBoxResult.Cancel)
@@ -211,6 +191,60 @@ namespace MajdataEdit
                 return false;
             }
             return true;
+        }
+        void SaveFumen(bool writeToDisk = false)
+        {
+            if (selectedDifficulty == -1) return;
+            SimaiProcess.fumens[selectedDifficulty] = GetRawFumenText();
+            SimaiProcess.simaiFirst = (bool)SimaiFirst.IsChecked;
+            if (maidataDir == "")
+            {
+                var saveDialog = new Microsoft.Win32.SaveFileDialog();
+                saveDialog.Filter = "maidata.txt|maidata.txt";
+                saveDialog.OverwritePrompt = true;
+                if ((bool)saveDialog.ShowDialog())
+                {
+                    maidataDir = new FileInfo(saveDialog.FileName).DirectoryName;
+                }
+            }
+            SimaiProcess.SaveData(maidataDir + "/maidata.bak.txt");
+            SaveSetting();
+            if (writeToDisk)
+            {
+                SimaiProcess.SaveData(maidataDir + "/maidata.txt");
+                SetSavedState(true);
+            }
+        }
+        void SaveSetting()
+        {
+            MajSetting setting = new MajSetting();
+            setting.backgroundCover = float.Parse(ViewerCover.Text);
+            setting.playSpeed = float.Parse(ViewerSpeed.Text);
+            setting.lastEditDiff = selectedDifficulty;
+            setting.lastEditTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+            Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.BGM_Level);
+            Bass.BASS_ChannelGetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Tap_Level);
+            Bass.BASS_ChannelGetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Break_Level);
+            Bass.BASS_ChannelGetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Ex_Level);
+            Bass.BASS_ChannelGetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Hanabi_Level);
+            string json = JsonConvert.SerializeObject(setting);
+            File.WriteAllText(maidataDir + "/" + majSettingFilename,json);
+        }
+        void ReadSetting()
+        {
+            var path = maidataDir + "/" + majSettingFilename;
+            if (!File.Exists(path)) return;
+            var setting = JsonConvert.DeserializeObject<MajSetting>(File.ReadAllText(path));
+            ViewerCover.Text = setting.backgroundCover.ToString();
+            ViewerSpeed.Text = setting.playSpeed.ToString();
+            LevelSelector.SelectedIndex = setting.lastEditDiff;
+            Bass.BASS_ChannelSetPosition(bgmStream, setting.lastEditTime);
+            SeekTextFromTime();
+            Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL,setting.BGM_Level);
+            Bass.BASS_ChannelSetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
+            Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Break_Level);
+            Bass.BASS_ChannelSetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
+            Bass.BASS_ChannelSetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
         }
         private void CreateNewFumen(string path)
         {
@@ -621,7 +655,7 @@ namespace MajdataEdit
 
             FumenContent.Focus();
             PlayAndPauseButton.Content = "  ▌▌ ";
-            SaveRawFumenText();
+            SaveFumen();
             var CusorTime = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());//scan first
             var channeltime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             playStartTime = channeltime;

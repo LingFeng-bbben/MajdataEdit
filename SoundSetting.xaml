@@ -1,0 +1,52 @@
+﻿<Window x:Name="SoundSettingWindow" x:Class="MajdataEdit.SoundSetting"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MajdataEdit"
+        mc:Ignorable="d"
+        Title="SoundSetting" Height="341" Width="646" Background="{DynamicResource WindowBackground}" MinHeight="290" MinWidth="646" ResizeMode="NoResize" Loaded="SoundSettingWindow_Loaded" Closing="SoundSettingWindow_Closing">
+    <Grid>
+        <Grid HorizontalAlignment="Left" Margin="10,10,0,16" Width="120" Background="#FF272727">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar x:Name="BGM_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FF297F99" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <Slider x:Name="BGM_Slider" Margin="51,51,51,50" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Value="1" Opacity="0.7"/>
+            <Label Content="BGM" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
+        </Grid>
+        <Grid HorizontalAlignment="Left" Margin="135,10,0,16" Width="120" Background="#FF272727">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar x:Name="Tap_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FF992980" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <Slider x:Name="Tap_Slider" Margin="51,51,51,50" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Value="1" Opacity="0.7"/>
+            <Label Content="Tap" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
+        </Grid>
+        <Grid HorizontalAlignment="Left" Margin="260,10,0,16" Width="120" Background="#FF272727">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar x:Name="Break_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FF995229" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <Slider x:Name="Break_Slider" Margin="51,51,51,50" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Value="1" Opacity="0.7"/>
+            <Label Content="Break" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
+        </Grid>
+        <Grid HorizontalAlignment="Left" Margin="385,10,0,16" Width="120" Background="#FF272727">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar x:Name="EX_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FF998529" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <Slider x:Name="EX_Slider" Margin="51,51,51,50" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Value="1" Opacity="0.7"/>
+            <Label Content="EX" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
+        </Grid>
+        <Grid HorizontalAlignment="Left" Margin="510,10,0,16" Width="120" Background="#FF272727">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar x:Name="Hanabi_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FF4D9929" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <Slider x:Name="Hanabi_Slider" Margin="51,51,51,50" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Value="1" Opacity="0.7"/>
+            <Label Content="Hanabi" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
+        </Grid>
+
+    </Grid>
+</Window>

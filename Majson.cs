@@ -31,4 +31,19 @@ namespace MajdataEdit
     {
         Start,Stop
     }
+
+    class MajSetting
+    {
+        public float playSpeed;
+        public float backgroundCover;
+
+        public int lastEditDiff;
+        public double lastEditTime;
+
+        public float BGM_Level;
+        public float Tap_Level;
+        public float Break_Level;
+        public float Ex_Level;
+        public float Hanabi_Level;
+    }
 }
