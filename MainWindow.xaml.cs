@@ -138,7 +138,7 @@ namespace MajdataEdit
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                Console.WriteLine(e.Data.GetData(DataFormats.FileDrop).ToString());
+                //Console.WriteLine(e.Data.GetData(DataFormats.FileDrop).ToString());
                 if (e.Data.GetData(DataFormats.FileDrop).ToString() == "System.String[]")
                 {
                     var path = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
@@ -254,7 +254,7 @@ namespace MajdataEdit
         }
         private void SendToView_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            ToggleExport();
+            TogglePlayAndStop(true);
         }
 
         //Left componients
@@ -298,7 +298,7 @@ namespace MajdataEdit
         }
         private void Export_Button_Click(object sender, RoutedEventArgs e)
         {
-            ToggleExport();
+            TogglePlayAndStop(true);
         }
 
         //RichTextbox events
@@ -314,7 +314,7 @@ namespace MajdataEdit
             {
                 Bass.BASS_ChannelSetPosition(bgmStream, time);
             }
-            Console.WriteLine("SelectionChanged");
+            //Console.WriteLine("SelectionChanged");
             SimaiProcess.ClearNoteListPlayedState();
             DrawWave(time);
         }

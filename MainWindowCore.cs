@@ -51,7 +51,6 @@ namespace MajdataEdit
 
         bool isDrawing = false;
         bool isSaved = true;
-        bool isExternalRunning = false; //The state that if MajdataView is running
 
         int selectedDifficulty = -1;
         float sampleTime = 0.02f;
@@ -87,20 +86,23 @@ namespace MajdataEdit
         void SeekTextFromTime()
         {
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-            var newList = SimaiProcess.timinglist;
+            var timingList = SimaiProcess.timinglist;
+            var noteList = SimaiProcess.notelist;
             if (SimaiProcess.timinglist.Count <= 0) return;
-            newList.Sort((x, y) => Math.Abs(time - x.time).CompareTo(Math.Abs(time - y.time)));
-            var theNote = newList[0];
-            newList = SimaiProcess.timinglist;
-            var indexOfTheNote = newList.IndexOf(theNote);
+            timingList.Sort((x, y) => Math.Abs(time - x.time).CompareTo(Math.Abs(time - y.time)));
+            var theNote = timingList[0];
+            timingList = SimaiProcess.timinglist;
+            var indexOfTheNote = timingList.IndexOf(theNote);
             SimaiTimingPoint prevNote;
             if (indexOfTheNote > 0)
-                prevNote = newList[indexOfTheNote - 1];
+                prevNote = timingList[indexOfTheNote - 1];
             else
                 prevNote = theNote;
-            var pointer = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
-            var pointer1 = FumenContent.Document.Blocks.ToList()[prevNote.rawTextPositionY].ContentStart.GetPositionAtOffset(prevNote.rawTextPositionX+1);
-            FumenContent.Selection.Select(pointer1, pointer);
+            Console.WriteLine("prev" + prevNote.rawTextPositionX + "this" + theNote.rawTextPositionX);
+            //this may fuck up when the text changed and reload the document may solve it. it could be a bug of .net or something.
+            var pointer = FumenContent.Document.Blocks.ToList()[prevNote.rawTextPositionY].ContentStart.GetPositionAtOffset(prevNote.rawTextPositionX);
+            var pointer1 = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
+            FumenContent.Selection.Select(pointer, pointer1);
         }
 
         //*FILE CONTROL
@@ -136,7 +138,7 @@ namespace MajdataEdit
             LevelSelector.SelectedItem = LevelSelector.Items[0];
             ReadSetting();
             SetRawFumenText(SimaiProcess.fumens[selectedDifficulty]);
-
+            SeekTextFromTime();
             SimaiProcess.Serialize(GetRawFumenText());
             FumenContent.Focus();
             DrawWave();
@@ -243,7 +245,6 @@ namespace MajdataEdit
             LevelSelector.SelectedIndex = setting.lastEditDiff;
             selectedDifficulty = setting.lastEditDiff;
             Bass.BASS_ChannelSetPosition(bgmStream, setting.lastEditTime);
-            SeekTextFromTime();
             Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL,setting.BGM_Level);
             Bass.BASS_ChannelSetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
             Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Break_Level);
@@ -388,7 +389,7 @@ namespace MajdataEdit
         private void HoldRiserTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             Bass.BASS_ChannelStop(holdRiserStream);
-            Console.WriteLine("stop");
+            //Console.WriteLine("stop");
             var father = (Timer)sender;
             father.Stop();
             father.Dispose();
@@ -678,25 +679,43 @@ namespace MajdataEdit
         }
 
         //*PLAY CONTROL
-        void TogglePlay()
+        void TogglePlay(bool isOpIncluded = false)
         {
-            if (isExternalRunning == false) Export_Button.IsEnabled = false;
+            if (Export_Button.IsEnabled == false) return;
 
             FumenContent.Focus();
-            PlayAndPauseButton.Content = "  ▌▌ ";
             SaveFumen();
+            if (CheckAndStartView()) return;
+            Export_Button.IsEnabled = false;
+            PlayAndPauseButton.Content = "  ▌▌ ";
             var CusorTime = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());//scan first
-            var channeltime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-            playStartTime = channeltime;
 
-            Bass.BASS_ChannelPlay(bgmStream, false);
-            SimaiProcess.ClearNoteListPlayedState();
+            var startAt = DateTime.Now;
+            if (isOpIncluded)
+            {
+                InternalSwitchWindow(false);
+                Bass.BASS_ChannelSetPosition(bgmStream, 0);
+                startAt = DateTime.Now.AddSeconds(5d);
+                Bass.BASS_ChannelPlay(trackStartStream, true);
+            }
+            if (!sendRequestRun(startAt, isOpIncluded)) return;
+            Task.Run(() =>
+            {
+                while (DateTime.Now.Ticks < startAt.Ticks) ;
+                Dispatcher.Invoke(() =>
+                {
+                    playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                    SimaiProcess.ClearNoteListPlayedState();
+                    clickSoundTimer.Start();
+                    Bass.BASS_ChannelPlay(bgmStream, false);
+                });
+            });
+
             DrawWave(CusorTime); //then the wave could be draw
-            clickSoundTimer.Start();
         }
         void TogglePause()
         {
-            if (isExternalRunning == false) Export_Button.IsEnabled = true;
+            Export_Button.IsEnabled = true;
 
             FumenContent.Focus();
             PlayAndPauseButton.Content = "▶";
@@ -707,7 +726,7 @@ namespace MajdataEdit
         }
         void ToggleStop()
         {
-            if (isExternalRunning == false) Export_Button.IsEnabled = true;
+            Export_Button.IsEnabled = true;
 
 
             FumenContent.Focus();
@@ -718,7 +737,7 @@ namespace MajdataEdit
             Bass.BASS_ChannelSetPosition(bgmStream, playStartTime);
             DrawWave();
         }
-        void TogglePlayAndPause()
+        void TogglePlayAndPause(bool isOpIncluded = false)
         {
             if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
             {
@@ -726,10 +745,10 @@ namespace MajdataEdit
             }
             else
             {
-                TogglePlay();
+                TogglePlay(isOpIncluded);
             }
         }
-        void TogglePlayAndStop()
+        void TogglePlayAndStop(bool isOpIncluded = false)
         {
             if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
             {
@@ -737,51 +756,21 @@ namespace MajdataEdit
             }
             else
             {
-                TogglePlay();
+                TogglePlay(isOpIncluded);
             }
         }
 
         //*VIEW COMMUNICATION
-        private void ToggleExport()
-        {
-            if (!Export_Button.IsEnabled) return;
-            if (CheckAndStartView()) return;
-            if (isExternalRunning)
-            {
-                ToggleStop();//contains send Request
-                return;
-            }
-            InternalSwitchWindow(false);
-            var startAt = DateTime.Now.AddSeconds(0d);
-            if ((float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream)) == 0f)
-            {
-                startAt = DateTime.Now.AddSeconds(4.4d);
-                Bass.BASS_ChannelPlay(trackStartStream, true);
-            }
-            if (!sendRequestRun(startAt)) return;
-
-            Task.Run(() =>
-            {
-                while (DateTime.Now.Ticks < startAt.Ticks) ;
-                Dispatcher.Invoke(() =>
-                {
-                    TogglePlayAndPause();
-                });
-            });
-        }
         bool sendRequestStop()
         {
-            if (isExternalRunning == false) return false;
-            Export_Button.Content = "发到查看器";
             EditRequestjson requestStop = new EditRequestjson();
             requestStop.control = EditorControlMethod.Stop;
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(requestStop);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
-            isExternalRunning = false;
             if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
             return true;
         }
-        bool sendRequestRun(DateTime StartAt)
+        bool sendRequestRun(DateTime StartAt,bool isOpIncluded)
         {
 
             Majson jsonStruct = new Majson();
@@ -803,7 +792,10 @@ namespace MajdataEdit
             System.IO.File.WriteAllText(path, json);
 
             EditRequestjson request = new EditRequestjson();
-            request.control = EditorControlMethod.Start;
+            if(isOpIncluded)
+                request.control = EditorControlMethod.OpStart;
+            else
+                request.control = EditorControlMethod.Start;
             request.jsonPath = path;
             request.startAt = StartAt.Ticks;
             request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
@@ -813,8 +805,6 @@ namespace MajdataEdit
             json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
             if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
-            isExternalRunning = true;
-            Export_Button.Content = "停止查看器";
             return true;
         }
 
@@ -844,8 +834,10 @@ namespace MajdataEdit
         void InternalSwitchWindow(bool moveToPlace = true)
         {
             var windowPtr = FindWindow(null, "MajdataView");
+            //var thisWindow = FindWindow(null, this.Title);
             ShowWindow(windowPtr, 1);//还原窗口
             SwitchToThisWindow(windowPtr, true);
+            //SwitchToThisWindow(thisWindow, true);
             if (moveToPlace) InternalMoveWindow();
         }
         void InternalMoveWindow()

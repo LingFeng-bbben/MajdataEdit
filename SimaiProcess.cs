@@ -358,13 +358,13 @@ namespace MajdataEdit
                 if (isTouchNote(noteText)) {
                     simaiNote.noteType = SimaiNoteType.TouchHold;
                     simaiNote.holdTime = getTimeFromBeats(noteText);
-                    Console.WriteLine("Hold:" +simaiNote.touchArea+ simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
+                    //Console.WriteLine("Hold:" +simaiNote.touchArea+ simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
                 }
                 else
                 {
                     simaiNote.noteType = SimaiNoteType.Hold;
                     simaiNote.holdTime = getTimeFromBeats(noteText);
-                    Console.WriteLine("Hold:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
+                    //Console.WriteLine("Hold:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
                 }
             }
             //slide
@@ -373,7 +373,7 @@ namespace MajdataEdit
                 simaiNote.slideTime = getTimeFromBeats(noteText);
                 var timeStarWait = getStarWaitTime(noteText);
                 simaiNote.slideStartTime = time + timeStarWait;
-                Console.WriteLine("Slide:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.slideTime);
+                //Console.WriteLine("Slide:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.slideTime);
             }
             //break
             if (noteText.Contains('b'))
