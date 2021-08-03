@@ -91,15 +91,15 @@ namespace MajdataEdit
             if (SimaiProcess.timinglist.Count <= 0) return;
             newList.Sort((x, y) => Math.Abs(time - x.time).CompareTo(Math.Abs(time - y.time)));
             var theNote = newList[0];
-            newList.Sort((x, y) => x.time.CompareTo(y.time));
+            newList = SimaiProcess.timinglist;
             var indexOfTheNote = newList.IndexOf(theNote);
-            SimaiTimingPoint previoisNote;
+            SimaiTimingPoint prevNote;
             if (indexOfTheNote > 0)
-                previoisNote = newList[indexOfTheNote - 1];
+                prevNote = newList[indexOfTheNote - 1];
             else
-                previoisNote = theNote;
+                prevNote = theNote;
             var pointer = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
-            var pointer1 = FumenContent.Document.Blocks.ToList()[previoisNote.rawTextPositionY].ContentStart.GetPositionAtOffset(previoisNote.rawTextPositionX + 1);
+            var pointer1 = FumenContent.Document.Blocks.ToList()[prevNote.rawTextPositionY].ContentStart.GetPositionAtOffset(prevNote.rawTextPositionX+1);
             FumenContent.Selection.Select(pointer1, pointer);
         }
 
@@ -111,7 +111,7 @@ namespace MajdataEdit
             if (!File.Exists(audioPath)) MessageBox.Show("请存入track.mp3", "错误");
             if (!File.Exists(audioPath)) MessageBox.Show("未找到maidata.txt", "错误");
             maidataDir = path;
-
+            SetRawFumenText("");
             if (bgmStream != -1024)
             {
                 Bass.BASS_ChannelStop(bgmStream);
@@ -127,19 +127,21 @@ namespace MajdataEdit
 
             if (!SimaiProcess.ReadData(dataPath))
             {
-
                 return;
             }
-            SimaiFirst.IsChecked = SimaiProcess.simaiFirst;
+
+
 
             ReadWaveFromFile();
             LevelSelector.SelectedItem = LevelSelector.Items[0];
             ReadSetting();
+            SetRawFumenText(SimaiProcess.fumens[selectedDifficulty]);
 
-
-            SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
+            SimaiProcess.Serialize(GetRawFumenText());
             FumenContent.Focus();
             DrawWave();
+
+            OffsetTextBox.Text = SimaiProcess.first.ToString();
 
             Cover.Visibility = Visibility.Collapsed;
             MenuEdit.IsEnabled = true;
@@ -197,7 +199,7 @@ namespace MajdataEdit
         {
             if (selectedDifficulty == -1) return;
             SimaiProcess.fumens[selectedDifficulty] = GetRawFumenText();
-            SimaiProcess.simaiFirst = (bool)SimaiFirst.IsChecked;
+            SimaiProcess.first = float.Parse(OffsetTextBox.Text);
             if (maidataDir == "")
             {
                 var saveDialog = new Microsoft.Win32.SaveFileDialog();
@@ -239,6 +241,7 @@ namespace MajdataEdit
             ViewerCover.Text = setting.backgroundCover.ToString();
             ViewerSpeed.Text = setting.playSpeed.ToString();
             LevelSelector.SelectedIndex = setting.lastEditDiff;
+            selectedDifficulty = setting.lastEditDiff;
             Bass.BASS_ChannelSetPosition(bgmStream, setting.lastEditTime);
             SeekTextFromTime();
             Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL,setting.BGM_Level);
@@ -440,7 +443,7 @@ namespace MajdataEdit
                         }
                     }
                     bpmChangeTimes.Add(Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetLength(bgmStream)));
-                    double time = 0;
+                    double time = SimaiProcess.first;
                     int beat = 4; //预留拍号
                     int currentBeat = 1;
                     pen = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
@@ -682,7 +685,7 @@ namespace MajdataEdit
             FumenContent.Focus();
             PlayAndPauseButton.Content = "  ▌▌ ";
             SaveFumen();
-            var CusorTime = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());//scan first
+            var CusorTime = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());//scan first
             var channeltime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             playStartTime = channeltime;
 

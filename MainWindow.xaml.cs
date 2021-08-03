@@ -273,9 +273,7 @@ namespace MajdataEdit
             selectedDifficulty = i;
             LevelTextBox.Text = SimaiProcess.levels[selectedDifficulty];
             SetSavedState(true);
-            string Text = GetRawFumenText();
-            long position = GetRawFumenPosition();
-            SimaiProcess.getSongTimeAndScan(Text, position);
+            SimaiProcess.Serialize(GetRawFumenText());
             DrawWave();
 
         }
@@ -283,6 +281,16 @@ namespace MajdataEdit
         {
             if (selectedDifficulty == -1) return;
             SimaiProcess.levels[selectedDifficulty] = LevelTextBox.Text;
+        }
+        private void OffsetTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                SimaiProcess.first = float.Parse(OffsetTextBox.Text);
+                SimaiProcess.Serialize(GetRawFumenText());
+                DrawWave();
+            }
+            catch { SimaiProcess.first = 0f; }
         }
         private void FollowPlayCheck_Click(object sender, RoutedEventArgs e)
         {
@@ -301,7 +309,7 @@ namespace MajdataEdit
                  Replace("\r", "").Count(o => o == '\n') + 1) + " 行";
             if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked)
                 return;
-            var time = SimaiProcess.getSongTimeAndScan(GetRawFumenText(), GetRawFumenPosition());
+            var time = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
                 Bass.BASS_ChannelSetPosition(bgmStream, time);
@@ -349,6 +357,7 @@ namespace MajdataEdit
             }
             lastMousePointX = e.GetPosition(this).X;
         }
+
 
     }
 }

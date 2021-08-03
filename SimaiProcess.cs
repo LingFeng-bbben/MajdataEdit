@@ -16,10 +16,17 @@ namespace MajdataEdit
         static public float first = 0;
         static public string[] fumens = new string[7];
         static public string[] levels = new string[7];
-        static public bool simaiFirst = false;
+        /// <summary>
+        /// the timing points that contains notedata
+        /// </summary>
         static public List<SimaiTimingPoint> notelist = new List<SimaiTimingPoint>(); 
+        /// <summary>
+        /// the timing points made by "," in maidata
+        /// </summary>
         static public List<SimaiTimingPoint> timinglist = new List<SimaiTimingPoint>();
-
+        /// <summary>
+        /// Reset all the data in the static class.
+        /// </summary>
         static public void ClearData()
         {
             title = "";
@@ -28,11 +35,14 @@ namespace MajdataEdit
             first = 0;
             fumens = new string[7];
             levels = new string[7];
-            simaiFirst = false;
             notelist = new List<SimaiTimingPoint>(); 
             timinglist = new List<SimaiTimingPoint>();
         }
-
+        /// <summary>
+        /// Read the maidata.txt into the static class, including the variables. Show up a messageBox when enconter any exception.
+        /// </summary>
+        /// <param name="filename">file path of maidata.txt</param>
+        /// <returns>if the read process faced any error</returns>
         static public bool ReadData(string filename)
         {
             int i = 0;
@@ -72,16 +82,6 @@ namespace MajdataEdit
                     }
 
                 }
-                Console.WriteLine(first);
-                if (first == -0.04f)
-                {
-                    simaiFirst = true;
-                }
-                if (first != 0 && first != -0.04f)
-                {
-                    MessageBox.Show("本编辑器不想支持offset,请剪好了再来");
-                }
-                Console.WriteLine(fumens[5]);
                 return true;
             }
             catch (Exception e){
@@ -89,19 +89,16 @@ namespace MajdataEdit
                 return false;
             }
         }
+        /// <summary>
+        /// Save the static data to maidata.txt
+        /// </summary>
+        /// <param name="filename">file path of maidata.txt</param>
         static public void SaveData(string filename)
         {
             List<string> maidata = new List<string>();
             maidata.Add("&title=" + title);
             maidata.Add("&artist=" + artist);
-            if (simaiFirst)
-            {
-                maidata.Add("&first=-0.04");
-            }
-            else
-            {
-                maidata.Add("&first=0");
-            }
+            maidata.Add("&first=" + first);
             for (int i = 0; i < levels.Length; i++)
             {
                 if (levels[i] != null && levels[i] != "")
@@ -122,14 +119,20 @@ namespace MajdataEdit
         {
             return varline.Split('=')[1];
         }
-        static public double getSongTimeAndScan(string text, long position)
+        /// <summary>
+        /// This method serialize the fumen data and load it into the static class.
+        /// </summary>
+        /// <param name="text">fumen text</param>
+        /// <param name="position">the position of the cusor, to get the return time</param>
+        /// <returns>the song time at the position</returns>
+        static public double Serialize(string text, long position=0)
         {
             List<SimaiTimingPoint> _notelist = new List<SimaiTimingPoint>();
             List<SimaiTimingPoint> _timinglist = new List<SimaiTimingPoint>();
             try
             {
                 float bpm = 0;
-                double time = 0; //in seconds
+                double time = first; //in seconds
                 double requestedTime = 0;
                 int beats = 4;
                 bool haveNote = false;
@@ -183,11 +186,11 @@ namespace MajdataEdit
                         //Console.WriteLine("BEAT" + beats);
                         continue;
                     }
-                    if (isNote(text[i]))//if has number (not for touch note now)
+                    if (isNote(text[i]))
                     {
                         haveNote = true;
                     }
-                    if (haveNote&& text[i] != ',')
+                    if (haveNote && text[i] != ',')
                     {
                         noteTemp += text[i];
                     }
@@ -257,7 +260,7 @@ namespace MajdataEdit
         public int rawTextPositionY;
         public string notesContent;
         public float currentBpm = -1;
-        public List<SimaiNote> noteList = new List<SimaiNote>(); //used for json
+        public List<SimaiNote> noteList = new List<SimaiNote>(); //only used for json serialize
         public SimaiTimingPoint(double _time, int textposX = 0, int textposY = 0,string _content = "",float bpm=0f)
         {
             time = _time;

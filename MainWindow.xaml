@@ -30,7 +30,7 @@
                 <MenuItem Header="180°翻转选择" Click="Mirror180_MenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="谱面信息" Click="MenuItem_InfomationEdit_Click"/>
-                
+
             </MenuItem>
             <MenuItem x:Name="MenuSetting" Header="设置" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" IsEnabled="False">
                 <MenuItem Header="调音台" Click="MenuItem_SoundSetting_Click"/>
@@ -78,7 +78,7 @@
             <FlowDocument/>
         </RichTextBox>
         <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Left" Height="64" Margin="0,17,0,0" VerticalAlignment="Top" Width="105" Foreground="White" FontFamily="Bahnschrift Light" FontSize="50" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-        <ComboBox x:Name="LevelSelector" Margin="10,155,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="87" Height="21" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkComboBox}">
+        <ComboBox x:Name="LevelSelector" Margin="10,117,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="87" Height="21" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkComboBox}">
 
             <ComboBoxItem Content="EASY"/>
             <ComboBoxItem Content="BASIC"/>
@@ -88,19 +88,20 @@
             <ComboBoxItem Content="Re:MASTER"/>
             <ComboBoxItem Content="ORIGINAL"/>
         </ComboBox>
-        <CheckBox x:Name="SimaiFirst" Content="Simai 0.04s" HorizontalAlignment="Left" Margin="9,130,0,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" IsChecked="True" Height="15" Width="87" Background="{DynamicResource ButtonsBackground}" Template="{DynamicResource DarkCheck}"/>
         <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="10,0,0,41" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomIn_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
         <Button x:Name="WaveViewZoomOut" Content="-" HorizontalAlignment="Left" Height="24" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomOut_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
-        <Label Content="难度" HorizontalAlignment="Left" Height="25" Margin="5,184,0,0" VerticalAlignment="Top" Width="33" Foreground="White"/>
-        <TextBox x:Name="LevelTextBox" HorizontalAlignment="Left" Height="25" Margin="50,184,0,0" TextWrapping="Wrap" Text="12+" VerticalAlignment="Top" Width="46" VerticalContentAlignment="Center" TextChanged="LevelTextBox_TextChanged" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
+        <Label Content="难度" HorizontalAlignment="Left" Height="25" Margin="5,143,0,0" VerticalAlignment="Top" Width="33" Foreground="White"/>
+        <TextBox x:Name="LevelTextBox" HorizontalAlignment="Left" Height="25" Margin="50,143,0,0" TextWrapping="Wrap" Text="12+" VerticalAlignment="Top" Width="46" VerticalContentAlignment="Center" TextChanged="LevelTextBox_TextChanged" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Center"/>
+        <Label Content="偏移" HorizontalAlignment="Left" Height="25" Margin="5,173,0,0" VerticalAlignment="Top" Width="33" Foreground="White"/>
+        <TextBox x:Name="OffsetTextBox" HorizontalAlignment="Left" Height="25" Margin="50,173,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="46" VerticalContentAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Center" TextChanged="OffsetTextBox_TextChanged"/>
         <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="58,0,0,91" Width="38" Click="PlayAndPauseButton_Click" Height="38" VerticalAlignment="Bottom" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
         <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="9,0,0,91" VerticalAlignment="Bottom" Width="38" Click="StopButton_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
-        <Label x:Name="NoteNowText" Content="Current Note" HorizontalAlignment="Left" Margin="0,74,0,0" VerticalAlignment="Top" Foreground="White" Width="105" HorizontalContentAlignment="Center" Height="25"/>
+        <Label x:Name="NoteNowText" Content="行" HorizontalAlignment="Left" Margin="0,74,0,0" VerticalAlignment="Top" Foreground="White" Width="105" HorizontalContentAlignment="Center" Height="25"/>
         <Button x:Name="Export_Button" Content="发到查看器" Height="30" Margin="9,0,0,168" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Export_Button_Click" HorizontalAlignment="Left" Width="87" Template="{DynamicResource DarkButton}" Foreground="{DynamicResource ButtonForeground}" Background= "{DynamicResource ButtonsBackground}"/>
-        <TextBox x:Name="ViewerSpeed" HorizontalAlignment="Left" Height="26" Margin="50,0,0,204" TextWrapping="Wrap" Text="12" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
-        <Label Content="速度" HorizontalAlignment="Left" Height="28" Margin="5,0,0,202" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
-        <TextBox x:Name="ViewerCover" Height="26" Margin="50,0,0,237" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Left" Width="46"/>
-        <Label Content="暗化" HorizontalAlignment="Left" Height="28" Margin="5,0,0,235" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
+        <TextBox x:Name="ViewerSpeed" HorizontalAlignment="Left" Height="26" Margin="50,0,0,203" TextWrapping="Wrap" Text="12" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
+        <Label Content="速度" HorizontalAlignment="Left" Height="26" Margin="5,0,0,203" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
+        <TextBox x:Name="ViewerCover" Height="26" Margin="50,0,0,234" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Left" Width="46"/>
+        <Label Content="暗化" HorizontalAlignment="Left" Height="26" Margin="5,0,0,234" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
         <Rectangle x:Name="Cover" Fill="#FF1F1F1F" Margin="0,19,0,0" Stroke="Black" d:IsHidden="True" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>
