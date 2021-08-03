@@ -46,4 +46,12 @@ namespace MajdataEdit
         public float Ex_Level;
         public float Hanabi_Level;
     }
+
+    class EditorSetting
+    {
+        public string PlayPauseKey = "Ctrl+Shift+c";
+        public string PlayStopKey = "Ctrl+Shift+x";
+        public string SendViewerKey = "Ctrl+Shift+z";
+        public string SaveKey = "Ctrl+s";
+    }
 }

@@ -42,6 +42,7 @@ namespace MajdataEdit
 
         public string maidataDir;
         const string majSettingFilename = "majSetting.json";
+        const string editorSettingFilename = "EditorSetting.json";
 
         float[] waveLevels;
         float[] waveEnergies;
@@ -260,6 +261,31 @@ namespace MajdataEdit
                     "&des=请设置做谱人\n" +
                     "&first=0\n");
             }
+        }
+        void CreateEditorSetting()
+        {
+            EditorSetting setting = new EditorSetting();
+            File.WriteAllText(editorSettingFilename, JsonConvert.SerializeObject(setting, Formatting.Indented));
+        }
+        void ReadEditorSetting()
+        {
+            if (!File.Exists(editorSettingFilename))
+            {
+                CreateEditorSetting();
+                return;
+            }
+            var json = File.ReadAllText(editorSettingFilename);
+            var setting = JsonConvert.DeserializeObject<EditorSetting>(json);
+            AddGesture(setting.PlayPauseKey, "PlayAndPause");
+            AddGesture(setting.PlayStopKey, "StopPlaying");
+            AddGesture(setting.SaveKey, "SaveFile");
+            AddGesture(setting.SendViewerKey, "SendToView");
+        }
+        void AddGesture( string keyGusture,string command)
+        {
+            var gesture = (KeyGesture)new KeyGestureConverter().ConvertFromString(keyGusture);
+            InputBinding inputBinding = new InputBinding((ICommand)FumenContent.Resources[command], gesture);
+            FumenContent.InputBindings.Add(inputBinding);
         }
 
         //*SOUND EFFECT
@@ -722,6 +748,7 @@ namespace MajdataEdit
                 ToggleStop();//contains send Request
                 return;
             }
+            InternalSwitchWindow(false);
             var startAt = DateTime.Now.AddSeconds(0d);
             if ((float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream)) == 0f)
             {
@@ -811,10 +838,16 @@ namespace MajdataEdit
             return false;
         }
 
-        void InternalSwitchWindow()
+        void InternalSwitchWindow(bool moveToPlace = true)
         {
             var windowPtr = FindWindow(null, "MajdataView");
-
+            ShowWindow(windowPtr, 1);//还原窗口
+            SwitchToThisWindow(windowPtr, true);
+            if (moveToPlace) InternalMoveWindow();
+        }
+        void InternalMoveWindow()
+        {
+            var windowPtr = FindWindow(null, "MajdataView");
             PresentationSource source = PresentationSource.FromVisual(this);
 
             double dpiX = 1, dpiY = 1;
@@ -836,8 +869,6 @@ namespace MajdataEdit
                 (int)Top,
                 (int)Height - 20,
                 (int)Height, true);
-            ShowWindow(windowPtr, 1);//还原窗口
-            SwitchToThisWindow(windowPtr, true);
         }
     }
 }

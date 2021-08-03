@@ -52,7 +52,13 @@
             </Image.RenderTransform>
         </Image>
         <CheckBox x:Name="FollowPlayCheck" Content="文本跟随" HorizontalAlignment="Left" Height="21" Margin="9,0,0,129" VerticalAlignment="Bottom" Width="87" Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Right" Click="FollowPlayCheck_Click" Background="{DynamicResource ButtonsBackground}" Template="{DynamicResource DarkCheck}"/>
-        <RichTextBox x:Name="FumenContent" Padding="0,5" FontFamily="Consolas" Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" Margin="105,30,10,91" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" SelectionChanged="FumenContent_SelectionChanged" Grid.ColumnSpan="2">
+        <RichTextBox x:Name="FumenContent" 
+                     Padding="0,5" FontFamily="Consolas"
+                     Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" 
+                     Margin="105,30,10,91" HorizontalScrollBarVisibility="Auto" 
+                     VerticalScrollBarVisibility="Visible" 
+                     SelectionChanged="FumenContent_SelectionChanged" Grid.ColumnSpan="2"
+                     InputMethod.IsInputMethodEnabled="False">
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
                 <RoutedUICommand x:Key="SaveFile" Text="SaveFile"/>
@@ -62,12 +68,7 @@
             <RichTextBox.Background>
                 <SolidColorBrush Color="#FF171717" Opacity="0.3"/>
             </RichTextBox.Background>
-            <RichTextBox.InputBindings>
-                <KeyBinding Gesture="Ctrl+Shift+c" Command="{StaticResource PlayAndPause}"/>
-                <KeyBinding Gesture="Ctrl+s" Command="{StaticResource SaveFile}"/>
-                <KeyBinding Gesture="Ctrl+Shift+x" Command="{StaticResource StopPlaying}"/>
-                <KeyBinding Gesture="Ctrl+Shift+z" Command="{StaticResource SendToView}"/>
-            </RichTextBox.InputBindings>
+            <!--Bindings are dynamicly added via ReadEditorSetting()-->
             <RichTextBox.CommandBindings>
                 <CommandBinding Command="{StaticResource PlayAndPause}" CanExecute="PlayAndPause_CanExecute"/>
                 <CommandBinding Command="{StaticResource SaveFile}" CanExecute="SaveFile_Command_CanExecute"/>

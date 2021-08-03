@@ -20,6 +20,7 @@ using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using System.Drawing;
 using System.Media;
+using System.ComponentModel;
 
 namespace MajdataEdit
 {
@@ -46,6 +47,7 @@ namespace MajdataEdit
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
 
             ReadSoundEffect();
+            ReadEditorSetting();
 
             currentTimeRefreshTimer.Elapsed += CurrentTimeRefreshTimer_Elapsed;
             currentTimeRefreshTimer.Start();
