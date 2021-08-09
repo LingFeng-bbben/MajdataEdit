@@ -52,6 +52,7 @@ namespace MajdataEdit
 
         bool isDrawing = false;
         bool isSaved = true;
+        bool isLoading = false;
 
         int selectedDifficulty = -1;
         float sampleTime = 0.02f;
@@ -66,12 +67,16 @@ namespace MajdataEdit
             string text = "";
             text = new TextRange(FumenContent.Document.ContentStart, FumenContent.Document.ContentEnd).Text;
             text = text.Replace("\r", "");
-            return text;
+            return text.Trim();
         }
         void SetRawFumenText(string content)
         {
+            isLoading = true;
             FumenContent.Document.Blocks.Clear();
-            if (content == null) return;
+            if (content == null) {
+                isLoading = false;
+                return;
+            }
             string[] lines = content.Split('\n');
             foreach (var line in lines)
             {
@@ -79,6 +84,7 @@ namespace MajdataEdit
                 paragraph.Inlines.Add(line);
                 FumenContent.Document.Blocks.Add(paragraph);
             }
+            isLoading = false;
         }
         long GetRawFumenPosition()
         {
@@ -128,7 +134,7 @@ namespace MajdataEdit
             Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, 0.7f);
             var info = Bass.BASS_ChannelGetInfo(bgmStream);
             if (info.freq != 44100) MessageBox.Show("Simai可能不支持非44100Hz的mp3文件", "注意");
-
+            ReadWaveFromFile();
             SimaiProcess.ClearData();
 
             if (!SimaiProcess.ReadData(dataPath))
@@ -138,7 +144,7 @@ namespace MajdataEdit
 
 
 
-            ReadWaveFromFile();
+
             LevelSelector.SelectedItem = LevelSelector.Items[0];
             ReadSetting();
             SetRawFumenText(SimaiProcess.fumens[selectedDifficulty]);

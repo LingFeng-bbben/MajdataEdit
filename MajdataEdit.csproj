@@ -157,8 +157,6 @@
     <Resource Include="favicon.ico" />
     <Content Include="lib\bass.dll" />
     <Content Include="lib\Bass.Net.dll" />
-    <Resource Include="Image\Outline_03.png" />
-    <Resource Include="Image\QQ图片20210701170841.png" />
     <Resource Include="Image\salt.png" />
     <Resource Include="lib\Bass.Net.xml" />
   </ItemGroup>

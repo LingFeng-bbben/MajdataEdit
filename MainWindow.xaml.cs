@@ -350,8 +350,11 @@ namespace MajdataEdit
         }
         private void FumenContent_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (GetRawFumenText() == "") return;
+            if (GetRawFumenText() == ""||isLoading) return;
+            Console.WriteLine("TextChanged");
             SetSavedState(false);
+            SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
+            DrawWave();
         }
 
         //Wave displayer
