@@ -346,7 +346,7 @@ namespace MajdataEdit
             }
             //Console.WriteLine("SelectionChanged");
             SimaiProcess.ClearNoteListPlayedState();
-            DrawWave(time);
+            DrawCusor(time);
         }
         private void FumenContent_TextChanged(object sender, TextChangedEventArgs e)
         {

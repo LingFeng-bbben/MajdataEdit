@@ -15,6 +15,7 @@
         </Grid.ColumnDefinitions>
 
         <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Margin="0,0,-521,0" MouseWheel="MusicWave_MouseWheel" PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove" Grid.Column="1" HorizontalAlignment="Left" Width="877"/>
+        <Image x:Name="MusicWaveCusor" Source="Image/Outline_03.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Margin="0,0,-521,0" MouseWheel="MusicWave_MouseWheel" PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove" Grid.Column="1" HorizontalAlignment="Left" Width="877" Opacity="0.815"/>
         <Line StrokeThickness="3" Y2="56" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15" Grid.Column="1" HorizontalAlignment="Left" Width="45"/>
 
         <Menu Height="19" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Grid.ColumnSpan="2">
@@ -106,7 +107,6 @@
         <Label Content="速度" HorizontalAlignment="Left" Height="26" Margin="5,0,0,201" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
         <TextBox x:Name="ViewerCover" Height="26" Margin="50,0,0,232" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Left" Width="46"/>
         <Label Content="暗化" HorizontalAlignment="Left" Height="26" Margin="5,0,0,232" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
-        <Rectangle x:Name="Cover" Fill="#FF1F1F1F" Margin="0,19,0,0" Stroke="Black" d:IsHidden="True" Grid.ColumnSpan="2"/>
         <Grid x:Name="PlbSpdAdjGrid" HorizontalAlignment="Left" Height="105" Margin="105,290,0,0" VerticalAlignment="Top" Width="148" Visibility="Hidden">
             <Grid.Background>
                 <SolidColorBrush Color="#FF303030" Opacity="0.8"/>
@@ -114,5 +114,6 @@
             <Label Content="播放速度" Height="26" Margin="44,20,44,0" VerticalAlignment="Top" Foreground="White" HorizontalContentAlignment ="Center"/>
             <Label x:Name="PlbSpdLabel" Content="100%" Margin="34,46,34,20" Foreground="White" FontWeight="Bold" FontSize="22" HorizontalContentAlignment="Center"/>
         </Grid>
+        <Rectangle x:Name="Cover" Fill="#FF1F1F1F" Margin="0,19,0,0" Stroke="Black" d:IsHidden="True" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

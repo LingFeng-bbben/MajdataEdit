@@ -99,7 +99,6 @@ namespace MajdataEdit
                 prevNote = timingList[indexOfTheNote - 1];
             else
                 prevNote = theNote;
-            Console.WriteLine("prev" + prevNote.rawTextPositionX + "this" + theNote.rawTextPositionX);
             //this may fuck up when the text changed and reload the document may solve it. it could be a bug of .net or something.
             var pointer = FumenContent.Document.Blocks.ToList()[prevNote.rawTextPositionY].ContentStart.GetPositionAtOffset(prevNote.rawTextPositionX);
             var pointer1 = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
@@ -403,7 +402,7 @@ namespace MajdataEdit
 
 
         //*UI DRAWING
-        private async void DrawWave(double ghostCusorPositionTime = 0)
+        private async void DrawWave()
         {
 
             if (isDrawing) return;
@@ -440,6 +439,8 @@ namespace MajdataEdit
                     var lastbpm = -1f;
                     List<double> bpmChangeTimes = new List<double>();     //在什么时间变成什么值
                     List<float> bpmChangeValues = new List<float>();
+                    bpmChangeTimes.Clear();
+                    bpmChangeValues.Clear();
                     foreach (var timing in SimaiProcess.timinglist)
                     {
                         if (timing.currentBpm != lastbpm)
@@ -450,6 +451,7 @@ namespace MajdataEdit
                         }
                     }
                     bpmChangeTimes.Add(Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetLength(bgmStream)));
+                    
                     double time = SimaiProcess.first;
                     int beat = 4; //预留拍号
                     int currentBeat = 1;
@@ -578,21 +580,6 @@ namespace MajdataEdit
                         }
 
                     }
-
-                    //Draw play Start time
-                    pen = new System.Drawing.Pen(System.Drawing.Color.Red, 5);
-                    float x1 = (float)(playStartTime / sampleTime) * zoominPower;
-                    PointF[] tranglePoints = { new PointF(x1 - 2, 0), new PointF(x1 + 2, 0), new PointF(x1, 3.46f) };
-                    graphics.DrawPolygon(pen, tranglePoints);
-
-                    //Draw ghost cusor
-                    pen = new System.Drawing.Pen(System.Drawing.Color.Orange, 5);
-                    float x2 = (float)(ghostCusorPositionTime / sampleTime) * zoominPower;
-                    PointF[] tranglePoints2 = { new PointF(x2 - 2, 0), new PointF(x2 + 2, 0), new PointF(x2, 3.46f) };
-                    graphics.DrawPolygon(pen, tranglePoints2);
-
-
-
                 }
                 catch { }
             }
@@ -608,14 +595,46 @@ namespace MajdataEdit
             GC.Collect();
 
         }
+        private async void DrawCusor(double ghostCusorPositionTime = 0)
+        {
+            var writableBitmap = new WriteableBitmap(waveLevels.Length * zoominPower, 74, 72, 72, PixelFormats.Pbgra32, null);
+            writableBitmap.Lock();
+            //the process starts
+            Bitmap backBitmap = new Bitmap(waveLevels.Length * zoominPower, 74, writableBitmap.BackBufferStride,
+                        System.Drawing.Imaging.PixelFormat.Format32bppArgb, writableBitmap.BackBuffer);
+            Graphics graphics = Graphics.FromImage(backBitmap);
+            System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.Green, zoominPower);
+
+            await Task.Run(() =>
+            {
+                //Draw play Start time
+                pen = new System.Drawing.Pen(System.Drawing.Color.Red, 5);
+                float x1 = (float)(playStartTime / sampleTime) * zoominPower;
+                PointF[] tranglePoints = { new PointF(x1 - 2, 0), new PointF(x1 + 2, 0), new PointF(x1, 3.46f) };
+                graphics.DrawPolygon(pen, tranglePoints);
+
+                //Draw ghost cusor
+                pen = new System.Drawing.Pen(System.Drawing.Color.Orange, 5);
+                float x2 = (float)(ghostCusorPositionTime / sampleTime) * zoominPower;
+                PointF[] tranglePoints2 = { new PointF(x2 - 2, 0), new PointF(x2 + 2, 0), new PointF(x2, 3.46f) };
+                graphics.DrawPolygon(pen, tranglePoints2);
+            });
+            graphics.Flush();
+            graphics.Dispose();
+            backBitmap.Dispose();
+            MusicWaveCusor.Source = writableBitmap;
+            MusicWaveCusor.Width = waveLevels.Length * zoominPower;
+            writableBitmap.AddDirtyRect(new Int32Rect(0, 0, writableBitmap.PixelWidth, writableBitmap.PixelHeight));
+            writableBitmap.Unlock();
+        }
         private void DrawFFT()
         {
             Dispatcher.Invoke(new Action(() =>
             {
                 //Scroll WaveView
                 var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                MusicWave.Margin = new Thickness(-currentTime / sampleTime * zoominPower, Margin.Left, MusicWave.Margin.Right, Margin.Bottom);//Todo:the scale
-                                                                                                                                              //Draw FFT
+                MusicWave.Margin = new Thickness(-currentTime / sampleTime * zoominPower, Margin.Left, MusicWave.Margin.Right, Margin.Bottom);
+                MusicWaveCusor.Margin = new Thickness(-currentTime / sampleTime * zoominPower, Margin.Left, MusicWave.Margin.Right, Margin.Bottom);
 
                 var writableBitmap = new WriteableBitmap(255, 255, 72, 72, PixelFormats.Pbgra32, null);
                 FFTImage.Source = writableBitmap;
@@ -716,8 +735,8 @@ namespace MajdataEdit
                     Bass.BASS_ChannelPlay(bgmStream, false);
                 });
             });
-
-            DrawWave(CusorTime); //then the wave could be draw
+            DrawWave();
+            DrawCusor(CusorTime); //then the wave could be draw
         }
         void TogglePause()
         {
