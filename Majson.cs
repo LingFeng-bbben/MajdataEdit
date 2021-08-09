@@ -25,6 +25,7 @@ namespace MajdataEdit
         public string jsonPath;
         public float playSpeed;
         public float backgroundCover;
+        public float audioSpeed;
     }
 
     enum EditorControlMethod
@@ -53,5 +54,7 @@ namespace MajdataEdit
         public string PlayStopKey = "Ctrl+Shift+x";
         public string SendViewerKey = "Ctrl+Shift+z";
         public string SaveKey = "Ctrl+s";
+        public string IncreasePlaybackSpeedKey = "Ctrl+p";
+        public string DecreasePlaybackSpeedKey = "Ctrl+o";
     }
 }

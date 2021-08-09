@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MajdataEdit"
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Name="TheWindow" x:Class="MajdataEdit.MainWindow"
         mc:Ignorable="d"
-        Title="MajdataEdit" Height="517" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="517" MouseDoubleClick="TheWindow_MouseDoubleClick" WindowStartupLocation="CenterScreen">
+        Title="MajdataEdit" Height="502" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="517" MouseDoubleClick="TheWindow_MouseDoubleClick" WindowStartupLocation="CenterScreen">
 
     <Grid Margin="0" Background="{DynamicResource WindowBackground}" DragEnter="Grid_DragEnter" AllowDrop="True" Drop="Grid_Drop">
         <Grid.ColumnDefinitions>
@@ -64,6 +64,8 @@
                 <RoutedUICommand x:Key="SaveFile" Text="SaveFile"/>
                 <RoutedUICommand x:Key="StopPlaying" Text="StopPlaying"/>
                 <RoutedUICommand x:Key="SendToView" Text="SendToView"/>
+                <RoutedUICommand x:Key="IncreasePlaybackSpeed" Text="IncreasePlaybackSpeed"/>
+                <RoutedUICommand x:Key="DecreasePlaybackSpeed" Text="DecreasePlaybackSpeed"/>
             </RichTextBox.Resources>
             <RichTextBox.Background>
                 <SolidColorBrush Color="#FF171717" Opacity="0.3"/>
@@ -74,6 +76,8 @@
                 <CommandBinding Command="{StaticResource SaveFile}" CanExecute="SaveFile_Command_CanExecute"/>
                 <CommandBinding Command="{StaticResource StopPlaying}" CanExecute="StopPlaying_CanExecute"/>
                 <CommandBinding Command="{StaticResource SendToView}" CanExecute="SendToView_CanExecute"/>
+                <CommandBinding Command="{StaticResource IncreasePlaybackSpeed}" CanExecute="IncreasePlaybackSpeed_CanExecute"/>
+                <CommandBinding Command="{StaticResource DecreasePlaybackSpeed}" CanExecute="DecreasePlaybackSpeed_CanExecute"/>
             </RichTextBox.CommandBindings>
             <FlowDocument Language="null"/>
         </RichTextBox>
@@ -97,11 +101,18 @@
         <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="58,0,0,91" Width="38" Click="PlayAndPauseButton_Click" Height="38" VerticalAlignment="Bottom" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
         <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="9,0,0,91" VerticalAlignment="Bottom" Width="38" Click="StopButton_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
         <Label x:Name="NoteNowText" Content="行" HorizontalAlignment="Left" Margin="0,74,0,0" VerticalAlignment="Top" Foreground="White" Width="105" HorizontalContentAlignment="Center" Height="25"/>
-        <Button x:Name="Export_Button" Content="录制模式" Height="30" Margin="9,0,0,168" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Export_Button_Click" HorizontalAlignment="Left" Width="87" Template="{DynamicResource DarkButton}" Foreground="{DynamicResource ButtonForeground}" Background= "{DynamicResource ButtonsBackground}"/>
-        <TextBox x:Name="ViewerSpeed" HorizontalAlignment="Left" Height="26" Margin="50,0,0,203" TextWrapping="Wrap" Text="12" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
-        <Label Content="速度" HorizontalAlignment="Left" Height="26" Margin="5,0,0,203" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
-        <TextBox x:Name="ViewerCover" Height="26" Margin="50,0,0,234" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Left" Width="46"/>
-        <Label Content="暗化" HorizontalAlignment="Left" Height="26" Margin="5,0,0,234" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
+        <Button x:Name="Export_Button" Content="录制模式" Height="30" Margin="9,0,0,166" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Export_Button_Click" HorizontalAlignment="Left" Width="87" Template="{DynamicResource DarkButton}" Foreground="{DynamicResource ButtonForeground}" Background= "{DynamicResource ButtonsBackground}"/>
+        <TextBox x:Name="ViewerSpeed" HorizontalAlignment="Left" Height="26" Margin="50,0,0,201" TextWrapping="Wrap" Text="12" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
+        <Label Content="速度" HorizontalAlignment="Left" Height="26" Margin="5,0,0,201" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
+        <TextBox x:Name="ViewerCover" Height="26" Margin="50,0,0,232" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Left" Width="46"/>
+        <Label Content="暗化" HorizontalAlignment="Left" Height="26" Margin="5,0,0,232" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
         <Rectangle x:Name="Cover" Fill="#FF1F1F1F" Margin="0,19,0,0" Stroke="Black" d:IsHidden="True" Grid.ColumnSpan="2"/>
+        <Grid x:Name="PlbSpdAdjGrid" HorizontalAlignment="Left" Height="105" Margin="105,290,0,0" VerticalAlignment="Top" Width="148" Visibility="Hidden">
+            <Grid.Background>
+                <SolidColorBrush Color="#FF303030" Opacity="0.8"/>
+            </Grid.Background>
+            <Label Content="播放速度" Height="26" Margin="44,20,44,0" VerticalAlignment="Top" Foreground="White" HorizontalContentAlignment ="Center"/>
+            <Label x:Name="PlbSpdLabel" Content="100%" Margin="34,46,34,20" Foreground="White" FontWeight="Bold" FontSize="22" HorizontalContentAlignment="Center"/>
+        </Grid>
     </Grid>
 </Window>

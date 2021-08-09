@@ -21,6 +21,7 @@ using Un4seen.Bass.Misc;
 using System.Drawing;
 using System.Media;
 using Newtonsoft.Json;
+using Un4seen.Bass.AddOn.Fx;
 
 namespace MajdataEdit
 {
@@ -120,7 +121,10 @@ namespace MajdataEdit
                 Bass.BASS_StreamFree(bgmStream);
             }
             soundSetting.Close();
-            bgmStream = Bass.BASS_StreamCreateFile(audioPath, 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            var decodeStream = Bass.BASS_StreamCreateFile(audioPath, 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
+            bgmStream = BassFx.BASS_FX_TempoCreate(decodeStream, BASSFlag.BASS_FX_FREESOURCE);
+            //Bass.BASS_StreamCreateFile(audioPath, 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+
             Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, 0.7f);
             var info = Bass.BASS_ChannelGetInfo(bgmStream);
             if (info.freq != 44100) MessageBox.Show("Simai可能不支持非44100Hz的mp3文件", "注意");
@@ -153,8 +157,8 @@ namespace MajdataEdit
         private void ReadWaveFromFile()
         {
             var bgmDecode = Bass.BASS_StreamCreateFile(maidataDir + "/track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
-            var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmStream));// it is not a mistake
-            int sampleNumber = (int)((length * 1000) / (sampleTime * 1000)) / 2 + 1;
+            var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmDecode,BASSMode.BASS_POS_BYTE));
+            int sampleNumber = (int)((length * 1000) / (sampleTime * 1000)) + 1;
             waveLevels = new float[sampleNumber];
             waveEnergies = new float[sampleNumber];
             for (int i = 0; i < sampleNumber; i++)
@@ -284,6 +288,8 @@ namespace MajdataEdit
             AddGesture(setting.PlayStopKey, "StopPlaying");
             AddGesture(setting.SaveKey, "SaveFile");
             AddGesture(setting.SendViewerKey, "SendToView");
+            AddGesture(setting.IncreasePlaybackSpeedKey, "IncreasePlaybackSpeed");
+            AddGesture(setting.DecreasePlaybackSpeedKey, "DecreasePlaybackSpeed");
         }
         void AddGesture( string keyGusture,string command)
         {
@@ -346,21 +352,21 @@ namespace MajdataEdit
                     {
                         if (note.noteType == SimaiNoteType.Hold)
                         {
-                            Timer holdClickTimer = new Timer(note.holdTime * 1000d);
+                            Timer holdClickTimer = new Timer(note.holdTime * 1000d * (1 / GetPlaybackSpeed()));
                             holdClickTimer.Elapsed += HoldClickTimer_Elapsed;
                             holdClickTimer.AutoReset = false;
                             holdClickTimer.Start();
                         }
                         if (note.noteType == SimaiNoteType.TouchHold)
                         {
-                            Timer holdClickTimer = new Timer(note.holdTime * 1000d);
+                            Timer holdClickTimer = new Timer(note.holdTime * 1000d * (1 / GetPlaybackSpeed()));
                             holdClickTimer.Elapsed += HoldRiserTimer_Elapsed;
                             holdClickTimer.AutoReset = false;
                             holdClickTimer.Start();
                         }
                         if (note.noteType == SimaiNoteType.TouchHold && note.isHanabi)
                         {
-                            Timer holdClickTimer = new Timer(note.holdTime * 1000d);
+                            Timer holdClickTimer = new Timer(note.holdTime * 1000d * (1 / GetPlaybackSpeed()));
                             holdClickTimer.Elapsed += HoldHanibiTimer_Elapsed;
                             holdClickTimer.Elapsed += HoldRiserTimer_Elapsed;
                             holdClickTimer.AutoReset = false;
@@ -759,6 +765,17 @@ namespace MajdataEdit
                 TogglePlay(isOpIncluded);
             }
         }
+        void SetPlaybackSpeed(float speed)
+        {
+            var scale = (speed - 1) * 100f;
+            Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_TEMPO, scale);
+        }
+        float GetPlaybackSpeed()
+        {
+            float speed = 0f;
+            Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_TEMPO, ref speed);
+            return (speed / 100f) + 1f;
+        }
 
         //*VIEW COMMUNICATION
         bool sendRequestStop()
@@ -801,6 +818,7 @@ namespace MajdataEdit
             request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             request.playSpeed = float.Parse(ViewerSpeed.Text);
             request.backgroundCover = float.Parse(ViewerCover.Text);
+            request.audioSpeed = GetPlaybackSpeed();
 
             json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);

@@ -54,8 +54,9 @@ namespace MajdataEdit
             clickSoundTimer.Elapsed += ClickSoundTimer_Elapsed;
             VisualEffectRefreshTimer.Elapsed += VisualEffectRefreshTimer_Elapsed;
             VisualEffectRefreshTimer.Start();
-
+            PlbHideTimer.Elapsed += PlbHideTimer_Elapsed;
         }
+
 
         //start the view and wait for boot, then set window pos
         private void SetWindowPosTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -256,6 +257,35 @@ namespace MajdataEdit
         {
             TogglePlayAndStop(true);
         }
+        private void IncreasePlaybackSpeed_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            float speed = GetPlaybackSpeed();
+            Console.WriteLine(speed);
+            speed += 0.25f;
+            PlbSpdLabel.Content = speed * 100 + "%";
+            SetPlaybackSpeed(speed);
+            PlbSpdAdjGrid.Visibility = Visibility.Visible;
+            PlbHideTimer.Stop();
+            PlbHideTimer.Start();
+        }
+
+        private void DecreasePlaybackSpeed_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            float speed = GetPlaybackSpeed();
+            Console.WriteLine(speed);
+            speed -= 0.25f;
+            PlbSpdLabel.Content = speed * 100 + "%";
+            SetPlaybackSpeed(speed);
+            PlbSpdAdjGrid.Visibility = Visibility.Visible;
+            PlbHideTimer.Stop();
+            PlbHideTimer.Start();
+        }
+        Timer PlbHideTimer = new Timer(1000);
+        private void PlbHideTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Dispatcher.Invoke(() => { PlbSpdAdjGrid.Visibility = Visibility.Collapsed; });
+            ((Timer)sender).Stop();
+        }
 
         //Left componients
         private void PlayAndPauseButton_Click(object sender, RoutedEventArgs e)
@@ -357,7 +387,6 @@ namespace MajdataEdit
             }
             lastMousePointX = e.GetPosition(this).X;
         }
-
 
     }
 }
