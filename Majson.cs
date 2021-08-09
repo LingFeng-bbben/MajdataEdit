@@ -30,7 +30,7 @@ namespace MajdataEdit
 
     enum EditorControlMethod
     {
-        Start,Stop,OpStart
+        Start, Stop, OpStart, Pause, Continue
     }
 
     class MajSetting

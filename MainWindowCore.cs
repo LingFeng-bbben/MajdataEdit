@@ -56,6 +56,7 @@ namespace MajdataEdit
         int selectedDifficulty = -1;
         float sampleTime = 0.02f;
         int zoominPower = 4;
+        EditorControlMethod lastEditorState;
 
         double lastMousePointX; //Used for drag scroll
 
@@ -247,7 +248,7 @@ namespace MajdataEdit
             ViewerSpeed.Text = setting.playSpeed.ToString();
             LevelSelector.SelectedIndex = setting.lastEditDiff;
             selectedDifficulty = setting.lastEditDiff;
-            Bass.BASS_ChannelSetPosition(bgmStream, setting.lastEditTime);
+            SetBgmPosition(setting.lastEditTime);
             Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL,setting.BGM_Level);
             Bass.BASS_ChannelSetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
             Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Break_Level);
@@ -697,7 +698,7 @@ namespace MajdataEdit
         {
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             var destnationTime = time + (0.002d * -delta * (1.0d / zoominPower));
-            Bass.BASS_ChannelSetPosition(bgmStream, destnationTime);
+            SetBgmPosition(destnationTime);
             SimaiProcess.ClearNoteListPlayedState();
 
             SeekTextFromTime();
@@ -707,6 +708,11 @@ namespace MajdataEdit
         void TogglePlay(bool isOpIncluded = false)
         {
             if (Export_Button.IsEnabled == false) return;
+
+            if (lastEditorState == EditorControlMethod.Start || isOpIncluded)
+            {
+                if (!sendRequestStop()) return;
+            }
 
             FumenContent.Focus();
             SaveFumen();
@@ -722,19 +728,39 @@ namespace MajdataEdit
                 Bass.BASS_ChannelSetPosition(bgmStream, 0);
                 startAt = DateTime.Now.AddSeconds(5d);
                 Bass.BASS_ChannelPlay(trackStartStream, true);
-            }
-            if (!sendRequestRun(startAt, isOpIncluded)) return;
-            Task.Run(() =>
-            {
-                while (DateTime.Now.Ticks < startAt.Ticks) ;
-                Dispatcher.Invoke(() =>
+                if (!sendRequestRun(startAt, isOpIncluded)) return;
+                Task.Run(() =>
                 {
-                    playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                    SimaiProcess.ClearNoteListPlayedState();
-                    clickSoundTimer.Start();
-                    Bass.BASS_ChannelPlay(bgmStream, false);
+                    while (DateTime.Now.Ticks < startAt.Ticks) ;
+                    Dispatcher.Invoke(() =>
+                    {
+                        playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                        SimaiProcess.ClearNoteListPlayedState();
+                        clickSoundTimer.Start();
+                        Bass.BASS_ChannelPlay(bgmStream, false);
+                    });
                 });
-            });
+            }
+            else
+            {
+                playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                SimaiProcess.ClearNoteListPlayedState();
+                clickSoundTimer.Start();
+                startAt = DateTime.Now;
+                Bass.BASS_ChannelPlay(bgmStream, false);
+                Task.Run(() =>
+                {
+                    if (lastEditorState == EditorControlMethod.Pause)
+                    {
+                        if (!sendRequestContinue(startAt)) return;
+                    }
+                    else
+                    {
+                        if (!sendRequestRun(startAt, isOpIncluded)) return;
+                    }
+                });
+            }
+
             DrawWave();
             DrawCusor(CusorTime); //then the wave could be draw
         }
@@ -746,7 +772,7 @@ namespace MajdataEdit
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
             clickSoundTimer.Stop();
-            sendRequestStop();
+            sendRequestPause();
             DrawWave();
         }
         void ToggleStop()
@@ -795,6 +821,15 @@ namespace MajdataEdit
             Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_TEMPO, ref speed);
             return (speed / 100f) + 1f;
         }
+        void SetBgmPosition(double time)
+        {
+            if (lastEditorState == EditorControlMethod.Pause)
+            {
+                sendRequestStop();
+            }
+            Bass.BASS_ChannelSetPosition(bgmStream, time);
+        }
+
 
         //*VIEW COMMUNICATION
         bool sendRequestStop()
@@ -804,6 +839,30 @@ namespace MajdataEdit
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(requestStop);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
             if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
+            lastEditorState = EditorControlMethod.Stop;
+            return true;
+        }
+        bool sendRequestPause()
+        {
+            EditRequestjson requestStop = new EditRequestjson();
+            requestStop.control = EditorControlMethod.Pause;
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(requestStop);
+            var response = WebControl.RequestPOST("http://localhost:8013/", json);
+            if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
+            lastEditorState = EditorControlMethod.Pause;
+            return true;
+        }
+        bool sendRequestContinue(DateTime StartAt)
+        {
+            EditRequestjson request = new EditRequestjson();
+            request.control = EditorControlMethod.Continue;
+            request.startAt = StartAt.Ticks;
+            request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+            request.audioSpeed = GetPlaybackSpeed();
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            var response = WebControl.RequestPOST("http://localhost:8013/", json);
+            if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
+            lastEditorState = EditorControlMethod.Start;
             return true;
         }
         bool sendRequestRun(DateTime StartAt,bool isOpIncluded)
@@ -832,16 +891,20 @@ namespace MajdataEdit
                 request.control = EditorControlMethod.OpStart;
             else
                 request.control = EditorControlMethod.Start;
-            request.jsonPath = path;
-            request.startAt = StartAt.Ticks;
-            request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-            request.playSpeed = float.Parse(ViewerSpeed.Text);
-            request.backgroundCover = float.Parse(ViewerCover.Text);
-            request.audioSpeed = GetPlaybackSpeed();
+            Dispatcher.Invoke(() =>
+            {
+                request.jsonPath = path;
+                request.startAt = StartAt.Ticks;
+                request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                request.playSpeed = float.Parse(ViewerSpeed.Text);
+                request.backgroundCover = float.Parse(ViewerCover.Text);
+                request.audioSpeed = GetPlaybackSpeed();
+            });
 
             json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
             if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
+            lastEditorState = EditorControlMethod.Start;
             return true;
         }
 
