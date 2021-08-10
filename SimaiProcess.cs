@@ -16,10 +16,17 @@ namespace MajdataEdit
         static public float first = 0;
         static public string[] fumens = new string[7];
         static public string[] levels = new string[7];
-        static public bool simaiFirst = false;
+        /// <summary>
+        /// the timing points that contains notedata
+        /// </summary>
         static public List<SimaiTimingPoint> notelist = new List<SimaiTimingPoint>(); 
+        /// <summary>
+        /// the timing points made by "," in maidata
+        /// </summary>
         static public List<SimaiTimingPoint> timinglist = new List<SimaiTimingPoint>();
-
+        /// <summary>
+        /// Reset all the data in the static class.
+        /// </summary>
         static public void ClearData()
         {
             title = "";
@@ -28,11 +35,14 @@ namespace MajdataEdit
             first = 0;
             fumens = new string[7];
             levels = new string[7];
-            simaiFirst = false;
             notelist = new List<SimaiTimingPoint>(); 
             timinglist = new List<SimaiTimingPoint>();
         }
-
+        /// <summary>
+        /// Read the maidata.txt into the static class, including the variables. Show up a messageBox when enconter any exception.
+        /// </summary>
+        /// <param name="filename">file path of maidata.txt</param>
+        /// <returns>if the read process faced any error</returns>
         static public bool ReadData(string filename)
         {
             int i = 0;
@@ -72,16 +82,6 @@ namespace MajdataEdit
                     }
 
                 }
-                Console.WriteLine(first);
-                if (first == -0.04f)
-                {
-                    simaiFirst = true;
-                }
-                if (first != 0 && first != -0.04f)
-                {
-                    MessageBox.Show("本编辑器不想支持offset,请剪好了再来");
-                }
-                Console.WriteLine(fumens[5]);
                 return true;
             }
             catch (Exception e){
@@ -89,19 +89,16 @@ namespace MajdataEdit
                 return false;
             }
         }
+        /// <summary>
+        /// Save the static data to maidata.txt
+        /// </summary>
+        /// <param name="filename">file path of maidata.txt</param>
         static public void SaveData(string filename)
         {
             List<string> maidata = new List<string>();
             maidata.Add("&title=" + title);
             maidata.Add("&artist=" + artist);
-            if (simaiFirst)
-            {
-                maidata.Add("&first=-0.04");
-            }
-            else
-            {
-                maidata.Add("&first=0");
-            }
+            maidata.Add("&first=" + first);
             for (int i = 0; i < levels.Length; i++)
             {
                 if (levels[i] != null && levels[i] != "")
@@ -122,14 +119,20 @@ namespace MajdataEdit
         {
             return varline.Split('=')[1];
         }
-        static public double getSongTimeAndScan(string text, long position)
+        /// <summary>
+        /// This method serialize the fumen data and load it into the static class.
+        /// </summary>
+        /// <param name="text">fumen text</param>
+        /// <param name="position">the position of the cusor, to get the return time</param>
+        /// <returns>the song time at the position</returns>
+        static public double Serialize(string text, long position=0)
         {
             List<SimaiTimingPoint> _notelist = new List<SimaiTimingPoint>();
             List<SimaiTimingPoint> _timinglist = new List<SimaiTimingPoint>();
             try
             {
                 float bpm = 0;
-                double time = 0; //in seconds
+                double time = first; //in seconds
                 double requestedTime = 0;
                 int beats = 4;
                 bool haveNote = false;
@@ -183,11 +186,11 @@ namespace MajdataEdit
                         //Console.WriteLine("BEAT" + beats);
                         continue;
                     }
-                    if (isNote(text[i]))//if has number (not for touch note now)
+                    if (isNote(text[i]))
                     {
                         haveNote = true;
                     }
-                    if (haveNote&& text[i] != ',')
+                    if (haveNote && text[i] != ',')
                     {
                         noteTemp += text[i];
                     }
@@ -257,13 +260,13 @@ namespace MajdataEdit
         public int rawTextPositionY;
         public string notesContent;
         public float currentBpm = -1;
-        public List<SimaiNote> noteList = new List<SimaiNote>(); //used for json
+        public List<SimaiNote> noteList = new List<SimaiNote>(); //only used for json serialize
         public SimaiTimingPoint(double _time, int textposX = 0, int textposY = 0,string _content = "",float bpm=0f)
         {
             time = _time;
             rawTextPositionX = textposX;
             rawTextPositionY = textposY;
-            notesContent = _content;
+            notesContent = _content.Replace("\n","").Replace(" ","");
             currentBpm = bpm;
         }
 
@@ -355,13 +358,13 @@ namespace MajdataEdit
                 if (isTouchNote(noteText)) {
                     simaiNote.noteType = SimaiNoteType.TouchHold;
                     simaiNote.holdTime = getTimeFromBeats(noteText);
-                    Console.WriteLine("Hold:" +simaiNote.touchArea+ simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
+                    //Console.WriteLine("Hold:" +simaiNote.touchArea+ simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
                 }
                 else
                 {
                     simaiNote.noteType = SimaiNoteType.Hold;
                     simaiNote.holdTime = getTimeFromBeats(noteText);
-                    Console.WriteLine("Hold:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
+                    //Console.WriteLine("Hold:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
                 }
             }
             //slide
@@ -370,7 +373,7 @@ namespace MajdataEdit
                 simaiNote.slideTime = getTimeFromBeats(noteText);
                 var timeStarWait = getStarWaitTime(noteText);
                 simaiNote.slideStartTime = time + timeStarWait;
-                Console.WriteLine("Slide:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.slideTime);
+                //Console.WriteLine("Slide:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.slideTime);
             }
             //break
             if (noteText.Contains('b'))
@@ -482,21 +485,30 @@ namespace MajdataEdit
         {
 
             string s = "";
-            Dictionary<string, string> MirrorLR = new Dictionary<string, string>();//左右
-            MirrorLR.Add("8", "1");
-            MirrorLR.Add("1", "8");
-            MirrorLR.Add("2", "7");
-            MirrorLR.Add("7", "2");
-            MirrorLR.Add("3", "6");
-            MirrorLR.Add("6", "3");
-            MirrorLR.Add("4", "5");
-            MirrorLR.Add("5", "4");
-            MirrorLR.Add("q", "p");
-            MirrorLR.Add("p", "q");
-            MirrorLR.Add("<", ">");
-            MirrorLR.Add(">", "<");
-            MirrorLR.Add("z", "s");
-            MirrorLR.Add("s", "z");
+            Dictionary<string, string> MirrorLeftToRight = new Dictionary<string, string>();//左右
+            MirrorLeftToRight.Add("8", "1");
+            MirrorLeftToRight.Add("1", "8");
+            MirrorLeftToRight.Add("2", "7");
+            MirrorLeftToRight.Add("7", "2");
+            MirrorLeftToRight.Add("3", "6");
+            MirrorLeftToRight.Add("6", "3");
+            MirrorLeftToRight.Add("4", "5");
+            MirrorLeftToRight.Add("5", "4");
+            MirrorLeftToRight.Add("q", "p");
+            MirrorLeftToRight.Add("p", "q");
+            MirrorLeftToRight.Add("<", ">");
+            MirrorLeftToRight.Add(">", "<");
+            MirrorLeftToRight.Add("z", "s");
+            MirrorLeftToRight.Add("s", "z");
+            Dictionary<string, string> MirrorTouchLeftToRight = new Dictionary<string, string>();//Touch左右
+            MirrorTouchLeftToRight.Add("8", "2");
+            MirrorTouchLeftToRight.Add("2", "8");
+            MirrorTouchLeftToRight.Add("3", "7");
+            MirrorTouchLeftToRight.Add("7", "3");
+            MirrorTouchLeftToRight.Add("4", "6");
+            MirrorTouchLeftToRight.Add("6", "4");
+            MirrorTouchLeftToRight.Add("1", "1");
+            MirrorTouchLeftToRight.Add("5", "5");
             char[] a = str.ToCharArray();
             for (int i = 0; i < a.Length; i++)
             {
@@ -515,9 +527,23 @@ namespace MajdataEdit
                 }
                 else
                 {
-                    if (MirrorLR.ContainsKey(s1))
+                    if (MirrorLeftToRight.ContainsKey(s1))
                     {
-                        s += MirrorLR[s1];
+                        s += MirrorLeftToRight[s1];
+                    }
+                    else if (a[i] == 'e' || a[i] == 'd' || a[i] == 'E' || a[i] == 'D')
+                    {
+                        s += a[i];
+                        i += 1;
+                        string st = a[i].ToString();
+                        if (MirrorTouchLeftToRight.ContainsKey(st))
+                        {  
+                            s += MirrorTouchLeftToRight[st];
+                        }
+                        else
+                        {
+                            s += a[i];
+                        }
                     }
                     else
                     {
@@ -533,19 +559,28 @@ namespace MajdataEdit
         {
 
             string s = "";
-            Dictionary<string, string> MirrorUD = new Dictionary<string, string>();//上下（全反=上下+左右）
-            MirrorUD.Add("4", "1");
-            MirrorUD.Add("5", "8");
-            MirrorUD.Add("6", "7");
-            MirrorUD.Add("3", "2");
-            MirrorUD.Add("7", "6");
-            MirrorUD.Add("2", "3");
-            MirrorUD.Add("8", "5");
-            MirrorUD.Add("1", "4");
-            MirrorUD.Add("q", "p");
-            MirrorUD.Add("p", "q");
-            MirrorUD.Add("z", "s");
-            MirrorUD.Add("s", "z");
+            Dictionary<string, string> MirrorUpsideDown = new Dictionary<string, string>();//上下（全反=上下+左右）
+            MirrorUpsideDown.Add("4", "1");
+            MirrorUpsideDown.Add("5", "8");
+            MirrorUpsideDown.Add("6", "7");
+            MirrorUpsideDown.Add("3", "2");
+            MirrorUpsideDown.Add("7", "6");
+            MirrorUpsideDown.Add("2", "3");
+            MirrorUpsideDown.Add("8", "5");
+            MirrorUpsideDown.Add("1", "4");
+            MirrorUpsideDown.Add("q", "p");
+            MirrorUpsideDown.Add("p", "q");
+            MirrorUpsideDown.Add("z", "s");
+            MirrorUpsideDown.Add("s", "z");
+            Dictionary<string, string> MirrorTouchUpsideDown = new Dictionary<string, string>();//Touch左右
+            MirrorTouchUpsideDown.Add("4", "2");
+            MirrorTouchUpsideDown.Add("2", "4");
+            MirrorTouchUpsideDown.Add("1", "5");
+            MirrorTouchUpsideDown.Add("5", "1");
+            MirrorTouchUpsideDown.Add("8", "6");
+            MirrorTouchUpsideDown.Add("6", "8");
+            MirrorTouchUpsideDown.Add("3", "3");
+            MirrorTouchUpsideDown.Add("7", "7");
             char[] a = str.ToCharArray();
             for (int i = 0; i < a.Length; i++)
             {
@@ -564,9 +599,19 @@ namespace MajdataEdit
                 }
                 else
                 {
-                    if (MirrorUD.ContainsKey(s1))
+                    if (MirrorUpsideDown.ContainsKey(s1))
                     {
-                        s += MirrorUD[s1];
+                        s += MirrorUpsideDown[s1];
+                    }
+                    else if (a[i] == 'e' || a[i] == 'd' || a[i] == 'E' || a[i] == 'D')
+                    {
+                        s += a[i];
+                        i += 1;
+                        string st = a[i].ToString();
+                        if (MirrorTouchUpsideDown.ContainsKey(st))
+                        {
+                            s += MirrorTouchUpsideDown[st];
+                        }
                     }
                     else
                     {
@@ -617,6 +662,7 @@ namespace MajdataEdit
                     {
                         s += Mirror180[s1];
                     }
+                    
                     else
                     {
                         s += s1;

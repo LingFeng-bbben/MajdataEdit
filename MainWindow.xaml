@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MajdataEdit"
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Name="TheWindow" x:Class="MajdataEdit.MainWindow"
         mc:Ignorable="d"
-        Title="MajdataEdit" Height="552" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="508" MouseDoubleClick="TheWindow_MouseDoubleClick" WindowStartupLocation="CenterScreen">
+        Title="MajdataEdit" Height="502" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="517" MouseDoubleClick="TheWindow_MouseDoubleClick" WindowStartupLocation="CenterScreen">
 
     <Grid Margin="0" Background="{DynamicResource WindowBackground}" DragEnter="Grid_DragEnter" AllowDrop="True" Drop="Grid_Drop">
         <Grid.ColumnDefinitions>
@@ -14,7 +14,8 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Image x:Name="MusicWave" Source="Image/QQ图片20210701170841.png" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Margin="0,0,-521,0" MouseWheel="MusicWave_MouseWheel" PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove" Grid.Column="1" HorizontalAlignment="Left" Width="877"/>
+        <Image x:Name="MusicWave" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Margin="0,0,-521,0" MouseWheel="MusicWave_MouseWheel" PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove" Grid.Column="1" HorizontalAlignment="Left" Width="877"/>
+        <Image x:Name="MusicWaveCusor" Stretch="Fill" Height="74" VerticalAlignment="Bottom" Margin="0,0,-521,0" MouseWheel="MusicWave_MouseWheel" PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove" Grid.Column="1" HorizontalAlignment="Left" Width="877" Opacity="0.815"/>
         <Line StrokeThickness="3" Y2="56" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15" Grid.Column="1" HorizontalAlignment="Left" Width="45"/>
 
         <Menu Height="19" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Grid.ColumnSpan="2">
@@ -30,13 +31,16 @@
                 <MenuItem Header="180°翻转选择" Click="Mirror180_MenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="谱面信息" Click="MenuItem_InfomationEdit_Click"/>
-                
+
+            </MenuItem>
+            <MenuItem x:Name="MenuSetting" Header="设置" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" IsEnabled="False">
+                <MenuItem Header="调音台" Click="MenuItem_SoundSetting_Click"/>
             </MenuItem>
             <MenuItem Header="工具" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
                 <MenuItem Header="BPM tap" Click="BPMtap_MenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="SimaiWiki" Click="MenuItem_SimaiWiki_Click" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
-            <MenuItem Header="GitHub" Click="GitHub_Click" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
+            <MenuItem Header="GitHub" Click="MenuItem_GitHub_Click" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
         </Menu>
         <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,14,92" Width="255" Height="255" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
             <Image.RenderTransform>
@@ -49,57 +53,67 @@
             </Image.RenderTransform>
         </Image>
         <CheckBox x:Name="FollowPlayCheck" Content="文本跟随" HorizontalAlignment="Left" Height="21" Margin="9,0,0,129" VerticalAlignment="Bottom" Width="87" Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Right" Click="FollowPlayCheck_Click" Background="{DynamicResource ButtonsBackground}" Template="{DynamicResource DarkCheck}"/>
-        <RichTextBox x:Name="FumenContent" Padding="0,5" FontFamily="Consolas" Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" Margin="105,30,10,91" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" SelectionChanged="FumenContent_SelectionChanged" Grid.ColumnSpan="2">
+        <RichTextBox x:Name="FumenContent" 
+                     Padding="0,5" FontFamily="Consolas"
+                     Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged" 
+                     Margin="105,30,10,91" HorizontalScrollBarVisibility="Auto" 
+                     VerticalScrollBarVisibility="Visible" 
+                     SelectionChanged="FumenContent_SelectionChanged" Grid.ColumnSpan="2"
+                     InputMethod.IsInputMethodEnabled="False">
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
                 <RoutedUICommand x:Key="SaveFile" Text="SaveFile"/>
                 <RoutedUICommand x:Key="StopPlaying" Text="StopPlaying"/>
-                <RoutedUICommand x:Key="HightLightCode" Text="HightLightCode"/>
                 <RoutedUICommand x:Key="SendToView" Text="SendToView"/>
+                <RoutedUICommand x:Key="IncreasePlaybackSpeed" Text="IncreasePlaybackSpeed"/>
+                <RoutedUICommand x:Key="DecreasePlaybackSpeed" Text="DecreasePlaybackSpeed"/>
             </RichTextBox.Resources>
             <RichTextBox.Background>
                 <SolidColorBrush Color="#FF171717" Opacity="0.3"/>
             </RichTextBox.Background>
-            <RichTextBox.InputBindings>
-                <KeyBinding Gesture="Ctrl+Shift+c" Command="{StaticResource PlayAndPause}"/>
-                <KeyBinding Gesture="Ctrl+s" Command="{StaticResource SaveFile}"/>
-                <KeyBinding Gesture="Ctrl+Shift+x" Command="{StaticResource StopPlaying}"/>
-                <KeyBinding Gesture="Ctrl+f" Command="{StaticResource HightLightCode}"/>
-                <KeyBinding Gesture="Ctrl+Shift+z" Command="{StaticResource SendToView}"/>
-            </RichTextBox.InputBindings>
+            <!--Bindings are dynamicly added via ReadEditorSetting()-->
             <RichTextBox.CommandBindings>
                 <CommandBinding Command="{StaticResource PlayAndPause}" CanExecute="PlayAndPause_CanExecute"/>
                 <CommandBinding Command="{StaticResource SaveFile}" CanExecute="SaveFile_Command_CanExecute"/>
                 <CommandBinding Command="{StaticResource StopPlaying}" CanExecute="StopPlaying_CanExecute"/>
-                <CommandBinding Command="{StaticResource HightLightCode}" CanExecute="HightLightCode_CanExecute"/>
                 <CommandBinding Command="{StaticResource SendToView}" CanExecute="SendToView_CanExecute"/>
+                <CommandBinding Command="{StaticResource IncreasePlaybackSpeed}" CanExecute="IncreasePlaybackSpeed_CanExecute"/>
+                <CommandBinding Command="{StaticResource DecreasePlaybackSpeed}" CanExecute="DecreasePlaybackSpeed_CanExecute"/>
             </RichTextBox.CommandBindings>
-            <FlowDocument/>
+            <FlowDocument Language="null"/>
         </RichTextBox>
         <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Left" Height="64" Margin="0,17,0,0" VerticalAlignment="Top" Width="105" Foreground="White" FontFamily="Bahnschrift Light" FontSize="50" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-        <ComboBox x:Name="LevelSelector" Margin="10,155,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="87" Height="21" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkComboBox}">
+        <ComboBox x:Name="LevelSelector" Margin="10,117,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="87" Height="21" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkComboBox}">
 
-            <ComboBoxItem Content="&amp;lv_1"/>
-            <ComboBoxItem Content="&amp;lv_2"/>
-            <ComboBoxItem Content="&amp;lv_3"/>
-            <ComboBoxItem Content="&amp;lv_4"/>
-            <ComboBoxItem Content="&amp;lv_5"/>
-            <ComboBoxItem Content="&amp;lv_6"/>
-            <ComboBoxItem Content="&amp;lv_7"/>
+            <ComboBoxItem Content="EASY"/>
+            <ComboBoxItem Content="BASIC"/>
+            <ComboBoxItem Content="ADVANCED"/>
+            <ComboBoxItem Content="EXPERT"/>
+            <ComboBoxItem Content="MASTER"/>
+            <ComboBoxItem Content="Re:MASTER"/>
+            <ComboBoxItem Content="ORIGINAL"/>
         </ComboBox>
-        <CheckBox x:Name="SimaiFirst" Content="Simai 0.04s" HorizontalAlignment="Left" Margin="9,130,0,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" IsChecked="True" Height="15" Width="87" Background="{DynamicResource ButtonsBackground}" Template="{DynamicResource DarkCheck}"/>
         <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="10,0,0,41" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomIn_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
         <Button x:Name="WaveViewZoomOut" Content="-" HorizontalAlignment="Left" Height="24" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomOut_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
-        <Label Content="难度" HorizontalAlignment="Left" Height="25" Margin="5,184,0,0" VerticalAlignment="Top" Width="33" Foreground="White"/>
-        <TextBox x:Name="LevelTextBox" HorizontalAlignment="Left" Height="25" Margin="50,184,0,0" TextWrapping="Wrap" Text="12+" VerticalAlignment="Top" Width="46" VerticalContentAlignment="Center" TextChanged="LevelTextBox_TextChanged" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
+        <Label Content="难度" HorizontalAlignment="Left" Height="25" Margin="5,143,0,0" VerticalAlignment="Top" Width="33" Foreground="White"/>
+        <TextBox x:Name="LevelTextBox" HorizontalAlignment="Left" Height="25" Margin="50,143,0,0" TextWrapping="Wrap" Text="12+" VerticalAlignment="Top" Width="46" VerticalContentAlignment="Center" TextChanged="LevelTextBox_TextChanged" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Center"/>
+        <Label Content="偏移" HorizontalAlignment="Left" Height="25" Margin="5,173,0,0" VerticalAlignment="Top" Width="33" Foreground="White"/>
+        <TextBox x:Name="OffsetTextBox" HorizontalAlignment="Left" Height="25" Margin="50,173,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="46" VerticalContentAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Center" TextChanged="OffsetTextBox_TextChanged"/>
         <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="58,0,0,91" Width="38" Click="PlayAndPauseButton_Click" Height="38" VerticalAlignment="Bottom" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
         <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="9,0,0,91" VerticalAlignment="Bottom" Width="38" Click="StopButton_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
-        <Label x:Name="NoteNowText" Content="Current Note" HorizontalAlignment="Left" Margin="0,74,0,0" VerticalAlignment="Top" Foreground="White" Width="105" HorizontalContentAlignment="Center" Height="25"/>
-        <Button x:Name="Export_Button" Content="发到查看器" Height="30" Margin="9,0,0,168" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Export_Button_Click" HorizontalAlignment="Left" Width="87" Template="{DynamicResource DarkButton}" Foreground="{DynamicResource ButtonForeground}" Background= "{DynamicResource ButtonsBackground}"/>
-        <TextBox x:Name="ViewerSpeed" HorizontalAlignment="Left" Height="26" Margin="50,0,0,204" TextWrapping="Wrap" Text="12" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
-        <Label Content="速度" HorizontalAlignment="Left" Height="28" Margin="5,0,0,202" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
-        <TextBox x:Name="ViewerCover" Height="26" Margin="50,0,0,237" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Left" Width="46"/>
-        <Label Content="暗化" HorizontalAlignment="Left" Height="28" Margin="5,0,0,235" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
+        <Label x:Name="NoteNowText" Content="行" HorizontalAlignment="Left" Margin="0,74,0,0" VerticalAlignment="Top" Foreground="White" Width="105" HorizontalContentAlignment="Center" Height="25"/>
+        <Button x:Name="Export_Button" Content="录制模式" Height="30" Margin="9,0,0,166" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Export_Button_Click" HorizontalAlignment="Left" Width="87" Template="{DynamicResource DarkButton}" Foreground="{DynamicResource ButtonForeground}" Background= "{DynamicResource ButtonsBackground}"/>
+        <TextBox x:Name="ViewerSpeed" HorizontalAlignment="Left" Height="26" Margin="50,0,0,201" TextWrapping="Wrap" Text="12" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"/>
+        <Label Content="速度" HorizontalAlignment="Left" Height="26" Margin="5,0,0,201" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
+        <TextBox x:Name="ViewerCover" Height="26" Margin="50,0,0,232" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Left" Width="46"/>
+        <Label Content="暗化" HorizontalAlignment="Left" Height="26" Margin="5,0,0,232" VerticalAlignment="Bottom" Width="36" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>
+        <Grid x:Name="PlbSpdAdjGrid" HorizontalAlignment="Left" Height="105" Margin="105,290,0,0" VerticalAlignment="Top" Width="148" Visibility="Hidden">
+            <Grid.Background>
+                <SolidColorBrush Color="#FF303030" Opacity="0.8"/>
+            </Grid.Background>
+            <Label Content="播放速度" Height="26" Margin="44,20,44,0" VerticalAlignment="Top" Foreground="White" HorizontalContentAlignment ="Center"/>
+            <Label x:Name="PlbSpdLabel" Content="100%" Margin="34,46,34,20" Foreground="White" FontWeight="Bold" FontSize="22" HorizontalContentAlignment="Center"/>
+        </Grid>
         <Rectangle x:Name="Cover" Fill="#FF1F1F1F" Margin="0,19,0,0" Stroke="Black" d:IsHidden="True" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

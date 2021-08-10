@@ -93,8 +93,12 @@
     <Compile Include="Infomation.xaml.cs">
       <DependentUpon>Infomation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindowCore.cs" />
     <Compile Include="Majson.cs" />
     <Compile Include="SimaiProcess.cs" />
+    <Compile Include="SoundSetting.xaml.cs">
+      <DependentUpon>SoundSetting.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WebControl.cs" />
     <Page Include="BPMtap.xaml">
       <SubType>Designer</SubType>
@@ -116,6 +120,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SoundSetting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -149,8 +157,6 @@
     <Resource Include="favicon.ico" />
     <Content Include="lib\bass.dll" />
     <Content Include="lib\Bass.Net.dll" />
-    <Resource Include="Image\Outline_03.png" />
-    <Resource Include="Image\QQ图片20210701170841.png" />
     <Resource Include="Image\salt.png" />
     <Resource Include="lib\Bass.Net.xml" />
   </ItemGroup>

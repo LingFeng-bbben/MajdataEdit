@@ -25,10 +25,36 @@ namespace MajdataEdit
         public string jsonPath;
         public float playSpeed;
         public float backgroundCover;
+        public float audioSpeed;
     }
 
     enum EditorControlMethod
     {
-        Start,Stop
+        Start, Stop, OpStart, Pause, Continue
+    }
+
+    class MajSetting
+    {
+        public float playSpeed;
+        public float backgroundCover;
+
+        public int lastEditDiff;
+        public double lastEditTime;
+
+        public float BGM_Level;
+        public float Tap_Level;
+        public float Break_Level;
+        public float Ex_Level;
+        public float Hanabi_Level;
+    }
+
+    class EditorSetting
+    {
+        public string PlayPauseKey = "Ctrl+Shift+c";
+        public string PlayStopKey = "Ctrl+Shift+x";
+        public string SendViewerKey = "Ctrl+Shift+z";
+        public string SaveKey = "Ctrl+s";
+        public string IncreasePlaybackSpeedKey = "Ctrl+p";
+        public string DecreasePlaybackSpeedKey = "Ctrl+o";
     }
 }
