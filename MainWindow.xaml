@@ -8,7 +8,13 @@
         mc:Ignorable="d"
         Title="MajdataEdit" Height="502" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="517" MouseDoubleClick="TheWindow_MouseDoubleClick" WindowStartupLocation="CenterScreen">
 
-    <Grid Margin="0" Background="{DynamicResource WindowBackground}" DragEnter="Grid_DragEnter" AllowDrop="True" Drop="Grid_Drop">
+    <Grid Margin="0" DragEnter="Grid_DragEnter" AllowDrop="True" Drop="Grid_Drop">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FF526675"/>
+                <GradientStop Color="#FF735573" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>

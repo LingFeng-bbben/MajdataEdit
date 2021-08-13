@@ -427,7 +427,7 @@ namespace MajdataEdit
             {
                 try
                 {
-                    graphics.Clear(System.Drawing.Color.Black);
+                    graphics.Clear(System.Drawing.Color.FromArgb(100,0,0,0));
                     for (int i = 0; i < waveLevels.Length; i++)
                     {
                         var lv = waveLevels[i] * 35;

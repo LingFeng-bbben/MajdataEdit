@@ -282,7 +282,7 @@
                     <Path x:Name="GlyphPanel" Data="F1M10,1.2L4.7,9.1 4.5,9.1 0,5.2 1.3,3.5 4.3,6.1 8.3,0 10,1.2z" Fill="{TemplateBinding Foreground}" FlowDirection="LeftToRight" Margin="3" UseLayoutRounding="True" Visibility="Collapsed" VerticalAlignment="Center" d:DesignUseLayoutRounding="True"/>
                     <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Grid.Column="1" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" UseLayoutRounding="True" d:DesignUseLayoutRounding="True"/>
                     <Popup x:Name="PART_Popup" AllowsTransparency="True" Focusable="False" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Bottom">
-                        <Border x:Name="SubMenuBorder" BorderBrush="#FF999999" BorderThickness="1" Background="{DynamicResource ButtonsBackground}" Padding="2" UseLayoutRounding="True" d:DesignUseLayoutRounding="True">
+                        <Border x:Name="SubMenuBorder" BorderBrush="#FF999999" BorderThickness="1" Background="{DynamicResource WindowBackground}" Padding="2" UseLayoutRounding="True" d:DesignUseLayoutRounding="True">
                             <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}" UseLayoutRounding="True" d:DesignUseLayoutRounding="True">
                                 <Grid x:Name="Grid1" RenderOptions.ClearTypeHint="Enabled" UseLayoutRounding="True" d:DesignUseLayoutRounding="True">
                                     <Canvas x:Name="Canvas" HorizontalAlignment="Left" Height="0" UseLayoutRounding="True" VerticalAlignment="Top" Width="0" d:DesignUseLayoutRounding="True">
@@ -323,7 +323,7 @@
 
         <SolidColorBrush x:Key="ButtonForeground" Color="White"/>
         <SolidColorBrush x:Key="WindowBackground" Color="#FF1F1F1F"/>
-        <SolidColorBrush x:Key="ButtonsBackground" Color="#FF555555"/>
+        <SolidColorBrush x:Key="ButtonsBackground" Color="#FF303030" Opacity="0.6"/>
         
     </Application.Resources>
 </Application>
