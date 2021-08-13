@@ -317,16 +317,17 @@ namespace MajdataEdit
         private List<SimaiNote> getSameHeadSlide(string content)
         {
             List<SimaiNote> simaiNotes = new List<SimaiNote>();
-            var notes1 = content.Split('*');
-            var note1 = getSingleNote(notes1[0]);
+            var noteContents = content.Split('*');
+            var note1 = getSingleNote(noteContents[0]);
             simaiNotes.Add(note1);
-            var newnotlist = notes1.ToList();
-            newnotlist.RemoveAt(0);
+            var newNoteContent = noteContents.ToList();
+            newNoteContent.RemoveAt(0);
             //删除第一个NOTE
-            foreach (var item in newnotlist)
+            foreach (var item in newNoteContent)
             {
                 var note2text = note1.startPosition + item;
                 var note2 = getSingleNote(note2text);
+                note2.isSlideNoHead = true;
                 simaiNotes.Add(note2);
             }
             return simaiNotes;
@@ -471,11 +472,16 @@ namespace MajdataEdit
         public bool isBreak = false;
         public bool isHanabi = false;
         public bool isEx = false;
+        public bool isSlideNoHead = false;
+
         public int startPosition = 1; //键位（1-8）
         public char touchArea = ' ';
+
         public double holdTime = 0d;
+
         public double slideStartTime = 0d;
         public double slideTime = 0d;
+
         public string noteContent; //used for star explain
     }
 
