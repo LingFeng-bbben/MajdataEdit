@@ -99,6 +99,7 @@ namespace MajdataEdit
             maidata.Add("&title=" + title);
             maidata.Add("&artist=" + artist);
             maidata.Add("&first=" + first);
+            maidata.Add("&des=" + designer);
             for (int i = 0; i < levels.Length; i++)
             {
                 if (levels[i] != null && levels[i] != "")
