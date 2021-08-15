@@ -951,7 +951,7 @@ namespace MajdataEdit
         {
             var windowPtr = FindWindow(null, "MajdataView");
             //var thisWindow = FindWindow(null, this.Title);
-            ShowWindow(windowPtr, 1);//还原窗口
+            ShowWindow(windowPtr, 5);//还原窗口
             SwitchToThisWindow(windowPtr, true);
             //SwitchToThisWindow(thisWindow, true);
             if (moveToPlace) InternalMoveWindow();
