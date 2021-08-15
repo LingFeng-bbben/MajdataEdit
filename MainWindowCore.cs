@@ -321,7 +321,6 @@ namespace MajdataEdit
             {
                 var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
                 var waitToBePlayed = SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime);
-                //foreach(var a in waitToBePlayed) Console.WriteLine("Sort:"+a.time);
                 if (waitToBePlayed.Count < 1) return;
                 var nearestTime = waitToBePlayed[0].time;
                 //Console.WriteLine(nearestTime);
@@ -358,10 +357,21 @@ namespace MajdataEdit
                     {
                         if (note.noteType == SimaiNoteType.Hold)
                         {
-                            Timer holdClickTimer = new Timer(note.holdTime * 1000d * (1 / GetPlaybackSpeed()));
-                            holdClickTimer.Elapsed += HoldClickTimer_Elapsed;
-                            holdClickTimer.AutoReset = false;
-                            holdClickTimer.Start();
+                            var targetTime = nearestTime + note.holdTime;
+
+                            if (SimaiProcess.notelist.Any(o => Math.Abs( o.time - targetTime)<0.001f))
+                            {
+                                //SimaiProcess.notelist.Find(o => o.time == nearestTime + note.holdTime).noteList.Add(releaseNote);
+                            }
+                            else
+                            {
+                                SimaiTimingPoint timingPoint = new SimaiTimingPoint(targetTime);
+                                timingPoint.havePlayed = false;
+                                SimaiProcess.notelist.Add(timingPoint);
+                                SimaiProcess.notelist = SimaiProcess.notelist.OrderBy(o => o.time).ToList();
+                                //Console.WriteLine("Add empty Note");
+                                //其实这里也可以加timer，但考虑到调用上面一堆可能会耗时间就先加个空note吧
+                            }
                         }
                         if (note.noteType == SimaiNoteType.TouchHold)
                         {
