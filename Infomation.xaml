@@ -14,7 +14,7 @@
         <TextBox x:Name="ArtistTextbox" HorizontalAlignment="Right" Margin="0,105,105,0" TextWrapping="Wrap" Width="168" VerticalContentAlignment="Center" Height="24" VerticalAlignment="Top"/>
         <Label Content="Designer" HorizontalAlignment="Left" Height="37" Margin="105,148,0,0" VerticalAlignment="Top" Width="131" Foreground="White"/>
         <TextBox x:Name="DesignTextbox" HorizontalAlignment="Right" Height="24" Margin="0,148,105,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" VerticalContentAlignment="Center"/>
-        <Image HorizontalAlignment="Left" Height="157" Margin="0,156,0,0" VerticalAlignment="Top" Width="137" Source="Image/salt.png" Opacity="0.8"/>
+        <Image HorizontalAlignment="Left" Height="139" Margin="0,174,0,0" VerticalAlignment="Top" Width="144" Source="Image/salt.png" Opacity="0.8"/>
 
     </Grid>
 </Window>
