@@ -28,7 +28,7 @@ namespace MajdataEdit
     public partial class MainWindow : Window
     {
         Timer currentTimeRefreshTimer = new Timer(100);
-        Timer clickSoundTimer = new Timer(10);
+        Timer clickSoundTimer = new Timer(1);
         Timer VisualEffectRefreshTimer = new Timer(1);
 
         SoundSetting soundSetting = new SoundSetting();
@@ -324,7 +324,7 @@ namespace MajdataEdit
                 if (waitToBePlayed.Count < 1) return;
                 var nearestTime = waitToBePlayed[0].time;
                 //Console.WriteLine(nearestTime);
-                if (currentTime - nearestTime < 0.05 && currentTime - nearestTime > -0.05)
+                if (Math.Abs(currentTime - nearestTime) < 0.055)
                 {
                     var notes = waitToBePlayed[0].getNotes();
                     Bass.BASS_ChannelPlay(clickStream, true);
@@ -472,15 +472,15 @@ namespace MajdataEdit
                     double time = SimaiProcess.first;
                     int beat = 4; //预留拍号
                     int currentBeat = 1;
+                    var timePerBeat = 0d;
                     pen = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
                     for (int i = 1; i < bpmChangeTimes.Count; i++)
                     {
-                        while (time < bpmChangeTimes[i])//在那个时间之前都是之前的bpm
+                        while ((time - bpmChangeTimes[i])<-0.05)//在那个时间之前都是之前的bpm
                         {
                             if (currentBeat > beat) currentBeat = 1;
                             var xbase = (float)(time / sampleTime) * zoominPower;
-                            var timePerBeat = 1d / (bpmChangeValues[i - 1] / 60d);
-                            float xoneBeat = (float)(timePerBeat / sampleTime) * zoominPower;
+                            timePerBeat = 1d / (bpmChangeValues[i - 1] / 60d);
                             if (currentBeat == 1)
                             {
                                 graphics.DrawLine(pen, xbase, 0, xbase, 75);
@@ -492,6 +492,7 @@ namespace MajdataEdit
                             currentBeat++;
                             time += timePerBeat;
                         }
+                        time = bpmChangeTimes[i];
                         currentBeat = 1;
                     }
 
