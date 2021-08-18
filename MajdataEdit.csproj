@@ -95,6 +95,7 @@
     </Compile>
     <Compile Include="MainWindowCore.cs" />
     <Compile Include="Majson.cs" />
+    <Compile Include="Mirror.cs" />
     <Compile Include="SimaiProcess.cs" />
     <Compile Include="SoundSetting.xaml.cs">
       <DependentUpon>SoundSetting.xaml</DependentUpon>
