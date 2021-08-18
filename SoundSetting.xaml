@@ -5,21 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MajdataEdit"
         mc:Ignorable="d"
-        Title="SoundSetting" Height="341" Width="646" Background="{DynamicResource WindowBackground}" MinHeight="290" MinWidth="646" ResizeMode="NoResize" Loaded="SoundSettingWindow_Loaded" Closing="SoundSettingWindow_Closing">
+        Title="SoundSetting" Height="341" Width="774" Background="{DynamicResource WindowBackground}" MinHeight="290" MinWidth="646" ResizeMode="NoResize" Loaded="SoundSettingWindow_Loaded" Closing="SoundSettingWindow_Closing">
     <Grid>
         <Grid HorizontalAlignment="Left" Margin="10,10,0,16" Width="120" Background="#FF272727">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ProgressBar x:Name="BGM_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FF297F99" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <ProgressBar x:Name="BGM_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FF612999" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
             <Slider x:Name="BGM_Slider" Margin="51,51,51,50" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Value="1" Opacity="0.7"/>
             <Label Content="BGM" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
+            <ScrollViewer HorizontalAlignment="Left" Height="100" Margin="110,15,-90,0" VerticalAlignment="Top" Width="100"/>
         </Grid>
         <Grid HorizontalAlignment="Left" Margin="135,10,0,16" Width="120" Background="#FF272727">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ProgressBar x:Name="Tap_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FF992980" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <ProgressBar x:Name="Tap_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FFAC4695" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
             <Slider x:Name="Tap_Slider" Margin="51,51,51,50" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Value="1" Opacity="0.7"/>
             <Label Content="Tap" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
         </Grid>
@@ -27,19 +28,27 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ProgressBar x:Name="Break_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FF995229" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
-            <Slider x:Name="Break_Slider" Margin="51,51,51,50" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Value="1" Opacity="0.7"/>
-            <Label Content="Break" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
+            <ProgressBar x:Name="Slide_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FF296B99" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <Slider x:Name="Slide_Slider" Margin="51,51,51,50" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Value="1" Opacity="0.7"/>
+            <Label Content="Slide" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
         </Grid>
         <Grid HorizontalAlignment="Left" Margin="385,10,0,16" Width="120" Background="#FF272727">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ProgressBar x:Name="EX_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FF998529" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
-            <Slider x:Name="EX_Slider" Margin="51,51,51,50" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Value="1" Opacity="0.7"/>
-            <Label Content="EX" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
+            <ProgressBar x:Name="Break_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FFB06846" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <Slider x:Name="Break_Slider" Margin="51,51,51,50" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Value="1" Opacity="0.7"/>
+            <Label Content="Break" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
         </Grid>
         <Grid HorizontalAlignment="Left" Margin="510,10,0,16" Width="120" Background="#FF272727">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar x:Name="EX_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FFDEA6D1" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <Slider x:Name="EX_Slider" Margin="51,51,51,50" Orientation="Vertical" HorizontalAlignment="Center" Maximum="1" Value="1" Opacity="0.7"/>
+            <Label Content="EX / Touch" Margin="23,21,23,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center" Width="74" HorizontalContentAlignment="Center"/>
+        </Grid>
+        <Grid HorizontalAlignment="Left" Margin="635,10,0,16" Width="120" Background="#FF272727">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>

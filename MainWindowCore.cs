@@ -33,13 +33,15 @@ namespace MajdataEdit
 
         SoundSetting soundSetting = new SoundSetting();
 
-        public int bgmStream = -1024;
-        public int clickStream = -8848;
+        public int bgmStream = -114514;
+        public int clickStream = -114514;
         public int breakStream = -114514;
-        public int exStream = -1919;
-        public int hanabiStream = -810;
-        public int holdRiserStream = -52013;
-        public int trackStartStream = 66065;
+        public int exStream = -114514;
+        public int hanabiStream = -114514;
+        public int holdRiserStream = -114514;
+        public int trackStartStream = -114514;
+        public int slideStream = -114514;
+        public int touchStream = -114514;
 
         public string maidataDir;
         const string majSettingFilename = "majSetting.json";
@@ -241,6 +243,7 @@ namespace MajdataEdit
             Bass.BASS_ChannelGetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Tap_Level);
             Bass.BASS_ChannelGetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Break_Level);
             Bass.BASS_ChannelGetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Ex_Level);
+            Bass.BASS_ChannelGetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Slide_Level);
             Bass.BASS_ChannelGetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Hanabi_Level);
             string json = JsonConvert.SerializeObject(setting);
             File.WriteAllText(maidataDir + "/" + majSettingFilename,json);
@@ -256,10 +259,14 @@ namespace MajdataEdit
             selectedDifficulty = setting.lastEditDiff;
             SetBgmPosition(setting.lastEditTime);
             Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL,setting.BGM_Level);
+            Bass.BASS_ChannelSetAttribute(trackStartStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
             Bass.BASS_ChannelSetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
+            Bass.BASS_ChannelSetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Slide_Level);
             Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Break_Level);
             Bass.BASS_ChannelSetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
+            Bass.BASS_ChannelSetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
             Bass.BASS_ChannelSetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
+            Bass.BASS_ChannelSetAttribute(holdRiserStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
         }
         private void CreateNewFumen(string path)
         {
@@ -308,12 +315,14 @@ namespace MajdataEdit
         private void ReadSoundEffect()
         {
             var path = Environment.CurrentDirectory + "/SFX/";
-            clickStream = Bass.BASS_StreamCreateFile(path + "tap.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            breakStream = Bass.BASS_StreamCreateFile(path + "break.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            exStream = Bass.BASS_StreamCreateFile(path + "ex.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            hanabiStream = Bass.BASS_StreamCreateFile(path + "hanabi.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            holdRiserStream = Bass.BASS_StreamCreateFile(path + "touchHold_riser.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            trackStartStream = Bass.BASS_StreamCreateFile(path + "track_start.mp3", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            clickStream = Bass.BASS_StreamCreateFile(path + "tap.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            breakStream = Bass.BASS_StreamCreateFile(path + "break.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            exStream = Bass.BASS_StreamCreateFile(path + "ex.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            hanabiStream = Bass.BASS_StreamCreateFile(path + "hanabi.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            holdRiserStream = Bass.BASS_StreamCreateFile(path + "touchHold_riser.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            trackStartStream = Bass.BASS_StreamCreateFile(path + "track_start.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            slideStream = Bass.BASS_StreamCreateFile(path + "slide.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            touchStream = Bass.BASS_StreamCreateFile(path + "touch.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
         }
         private void SoundEffectUpdate()
         {
@@ -329,19 +338,23 @@ namespace MajdataEdit
                     var notes = waitToBePlayed[0].getNotes();
                     Bass.BASS_ChannelPlay(clickStream, true);
 
-                    if (notes.FindAll(o => o.isBreak).Count > 0) //may cause delay
+                    if (notes.Any(o => o.isBreak)) //may cause delay
                     {
                         Bass.BASS_ChannelPlay(breakStream, true);
                     }
-                    if (notes.FindAll(o => o.isHanabi && o.noteType == SimaiNoteType.Touch).Count > 0) //may cause delay
+                    if (notes.Any(o => o.noteType == SimaiNoteType.Touch))
+                    {
+                        Bass.BASS_ChannelPlay(touchStream, true);
+                    }
+                    if (notes.Any(o => o.isHanabi && o.noteType == SimaiNoteType.Touch)) //may cause delay
                     {
                         Bass.BASS_ChannelPlay(hanabiStream, true);
                     }
-                    if (notes.FindAll(o => o.isEx).Count > 0)
+                    if (notes.Any(o => o.isEx))
                     {
                         Bass.BASS_ChannelPlay(exStream, true);
                     }
-                    if (notes.FindAll(o => o.noteType == SimaiNoteType.TouchHold).Count > 0)
+                    if (notes.Any(o => o.noteType == SimaiNoteType.TouchHold))
                     {
                         Bass.BASS_ChannelPlay(holdRiserStream, true);
                     }
@@ -388,15 +401,22 @@ namespace MajdataEdit
                             holdClickTimer.AutoReset = false;
                             holdClickTimer.Start();
                         }
+                        if (note.noteType == SimaiNoteType.Slide)
+                        {
+                            Timer holdClickTimer = new Timer((note.slideStartTime-nearestTime) * 1000d * (1 / GetPlaybackSpeed()));
+                            holdClickTimer.Elapsed += SlideTimer_Elapsed;
+                            holdClickTimer.AutoReset = false;
+                            holdClickTimer.Start();
+                        }
                     }
                 }
 
             }
             catch { }
         }
-        private void HoldClickTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void SlideTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Bass.BASS_ChannelPlay(clickStream, true);
+            Bass.BASS_ChannelPlay(slideStream, true);
             var father = (Timer)sender;
             father.Stop();
             father.Dispose();
@@ -423,6 +443,7 @@ namespace MajdataEdit
         {
 
             if (isDrawing) return;
+            Console.WriteLine("DrawWave");
             isDrawing = true;
             var writableBitmap = new WriteableBitmap(waveLevels.Length * zoominPower, 74, 72, 72, PixelFormats.Pbgra32, null);
             writableBitmap.Lock();
@@ -599,7 +620,7 @@ namespace MajdataEdit
 
                     }
                 }
-                catch { }
+                catch{}
             }
             );
             graphics.Flush();

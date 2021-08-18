@@ -35,13 +35,14 @@ namespace MajdataEdit
 
         private void SoundSettingWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            int[] streams = { MainWindow.bgmStream, MainWindow.trackStartStream };
-            SetSlider(BGM_Slider, streams);
+            SetSlider(BGM_Slider, MainWindow.bgmStream, MainWindow.trackStartStream);
             SetSlider(Tap_Slider, MainWindow.clickStream);
             SetSlider(Break_Slider, MainWindow.breakStream);
-            SetSlider(EX_Slider, MainWindow.exStream);
-            int[] streams1 = { MainWindow.hanabiStream, MainWindow.holdRiserStream };
-            SetSlider(Hanabi_Slider,streams1);
+            SetSlider(Slide_Slider, MainWindow.slideStream);
+
+            SetSlider(EX_Slider, MainWindow.exStream, MainWindow.touchStream);
+
+            SetSlider(Hanabi_Slider, MainWindow.hanabiStream, MainWindow.holdRiserStream);
 
             UpdateLevelTimer.AutoReset = true;
             UpdateLevelTimer.Elapsed += UpdateLevelTimer_Elapsed;
@@ -52,29 +53,15 @@ namespace MajdataEdit
         {
             Dispatcher.Invoke(() =>
             {
-                int[] streams = { MainWindow.bgmStream, MainWindow.trackStartStream};
-                UpdateProgressBar(BGM_Level, streams);
+                UpdateProgressBar(BGM_Level, MainWindow.bgmStream, MainWindow.trackStartStream);
                 UpdateProgressBar(Tap_Level, MainWindow.clickStream);
                 UpdateProgressBar(Break_Level, MainWindow.breakStream);
-                UpdateProgressBar(EX_Level, MainWindow.exStream);
-                int[] streams1 = { MainWindow.hanabiStream, MainWindow.holdRiserStream };
-                UpdateProgressBar(Hanabi_Level, streams1);
+                UpdateProgressBar(Slide_Level, MainWindow.slideStream);
+                UpdateProgressBar(EX_Level, MainWindow.exStream, MainWindow.touchStream);
+                UpdateProgressBar(Hanabi_Level, MainWindow.hanabiStream, MainWindow.holdRiserStream);
             });
         }
-        void UpdateProgressBar(ProgressBar bar,int channel)
-        {
-            float ampLevel = 0f;
-            Bass.BASS_ChannelGetAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, ref ampLevel);
-            var value = (Utils.LevelToDB(Utils.LowWord(Bass.BASS_ChannelGetLevel(channel)) * ampLevel, 32768) +40);
-            if (!double.IsNaN(value) && !double.IsInfinity(value))
-            {
-                bar.Value = value*ampLevel;
-            }
-            if (double.IsNegativeInfinity(value)) bar.Value = bar.Minimum;
-            if (double.IsPositiveInfinity(value)) bar.Value = bar.Maximum;
-            if (double.IsNaN(value)) bar.Value -= 1;
-        }
-        void UpdateProgressBar(ProgressBar bar, int[] channels)
+        void UpdateProgressBar(ProgressBar bar, params int[] channels)
         {
             double[] values = new double[channels.Length];
             float ampLevel = 0f;
@@ -92,18 +79,7 @@ namespace MajdataEdit
             if (double.IsPositiveInfinity(value)) bar.Value = bar.Maximum;
             if (double.IsNaN(value)) bar.Value -= 1;
         }
-        void SetSlider(Slider slider,int channel)
-        {
-            float ampLevel = 0f;
-            Bass.BASS_ChannelGetAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, ref ampLevel);
-            slider.Value = ampLevel;
-            void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-            {
-                Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, (float)((Slider)sender).Value);
-            }
-            slider.ValueChanged += Slider_ValueChanged;
-        }
-        void SetSlider(Slider slider, int[] channels)
+        void SetSlider(Slider slider, params int[] channels)
         {
             float ampLevel = 0f;
             foreach(var channel in channels)

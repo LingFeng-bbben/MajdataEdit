@@ -43,6 +43,7 @@ namespace MajdataEdit
 
         public float BGM_Level;
         public float Tap_Level;
+        public float Slide_Level;
         public float Break_Level;
         public float Ex_Level;
         public float Hanabi_Level;
