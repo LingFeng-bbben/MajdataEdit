@@ -228,22 +228,37 @@ namespace MajdataEdit
                     {
                         i += 1;
                         s += a[i];
-
-
                     }
                 }
                 else
                 {
                     if (Mirror45.ContainsKey(s1))
                     {
-                        if (i + 2 < a.Length && (a[i] == '2' || a[i] == '6'))
+                        if (i + 2 < a.Length && (a[i] == '2' || a[i] == '6')&& a[i+1] != '[')
                         {
                             s += Mirror45[s1];
-                            while (a[i + 1] != '[')
+                            while (i + 1 < a.Length && a[i] != ',')
                             {
                                 i += 1;
                                 string st = a[i].ToString();
-                                if (Mirror45special.ContainsKey(st))
+                                if (st == "/")
+                                {
+                                    s += "/";
+                                    break;
+                                }
+                                else if (st == "[")
+                                {
+                                    s += st;
+
+                                    while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+                                    {
+                                        i += 1;
+                                        s += a[i];
+
+
+                                    }
+                                }
+                                else if (Mirror45special.ContainsKey(st))
                                 {
                                     s += Mirror45special[st];
 
