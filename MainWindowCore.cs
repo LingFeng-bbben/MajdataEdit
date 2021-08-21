@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Media;
 using Newtonsoft.Json;
 using Un4seen.Bass.AddOn.Fx;
+using Newtonsoft.Json.Linq;
 
 namespace MajdataEdit
 {
@@ -62,6 +63,8 @@ namespace MajdataEdit
         EditorControlMethod lastEditorState;
 
         double lastMousePointX; //Used for drag scroll
+
+        public JObject SLIDE_TIME; // 无理检测用的SLIDE_TIME数据
 
         //*TEXTBOX CONTROL
         string GetRawFumenText()
@@ -304,6 +307,14 @@ namespace MajdataEdit
             AddGesture(setting.SendViewerKey, "SendToView");
             AddGesture(setting.IncreasePlaybackSpeedKey, "IncreasePlaybackSpeed");
             AddGesture(setting.DecreasePlaybackSpeedKey, "DecreasePlaybackSpeed");
+        }
+        void ReadMuriCheckSlideTime()
+        {
+            using (StreamReader r = new StreamReader("./slide_time.json"))
+            {
+                string json = r.ReadToEnd();
+                SLIDE_TIME = JsonConvert.DeserializeObject<JObject>(json);
+            }
         }
         void AddGesture( string keyGusture,string command)
         {

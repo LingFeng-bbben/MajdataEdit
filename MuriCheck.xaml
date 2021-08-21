@@ -6,13 +6,13 @@
         xmlns:local="clr-namespace:MajdataEdit"
         mc:Ignorable="d"
         Background="{DynamicResource WindowBackground}"
-        Title="谱面无理检测" Height="150" Width="322" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True">
+        Title="谱面无理检测" Height="150" Width="275" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
     <Window.Resources>
 
     </Window.Resources>
 
 
-    <Grid Margin="8,5,8,5">
+    <Grid Margin="8,5,8,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="100*"/>
@@ -22,38 +22,56 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="100*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <CheckBox x:Name="MultNote_Checkbox" Grid.Row="0" Grid.Column="0" Margin="0,5,0,0"
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <CheckBox x:Name="MultNote_Checkbox" Margin="0,5,0,0"
                IsChecked="True"
                FontWeight="Bold" FontSize="13"
                Foreground="{DynamicResource ButtonForeground}">开启多押检测</CheckBox>
-        <Label Grid.Row="0" Grid.Column="1"
-               Foreground="{DynamicResource ButtonForeground}">
-            <TextBlock TextWrapping="Wrap" Text="(如果您的谱面允许出现多押 如协力宴谱 您可以取消此选项)"></TextBlock>
-        </Label>
+            <Label Foreground="{DynamicResource HelperForeground}" Margin="3,3,0,0">
+                <Label.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock>检测三押或三押以上的多押无理</TextBlock>
+                            <TextBlock>如果您的谱面允许多押存在 如协力宴谱 您可以禁用这个选项</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Label.ToolTip>
+                <TextBlock TextDecorations="Underline" FontSize="10">这是什么</TextBlock>
+            </Label>
+        </StackPanel>
+
         <Label Grid.Row="1" Grid.Column="0"
                Foreground="{DynamicResource ButtonForeground}">
             Slide撞尾检测精度:
         </Label>
-        <TextBox x:Name="SlideAccuracy_TextBox" Text="0.15"
-            Grid.Row="1" Grid.Column="1" Width="70" Height="18" HorizontalAlignment="Left"  VerticalAlignment="Top"
-            FontSize="12" Margin="5,5,0,0" />
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+            <TextBox x:Name="SlideAccuracy_TextBox" Text="0.15" 
+                     Width="70" Height="18" HorizontalAlignment="Left"  VerticalAlignment="Top"
+                     FontSize="12" Margin="5,5,0,0" />
+            <Label Foreground="{DynamicResource HelperForeground}" Margin="3,3,0,0">
+                <Label.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock>检查撞尾无理的精度，单位是秒。</TextBlock>
+                            <TextBlock>建议您不要设置低于0.15的值，因为0.15秒是GOOD判定的区间，</TextBlock>
+                            <TextBlock>如果小于这个值，必定无理的撞尾就无法被检测出来。</TextBlock>
+                            <TextBlock>您可以设置略高于0.15的值，如0.2，此时容易蹭尾的配置也会被</TextBlock>
+                            <TextBlock>检测出来</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Label.ToolTip>
+                <TextBlock TextDecorations="Underline" FontSize="10">这是什么</TextBlock>
+            </Label>
+        </StackPanel>
         <Button x:Name="StartCheck_Button" Content="开始检查" Click="StartCheck_Button_Click"
                 Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                 Width="100" Height="28"
                 Foreground="{DynamicResource ButtonForeground}"
                 Background="{DynamicResource ButtonsBackground}" />
-        <!--<Button x:Name="Tap_Button" Content="Tap" Height="100" 
-                Margin="19,10,19,0" VerticalAlignment="Top" 
-                FontSize="18" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" ClickMode="Press" 
-                Template="{DynamicResource DarkButton}" Click="Tap_Button_Click"/>
-        <Button x:Name="Reset_Button" Content="Reset" Height="18" 
-                Margin="19,115,19,0" VerticalAlignment="Top" 
-                FontSize="11" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
-                Template="{DynamicResource DarkButton}" Click="Reset_Button_Click"/>-->
-
-
+        <Label Foreground="#999999" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" FontSize="9">powered by Moying</Label>
     </Grid>
 
 </Window>

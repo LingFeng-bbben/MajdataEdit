@@ -48,6 +48,7 @@ namespace MajdataEdit
 
             ReadSoundEffect();
             ReadEditorSetting();
+            ReadMuriCheckSlideTime();
 
             currentTimeRefreshTimer.Elapsed += CurrentTimeRefreshTimer_Elapsed;
             currentTimeRefreshTimer.Start();
@@ -352,6 +353,22 @@ namespace MajdataEdit
             {
                 SetBgmPosition(time);
             }
+            //Console.WriteLine("SelectionChanged");
+            SimaiProcess.ClearNoteListPlayedState();
+            DrawCusor(time);
+        }
+        public void ScrollToFumenContentSelection(int positionX, int positionY)
+        {
+            // 这玩意用于其他窗口来滚动Scroll 因为涉及到好多变量都是private的
+            var pointer = FumenContent.Document.Blocks.ToList()[positionY].ContentStart.GetPositionAtOffset(positionX);
+            FumenContent.Focus();
+            FumenContent.Selection.Select(pointer, pointer);
+            this.Focus();
+
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked)
+                return;
+            var time = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
+            SetBgmPosition(time);
             //Console.WriteLine("SelectionChanged");
             SimaiProcess.ClearNoteListPlayedState();
             DrawCusor(time);

@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:MajdataEdit"
     mc:Ignorable="d"
     Background="{DynamicResource WindowBackground}"
-    Title="检测结果" Height="350" Width="500" ResizeMode="NoResize" WindowStartupLocation="Manual"  Topmost="True">
+    Title="检测结果" Height="350" Width="500" ResizeMode="NoResize" WindowStartupLocation="Manual">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100*"/>
@@ -20,7 +20,7 @@
         <Label Grid.Row="0"
                FontSize="13" FontWeight="Bold"
                Foreground="{DynamicResource ButtonForeground}">
-            点击可转到对应错误行
+            双击可转到对应错误行
         </Label>
         <ListBox x:Name="CheckResult_Listbox" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
                  Foreground="{DynamicResource ButtonForeground}"
