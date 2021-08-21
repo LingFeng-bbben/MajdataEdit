@@ -116,6 +116,22 @@ namespace MajdataEdit
             var pointer1 = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
             FumenContent.Selection.Select(pointer, pointer1);
         }
+        public void ScrollToFumenContentSelection(int positionX, int positionY)
+        {
+            // 这玩意用于其他窗口来滚动Scroll 因为涉及到好多变量都是private的
+            var pointer = FumenContent.Document.Blocks.ToList()[positionY].ContentStart.GetPositionAtOffset(positionX);
+            FumenContent.Focus();
+            FumenContent.Selection.Select(pointer, pointer);
+            this.Focus();
+
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked)
+                return;
+            var time = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
+            SetBgmPosition(time);
+            //Console.WriteLine("SelectionChanged");
+            SimaiProcess.ClearNoteListPlayedState();
+            DrawCusor(time);
+        }
 
         //*FILE CONTROL
         void initFromFile(string path)//file name should not be included in path
