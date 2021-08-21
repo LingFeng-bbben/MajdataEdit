@@ -322,6 +322,7 @@
 
 
         <SolidColorBrush x:Key="ButtonForeground" Color="White"/>
+        <SolidColorBrush x:Key="HelperForeground" Color="#569CD6"/>
         <SolidColorBrush x:Key="WindowBackground" Color="#FF1F1F1F"/>
         <SolidColorBrush x:Key="ButtonsBackground" Color="#FF303030" Opacity="0.6"/>
         

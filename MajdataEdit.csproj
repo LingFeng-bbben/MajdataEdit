@@ -87,6 +87,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="MuriCheck.xaml.cs">
+      <DependentUpon>MuriCheck.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BPMtap.xaml.cs">
       <DependentUpon>BPMtap.xaml</DependentUpon>
     </Compile>
@@ -101,6 +104,13 @@
       <DependentUpon>SoundSetting.xaml</DependentUpon>
     </Compile>
     <Compile Include="WebControl.cs" />
+    <Compile Include="MuriCheckResult.xaml.cs">
+      <DependentUpon>MuriCheckResult.xaml</DependentUpon>
+    </Compile>
+    <Page Include="MuriCheck.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="BPMtap.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -125,6 +135,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MuriCheckResult.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -143,6 +157,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="slide_time.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -48,6 +48,7 @@ namespace MajdataEdit
 
             ReadSoundEffect();
             ReadEditorSetting();
+            ReadMuriCheckSlideTime();
 
             currentTimeRefreshTimer.Elapsed += CurrentTimeRefreshTimer_Elapsed;
             currentTimeRefreshTimer.Start();
@@ -114,6 +115,8 @@ namespace MajdataEdit
             VisualEffectRefreshTimer.Stop();
 
             soundSetting.Close();
+            //if (bpmtap != null) { bpmtap.Close(); }
+            //if (muriCheck != null) { muriCheck.Close(); }
             SaveSetting();
 
             Bass.BASS_ChannelStop(bgmStream);
@@ -221,6 +224,7 @@ namespace MajdataEdit
         private void BPMtap_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             BPMtap tap = new BPMtap();
+            tap.Owner = this;
             tap.Show();
         }
         private void MenuItem_InfomationEdit_Click(object sender, RoutedEventArgs e)
@@ -241,6 +245,7 @@ namespace MajdataEdit
         private void MenuItem_SoundSetting_Click(object sender, RoutedEventArgs e)
         {
             soundSetting = new SoundSetting();
+            soundSetting.Owner = this;
             soundSetting.Show();
         }
 
@@ -396,5 +401,11 @@ namespace MajdataEdit
             lastMousePointX = e.GetPosition(this).X;
         }
 
+        private void MuriCheck_Click_1(object sender, RoutedEventArgs e)
+        {
+            MuriCheck muriCheck = new MuriCheck();
+            muriCheck.Owner = this;
+            muriCheck.Show();
+        }
     }
 }

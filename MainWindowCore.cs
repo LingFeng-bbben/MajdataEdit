@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Media;
 using Newtonsoft.Json;
 using Un4seen.Bass.AddOn.Fx;
+using Newtonsoft.Json.Linq;
 
 namespace MajdataEdit
 {
@@ -62,6 +63,8 @@ namespace MajdataEdit
         EditorControlMethod lastEditorState;
 
         double lastMousePointX; //Used for drag scroll
+
+        public JObject SLIDE_TIME; // 无理检测用的SLIDE_TIME数据
 
         //*TEXTBOX CONTROL
         string GetRawFumenText()
@@ -113,6 +116,22 @@ namespace MajdataEdit
             var pointer1 = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
             FumenContent.Selection.Select(pointer, pointer1);
         }
+        public void ScrollToFumenContentSelection(int positionX, int positionY)
+        {
+            // 这玩意用于其他窗口来滚动Scroll 因为涉及到好多变量都是private的
+            var pointer = FumenContent.Document.Blocks.ToList()[positionY].ContentStart.GetPositionAtOffset(positionX);
+            FumenContent.Focus();
+            FumenContent.Selection.Select(pointer, pointer);
+            this.Focus();
+
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked)
+                return;
+            var time = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
+            SetBgmPosition(time);
+            //Console.WriteLine("SelectionChanged");
+            SimaiProcess.ClearNoteListPlayedState();
+            DrawCusor(time);
+        }
 
         //*FILE CONTROL
         void initFromFile(string path)//file name should not be included in path
@@ -120,7 +139,7 @@ namespace MajdataEdit
             var audioPath = path + "/track.mp3";
             var dataPath = path + "/maidata.txt";
             if (!File.Exists(audioPath)) MessageBox.Show("请存入track.mp3", "错误");
-            if (!File.Exists(audioPath)) MessageBox.Show("未找到maidata.txt", "错误");
+            if (!File.Exists(dataPath)) MessageBox.Show("未找到maidata.txt", "错误");
             maidataDir = path;
             SetRawFumenText("");
             if (bgmStream != -1024)
@@ -160,6 +179,7 @@ namespace MajdataEdit
             Cover.Visibility = Visibility.Collapsed;
             MenuEdit.IsEnabled = true;
             MenuSetting.IsEnabled = true;
+            MenuMuriCheck.IsEnabled = true;
             SetSavedState(true);
         }
         private void ReadWaveFromFile()
@@ -303,6 +323,14 @@ namespace MajdataEdit
             AddGesture(setting.SendViewerKey, "SendToView");
             AddGesture(setting.IncreasePlaybackSpeedKey, "IncreasePlaybackSpeed");
             AddGesture(setting.DecreasePlaybackSpeedKey, "DecreasePlaybackSpeed");
+        }
+        void ReadMuriCheckSlideTime()
+        {
+            using (StreamReader r = new StreamReader("./slide_time.json"))
+            {
+                string json = r.ReadToEnd();
+                SLIDE_TIME = JsonConvert.DeserializeObject<JObject>(json);
+            }
         }
         void AddGesture( string keyGusture,string command)
         {
