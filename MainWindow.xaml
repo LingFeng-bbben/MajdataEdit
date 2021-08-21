@@ -45,6 +45,7 @@
             </MenuItem>
             <MenuItem Header="工具" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
                 <MenuItem Header="BPM tap" Click="BPMtap_MenuItem_Click"/>
+                <MenuItem x:Name="MenuMuriCheck" Header="谱面无理检测" Click="MuriCheck_Click_1" IsEnabled="False"></MenuItem>
             </MenuItem>
             <MenuItem Header="SimaiWiki" Click="MenuItem_SimaiWiki_Click" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
             <MenuItem Header="GitHub" Click="MenuItem_GitHub_Click" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />

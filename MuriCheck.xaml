@@ -1,0 +1,59 @@
+﻿<Window x:Class="MajdataEdit.MuriCheck"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MajdataEdit"
+        mc:Ignorable="d"
+        Background="{DynamicResource WindowBackground}"
+        Title="谱面无理检测" Height="150" Width="322" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True">
+    <Window.Resources>
+
+    </Window.Resources>
+
+
+    <Grid Margin="8,5,8,5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="100*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="100*"/>
+        </Grid.RowDefinitions>
+
+        <CheckBox x:Name="MultNote_Checkbox" Grid.Row="0" Grid.Column="0" Margin="0,5,0,0"
+               IsChecked="True"
+               FontWeight="Bold" FontSize="13"
+               Foreground="{DynamicResource ButtonForeground}">开启多押检测</CheckBox>
+        <Label Grid.Row="0" Grid.Column="1"
+               Foreground="{DynamicResource ButtonForeground}">
+            <TextBlock TextWrapping="Wrap" Text="(如果您的谱面允许出现多押 如协力宴谱 您可以取消此选项)"></TextBlock>
+        </Label>
+        <Label Grid.Row="1" Grid.Column="0"
+               Foreground="{DynamicResource ButtonForeground}">
+            Slide撞尾检测精度:
+        </Label>
+        <TextBox x:Name="SlideAccuracy_TextBox" Text="0.15"
+            Grid.Row="1" Grid.Column="1" Width="70" Height="18" HorizontalAlignment="Left"  VerticalAlignment="Top"
+            FontSize="12" Margin="5,5,0,0" />
+        <Button x:Name="StartCheck_Button" Content="开始检查" Click="StartCheck_Button_Click"
+                Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                Width="100" Height="28"
+                Foreground="{DynamicResource ButtonForeground}"
+                Background="{DynamicResource ButtonsBackground}" />
+        <!--<Button x:Name="Tap_Button" Content="Tap" Height="100" 
+                Margin="19,10,19,0" VerticalAlignment="Top" 
+                FontSize="18" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" ClickMode="Press" 
+                Template="{DynamicResource DarkButton}" Click="Tap_Button_Click"/>
+        <Button x:Name="Reset_Button" Content="Reset" Height="18" 
+                Margin="19,115,19,0" VerticalAlignment="Top" 
+                FontSize="11" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
+                Template="{DynamicResource DarkButton}" Click="Reset_Button_Click"/>-->
+
+
+    </Grid>
+
+</Window>

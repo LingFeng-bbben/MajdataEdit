@@ -120,7 +120,7 @@ namespace MajdataEdit
             var audioPath = path + "/track.mp3";
             var dataPath = path + "/maidata.txt";
             if (!File.Exists(audioPath)) MessageBox.Show("请存入track.mp3", "错误");
-            if (!File.Exists(audioPath)) MessageBox.Show("未找到maidata.txt", "错误");
+            if (!File.Exists(dataPath)) MessageBox.Show("未找到maidata.txt", "错误");
             maidataDir = path;
             SetRawFumenText("");
             if (bgmStream != -1024)
@@ -160,6 +160,7 @@ namespace MajdataEdit
             Cover.Visibility = Visibility.Collapsed;
             MenuEdit.IsEnabled = true;
             MenuSetting.IsEnabled = true;
+            MenuMuriCheck.IsEnabled = true;
             SetSavedState(true);
         }
         private void ReadWaveFromFile()
