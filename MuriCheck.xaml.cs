@@ -137,7 +137,7 @@ namespace MajdataEdit
 
             // 注释可见 https://github.com/Moying-moe/maimaiMuriDetector MaiMuriDetector.multNoteDetect(self, eps=5)
 
-            var prog = @"(\d)(.+?)(\d{1,2})\[\d+?\:\d+?\]";
+            String prog = @"(\d)(.+?)(\d{1,2})\[.+?\]";
             int errorCnt = 0;
 
             List<MaimaiOperationMultNote> opSequence = new List<MaimaiOperationMultNote>();
@@ -309,7 +309,7 @@ namespace MajdataEdit
         {
             // 注释可见 https://github.com/Moying-moe/maimaiMuriDetector MaiMuriDetector.slideDetect(self, judgementLength = 0.15)
 
-            String prog = @"(\d)(.+?)(\d{1,2})\[\d+?\:\d+?\]";
+            String prog = @"(\d)(.+?)(\d{1,2})\[.+?\]";
 
             List<MaimaiOperationSlide> opSequence = new List<MaimaiOperationSlide>();
 
@@ -403,6 +403,19 @@ namespace MajdataEdit
                         try
                         {
                             sTimeInfo = ((MainWindow)this.Owner).SLIDE_TIME[sType][sEnd];
+                            foreach (var each in sTimeInfo)
+                            {
+                                double timeRatio = each["time"].ToObject<double>();
+                                int passArea = each["area"].ToObject<int>();
+                                opSequence.Add(new MaimaiOperationSlide(
+                                    _time: timeRatio * note.slideTime + note.slideStartTime,
+                                    _area: notePos(passArea + int.Parse(sStart), false),
+                                    _ntype: 1,
+                                    _noteContent: note.noteContent,
+                                    _positionX: positionX,
+                                    _positionY: positionY
+                                    ));
+                            }
                         }
                         catch
                         {
@@ -413,20 +426,6 @@ namespace MajdataEdit
                                 positionX + 1
                                 ), positionX, positionY);
                             continue;
-                        }
-
-                        foreach(var each in sTimeInfo)
-                        {
-                            double timeRatio = each["time"].ToObject<double>();
-                            int passArea = each["area"].ToObject<int>();
-                            opSequence.Add(new MaimaiOperationSlide(
-                                _time: timeRatio * note.slideTime + note.slideStartTime,
-                                _area: notePos(passArea + int.Parse(sStart), false),
-                                _ntype: 1,
-                                _noteContent: note.noteContent,
-                                _positionX: positionX,
-                                _positionY: positionY
-                                ));
                         }
                     }else
                     {
