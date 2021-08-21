@@ -269,6 +269,7 @@ namespace MajdataEdit
         }
         private void IncreasePlaybackSpeed_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING) return;
             float speed = GetPlaybackSpeed();
             Console.WriteLine(speed);
             speed += 0.25f;
@@ -281,6 +282,7 @@ namespace MajdataEdit
 
         private void DecreasePlaybackSpeed_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
+            if (Bass.BASS_ChannelIsActive(bgmStream)==BASSActive.BASS_ACTIVE_PLAYING) return;
             float speed = GetPlaybackSpeed();
             Console.WriteLine(speed);
             speed -= 0.25f;
