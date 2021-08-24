@@ -9,11 +9,11 @@
     <Grid Background="#FF1F1F1F">
         <Button x:Name="OKButton" Content="OK" Height="34" Margin="220,221,214,0" VerticalAlignment="Top" RenderTransformOrigin="0.476,-3.674" Click="OKButton_Click"/>
         <Label Content="Title" HorizontalAlignment="Left" Height="24" Margin="105,66,0,0" VerticalAlignment="Top" Width="131" Foreground="White"/>
-        <TextBox x:Name="TitleTextbox" HorizontalAlignment="Right" Height="24" Margin="0,66,105,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="TitleTextbox" HorizontalAlignment="Right" Height="24" Margin="0,66,104.667,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="264" VerticalContentAlignment="Center"/>
         <Label Content="Artist" HorizontalAlignment="Left" Height="24" Margin="105,105,0,0" VerticalAlignment="Top" Width="131" Foreground="White"/>
-        <TextBox x:Name="ArtistTextbox" HorizontalAlignment="Right" Margin="0,105,105,0" TextWrapping="Wrap" Width="168" VerticalContentAlignment="Center" Height="24" VerticalAlignment="Top"/>
+        <TextBox x:Name="ArtistTextbox" HorizontalAlignment="Right" Margin="0,105,104.667,0" TextWrapping="Wrap" Width="264" VerticalContentAlignment="Center" Height="24" VerticalAlignment="Top"/>
         <Label Content="Designer" HorizontalAlignment="Left" Height="37" Margin="105,148,0,0" VerticalAlignment="Top" Width="131" Foreground="White"/>
-        <TextBox x:Name="DesignTextbox" HorizontalAlignment="Right" Height="24" Margin="0,148,105,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="DesignTextbox" HorizontalAlignment="Right" Height="24" Margin="0,148,104.667,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="264" VerticalContentAlignment="Center"/>
         <Image HorizontalAlignment="Left" Height="139" Margin="0,174,0,0" VerticalAlignment="Top" Width="144" Source="Image/salt.png" Opacity="0.8"/>
 
     </Grid>

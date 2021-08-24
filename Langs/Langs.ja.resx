@@ -117,7 +117,124 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="File" xml:space="preserve">
-    <value>shabi</value>
+  <data name="AskCloseView" xml:space="preserve">
+    <value>Viewを閉しますか？</value>
+  </data>
+  <data name="AskSave" xml:space="preserve">
+    <value>保存されていませんが、保存しますか？</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>注意</value>
+  </data>
+  <data name="BPMtap" xml:space="preserve">
+    <value>BPM Tap</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>明さ</value>
+  </data>
+  <data name="Difficulty" xml:space="preserve">
+    <value>レベル</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>エディト</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="FIles" xml:space="preserve">
+    <value>ファイル</value>
+  </data>
+  <data name="Github" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="MaidataExist" xml:space="preserve">
+    <value>maidata.txtがすでに存在している</value>
+  </data>
+  <data name="MapInfo" xml:space="preserve">
+    <value>谱面情報</value>
+  </data>
+  <data name="MapMuriDetc" xml:space="preserve">
+    <value>譜面無理検出</value>
+  </data>
+  <data name="Mirror180" xml:space="preserve">
+    <value>180°反転选择</value>
+  </data>
+  <data name="Mirror45" xml:space="preserve">
+    <value>左右反転选择</value>
+  </data>
+  <data name="MirrorLR" xml:space="preserve">
+    <value>左右翻转选择</value>
+  </data>
+  <data name="MirrorUD" xml:space="preserve">
+    <value>上下反転選択</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>新規作成</value>
+  </data>
+  <data name="NoMaidata.txt" xml:space="preserve">
+    <value>maidata.txtが存在することを確認してください</value>
+  </data>
+  <data name="NoTrack.mp3" xml:space="preserve">
+    <value>track.mp3が存在することを確認してください</value>
+  </data>
+  <data name="Offset" xml:space="preserve">
+    <value>オフセ</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>オープン</value>
+  </data>
+  <data name="PlayBackSpeed" xml:space="preserve">
+    <value>再生速度</value>
+  </data>
+  <data name="PortClear" xml:space="preserve">
+    <value>MajdataViewが開いていて、ポート（8013）が開いていることを確認してください。</value>
+  </data>
+  <data name="RecMode" xml:space="preserve">
+    <value>録画モード</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="SaveAs" xml:space="preserve">
+    <value>名前を付けて保存</value>
+  </data>
+  <data name="SetArtist" xml:space="preserve">
+    <value>Artistを設定</value>
+  </data>
+  <data name="SetDes" xml:space="preserve">
+    <value>note designerを設定</value>
+  </data>
+  <data name="Setting" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="SetTitle" xml:space="preserve">
+    <value>タイトルを設定</value>
+  </data>
+  <data name="SimaiWiki" xml:space="preserve">
+    <value>SimaiWiki</value>
+  </data>
+  <data name="SoftRender" xml:space="preserve">
+    <value>ソフトウェア・レンダリング・モードで動作</value>
+  </data>
+  <data name="Speed" xml:space="preserve">
+    <value>速さ</value>
+  </data>
+  <data name="TextFollow" xml:space="preserve">
+    <value>譜面フォロー</value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>ツール</value>
+  </data>
+  <data name="Unsaved" xml:space="preserve">
+    <value>(保存されていません)</value>
+  </data>
+  <data name="Volume" xml:space="preserve">
+    <value>ボリューム</value>
+  </data>
+  <data name="Warn44100Hz" xml:space="preserve">
+    <value>44100Hz以外のmp3ファイルには対応していない場合があります</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>警告</value>
   </data>
 </root>

@@ -34,7 +34,7 @@ namespace MajdataEdit
             InitializeComponent();
             if (Environment.GetCommandLineArgs().Contains("--ForceSoftwareRender"))
             {
-                MessageBox.Show("正在以软件渲染模式运行");
+                MessageBox.Show(GetLocalizedString("SoftRender"));
                 RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
             }
         }
@@ -106,7 +106,7 @@ namespace MajdataEdit
             var process = Process.GetProcessesByName("MajdataView");
             if (process.Length > 0)
             {
-                var result = MessageBox.Show("要关闭View吗？", "警告", MessageBoxButton.YesNo);
+                var result = MessageBox.Show(GetLocalizedString("AskCloseView"), GetLocalizedString("Attention"), MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                     process[0].Kill();
             }

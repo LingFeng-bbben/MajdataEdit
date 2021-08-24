@@ -117,7 +117,124 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="File" xml:space="preserve">
-    <value>shabi</value>
+  <data name="AskCloseView" xml:space="preserve">
+    <value>要关闭View吗？</value>
+  </data>
+  <data name="AskSave" xml:space="preserve">
+    <value>未保存，要保存吗？</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>注意</value>
+  </data>
+  <data name="BPMtap" xml:space="preserve">
+    <value>BPM Tap</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>暗化</value>
+  </data>
+  <data name="Difficulty" xml:space="preserve">
+    <value>难度</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>编辑</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="FIles" xml:space="preserve">
+    <value>文件</value>
+  </data>
+  <data name="Github" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="MaidataExist" xml:space="preserve">
+    <value>maidata.txt已存在</value>
+  </data>
+  <data name="MapInfo" xml:space="preserve">
+    <value>谱面信息</value>
+  </data>
+  <data name="MapMuriDetc" xml:space="preserve">
+    <value>谱面无理检测</value>
+  </data>
+  <data name="Mirror180" xml:space="preserve">
+    <value>180°翻转选择</value>
+  </data>
+  <data name="Mirror45" xml:space="preserve">
+    <value>45°顺时针旋转选择</value>
+  </data>
+  <data name="MirrorLR" xml:space="preserve">
+    <value>左右翻转选择</value>
+  </data>
+  <data name="MirrorUD" xml:space="preserve">
+    <value>上下翻转选择</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="NoMaidata.txt" xml:space="preserve">
+    <value>未找到maidata.txt</value>
+  </data>
+  <data name="NoTrack.mp3" xml:space="preserve">
+    <value>请存入track.mp3</value>
+  </data>
+  <data name="Offset" xml:space="preserve">
+    <value>偏移</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>打开</value>
+  </data>
+  <data name="PlayBackSpeed" xml:space="preserve">
+    <value>播放速度</value>
+  </data>
+  <data name="PortClear" xml:space="preserve">
+    <value>请确保你打开了MajdataView且端口（8013）畅通</value>
+  </data>
+  <data name="RecMode" xml:space="preserve">
+    <value>录制模式</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="SaveAs" xml:space="preserve">
+    <value>另存为</value>
+  </data>
+  <data name="SetArtist" xml:space="preserve">
+    <value>请设置艺术家</value>
+  </data>
+  <data name="SetDes" xml:space="preserve">
+    <value>请设置做谱人</value>
+  </data>
+  <data name="Setting" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="SetTitle" xml:space="preserve">
+    <value>请设置标题</value>
+  </data>
+  <data name="SimaiWiki" xml:space="preserve">
+    <value>SimaiWiki</value>
+  </data>
+  <data name="SoftRender" xml:space="preserve">
+    <value>正在以软件渲染模式运行</value>
+  </data>
+  <data name="Speed" xml:space="preserve">
+    <value>速度</value>
+  </data>
+  <data name="TextFollow" xml:space="preserve">
+    <value>文本跟随</value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>工具</value>
+  </data>
+  <data name="Unsaved" xml:space="preserve">
+    <value>(未保存)</value>
+  </data>
+  <data name="Volume" xml:space="preserve">
+    <value>音量</value>
+  </data>
+  <data name="Warn44100Hz" xml:space="preserve">
+    <value>可能不支持非44100Hz的mp3文件</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>警告</value>
   </data>
 </root>

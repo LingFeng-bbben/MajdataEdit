@@ -23,6 +23,7 @@ using System.Media;
 using Newtonsoft.Json;
 using Un4seen.Bass.AddOn.Fx;
 using Newtonsoft.Json.Linq;
+using WPFLocalizeExtension.Extensions;
 
 namespace MajdataEdit
 {
@@ -138,8 +139,8 @@ namespace MajdataEdit
         {
             var audioPath = path + "/track.mp3";
             var dataPath = path + "/maidata.txt";
-            if (!File.Exists(audioPath)) MessageBox.Show("请存入track.mp3", "错误");
-            if (!File.Exists(dataPath)) MessageBox.Show("未找到maidata.txt", "错误");
+            if (!File.Exists(audioPath)) MessageBox.Show(GetLocalizedString("NoTrack.mp3"), GetLocalizedString("Error"));
+            if (!File.Exists(dataPath)) MessageBox.Show(GetLocalizedString("NoMaidata.txt"), GetLocalizedString("Error"));
             maidataDir = path;
             SetRawFumenText("");
             if (bgmStream != -1024)
@@ -154,7 +155,7 @@ namespace MajdataEdit
 
             Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, 0.7f);
             var info = Bass.BASS_ChannelGetInfo(bgmStream);
-            if (info.freq != 44100) MessageBox.Show("Simai可能不支持非44100Hz的mp3文件", "注意");
+            if (info.freq != 44100) MessageBox.Show(GetLocalizedString("Warn44100Hz"), GetLocalizedString("Attention"));
             ReadWaveFromFile();
             SimaiProcess.ClearData();
 
@@ -208,7 +209,7 @@ namespace MajdataEdit
             {
                 isSaved = false;
                 LevelSelector.IsEnabled = false;
-                TheWindow.Title = "MajdataEdit - (未保存)" + SimaiProcess.title;
+                TheWindow.Title = "MajdataEdit - "+GetLocalizedString("Unsaved") + SimaiProcess.title;
             }
         }
         /// <summary>
@@ -217,7 +218,7 @@ namespace MajdataEdit
         /// <returns>Return false if user cancel the action</returns>
         bool AskSave()
         {
-            var result = MessageBox.Show("未保存，要保存吗？", "警告", MessageBoxButton.YesNoCancel);
+            var result = MessageBox.Show(GetLocalizedString("AskSave"), GetLocalizedString("Warning"), MessageBoxButton.YesNoCancel);
             if (result == MessageBoxResult.Yes)
             {
                 SaveFumen(true);
@@ -292,14 +293,14 @@ namespace MajdataEdit
         {
             if (File.Exists(path + "/maidata.txt"))
             {
-                MessageBox.Show("maidata.txt已存在");
+                MessageBox.Show(GetLocalizedString("MaidataExist"));
             }
             else
             {
                 File.WriteAllText(path + "/maidata.txt",
-                    "&title=请设置标题\n" +
-                    "&artist=请设置艺术家\n" +
-                    "&des=请设置做谱人\n" +
+                    "&title="+GetLocalizedString("SetTitle")+"\n" +
+                    "&artist=" + GetLocalizedString("SetArtist") + "\n" +
+                    "&des=" + GetLocalizedString("SetDes") + "\n" +
                     "&first=0\n");
             }
         }
@@ -757,7 +758,7 @@ namespace MajdataEdit
         {
             var currentPlayTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             int minute = (int)currentPlayTime / 60;
-            double second = currentPlayTime % 60d;
+            double second = currentPlayTime - (60 * minute);
             Dispatcher.Invoke(new Action(() => { TimeLabel.Content = String.Format("{0}:{1:00}", minute, second); }));
         }
         void ScrollWave(double delta)
@@ -768,6 +769,24 @@ namespace MajdataEdit
             SimaiProcess.ClearNoteListPlayedState();
 
             SeekTextFromTime();
+        }
+        public static string GetLocalizedString(string key, string resourceFileName = "Langs", bool addSpaceAfter = false)
+        {
+            var localizedString = String.Empty;
+
+            // Build up the fully-qualified name of the key
+            var assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+            var fullKey = assemblyName + ":" + resourceFileName + ":" + key;
+            var locExtension = new LocExtension(fullKey);
+            locExtension.ResolveLocalizedValue(out localizedString);
+
+            // Add a space to the end, if requested
+            if (addSpaceAfter)
+            {
+                localizedString += " ";
+            }
+
+            return localizedString;
         }
 
         //*PLAY CONTROL
@@ -904,7 +923,7 @@ namespace MajdataEdit
             requestStop.control = EditorControlMethod.Stop;
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(requestStop);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
-            if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
+            if (response == "ERROR") { MessageBox.Show(GetLocalizedString("PortClear")); return false; }
             lastEditorState = EditorControlMethod.Stop;
             return true;
         }
@@ -914,7 +933,7 @@ namespace MajdataEdit
             requestStop.control = EditorControlMethod.Pause;
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(requestStop);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
-            if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
+            if (response == "ERROR") { MessageBox.Show(GetLocalizedString("PortClear")); return false; }
             lastEditorState = EditorControlMethod.Pause;
             return true;
         }
@@ -927,7 +946,7 @@ namespace MajdataEdit
             request.audioSpeed = GetPlaybackSpeed();
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
-            if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
+            if (response == "ERROR") { MessageBox.Show(GetLocalizedString("PortClear")); return false; }
             lastEditorState = EditorControlMethod.Start;
             return true;
         }
@@ -969,7 +988,7 @@ namespace MajdataEdit
 
             json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
-            if (response == "ERROR") { MessageBox.Show("请确保你打开了MajdataView且端口（8013）畅通"); return false; }
+            if (response == "ERROR") { MessageBox.Show(GetLocalizedString("PortClear")); return false; }
             lastEditorState = EditorControlMethod.Start;
             return true;
         }

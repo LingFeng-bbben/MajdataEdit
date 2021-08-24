@@ -117,7 +117,124 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="File" xml:space="preserve">
-    <value>shabi</value>
+  <data name="AskCloseView" xml:space="preserve">
+    <value>Close Viewer?</value>
+  </data>
+  <data name="AskSave" xml:space="preserve">
+    <value>File not saved. Save now?</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>Attention</value>
+  </data>
+  <data name="BPMtap" xml:space="preserve">
+    <value>BPM Tap</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>Bright</value>
+  </data>
+  <data name="Difficulty" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="FIles" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="Github" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="MaidataExist" xml:space="preserve">
+    <value>maidata.txt already exist.</value>
+  </data>
+  <data name="MapInfo" xml:space="preserve">
+    <value>Map info</value>
+  </data>
+  <data name="MapMuriDetc" xml:space="preserve">
+    <value>Map Muri Detection</value>
+  </data>
+  <data name="Mirror180" xml:space="preserve">
+    <value>180° Mirror Selection</value>
+  </data>
+  <data name="Mirror45" xml:space="preserve">
+    <value>45° Rotate Selection</value>
+  </data>
+  <data name="MirrorLR" xml:space="preserve">
+    <value>Mirror L-R Selection</value>
+  </data>
+  <data name="MirrorUD" xml:space="preserve">
+    <value>Mirror U-D Selection</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="NoMaidata.txt" xml:space="preserve">
+    <value>Please make sure maidata.txt exists.</value>
+  </data>
+  <data name="NoTrack.mp3" xml:space="preserve">
+    <value>Please make sure track.mp3 exists.</value>
+  </data>
+  <data name="Offset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="PlayBackSpeed" xml:space="preserve">
+    <value>PlayBackSpeed</value>
+  </data>
+  <data name="PortClear" xml:space="preserve">
+    <value>Please make sure MajdataView is open and port 8013 is available</value>
+  </data>
+  <data name="RecMode" xml:space="preserve">
+    <value>Record mode</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SaveAs" xml:space="preserve">
+    <value>SaveAs</value>
+  </data>
+  <data name="SetArtist" xml:space="preserve">
+    <value>SetArtist</value>
+  </data>
+  <data name="SetDes" xml:space="preserve">
+    <value>SetDesigner</value>
+  </data>
+  <data name="Setting" xml:space="preserve">
+    <value>Setting</value>
+  </data>
+  <data name="SetTitle" xml:space="preserve">
+    <value>SetTitle</value>
+  </data>
+  <data name="SimaiWiki" xml:space="preserve">
+    <value>SimaiWiki</value>
+  </data>
+  <data name="SoftRender" xml:space="preserve">
+    <value>Booting as software rendering mode.</value>
+  </data>
+  <data name="Speed" xml:space="preserve">
+    <value>Speed</value>
+  </data>
+  <data name="TextFollow" xml:space="preserve">
+    <value>TextFollow</value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="Unsaved" xml:space="preserve">
+    <value>(Unsaved)</value>
+  </data>
+  <data name="Volume" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="Warn44100Hz" xml:space="preserve">
+    <value>MP3 file that is not 44100Hz may not be supported.</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
   </data>
 </root>
