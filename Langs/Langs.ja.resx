@@ -130,7 +130,7 @@
     <value>BPM Tap</value>
   </data>
   <data name="Brightness" xml:space="preserve">
-    <value>明さ</value>
+    <value>明るさ</value>
   </data>
   <data name="Difficulty" xml:space="preserve">
     <value>レベル</value>
@@ -148,22 +148,22 @@
     <value>GitHub</value>
   </data>
   <data name="MaidataExist" xml:space="preserve">
-    <value>maidata.txtがすでに存在している</value>
+    <value>maidata.txtがすでに存在しています</value>
   </data>
   <data name="MapInfo" xml:space="preserve">
-    <value>谱面情報</value>
+    <value>譜面情報</value>
   </data>
   <data name="MapMuriDetc" xml:space="preserve">
     <value>譜面無理検出</value>
   </data>
   <data name="Mirror180" xml:space="preserve">
-    <value>180°反転选择</value>
+    <value>Mirror 180選択</value>
   </data>
   <data name="Mirror45" xml:space="preserve">
-    <value>左右反転选择</value>
+    <value>左右反転選択</value>
   </data>
   <data name="MirrorLR" xml:space="preserve">
-    <value>左右翻转选择</value>
+    <value>左右翻转選択</value>
   </data>
   <data name="MirrorUD" xml:space="preserve">
     <value>上下反転選択</value>
@@ -178,10 +178,10 @@
     <value>track.mp3が存在することを確認してください</value>
   </data>
   <data name="Offset" xml:space="preserve">
-    <value>オフセ</value>
+    <value>オフセット</value>
   </data>
   <data name="Open" xml:space="preserve">
-    <value>オープン</value>
+    <value>開く</value>
   </data>
   <data name="PlayBackSpeed" xml:space="preserve">
     <value>再生速度</value>
@@ -217,7 +217,7 @@
     <value>ソフトウェア・レンダリング・モードで動作</value>
   </data>
   <data name="Speed" xml:space="preserve">
-    <value>速さ</value>
+    <value>速度</value>
   </data>
   <data name="TextFollow" xml:space="preserve">
     <value>譜面フォロー</value>
@@ -229,7 +229,7 @@
     <value>(保存されていません)</value>
   </data>
   <data name="Volume" xml:space="preserve">
-    <value>ボリューム</value>
+    <value>音量</value>
   </data>
   <data name="Warn44100Hz" xml:space="preserve">
     <value>44100Hz以外のmp3ファイルには対応していない場合があります</value>

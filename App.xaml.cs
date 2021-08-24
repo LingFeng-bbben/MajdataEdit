@@ -18,7 +18,6 @@ namespace MajdataEdit
         public App()
         {
             LocalizeDictionary.Instance.SetCurrentThreadCulture = true;
-            LocalizeDictionary.Instance.Culture = new CultureInfo("en-US");
         }
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {

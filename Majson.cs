@@ -51,6 +51,7 @@ namespace MajdataEdit
 
     class EditorSetting
     {
+        public string Language = "zh-CN";
         public string PlayPauseKey = "Ctrl+Shift+c";
         public string PlayStopKey = "Ctrl+Shift+x";
         public string SendViewerKey = "Ctrl+Shift+z";

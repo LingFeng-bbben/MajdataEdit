@@ -24,6 +24,8 @@ using Newtonsoft.Json;
 using Un4seen.Bass.AddOn.Fx;
 using Newtonsoft.Json.Linq;
 using WPFLocalizeExtension.Extensions;
+using System.Globalization;
+using WPFLocalizeExtension.Engine;
 
 namespace MajdataEdit
 {
@@ -318,6 +320,7 @@ namespace MajdataEdit
             }
             var json = File.ReadAllText(editorSettingFilename);
             var setting = JsonConvert.DeserializeObject<EditorSetting>(json);
+            LocalizeDictionary.Instance.Culture = new CultureInfo(setting.Language);
             AddGesture(setting.PlayPauseKey, "PlayAndPause");
             AddGesture(setting.PlayStopKey, "StopPlaying");
             AddGesture(setting.SaveKey, "SaveFile");
