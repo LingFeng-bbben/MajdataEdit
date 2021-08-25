@@ -761,7 +761,7 @@ namespace MajdataEdit
         {
             var currentPlayTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             int minute = (int)currentPlayTime / 60;
-            double second = currentPlayTime - (60 * minute);
+            double second = (int)( currentPlayTime - (60 * minute));
             Dispatcher.Invoke(new Action(() => { TimeLabel.Content = String.Format("{0}:{1:00}", minute, second); }));
         }
         void ScrollWave(double delta)
