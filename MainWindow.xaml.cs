@@ -354,6 +354,8 @@ namespace MajdataEdit
             var time = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
+                if(Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
+                    TogglePause();
                 SetBgmPosition(time);
             }
             //Console.WriteLine("SelectionChanged");

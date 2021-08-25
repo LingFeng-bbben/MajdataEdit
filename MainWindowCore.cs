@@ -766,6 +766,9 @@ namespace MajdataEdit
         }
         void ScrollWave(double delta)
         {
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
+                TogglePause();
+
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             var destnationTime = time + (0.002d * -delta * (1.0d / zoominPower));
             SetBgmPosition(destnationTime);
