@@ -154,7 +154,7 @@
     <value>譜面情報</value>
   </data>
   <data name="MapMuriDetc" xml:space="preserve">
-    <value>譜面無理検出</value>
+    <value>違憲配置検出(中国語)</value>
   </data>
   <data name="Mirror180" xml:space="preserve">
     <value>Mirror 180選択</value>

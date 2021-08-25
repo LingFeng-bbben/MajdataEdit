@@ -71,7 +71,8 @@
                      Margin="105,30,10,91" HorizontalScrollBarVisibility="Auto" 
                      VerticalScrollBarVisibility="Visible" 
                      SelectionChanged="FumenContent_SelectionChanged" Grid.ColumnSpan="2"
-                     InputMethod.IsInputMethodEnabled="False">
+                     InputMethod.IsInputMethodEnabled="False"
+                     AutoWordSelection="False">
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
                 <RoutedUICommand x:Key="SaveFile" Text="SaveFile"/>
