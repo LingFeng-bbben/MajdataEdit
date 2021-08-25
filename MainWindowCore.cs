@@ -822,7 +822,11 @@ namespace MajdataEdit
                 if (!sendRequestRun(startAt, isOpIncluded)) return;
                 Task.Run(() =>
                 {
-                    while (DateTime.Now.Ticks < startAt.Ticks) ;
+                    while (DateTime.Now.Ticks < startAt.Ticks )
+                    {
+                        if (lastEditorState != EditorControlMethod.Start)
+                            return;
+                    }
                     Dispatcher.Invoke(() =>
                     {
                         playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
@@ -992,7 +996,7 @@ namespace MajdataEdit
                 request.audioSpeed = GetPlaybackSpeed();
             });
 
-            json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            json = JsonConvert.SerializeObject(request);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
             if (response == "ERROR") { MessageBox.Show(GetLocalizedString("PortClear")); return false; }
             lastEditorState = EditorControlMethod.Start;
