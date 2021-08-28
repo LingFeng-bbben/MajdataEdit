@@ -36,6 +36,7 @@ namespace MajdataEdit
         Timer VisualEffectRefreshTimer = new Timer(1);
 
         SoundSetting soundSetting = new SoundSetting();
+        public EditorSetting editorSetting = null;
 
         public int bgmStream = -114514;
         public int clickStream = -114514;
@@ -141,8 +142,8 @@ namespace MajdataEdit
         {
             var audioPath = path + "/track.mp3";
             var dataPath = path + "/maidata.txt";
-            if (!File.Exists(audioPath)) MessageBox.Show(GetLocalizedString("NoTrack.mp3"), GetLocalizedString("Error"));
-            if (!File.Exists(dataPath)) MessageBox.Show(GetLocalizedString("NoMaidata.txt"), GetLocalizedString("Error"));
+            if (!File.Exists(audioPath)) MessageBox.Show(GetLocalizedString("NoTrack_mp3"), GetLocalizedString("Error"));
+            if (!File.Exists(dataPath)) MessageBox.Show(GetLocalizedString("NoMaidata_txt"), GetLocalizedString("Error"));
             maidataDir = path;
             SetRawFumenText("");
             if (bgmStream != -1024)
@@ -181,7 +182,7 @@ namespace MajdataEdit
 
             Cover.Visibility = Visibility.Collapsed;
             MenuEdit.IsEnabled = true;
-            MenuSetting.IsEnabled = true;
+            VolumnSetting.IsEnabled = true;
             MenuMuriCheck.IsEnabled = true;
             SetSavedState(true);
         }
@@ -308,8 +309,13 @@ namespace MajdataEdit
         }
         void CreateEditorSetting()
         {
-            EditorSetting setting = new EditorSetting();
-            File.WriteAllText(editorSettingFilename, JsonConvert.SerializeObject(setting, Formatting.Indented));
+            editorSetting = new EditorSetting();
+            editorSetting.Language = "en-US";   // 在未初始化EditorSetting的时候 以较为通用的英文运行
+            File.WriteAllText(editorSettingFilename, JsonConvert.SerializeObject(editorSetting, Formatting.Indented));
+
+            EditorSettingPanel esp = new EditorSettingPanel(true);
+            esp.Owner = this;
+            esp.ShowDialog();
         }
         void ReadEditorSetting()
         {
@@ -319,14 +325,18 @@ namespace MajdataEdit
                 return;
             }
             var json = File.ReadAllText(editorSettingFilename);
-            var setting = JsonConvert.DeserializeObject<EditorSetting>(json);
-            LocalizeDictionary.Instance.Culture = new CultureInfo(setting.Language);
-            AddGesture(setting.PlayPauseKey, "PlayAndPause");
-            AddGesture(setting.PlayStopKey, "StopPlaying");
-            AddGesture(setting.SaveKey, "SaveFile");
-            AddGesture(setting.SendViewerKey, "SendToView");
-            AddGesture(setting.IncreasePlaybackSpeedKey, "IncreasePlaybackSpeed");
-            AddGesture(setting.DecreasePlaybackSpeedKey, "DecreasePlaybackSpeed");
+            editorSetting = JsonConvert.DeserializeObject<EditorSetting>(json);
+            LocalizeDictionary.Instance.Culture = new CultureInfo(editorSetting.Language);
+            AddGesture(editorSetting.PlayPauseKey, "PlayAndPause");
+            AddGesture(editorSetting.PlayStopKey, "StopPlaying");
+            AddGesture(editorSetting.SaveKey, "SaveFile");
+            AddGesture(editorSetting.SendViewerKey, "SendToView");
+            AddGesture(editorSetting.IncreasePlaybackSpeedKey, "IncreasePlaybackSpeed");
+            AddGesture(editorSetting.DecreasePlaybackSpeedKey, "DecreasePlaybackSpeed");
+        }
+        public void SaveEditorSetting()
+        {
+            File.WriteAllText(editorSettingFilename, JsonConvert.SerializeObject(editorSetting, Formatting.Indented));
         }
         void ReadMuriCheckSlideTime()
         {

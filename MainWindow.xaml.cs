@@ -411,5 +411,12 @@ namespace MajdataEdit
             muriCheck.Owner = this;
             muriCheck.Show();
         }
+
+        private void MenuItem_EditorSetting_Click(object sender, RoutedEventArgs e)
+        {
+            EditorSettingPanel esp = new EditorSettingPanel();
+            esp.Owner = this;
+            esp.Show();
+        }
     }
 }

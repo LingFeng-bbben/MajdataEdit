@@ -94,6 +94,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EditorSettingPanel.xaml.cs">
+      <DependentUpon>EditorSettingPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Langs\Langs.Designer.cs">
       <DependentUpon>Langs.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -134,6 +137,10 @@
     <Compile Include="MuriCheckResult.xaml.cs">
       <DependentUpon>MuriCheckResult.xaml</DependentUpon>
     </Compile>
+    <Page Include="EditorSettingPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MuriCheck.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

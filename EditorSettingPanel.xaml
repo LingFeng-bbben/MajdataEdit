@@ -1,0 +1,59 @@
+﻿<Window x:Class="MajdataEdit.EditorSettingPanel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        xmlns:local="clr-namespace:MajdataEdit"
+        lex:LocalizeDictionary.DesignCulture="zh-CN"
+        lex:ResxLocalizationProvider.DefaultAssembly="MajdataEdit"
+        lex:ResxLocalizationProvider.DefaultDictionary="Langs" 
+        mc:Ignorable="d"
+        Background="{DynamicResource WindowBackground}"
+        Title="Editor Setting" Height="184.314" Width="259.203" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" Topmost="True"
+        Loaded="Window_Loaded" Closing="Window_Closing">
+    <Window.Resources>
+        
+    </Window.Resources>
+
+
+    <Grid  Margin="8,5,8,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="100*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0"
+               Foreground="{DynamicResource ButtonForeground}"
+               Content="{lex:Loc Key=EditorLanguage}"
+               VerticalAlignment="Center"></Label>
+        <ComboBox x:Name="LanguageComboBox"
+                  Grid.Row="0" Grid.Column="1"
+                  Height="22" VerticalAlignment="Center"
+                  SelectionChanged="LanguageComboBox_SelectionChanged">
+            <ComboBoxItem>中文</ComboBoxItem>
+            <ComboBoxItem>English</ComboBoxItem>
+            <ComboBoxItem>日本語</ComboBoxItem>
+        </ComboBox>
+
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+            <Button x:Name="Save_Button" Content="{lex:Loc Key=Save}"
+                    Width="100" Height="28" Margin="0,0,10,0"
+                    Foreground="{DynamicResource ButtonForeground}"
+                    Background="{DynamicResource ButtonsBackground}"
+                    Click="Save_Button_Click"/>
+            <Button x:Name="Cancel_Button" Content="{lex:Loc Key=Cancel}"
+                    Width="100" Height="28" Margin="10,0,0,0"
+                    Foreground="{DynamicResource ButtonForeground}"
+                    Background="{DynamicResource ButtonsBackground}" 
+                    Click="Cancel_Button_Click"/>
+        </StackPanel>
+    </Grid>
+
+</Window>

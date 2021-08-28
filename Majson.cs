@@ -49,7 +49,7 @@ namespace MajdataEdit
         public float Hanabi_Level;
     }
 
-    class EditorSetting
+    public class EditorSetting
     {
         public string Language = "zh-CN";
         public string PlayPauseKey = "Ctrl+Shift+c";

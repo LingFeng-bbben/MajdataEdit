@@ -533,8 +533,8 @@ namespace MajdataEdit
             else
             {
                 MessageBox.Show(
-                String.Format("检测完毕, 共发现{1}个撞尾无理。您可在 检测结果 窗口中查看\n请注意：谱面无理检测提供的意见并不一定准确，结果仅供参考。",
-                    multNoteError, slideError),
+                String.Format("检测完毕, 共发现{0}个撞尾无理。您可在 检测结果 窗口中查看\n请注意：谱面无理检测提供的意见并不一定准确，结果仅供参考。",
+                    multNoteError),
                 "提示"
                 );
             }

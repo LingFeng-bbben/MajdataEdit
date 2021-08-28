@@ -171,10 +171,10 @@
   <data name="New" xml:space="preserve">
     <value>新規作成</value>
   </data>
-  <data name="NoMaidata.txt" xml:space="preserve">
+  <data name="NoMaidata_txt" xml:space="preserve">
     <value>maidata.txtが存在することを確認してください</value>
   </data>
-  <data name="NoTrack.mp3" xml:space="preserve">
+  <data name="NoTrack_mp3" xml:space="preserve">
     <value>track.mp3が存在することを確認してください</value>
   </data>
   <data name="Offset" xml:space="preserve">
@@ -236,5 +236,17 @@
   </data>
   <data name="Warning" xml:space="preserve">
     <value>警告</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="EditorLanguage" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="NoEditorSetting" xml:space="preserve">
+    <value>エディタの初期設定を完了してください</value>
+  </data>
+  <data name="EditorSetting" xml:space="preserve">
+    <value>エディタの設定</value>
   </data>
 </root>

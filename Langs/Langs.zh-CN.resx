@@ -171,10 +171,10 @@
   <data name="New" xml:space="preserve">
     <value>新建</value>
   </data>
-  <data name="NoMaidata.txt" xml:space="preserve">
+  <data name="NoMaidata_txt" xml:space="preserve">
     <value>未找到maidata.txt</value>
   </data>
-  <data name="NoTrack.mp3" xml:space="preserve">
+  <data name="NoTrack_mp3" xml:space="preserve">
     <value>请存入track.mp3</value>
   </data>
   <data name="Offset" xml:space="preserve">
@@ -236,5 +236,17 @@
   </data>
   <data name="Warning" xml:space="preserve">
     <value>警告</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="EditorLanguage" xml:space="preserve">
+    <value>语言</value>
+  </data>
+  <data name="EditorSetting" xml:space="preserve">
+    <value>编辑器设置</value>
+  </data>
+  <data name="NoEditorSetting" xml:space="preserve">
+    <value>请完成编辑器初始设置</value>
   </data>
 </root>

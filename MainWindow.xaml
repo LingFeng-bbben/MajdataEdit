@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:lex="http://wpflocalizeextension.codeplex.com"
-        lex:LocalizeDictionary.DesignCulture="jp"
+        lex:LocalizeDictionary.DesignCulture="zh-CN"
         lex:ResxLocalizationProvider.DefaultAssembly="MajdataEdit"
         lex:ResxLocalizationProvider.DefaultDictionary="Langs" 
         xmlns:local="clr-namespace:MajdataEdit"
@@ -44,8 +44,9 @@
                 <MenuItem Header="{lex:Loc MapInfo}" Click="MenuItem_InfomationEdit_Click"/>
 
             </MenuItem>
-            <MenuItem x:Name="MenuSetting" Header="{lex:Loc Setting}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" IsEnabled="False">
-                <MenuItem Header="{lex:Loc Volume}" Click="MenuItem_SoundSetting_Click"/>
+            <MenuItem Header="{lex:Loc Setting}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
+                <MenuItem x:Name="VolumnSetting" Header="{lex:Loc Volume}" Click="MenuItem_SoundSetting_Click" IsEnabled="False"/>
+                <MenuItem Header="{lex:Loc EditorSetting}" Click="MenuItem_EditorSetting_Click"/>
             </MenuItem>
             <MenuItem Header="{lex:Loc Tools}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
                 <MenuItem Header="{lex:Loc BPMtap}" Click="BPMtap_MenuItem_Click"/>
