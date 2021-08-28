@@ -154,7 +154,7 @@
     <value>Map info</value>
   </data>
   <data name="MapMuriDetc" xml:space="preserve">
-    <value>Map Muri Detection</value>
+    <value>Map Impossible Notes Detection</value>
   </data>
   <data name="Mirror180" xml:space="preserve">
     <value>180° Mirror Selection</value>
@@ -248,5 +248,77 @@
   </data>
   <data name="NoEditorSetting" xml:space="preserve">
     <value>Please complete the initial setup of the editor.</value>
+  </data>
+  <data name="CheckDone1" xml:space="preserve">
+    <value>Check Finished, {0} Multi-Notes Error，{1} Slide-Tap Error. You can get more information in the Result Window.
+PS: The results is not 100% accurate.</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="CheckDone2" xml:space="preserve">
+    <value>Check Finished, {0} Slide-Tap Error. You can get more information in the Result Window.
+PS: The results is not 100% accurate.</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="DetResult" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="GotoLineTooltip" xml:space="preserve">
+    <value>Double click to jump to the error line.</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="MultNoteEnable" xml:space="preserve">
+    <value>Multi-Notes Detection</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="MultNoteError1" xml:space="preserve">
+    <value>[MultiNotesError] </value>
+  </data>
+  <data name="MultNoteError2" xml:space="preserve">
+    <value> may be appear in the same time.({0} Notes)</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="MultNoteTooltip1" xml:space="preserve">
+    <value>It will warn you if there is more than 3 notes appear in the same time.</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="MultNoteTooltip2" xml:space="preserve">
+    <value>If your map allow this situation, e.g. UTAGE map, you can disable this option.</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="SlideAccInputError" xml:space="preserve">
+    <value>Slide Detection Accuracy must be a number! Please check your input and delete unnecessary charactors like space.</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="SlideAccuracy" xml:space="preserve">
+    <value>Slide-Tap Detection Acc:</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="SlideError" xml:space="preserve">
+    <value>[SlideTapError] "{0}"({1}L,{2}C) may obstructs "{3}"({4}L,{5}C). Interval:{6}ms</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="SlideTooltip" xml:space="preserve">
+    <value>Slide-Tap Error: when a SLIDE pass a TAP in "A Area", it may 
+trigger this TAP unexpected.
+The accuracy of detection on Slide-Tap Error. Unit: second.
+Please DO NOT enter a value less than 0.15, or some of
+Impossible Notes will not be found out.
+If you wanna an excellent map, you can set the accuracy to
+0.2 or higher.</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="StartCheck" xml:space="preserve">
+    <value>Start Check</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="SyntaxError" xml:space="preserve">
+    <value>[SyntaxError] "{0}"({1}L,{2}C) fail to analyze，may be a syntax error here.</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="WhatsThis" xml:space="preserve">
+    <value>What's This</value>
   </data>
 </root>

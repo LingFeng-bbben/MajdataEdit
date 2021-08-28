@@ -154,7 +154,7 @@
     <value>譜面情報</value>
   </data>
   <data name="MapMuriDetc" xml:space="preserve">
-    <value>違憲配置検出(中国語)</value>
+    <value>無理配置検出</value>
   </data>
   <data name="Mirror180" xml:space="preserve">
     <value>Mirror 180選択</value>
@@ -248,5 +248,77 @@
   </data>
   <data name="EditorSetting" xml:space="preserve">
     <value>エディタの設定</value>
+  </data>
+  <data name="CheckDone1" xml:space="preserve">
+    <value>检测完毕, 共发现{0}个多押无理，{1}个撞尾无理。您可在 检测结果 窗口中查看
+请注意：谱面无理检测提供的意见并不一定准确，结果仅供参考。</value>
+    <comment>需要翻译，其中{0}是多押无理数量，{1}是撞尾物理数量</comment>
+  </data>
+  <data name="CheckDone2" xml:space="preserve">
+    <value>检测完毕, 共发现{0}个撞尾无理。您可在 检测结果 窗口中查看
+请注意：谱面无理检测提供的意见并不一定准确，结果仅供参考。</value>
+    <comment>需要翻译，其中{0}是撞尾物理数量</comment>
+  </data>
+  <data name="DetResult" xml:space="preserve">
+    <value>检测结果</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="GotoLineTooltip" xml:space="preserve">
+    <value>双击可转到对应错误行</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>提示</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="MultNoteEnable" xml:space="preserve">
+    <value>开启多押检测</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="MultNoteError1" xml:space="preserve">
+    <value>[多押无理] </value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="MultNoteError2" xml:space="preserve">
+    <value>可能形成了{0}押</value>
+    <comment>需要翻译，其中{0}是指形成了多少押</comment>
+  </data>
+  <data name="MultNoteTooltip1" xml:space="preserve">
+    <value>检测三押或三押以上的多押无理
+如果您的谱面允许多押存在 如协力宴谱 您可以禁用这个选项</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="SlideAccInputError" xml:space="preserve">
+    <value>Slide撞尾检测精度必须是个数字! 请检查您输入是否有误, 如误输入了空格.</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="SlideAccuracy" xml:space="preserve">
+    <value>Slide撞尾检测精度:</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="SlideError" xml:space="preserve">
+    <value>[撞尾无理] "{0}"({1}L,{2}C)可能会撞上"{3}"({4}L,{5}C) 二者间隔{6}ms</value>
+    <comment>需要翻译，其中{0},{3}是语句内容，{1},{2},{4},{5}是行号和列号，{6}是两个note的时间间隔</comment>
+  </data>
+  <data name="SlideTooltip" xml:space="preserve">
+    <value>撞尾无理：当slide经过tap（A区）时，这个tap可能会被误触发
+检查撞尾无理的精度，单位是秒。
+建议您不要设置低于0.15的值，因为0.15秒是GOOD判定的区间，
+如果小于这个值，必定无理的撞尾就无法被检测出来。
+您可以设置略高于0.15的值，如0.2，此时容易蹭尾的配置也会被
+检测出来</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="StartCheck" xml:space="preserve">
+    <value>开始检测</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="SyntaxError" xml:space="preserve">
+    <value>[语法错误] "{0}"({1}L,{2}C)解析失败，可能存在语法错误</value>
+    <comment>需要翻译，其中{0}是语句内容，{1}和{2}是行号和列号</comment>
+  </data>
+  <data name="WhatsThis" xml:space="preserve">
+    <value>这是什么</value>
+    <comment>需要翻译</comment>
   </data>
 </root>

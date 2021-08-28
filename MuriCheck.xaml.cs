@@ -110,7 +110,7 @@ namespace MajdataEdit
             }
             catch (System.FormatException)
             {
-                MessageBox.Show("Slide撞尾检测精度必须是个数字! 请检查您输入是否有误, 如误输入了空格.", "警告");
+                MessageBox.Show(MainWindow.GetLocalizedString("SlideAccInputError"), MainWindow.GetLocalizedString("Error"));
                 SlideAccuracy_TextBox.Text = "";
                 return;
             }
@@ -186,7 +186,7 @@ namespace MajdataEdit
                         catch
                         {
                             addWarning(String.Format(
-                                "[语法错误] \"{0}\"({1}L,{2}C)解析失败，可能存在语法错误",
+                                MainWindow.GetLocalizedString("SyntaxError"),
                                 note.noteContent,
                                 positionY + 1,
                                 positionX + 1
@@ -220,7 +220,7 @@ namespace MajdataEdit
                     else
                     {
                         // TODO: dx谱面兼容
-                        MessageBox.Show("无理检测暂时不支持dx谱面！", "警告");
+                        MessageBox.Show("无理检测暂时不支持dx谱面！ / dx map not support now", "警告");
                         return -1;
                     }
                 }
@@ -285,7 +285,7 @@ namespace MajdataEdit
 
                 if (inHandling.Count > 2)
                 {
-                    String warningText = "[多押无理] ";
+                    String warningText = MainWindow.GetLocalizedString("MultNoteError1");
                     foreach (var e in inHandling)
                     {
                         if (e.ntype == 1)
@@ -297,7 +297,7 @@ namespace MajdataEdit
                             e.noteContent, e.positionY + 1, e.positionX + 1
                             );
                     }
-                    warningText += String.Format("可能形成了{0}押", inHandling.Count);
+                    warningText += String.Format(MainWindow.GetLocalizedString("MultNoteError2"), inHandling.Count);
                     addWarning(warningText, inHandling[0].positionX, inHandling[0].positionY);
                     errorCnt++;
                 }
@@ -349,7 +349,7 @@ namespace MajdataEdit
                         catch
                         {
                             addWarning(String.Format(
-                                "[语法错误] \"{0}\"({1}L,{2}C)解析失败，可能存在语法错误",
+                                MainWindow.GetLocalizedString("SyntaxError"),
                                 note.noteContent,
                                 positionY + 1,
                                 positionX + 1
@@ -420,7 +420,7 @@ namespace MajdataEdit
                         catch
                         {
                             addWarning(String.Format(
-                                "[语法错误] \"{0}\"({1}L,{2}C)解析失败，可能存在语法错误",
+                                MainWindow.GetLocalizedString("SyntaxError"),
                                 note.noteContent,
                                 positionY + 1,
                                 positionX + 1
@@ -430,7 +430,7 @@ namespace MajdataEdit
                     }else
                     {
                         // TODO: dx谱面兼容
-                        MessageBox.Show("无理检测暂时不支持dx谱面！", "警告");
+                        MessageBox.Show("无理检测暂时不支持dx谱面！ / dx map not support now", "警告");
                         return -1;
                     }
                 }
@@ -481,7 +481,7 @@ namespace MajdataEdit
                             e.time < op.time)
                         {
                             addWarning(String.Format(
-                                "[撞尾无理] \"{0}\"({1}L,{2}C)可能会撞上\"{3}\"({4}L,{5}C) 二者间隔{6}ms",
+                                MainWindow.GetLocalizedString("SlideError"),
                                 e.noteContent, e.positionY+1, e.positionX+1,
                                 op.noteContent, op.positionY+1, op.positionX+1,
                                 Math.Floor((op.time - e.time)*1000)
@@ -525,17 +525,17 @@ namespace MajdataEdit
             if (multNoteEnable)
             {
                 MessageBox.Show(
-                String.Format("检测完毕, 共发现{0}个多押无理，{1}个撞尾无理。您可在 检测结果 窗口中查看\n请注意：谱面无理检测提供的意见并不一定准确，结果仅供参考。",
+                String.Format(MainWindow.GetLocalizedString("CheckDone1"),
                     multNoteError, slideError),
-                "提示"
+                MainWindow.GetLocalizedString("Info")
                 );
             }
             else
             {
                 MessageBox.Show(
-                String.Format("检测完毕, 共发现{0}个撞尾无理。您可在 检测结果 窗口中查看\n请注意：谱面无理检测提供的意见并不一定准确，结果仅供参考。",
+                String.Format(MainWindow.GetLocalizedString("CheckDone2"),
                     multNoteError),
-                "提示"
+                MainWindow.GetLocalizedString("Info")
                 );
             }
         }

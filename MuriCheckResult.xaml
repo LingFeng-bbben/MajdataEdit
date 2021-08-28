@@ -3,10 +3,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lex="http://wpflocalizeextension.codeplex.com"
     xmlns:local="clr-namespace:MajdataEdit"
+    lex:LocalizeDictionary.DesignCulture="ja"
+    lex:ResxLocalizationProvider.DefaultAssembly="MajdataEdit"
+    lex:ResxLocalizationProvider.DefaultDictionary="Langs" 
     mc:Ignorable="d"
     Background="{DynamicResource WindowBackground}"
-    Title="检测结果" Height="350" Width="500" ResizeMode="NoResize" WindowStartupLocation="Manual">
+    Title="{lex:Loc Key=DetResult}" Height="350" Width="500" ResizeMode="NoResize" WindowStartupLocation="Manual">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100*"/>
@@ -19,8 +23,8 @@
 
         <Label Grid.Row="0"
                FontSize="13" FontWeight="Bold"
-               Foreground="{DynamicResource ButtonForeground}">
-            双击可转到对应错误行
+               Foreground="{DynamicResource ButtonForeground}"
+               Content="{lex:Loc Key=GotoLineTooltip}">
         </Label>
         <ListBox x:Name="CheckResult_Listbox" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
                  Foreground="{DynamicResource ButtonForeground}"
