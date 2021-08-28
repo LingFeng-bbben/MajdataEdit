@@ -277,7 +277,7 @@ namespace MajdataEdit
             if (!File.Exists(path)) return;
             var setting = JsonConvert.DeserializeObject<MajSetting>(File.ReadAllText(path));
             ViewerCover.Text = setting.backgroundCover.ToString();
-            ViewerSpeed.Text = setting.playSpeed.ToString();
+            ViewerSpeed.Text = setting.playSpeed.ToString("F1");    // 转化为形如"7.0", "9.5"这样的速度
             LevelSelector.SelectedIndex = setting.lastEditDiff;
             selectedDifficulty = setting.lastEditDiff;
             SetBgmPosition(setting.lastEditTime);
@@ -991,7 +991,9 @@ namespace MajdataEdit
                 request.jsonPath = path;
                 request.startAt = StartAt.Ticks;
                 request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                request.playSpeed = float.Parse(ViewerSpeed.Text);
+                // request.playSpeed = float.Parse(ViewerSpeed.Text);
+                // 将maimaiDX速度换算为View中的单位速度 MajSpeed = 107.25 / (71.4184491 * (MaiSpeed + 0.9975) ^ -0.985558604)
+                request.playSpeed = (float)(107.25 / (71.4184491 * Math.Pow(float.Parse(ViewerSpeed.Text) + 0.9975, -0.985558604)));
                 request.backgroundCover = float.Parse(ViewerCover.Text);
                 request.audioSpeed = GetPlaybackSpeed();
             });
