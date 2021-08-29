@@ -142,6 +142,17 @@ namespace MajdataEdit
 
                 for (int i = 0; i < text.Length; i++)
                 {
+                    if (text[i] == '|' && i+1 < text.Length && text[i+1] == '|')
+                    {
+                        // 跳过注释
+                        Xcount++;
+                        while(i < text.Length && text[i] != '\n')
+                        {
+                            i++;
+                            Xcount++;
+                        }
+                        continue;
+                    }
                     if (text[i] == '\n')
                     {
                         Ycount++;
