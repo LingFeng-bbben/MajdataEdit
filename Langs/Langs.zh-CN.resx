@@ -307,4 +307,9 @@
   <data name="WhatsThis" xml:space="preserve">
     <value>这是什么</value>
   </data>
+  <data name="SoftRenderError" xml:space="preserve">
+    <value>渲染进程错误！
+请尝试开启强制软件渲染（在文件夹中有一个 "强制软件渲染.bat"）
+并重新打开。</value>
+  </data>
 </root>

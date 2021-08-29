@@ -321,4 +321,9 @@
     <value>这是什么</value>
     <comment>需要翻译</comment>
   </data>
+  <data name="SoftRenderError" xml:space="preserve">
+    <value>Render Thread Failure！
+Please run "强制软件渲染.bat" in the folder and restart MajdataEdit. This may solve the problem.</value>
+    <comment>WE NEED honn ya ku!!</comment>
+  </data>
 </root>
