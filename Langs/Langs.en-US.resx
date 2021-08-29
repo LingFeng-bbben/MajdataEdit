@@ -280,12 +280,9 @@ PS: The results is not 100% accurate.</value>
     <value> may be appear in the same time.({0} Notes)</value>
     <comment>可能需要翻译润色</comment>
   </data>
-  <data name="MultNoteTooltip1" xml:space="preserve">
-    <value>It will warn you if there is more than 3 notes appear in the same time.</value>
-    <comment>可能需要翻译润色</comment>
-  </data>
-  <data name="MultNoteTooltip2" xml:space="preserve">
-    <value>If your map allow this situation, e.g. UTAGE map, you can disable this option.</value>
+  <data name="MultNoteTooltip" xml:space="preserve">
+    <value>It will warn you if there is more than 3 notes appear in the same time.
+If your map allow this situation, e.g. UTAGE map, you can disable this option.</value>
     <comment>可能需要翻译润色</comment>
   </data>
   <data name="SlideAccInputError" xml:space="preserve">

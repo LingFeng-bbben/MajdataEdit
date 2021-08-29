@@ -275,11 +275,9 @@
   <data name="MultNoteError2" xml:space="preserve">
     <value>可能形成了{0}押</value>
   </data>
-  <data name="MultNoteTooltip1" xml:space="preserve">
-    <value>检测三押或三押以上的多押无理</value>
-  </data>
-  <data name="MultNoteTooltip2" xml:space="preserve">
-    <value>如果您的谱面允许多押存在 如协力宴谱 您可以禁用这个选项</value>
+  <data name="MultNoteTooltip" xml:space="preserve">
+    <value>检测三押或三押以上的多押无理
+如果您的谱面允许多押存在 如协力宴谱 您可以禁用这个选项</value>
   </data>
   <data name="SlideAccInputError" xml:space="preserve">
     <value>Slide撞尾检测精度必须是个数字! 请检查您输入是否有误, 如误输入了空格.</value>

@@ -39,8 +39,7 @@
                 <Label.ToolTip>
                     <ToolTip>
                         <StackPanel>
-                            <TextBlock Text="{lex:Loc Key=MultNoteTooltip1}"></TextBlock>
-                            <TextBlock Text="{lex:Loc Key=MultNoteTooltip2}"></TextBlock>
+                            <TextBlock Text="{lex:Loc Key=MultNoteTooltip}"></TextBlock>
                         </StackPanel>
                     </ToolTip>
                 </Label.ToolTip>
