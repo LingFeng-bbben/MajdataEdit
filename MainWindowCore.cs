@@ -26,8 +26,6 @@ using Newtonsoft.Json.Linq;
 using WPFLocalizeExtension.Extensions;
 using System.Globalization;
 using WPFLocalizeExtension.Engine;
-using System.Threading;
-using Timer = System.Timers.Timer;
 
 namespace MajdataEdit
 {
@@ -783,7 +781,6 @@ namespace MajdataEdit
         private void WaveStopMonitorUpdate()
         {
             // 监控是否应当停止
-            // 用了个新线程 运气不好可能会爆一大堆奇怪的BUG 如果真的这样请原谅我
             if (!isPlan2Stop &&
                 isPlaying &&
                 Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_STOPPED)
@@ -797,15 +794,18 @@ namespace MajdataEdit
                 else
                 {
                     // 不够播完 等待后停止
-                    Thread t = new Thread(() =>
+                    Timer stopPlayingTimer = new Timer((int)(extraTime4AllPerfect * 1000))
                     {
-                        Thread.Sleep((int)(extraTime4AllPerfect * 1000));
+                        AutoReset = false
+                    };
+                    stopPlayingTimer.Elapsed += (object sender, ElapsedEventArgs e) =>
+                    {
                         Dispatcher.Invoke(() =>
                         {
                             ToggleStop();
                         });
-                    });
-                    t.Start();
+                    };
+                    stopPlayingTimer.Start();
                 }
             }
         }
@@ -1163,6 +1163,15 @@ namespace MajdataEdit
                 (int)Top,
                 (int)Height - 20,
                 (int)Height, true);
+        }
+        void SetWindowGoldenPosition()
+        {
+            // 属于你的独享黄金位置
+            var ScreenWidth = SystemParameters.PrimaryScreenWidth;
+            var ScreenHeight = SystemParameters.PrimaryScreenHeight;
+
+            this.Left = (ScreenWidth - this.Width + Height) / 2 - 10;
+            this.Top = (ScreenHeight - this.Height) / 2;
         }
     }
 }
