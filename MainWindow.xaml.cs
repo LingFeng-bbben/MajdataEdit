@@ -55,6 +55,7 @@ namespace MajdataEdit
             clickSoundTimer.Elapsed += ClickSoundTimer_Elapsed;
             VisualEffectRefreshTimer.Elapsed += VisualEffectRefreshTimer_Elapsed;
             VisualEffectRefreshTimer.Start();
+            waveStopMonitorTimer.Elapsed += WaveStopMonitorTimer_Elapsed;
             PlbHideTimer.Elapsed += PlbHideTimer_Elapsed;
         }
 
@@ -85,6 +86,11 @@ namespace MajdataEdit
         private void CurrentTimeRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             UpdateTimeDisplay();
+        }
+        // This update "middle" frequently to monitor if the wave has to be stopped
+        private void WaveStopMonitorTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            WaveStopMonitorUpdate();
         }
 
         //Window events

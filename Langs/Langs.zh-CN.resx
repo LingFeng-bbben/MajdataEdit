@@ -307,7 +307,7 @@
   </data>
   <data name="SoftRenderError" xml:space="preserve">
     <value>渲染进程错误！
-请尝试开启强制软件渲染（在文件夹中有一个 "强制软件渲染.bat"）
-并重新打开。</value>
+请尝试通过强制软件渲染使用本软件
+（通过双击文件夹中的 "强制软件渲染.bat"启动本程序）</value>
   </data>
 </root>

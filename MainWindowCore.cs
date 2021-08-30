@@ -26,6 +26,8 @@ using Newtonsoft.Json.Linq;
 using WPFLocalizeExtension.Extensions;
 using System.Globalization;
 using WPFLocalizeExtension.Engine;
+using System.Threading;
+using Timer = System.Timers.Timer;
 
 namespace MajdataEdit
 {
@@ -34,6 +36,7 @@ namespace MajdataEdit
         Timer currentTimeRefreshTimer = new Timer(100);
         Timer clickSoundTimer = new Timer(1);
         Timer VisualEffectRefreshTimer = new Timer(1);
+        Timer waveStopMonitorTimer = new Timer(33);
 
         SoundSetting soundSetting = new SoundSetting();
         public EditorSetting editorSetting = null;
@@ -56,10 +59,13 @@ namespace MajdataEdit
         float[] waveEnergies;
 
         double playStartTime = 0d;
+        double extraTime4AllPerfect;     // 需要在播放完后等待All Perfect特效的秒数
 
         bool isDrawing = false;
         bool isSaved = true;
         bool isLoading = false;
+        bool isPlaying = false;          // 为了解决播放到结束时自动停止
+        bool isPlan2Stop = false;        // 已准备停止 当all perfect无法在播放完BGM前结束时需要此功能
 
         int selectedDifficulty = -1;
         float sampleTime = 0.02f;
@@ -774,6 +780,35 @@ namespace MajdataEdit
             double second = (int)( currentPlayTime - (60 * minute));
             Dispatcher.Invoke(new Action(() => { TimeLabel.Content = String.Format("{0}:{1:00}", minute, second); }));
         }
+        private void WaveStopMonitorUpdate()
+        {
+            // 监控是否应当停止
+            // 用了个新线程 运气不好可能会爆一大堆奇怪的BUG 如果真的这样请原谅我
+            if (!isPlan2Stop &&
+                isPlaying &&
+                Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_STOPPED)
+            {
+                isPlan2Stop = true;
+                if (extraTime4AllPerfect < 0)
+                {
+                    // 足够播完 直接停止
+                    Dispatcher.Invoke(() => { ToggleStop(); });
+                }
+                else
+                {
+                    // 不够播完 等待后停止
+                    Thread t = new Thread(() =>
+                    {
+                        Thread.Sleep((int)(extraTime4AllPerfect * 1000));
+                        Dispatcher.Invoke(() =>
+                        {
+                            ToggleStop();
+                        });
+                    });
+                    t.Start();
+                }
+            }
+        }
         void ScrollWave(double delta)
         {
             if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
@@ -805,6 +840,39 @@ namespace MajdataEdit
             return localizedString;
         }
 
+        double GetAllPerfectStartTime()
+        {
+            // 获取All Perfect理论上播放的时间点 也就是最后一个被完成的note
+            double latestNoteFinishTime = -1;
+            double baseTime, noteTime;
+            foreach (var noteGroup in SimaiProcess.notelist)
+            {
+                baseTime = noteGroup.time;
+                foreach (var note in noteGroup.getNotes())
+                {
+                    if(note.noteType == SimaiNoteType.Tap || note.noteType == SimaiNoteType.Touch)
+                    {
+                        noteTime = baseTime;
+                    }else if(note.noteType == SimaiNoteType.Hold || note.noteType == SimaiNoteType.TouchHold)
+                    {
+                        noteTime = baseTime + note.holdTime;
+                    }else if(note.noteType == SimaiNoteType.Slide)
+                    {
+                        noteTime = note.slideStartTime + note.slideTime;
+                    }
+                    else
+                    {
+                        noteTime = -1;
+                    }
+                    if(noteTime > latestNoteFinishTime)
+                    {
+                        latestNoteFinishTime = noteTime;
+                    }
+                }
+            }
+            return latestNoteFinishTime;
+        }
+
         //*PLAY CONTROL
         void TogglePlay(bool isOpIncluded = false)
         {
@@ -819,6 +887,23 @@ namespace MajdataEdit
             SaveFumen();
             if (CheckAndStartView()) return;
             Export_Button.IsEnabled = false;
+            isPlaying = true;
+            isPlan2Stop = false;
+
+            double apTime = GetAllPerfectStartTime();
+            double waveLength = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetLength(bgmStream));
+            if (waveLength < apTime + 4.0)
+            {
+                // 如果BGM的时长不足以播放完AP特效 这里假设AP特效持续4秒
+                extraTime4AllPerfect = apTime + 4.0 - waveLength; // 预留给AP的额外时间（播放结束后）
+                Debug.Print(extraTime4AllPerfect.ToString());
+            }
+            else
+            {
+                // 如果足够播完 那么就等到BGM结束再停止
+                extraTime4AllPerfect = -1;
+            }
+
             PlayAndPauseButton.Content = "  ▌▌ ";
             var CusorTime = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());//scan first
 
@@ -842,6 +927,7 @@ namespace MajdataEdit
                         playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
                         SimaiProcess.ClearNoteListPlayedState();
                         clickSoundTimer.Start();
+                        waveStopMonitorTimer.Start();
                         Bass.BASS_ChannelPlay(bgmStream, false);
                     });
                 });
@@ -851,6 +937,7 @@ namespace MajdataEdit
                 playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
                 SimaiProcess.ClearNoteListPlayedState();
                 clickSoundTimer.Start();
+                waveStopMonitorTimer.Start();
                 startAt = DateTime.Now;
                 Bass.BASS_ChannelPlay(bgmStream, false);
                 Task.Run(() =>
@@ -872,30 +959,35 @@ namespace MajdataEdit
         void TogglePause()
         {
             Export_Button.IsEnabled = true;
+            isPlaying = false;
+            isPlan2Stop = false;
 
             FumenContent.Focus();
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
             clickSoundTimer.Stop();
+            waveStopMonitorTimer.Stop();
             sendRequestPause();
             DrawWave();
         }
         void ToggleStop()
         {
             Export_Button.IsEnabled = true;
-
+            isPlaying = false;
+            isPlan2Stop = false;
 
             FumenContent.Focus();
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
             clickSoundTimer.Stop();
+            waveStopMonitorTimer.Stop();
             sendRequestStop();
             Bass.BASS_ChannelSetPosition(bgmStream, playStartTime);
             DrawWave();
         }
         void TogglePlayAndPause(bool isOpIncluded = false)
         {
-            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
+            if (isPlaying)
             {
                 TogglePause();
             }
@@ -906,7 +998,7 @@ namespace MajdataEdit
         }
         void TogglePlayAndStop(bool isOpIncluded = false)
         {
-            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
+            if (isPlaying)
             {
                 ToggleStop();
             }

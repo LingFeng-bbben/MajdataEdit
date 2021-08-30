@@ -320,6 +320,6 @@ If you wanna an excellent map, you can set the accuracy to
   </data>
   <data name="SoftRenderError" xml:space="preserve">
     <value>Render Thread Failure！
-Please run "强制软件渲染.bat" in the folder and restart MajdataEdit. This may solve the problem.</value>
+Please run the MajdatEdit by "强制软件渲染.bat" in the folder. This may solve the problem.</value>
   </data>
 </root>
