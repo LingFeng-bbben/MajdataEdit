@@ -310,4 +310,7 @@
 请尝试通过强制软件渲染使用本软件
 （通过双击文件夹中的 "强制软件渲染.bat"启动本程序）</value>
   </data>
+  <data name="RecordModeDiscrp" xml:space="preserve">
+    <value>从头开始播放，并带有动画</value>
+  </data>
 </root>

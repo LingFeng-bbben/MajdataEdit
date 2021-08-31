@@ -322,4 +322,7 @@ If you wanna an excellent map, you can set the accuracy to
     <value>Render Thread Failure！
 Please run the MajdatEdit by "强制软件渲染.bat" in the folder. This may solve the problem.</value>
   </data>
+  <data name="RecordModeDiscrp" xml:space="preserve">
+    <value>Play from start with animation</value>
+  </data>
 </root>

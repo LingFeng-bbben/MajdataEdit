@@ -328,4 +328,7 @@ Please run the MajdatEdit by "强制软件渲染.bat" in the folder. This may so
     <comment>需要翻译!!
 WE NEED honn ya ku!!</comment>
   </data>
+  <data name="RecordModeDiscrp" xml:space="preserve">
+    <value>はちめからプレイ（info/AP付）</value>
+  </data>
 </root>
