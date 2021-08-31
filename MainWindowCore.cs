@@ -74,6 +74,8 @@ namespace MajdataEdit
 
         public JObject SLIDE_TIME; // 无理检测用的SLIDE_TIME数据
 
+        List<SoundEffectTiming> waitToBePlayed;
+
         //*TEXTBOX CONTROL
         string GetRawFumenText()
         {
@@ -375,34 +377,42 @@ namespace MajdataEdit
             try
             {
                 var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                var waitToBePlayed = SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime);
+                //var waitToBePlayed = SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime);
                 if (waitToBePlayed.Count < 1) return;
                 var nearestTime = waitToBePlayed[0].time;
                 //Console.WriteLine(nearestTime);
                 if (Math.Abs(currentTime - nearestTime) < 0.055)
                 {
-                    var notes = waitToBePlayed[0].getNotes();
-                    Bass.BASS_ChannelPlay(clickStream, true);
+                    SoundEffectTiming se = waitToBePlayed[0];
+                    waitToBePlayed.RemoveAt(0);
 
-                    if (notes.Any(o => o.isBreak)) //may cause delay
+                    if (se.hasClick)
+                    {
+                        Bass.BASS_ChannelPlay(clickStream, true);
+                    }
+                    if (se.hasBreak) //may cause delay
                     {
                         Bass.BASS_ChannelPlay(breakStream, true);
                     }
-                    if (notes.Any(o => o.noteType == SimaiNoteType.Touch))
+                    if (se.hasTouch)
                     {
                         Bass.BASS_ChannelPlay(touchStream, true);
                     }
-                    if (notes.Any(o => o.isHanabi && o.noteType == SimaiNoteType.Touch)) //may cause delay
+                    if (se.hasHanabi) //may cause delay
                     {
                         Bass.BASS_ChannelPlay(hanabiStream, true);
                     }
-                    if (notes.Any(o => o.isEx))
+                    if (se.hasEx)
                     {
                         Bass.BASS_ChannelPlay(exStream, true);
                     }
-                    if (notes.Any(o => o.noteType == SimaiNoteType.TouchHold))
+                    if (se.hasTouchHold)
                     {
                         Bass.BASS_ChannelPlay(holdRiserStream, true);
+                    }
+                    if (se.hasSlide)
+                    {
+                        Bass.BASS_ChannelPlay(slideStream, true);
                     }
                     //
                     Dispatcher.Invoke(() => {
@@ -410,51 +420,6 @@ namespace MajdataEdit
                         if ((bool)FollowPlayCheck.IsChecked)
                             SeekTextFromTime();
                     });
-                    //Console.WriteLine(waitToBePlayed[0].content);
-                    SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime)[0].havePlayed = true; //Since the data was added as time followed, we modify the first one
-                    foreach (var note in notes)
-                    {
-                        if (note.noteType == SimaiNoteType.Hold)
-                        {
-                            var targetTime = nearestTime + note.holdTime;
-
-                            if (SimaiProcess.notelist.Any(o => Math.Abs( o.time - targetTime)<0.001f))
-                            {
-                                //SimaiProcess.notelist.Find(o => o.time == nearestTime + note.holdTime).noteList.Add(releaseNote);
-                            }
-                            else
-                            {
-                                SimaiTimingPoint timingPoint = new SimaiTimingPoint(targetTime);
-                                timingPoint.havePlayed = false;
-                                SimaiProcess.notelist.Add(timingPoint);
-                                SimaiProcess.notelist = SimaiProcess.notelist.OrderBy(o => o.time).ToList();
-                                //Console.WriteLine("Add empty Note");
-                                //其实这里也可以加timer，但考虑到调用上面一堆可能会耗时间就先加个空note吧
-                            }
-                        }
-                        if (note.noteType == SimaiNoteType.TouchHold)
-                        {
-                            Timer holdClickTimer = new Timer(note.holdTime * 1000d * (1 / GetPlaybackSpeed()));
-                            holdClickTimer.Elapsed += HoldRiserTimer_Elapsed;
-                            holdClickTimer.AutoReset = false;
-                            holdClickTimer.Start();
-                        }
-                        if (note.noteType == SimaiNoteType.TouchHold && note.isHanabi)
-                        {
-                            Timer holdClickTimer = new Timer(note.holdTime * 1000d * (1 / GetPlaybackSpeed()));
-                            holdClickTimer.Elapsed += HoldHanibiTimer_Elapsed;
-                            holdClickTimer.Elapsed += HoldRiserTimer_Elapsed;
-                            holdClickTimer.AutoReset = false;
-                            holdClickTimer.Start();
-                        }
-                        if (note.noteType == SimaiNoteType.Slide)
-                        {
-                            Timer holdClickTimer = new Timer((note.slideStartTime-nearestTime) * 1000d * (1 / GetPlaybackSpeed()));
-                            holdClickTimer.Elapsed += SlideTimer_Elapsed;
-                            holdClickTimer.AutoReset = false;
-                            holdClickTimer.Start();
-                        }
-                    }
                 }
 
             }
@@ -915,6 +880,7 @@ namespace MajdataEdit
                 startAt = DateTime.Now.AddSeconds(5d);
                 Bass.BASS_ChannelPlay(trackStartStream, true);
                 if (!sendRequestRun(startAt, isOpIncluded)) return;
+                generateSoundEffectList(0.0);
                 Task.Run(() =>
                 {
                     while (DateTime.Now.Ticks < startAt.Ticks )
@@ -940,6 +906,7 @@ namespace MajdataEdit
                 waveStopMonitorTimer.Start();
                 startAt = DateTime.Now;
                 Bass.BASS_ChannelPlay(bgmStream, false);
+                generateSoundEffectList(playStartTime);
                 Task.Run(() =>
                 {
                     if (lastEditorState == EditorControlMethod.Pause)
@@ -1172,6 +1139,135 @@ namespace MajdataEdit
 
             this.Left = (ScreenWidth - this.Width + Height) / 2 - 10;
             this.Top = (ScreenHeight - this.Height) / 2;
+        }
+        void generateSoundEffectList(double startTime)
+        {
+            waitToBePlayed = new List<SoundEffectTiming>();
+            foreach(var noteGroup in SimaiProcess.notelist)
+            {
+                if (noteGroup.time < startTime) { continue; }
+
+                SoundEffectTiming stobj;
+
+                var combIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - noteGroup.time) < 0.001f);
+                if (combIndex != -1)
+                {
+                    stobj = waitToBePlayed[combIndex];
+                    stobj.hasClick = true;
+                }
+                else
+                {
+                    stobj = new SoundEffectTiming(noteGroup.time);
+                }
+
+                var notes = noteGroup.getNotes();
+                if (notes.Any(o => o.isBreak))
+                {
+                    stobj.hasBreak = true;
+                }
+                if (notes.Any(o => o.noteType == SimaiNoteType.Touch))
+                {
+                    stobj.hasTouch = true;
+                }
+                if (notes.Any(o => o.isHanabi && o.noteType == SimaiNoteType.Touch)) //may cause delay
+                {
+                    stobj.hasHanabi = true;
+                }
+                if (notes.Any(o => o.isEx))
+                {
+                    stobj.hasEx = true;
+                }
+                if (notes.Any(o => o.noteType == SimaiNoteType.TouchHold))
+                {
+                    stobj.hasTouchHold = true;
+                }
+
+                if (combIndex != -1)
+                {
+                    waitToBePlayed[combIndex] = stobj;
+                }else
+                {
+                    waitToBePlayed.Add(stobj);
+                }
+
+                foreach (var note in notes)
+                {
+                    if (note.noteType == SimaiNoteType.Hold)
+                    {
+                        var targetTime = noteGroup.time + note.holdTime;
+                        var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
+                        if (nearIndex != -1)
+                        {
+                            waitToBePlayed[nearIndex].hasClick = true;
+                        }
+                        else
+                        {
+                            SoundEffectTiming holdRelease = new SoundEffectTiming(targetTime);
+                            waitToBePlayed.Add(holdRelease);
+                        }
+                    }
+                    if (note.noteType == SimaiNoteType.TouchHold)
+                    {
+                        var targetTime = noteGroup.time + note.holdTime;
+                        var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
+                        if (nearIndex != -1)
+                        {
+                            if (note.isHanabi)
+                            {
+                                waitToBePlayed[nearIndex].hasHanabi = true;
+                            }
+                            waitToBePlayed[nearIndex].hasClick = true;
+                        }
+                        else
+                        {
+                            SoundEffectTiming tHoldRelease = new SoundEffectTiming(targetTime, _hasHanabi: note.isHanabi);
+                            waitToBePlayed.Add(tHoldRelease);
+                        }
+                    }
+                    if (note.noteType == SimaiNoteType.Slide)
+                    {
+                        var targetTime = note.slideStartTime;
+                        var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
+                        if (nearIndex != -1)
+                        {
+                            waitToBePlayed[nearIndex].hasSlide = true;
+                        }
+                        else
+                        {
+                            SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasClick: false, _hasSlide: true);
+                            waitToBePlayed.Add(slide);
+                        }
+                    }
+                }
+            }
+            waitToBePlayed.Sort((o1,o2) => o1.time<o2.time?-1:1);
+            Debug.Print(waitToBePlayed[0].time.ToString());
+        }
+
+        class SoundEffectTiming
+        {
+            public bool hasClick = true;
+            public bool hasBreak = false;
+            public bool hasTouch = false;
+            public bool hasHanabi = false;
+            public bool hasEx = false;
+            public bool hasTouchHold = false;
+            public bool hasSlide = false;
+            public double time;
+
+            public SoundEffectTiming(double _time, bool _hasClick = true, bool _hasBreak = false, bool _hasTouch = false,
+                                     bool _hasHanabi = false, bool _hasEx = false, bool _hasTouchHold = false,
+                                     bool _hasSlide = false)
+            {
+                time = _time;
+                hasClick = _hasClick;
+                hasBreak = _hasBreak;
+                hasTouch = _hasTouch;
+                hasHanabi = _hasHanabi;
+                hasEx = _hasEx;
+                hasTouchHold = _hasTouchHold;
+                hasSlide = _hasSlide;
+            }
         }
     }
 }
