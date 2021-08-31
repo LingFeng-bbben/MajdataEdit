@@ -34,7 +34,7 @@ namespace MajdataEdit
             InitializeComponent();
             if (Environment.GetCommandLineArgs().Contains("--ForceSoftwareRender"))
             {
-                MessageBox.Show(GetLocalizedString("SoftRender"));
+                MessageBox.Show("正在以软件渲染模式运行\nソフトウェア・レンダリング・モードで動作\nBooting as software rendering mode.");
                 RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
             }
         }
