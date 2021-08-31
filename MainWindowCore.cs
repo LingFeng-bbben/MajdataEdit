@@ -82,7 +82,8 @@ namespace MajdataEdit
             string text = "";
             text = new TextRange(FumenContent.Document.ContentStart, FumenContent.Document.ContentEnd).Text;
             text = text.Replace("\r", "");
-            return text.Trim();
+            // 亲爱的bbben在这里对text进行了Trim 引发了行位置不正确的BUG 谨此纪念（
+            return text;
         }
         void SetRawFumenText(string content)
         {
