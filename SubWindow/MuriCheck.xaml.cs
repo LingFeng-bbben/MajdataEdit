@@ -534,7 +534,7 @@ namespace MajdataEdit
             {
                 MessageBox.Show(
                 String.Format(MainWindow.GetLocalizedString("CheckDone2"),
-                    multNoteError),
+                    slideError),
                 MainWindow.GetLocalizedString("Info")
                 );
             }

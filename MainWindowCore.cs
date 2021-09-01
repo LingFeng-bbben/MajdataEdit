@@ -883,9 +883,9 @@ namespace MajdataEdit
                 InternalSwitchWindow(false);
                 Bass.BASS_ChannelSetPosition(bgmStream, 0);
                 startAt = DateTime.Now.AddSeconds(5d);
+                generateSoundEffectList(0.0);
                 Bass.BASS_ChannelPlay(trackStartStream, true);
                 if (!sendRequestRun(startAt, isOpIncluded)) return;
-                generateSoundEffectList(0.0);
                 Task.Run(() =>
                 {
                     while (DateTime.Now.Ticks < startAt.Ticks )
@@ -907,11 +907,11 @@ namespace MajdataEdit
             {
                 playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
                 SimaiProcess.ClearNoteListPlayedState();
+                generateSoundEffectList(playStartTime);
                 clickSoundTimer.Start();
                 waveStopMonitorTimer.Start();
                 startAt = DateTime.Now;
                 Bass.BASS_ChannelPlay(bgmStream, false);
-                generateSoundEffectList(playStartTime);
                 Task.Run(() =>
                 {
                     if (lastEditorState == EditorControlMethod.Pause)
