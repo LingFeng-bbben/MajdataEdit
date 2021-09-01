@@ -1247,7 +1247,6 @@ namespace MajdataEdit
                 }
             }
             waitToBePlayed.Sort((o1,o2) => o1.time<o2.time?-1:1);
-            Debug.Print(waitToBePlayed[0].time.ToString());
         }
 
         class SoundEffectTiming
