@@ -411,6 +411,10 @@ namespace MajdataEdit
                     {
                         Bass.BASS_ChannelPlay(holdRiserStream, true);
                     }
+                    if (se.hasTouchHoldEnd)
+                    {
+                        Bass.BASS_ChannelStop(holdRiserStream);
+                    }
                     if (se.hasSlide)
                     {
                         Bass.BASS_ChannelPlay(slideStream, true);
@@ -1218,10 +1222,11 @@ namespace MajdataEdit
                                 waitToBePlayed[nearIndex].hasHanabi = true;
                             }
                             waitToBePlayed[nearIndex].hasClick = true;
+                            waitToBePlayed[nearIndex].hasTouchHoldEnd = true;
                         }
                         else
                         {
-                            SoundEffectTiming tHoldRelease = new SoundEffectTiming(targetTime, _hasHanabi: note.isHanabi);
+                            SoundEffectTiming tHoldRelease = new SoundEffectTiming(targetTime, _hasHanabi: note.isHanabi, _hasTouchHoldEnd: true);
                             waitToBePlayed.Add(tHoldRelease);
                         }
                     }
@@ -1253,12 +1258,13 @@ namespace MajdataEdit
             public bool hasHanabi = false;
             public bool hasEx = false;
             public bool hasTouchHold = false;
+            public bool hasTouchHoldEnd = false;
             public bool hasSlide = false;
             public double time;
 
             public SoundEffectTiming(double _time, bool _hasClick = true, bool _hasBreak = false, bool _hasTouch = false,
                                      bool _hasHanabi = false, bool _hasEx = false, bool _hasTouchHold = false,
-                                     bool _hasSlide = false)
+                                     bool _hasSlide = false, bool _hasTouchHoldEnd = false)
             {
                 time = _time;
                 hasClick = _hasClick;
@@ -1268,6 +1274,7 @@ namespace MajdataEdit
                 hasEx = _hasEx;
                 hasTouchHold = _hasTouchHold;
                 hasSlide = _hasSlide;
+                hasTouchHoldEnd = _hasTouchHoldEnd;
             }
         }
     }
