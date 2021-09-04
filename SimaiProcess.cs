@@ -212,7 +212,23 @@ namespace MajdataEdit
                     {
                         if (haveNote)
                         {
-                            _notelist.Add(new SimaiTimingPoint(time, Xcount, Ycount,noteTemp,bpm));
+                            if (noteTemp.Contains('`'))
+                            {
+                                // 伪双
+                                string[] fakeEachList = noteTemp.Split('`');
+                                double fakeTime = time;
+                                double timeInterval = 1.875 / bpm; // 128分音
+                                foreach(string fakeEachGroup in fakeEachList)
+                                {
+                                    Console.WriteLine(fakeEachGroup);
+                                    _notelist.Add(new SimaiTimingPoint(fakeTime, Xcount, Ycount, fakeEachGroup, bpm));
+                                    fakeTime += timeInterval;
+                                }
+                            }
+                            else
+                            {
+                                _notelist.Add(new SimaiTimingPoint(time, Xcount, Ycount, noteTemp, bpm));
+                            }
                             //Console.WriteLine("Note:" + noteTemp);
                             
                             noteTemp = "";
@@ -378,7 +394,14 @@ namespace MajdataEdit
                 else
                 {
                     simaiNote.noteType = SimaiNoteType.Hold;
-                    simaiNote.holdTime = getTimeFromBeats(noteText);
+                    if (noteText.Last() == 'h')
+                    {
+                        simaiNote.holdTime = 0;
+                    }
+                    else
+                    {
+                        simaiNote.holdTime = getTimeFromBeats(noteText);
+                    }
                     //Console.WriteLine("Hold:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
                 }
             }
