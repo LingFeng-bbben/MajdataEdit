@@ -151,6 +151,8 @@ namespace MajdataEdit
                             i++;
                             Xcount++;
                         }
+                        Ycount++;
+                        Xcount = 0;
                         continue;
                     }
                     if (text[i] == '\n')
