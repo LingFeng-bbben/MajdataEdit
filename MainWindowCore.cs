@@ -603,7 +603,7 @@ namespace MajdataEdit
                                 pen.Width = 3;
                                 float xDelta = ((float)(noteD.holdTime / sampleTime) * zoominPower) / 4;
                                 //Console.WriteLine("HoldPixel"+ xDelta);
-                                if (xDelta < 1f) xDelta = x + 1;
+                                if (xDelta < 1f) xDelta = 1;
 
                                 pen.Color = System.Drawing.Color.FromArgb(200, 255, 75, 0);
                                 graphics.DrawLine(pen, x, y, x + xDelta * 4f, y);
