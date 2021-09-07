@@ -937,6 +937,7 @@ namespace MajdataEdit
             FumenContent.Focus();
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
+            Bass.BASS_ChannelStop(holdRiserStream);
             clickSoundTimer.Stop();
             waveStopMonitorTimer.Stop();
             sendRequestPause();
@@ -951,6 +952,7 @@ namespace MajdataEdit
             FumenContent.Focus();
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
+            Bass.BASS_ChannelStop(holdRiserStream);
             clickSoundTimer.Stop();
             waveStopMonitorTimer.Stop();
             sendRequestStop();
