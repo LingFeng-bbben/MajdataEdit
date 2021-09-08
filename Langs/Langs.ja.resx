@@ -136,7 +136,7 @@
     <value>レベル</value>
   </data>
   <data name="Edit" xml:space="preserve">
-    <value>エディト</value>
+    <value>編集</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>エラー</value>
@@ -154,19 +154,19 @@
     <value>譜面情報</value>
   </data>
   <data name="MapMuriDetc" xml:space="preserve">
-    <value>無理配置検出</value>
+    <value>無理押しチェッカー</value>
   </data>
   <data name="Mirror180" xml:space="preserve">
-    <value>Mirror 180選択</value>
+    <value>180°反転</value>
   </data>
   <data name="Mirror45" xml:space="preserve">
-    <value>左右反転選択</value>
+    <value>45°回転（時計回り）</value>
   </data>
   <data name="MirrorLR" xml:space="preserve">
-    <value>左右翻转選択</value>
+    <value>水平方向に反転</value>
   </data>
   <data name="MirrorUD" xml:space="preserve">
-    <value>上下反転選択</value>
+    <value>垂直方向に反転</value>
   </data>
   <data name="New" xml:space="preserve">
     <value>新規作成</value>
@@ -193,7 +193,7 @@
     <value>録画モード</value>
   </data>
   <data name="Save" xml:space="preserve">
-    <value>保存</value>
+    <value>上書き保存</value>
   </data>
   <data name="SaveAs" xml:space="preserve">
     <value>名前を付けて保存</value>
