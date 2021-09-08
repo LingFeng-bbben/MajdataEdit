@@ -282,7 +282,7 @@ PS: The results is not 100% accurate.</value>
   </data>
   <data name="MultNoteTooltip" xml:space="preserve">
     <value>It will warn you if there are more than 3 notes appearing at the same time.
-If this situation is allowed to happen, e.g. UTAGE map, you can disable this option.</value>
+You can get this option disabled if this situation is allowed to happen, e.g. UTAGE map.</value>
     <comment>可能需要翻译润色</comment>
   </data>
   <data name="SlideAccInputError" xml:space="preserve">
