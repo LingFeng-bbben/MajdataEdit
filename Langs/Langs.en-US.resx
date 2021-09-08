@@ -302,7 +302,7 @@ You can get this option disabled if this situation is allowed to happen, e.g. UT
 accidentally get this TAP triggered.
 The accuracy of detection on Slide-Tap Error. Unit: second.
 Please DO NOT enter a value less than 0.15, or some of the
-unreasonable notes will not be found out.
+unreasonable notes may be missed out.
 An accuracy to 0.2 or higher is recommended if you want to
 get the map more reasonable.</value>
     <comment>可能需要翻译润色</comment>
