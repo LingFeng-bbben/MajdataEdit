@@ -340,6 +340,7 @@ namespace MajdataEdit
             AddGesture(editorSetting.SendViewerKey, "SendToView");
             AddGesture(editorSetting.IncreasePlaybackSpeedKey, "IncreasePlaybackSpeed");
             AddGesture(editorSetting.DecreasePlaybackSpeedKey, "DecreasePlaybackSpeed");
+            FumenContent.FontSize = editorSetting.FontSize;
         }
         public void SaveEditorSetting()
         {

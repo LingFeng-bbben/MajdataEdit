@@ -58,5 +58,6 @@ namespace MajdataEdit
         public string SaveKey = "Ctrl+s";
         public string IncreasePlaybackSpeedKey = "Ctrl+p";
         public string DecreasePlaybackSpeedKey = "Ctrl+o";
+        public float FontSize = 12;
     }
 }
