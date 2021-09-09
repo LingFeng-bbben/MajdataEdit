@@ -171,6 +171,8 @@ namespace MajdataEdit
                     if (text[i] == '(')
                     //Get bpm
                     {
+                        haveNote = false;
+                        noteTemp = "";
                         string bpm_s = "";
                         i++;
                         Xcount++;
@@ -187,6 +189,8 @@ namespace MajdataEdit
                     if (text[i] == '{')
                     //Get beats
                     {
+                        haveNote = false;
+                        noteTemp = "";
                         string beats_s = "";
                         i++;
                         Xcount++;
@@ -204,7 +208,7 @@ namespace MajdataEdit
                     {
                         haveNote = true;
                     }
-                    if (haveNote && text[i] != ',')
+                    if (haveNote && text[i] != ',' )
                     {
                         noteTemp += text[i];
                     }
