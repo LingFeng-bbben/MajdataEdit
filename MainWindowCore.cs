@@ -147,6 +147,8 @@ namespace MajdataEdit
         //*FILE CONTROL
         void initFromFile(string path)//file name should not be included in path
         {
+            if (soundSetting != null)
+                soundSetting.Close();
             var audioPath = path + "/track.mp3";
             var dataPath = path + "/maidata.txt";
             if (!File.Exists(audioPath)) MessageBox.Show(GetLocalizedString("NoTrack_mp3"), GetLocalizedString("Error"));
