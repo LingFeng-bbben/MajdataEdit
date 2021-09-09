@@ -277,16 +277,16 @@ PS: The results is not 100% accurate.</value>
     <value>[MultiNotesError] </value>
   </data>
   <data name="MultNoteError2" xml:space="preserve">
-    <value> may be appear in the same time.({0} Notes)</value>
+    <value> may appear in the same time.({0} Notes)</value>
     <comment>可能需要翻译润色</comment>
   </data>
   <data name="MultNoteTooltip" xml:space="preserve">
-    <value>It will warn you if there is more than 3 notes appear in the same time.
-If your map allow this situation, e.g. UTAGE map, you can disable this option.</value>
+    <value>It will warn you if there are more than 3 notes appearing at the same time.
+You can get this option disabled if this situation is allowed to happen, e.g. UTAGE map.</value>
     <comment>可能需要翻译润色</comment>
   </data>
   <data name="SlideAccInputError" xml:space="preserve">
-    <value>Slide Detection Accuracy must be a number! Please check your input and delete unnecessary charactors like space.</value>
+    <value>Slide Detection Accuracy must be a number! Please check your input and delete unnecessary characters like space.</value>
     <comment>可能需要翻译润色</comment>
   </data>
   <data name="SlideAccuracy" xml:space="preserve">
@@ -298,13 +298,13 @@ If your map allow this situation, e.g. UTAGE map, you can disable this option.</
     <comment>可能需要翻译润色</comment>
   </data>
   <data name="SlideTooltip" xml:space="preserve">
-    <value>Slide-Tap Error: when a SLIDE pass a TAP in "A Area", it may 
-trigger this TAP unexpected.
+    <value>Slide-Tap Error: when a SLIDE runs into a TAP in "A Area", it may
+accidentally get this TAP triggered.
 The accuracy of detection on Slide-Tap Error. Unit: second.
-Please DO NOT enter a value less than 0.15, or some of
-Impossible Notes will not be found out.
-If you wanna an excellent map, you can set the accuracy to
-0.2 or higher.</value>
+Please DO NOT enter a value less than 0.15, or some of the
+unreasonable notes may be missed out.
+An accuracy to 0.2 or higher is recommended if you want to
+get the map more reasonable.</value>
     <comment>可能需要翻译润色</comment>
   </data>
   <data name="StartCheck" xml:space="preserve">
