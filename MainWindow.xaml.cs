@@ -59,6 +59,16 @@ namespace MajdataEdit
             VisualEffectRefreshTimer.Start();
             waveStopMonitorTimer.Elapsed += WaveStopMonitorTimer_Elapsed;
             PlbHideTimer.Elapsed += PlbHideTimer_Elapsed;
+
+            if (!File.Exists("FirstUseTips"))
+            {
+                MessageBox.Show("请注意，您正在使用先锋测试版MajdataEdit。\n先锋测试版包含了一些实验性的功能，这些功能可能并不稳定，并且保存的谱面文件" +
+"可能和正式版并不兼容。\n您在使用先锋测试版Majdata时，建议您单独创建(或复制一份)谱面，而不是在正式版谱面上进行修改。\n\n本次先锋测试内容:\n" +
+"扫键语法：\"S>>E[p:q]\"或\"S<<E[p:q]\"，其中S是扫键开始的位置，E是扫键结束的位置，不能超过一圈，不能相同。\n\t[p:q]为扫键中每个tap的间隔" +
+"（注意不是长度而是间隔）。\n\t>>和<<符号所代表的扫键方向，和slide中的>与<一样。");
+                File.WriteAllText("FirstUseTips", "YOU SHALL NO PASS!!");
+            }
+            
         }
 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -130,6 +131,7 @@ namespace MajdataEdit
         {
             List<SimaiTimingPoint> _notelist = new List<SimaiTimingPoint>();
             List<SimaiTimingPoint> _timinglist = new List<SimaiTimingPoint>();
+            List<SimaiTimingPoint> _flicklist = new List<SimaiTimingPoint>();
             try
             {
                 float bpm = 0;
@@ -216,6 +218,27 @@ namespace MajdataEdit
                     {
                         if (haveNote)
                         {
+                            string sameTimeNotesStr = "";
+                            if (_flicklist.Count != 0)
+                            {
+                                List<SimaiTimingPoint> sameTimeNotes = new List<SimaiTimingPoint>();
+                                for(int j = _flicklist.Count-1; j>=0; j--)
+                                {
+                                    if (Math.Abs(_flicklist[j].time - time) < 1e-5)
+                                    {
+                                        sameTimeNotes.Add(_flicklist[j]);
+                                        _flicklist.RemoveAt(j);
+                                    }else if(_flicklist[j].time < time)
+                                    {
+                                        _notelist.Add(_flicklist[j]);
+                                        _flicklist.RemoveAt(j);
+                                    }
+                                }
+                                foreach(SimaiTimingPoint item in sameTimeNotes)
+                                {
+                                    sameTimeNotesStr += "/" + item.notesContent;
+                                }
+                            }
                             if (noteTemp.Contains('`'))
                             {
                                 // 伪双
@@ -231,7 +254,45 @@ namespace MajdataEdit
                             }
                             else
                             {
-                                _notelist.Add(new SimaiTimingPoint(time, Xcount, Ycount, noteTemp, bpm));
+                                if (Regex.IsMatch(noteTemp, @"\d(<<|>>)\d\[.+?\]")) {
+                                    // 扫键语法
+                                    MatchCollection mt = Regex.Matches(noteTemp, @"(\d)(<<|>>)(\d)\[.+?\]");
+                                    foreach (Match item in mt)
+                                    {
+                                        int flickStart = int.Parse(item.Groups[1].Value);
+                                        int flickEnd = int.Parse(item.Groups[3].Value);
+                                        string flickDire = item.Groups[2].Value;
+                                        double flickTime = SimaiTimingPoint.getTimeFromBeats_Static(item.Groups[0].Value, bpm);
+                                        double timeTemp = time;
+                                        bool clockDirection = false; // false-逆时针 true-顺时针
+                                        noteTemp = noteTemp.Replace(item.Groups[0].Value, flickStart.ToString());
+
+                                        if (2 < flickStart && flickStart < 7)
+                                        {
+                                            clockDirection = (flickDire == "<<");
+                                        }
+                                        else
+                                        {
+                                            clockDirection = (flickDire == ">>");
+                                        }
+
+                                        int flickPosTemp = flickStart;
+                                        while (flickPosTemp != flickEnd) { 
+                                            if (clockDirection)
+                                            {
+                                                flickPosTemp = flickPosTemp % 8 + 1;
+                                            }
+                                            else
+                                            {
+                                                flickPosTemp--;
+                                                if (flickPosTemp == 0) flickPosTemp = 8;
+                                            }
+                                            timeTemp += flickTime;
+                                            _flicklist.Add(new SimaiTimingPoint(timeTemp, Xcount, Ycount, flickPosTemp.ToString(), bpm));
+                                        }
+                                    }
+                                }
+                                _notelist.Add(new SimaiTimingPoint(time, Xcount, Ycount, noteTemp + sameTimeNotesStr, bpm));
                             }
                             //Console.WriteLine("Note:" + noteTemp);
                             
@@ -246,6 +307,14 @@ namespace MajdataEdit
                         continue;
                     }
                 }
+                if (_flicklist.Count != 0)
+                {
+                    foreach (SimaiTimingPoint item in _flicklist)
+                    {
+                        _notelist.Add(item);
+                    }
+                }
+
                 notelist = _notelist;
                 timinglist = _timinglist;
                 //Console.WriteLine(notelist.ToArray());
@@ -482,6 +551,38 @@ namespace MajdataEdit
             
 
             return (timeOneBeat*4d / (double)divide) * (double)count; 
+        }
+
+        public static double getTimeFromBeats_Static(string noteText, float currentBpm)
+        {
+            var startIndex = noteText.IndexOf('[');
+            var overIndex = noteText.IndexOf(']');
+            var innerString = noteText.Substring(startIndex + 1, overIndex - startIndex - 1);
+            var timeOneBeat = 1d / (currentBpm / 60d);
+            if (innerString.Count(o => o == '#') == 1)
+            {
+                var times = innerString.Split('#');
+                if (times[1].Contains(':'))
+                {
+                    innerString = times[1];
+                    timeOneBeat = 1d / (double.Parse(times[0]) / 60d);
+                }
+                else
+                {
+                    return double.Parse(times[1]);
+                }
+            }
+            if (innerString.Count(o => o == '#') == 2)
+            {
+                var times = innerString.Split('#');
+                return double.Parse(times[2]);
+            }
+            var numbers = innerString.Split(':');   //TODO:customBPM
+            var divide = int.Parse(numbers[0]);
+            var count = int.Parse(numbers[1]);
+
+
+            return (timeOneBeat * 4d / (double)divide) * (double)count;
         }
 
         private double getStarWaitTime(string noteText)
