@@ -657,7 +657,6 @@ namespace MajdataEdit
         }
         private async void DrawCusor(double ghostCusorPositionTime = 0)
         {
-            if (SimaiProcess.timinglist.Count == 0) return;
             var writableBitmap = new WriteableBitmap(waveLevels.Length * zoominPower, 74, 72, 72, PixelFormats.Pbgra32, null);
             writableBitmap.Lock();
             //the process starts
