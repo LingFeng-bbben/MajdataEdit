@@ -492,6 +492,8 @@ namespace MajdataEdit
                     }
                     graphics.DrawCurve(pen, curvepoints);
 
+                    if (SimaiProcess.timinglist.Count == 0) throw new Exception("NO notes");
+
                     //Draw Bpm lines
                     var lastbpm = -1f;
                     List<double> bpmChangeTimes = new List<double>();     //在什么时间变成什么值
@@ -655,6 +657,7 @@ namespace MajdataEdit
         }
         private async void DrawCusor(double ghostCusorPositionTime = 0)
         {
+            if (SimaiProcess.timinglist.Count == 0) return;
             var writableBitmap = new WriteableBitmap(waveLevels.Length * zoominPower, 74, 72, 72, PixelFormats.Pbgra32, null);
             writableBitmap.Lock();
             //the process starts
@@ -665,17 +668,21 @@ namespace MajdataEdit
 
             await Task.Run(() =>
             {
-                //Draw play Start time
-                pen = new System.Drawing.Pen(System.Drawing.Color.Red, 5);
-                float x1 = (float)(playStartTime / sampleTime) * zoominPower;
-                PointF[] tranglePoints = { new PointF(x1 - 2, 0), new PointF(x1 + 2, 0), new PointF(x1, 3.46f) };
-                graphics.DrawPolygon(pen, tranglePoints);
+                try
+                {
+                    //Draw play Start time
+                    pen = new System.Drawing.Pen(System.Drawing.Color.Red, 5);
+                    float x1 = (float)(playStartTime / sampleTime) * zoominPower;
+                    PointF[] tranglePoints = { new PointF(x1 - 2, 0), new PointF(x1 + 2, 0), new PointF(x1, 3.46f) };
+                    graphics.DrawPolygon(pen, tranglePoints);
 
-                //Draw ghost cusor
-                pen = new System.Drawing.Pen(System.Drawing.Color.Orange, 5);
-                float x2 = (float)(ghostCusorPositionTime / sampleTime) * zoominPower;
-                PointF[] tranglePoints2 = { new PointF(x2 - 2, 0), new PointF(x2 + 2, 0), new PointF(x2, 3.46f) };
-                graphics.DrawPolygon(pen, tranglePoints2);
+                    //Draw ghost cusor
+                    pen = new System.Drawing.Pen(System.Drawing.Color.Orange, 5);
+                    float x2 = (float)(ghostCusorPositionTime / sampleTime) * zoominPower;
+                    PointF[] tranglePoints2 = { new PointF(x2 - 2, 0), new PointF(x2 + 2, 0), new PointF(x2, 3.46f) };
+                    graphics.DrawPolygon(pen, tranglePoints2);
+                }
+                catch { }
             });
             graphics.Flush();
             graphics.Dispose();
