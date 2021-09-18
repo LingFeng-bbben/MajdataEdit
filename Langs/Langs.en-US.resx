@@ -325,4 +325,13 @@ Please run the MajdatEdit by "强制软件渲染.bat" in the folder. This may so
   <data name="RecordModeDiscrp" xml:space="preserve">
     <value>Play from start with animation</value>
   </data>
+  <data name="FindAndReplace" xml:space="preserve">
+    <value>Find and Replace</value>
+  </data>
+  <data name="FindNext" xml:space="preserve">
+    <value>Find Next</value>
+  </data>
+  <data name="ReplaceNext" xml:space="preserve">
+    <value>Replace Next</value>
+  </data>
 </root>

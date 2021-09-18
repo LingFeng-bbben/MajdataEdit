@@ -331,4 +331,13 @@ WE NEED honn ya ku!!</comment>
   <data name="RecordModeDiscrp" xml:space="preserve">
     <value>はちめからプレイ（info/AP付）</value>
   </data>
+  <data name="FindAndReplace" xml:space="preserve">
+    <value>検索と置換</value>
+  </data>
+  <data name="FindNext" xml:space="preserve">
+    <value>次を検索</value>
+  </data>
+  <data name="ReplaceNext" xml:space="preserve">
+    <value>次を置換</value>
+  </data>
 </root>

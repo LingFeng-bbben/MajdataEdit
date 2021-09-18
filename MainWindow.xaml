@@ -10,7 +10,7 @@
         xmlns:local="clr-namespace:MajdataEdit"
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Name="TheWindow" x:Class="MajdataEdit.MainWindow"
         mc:Ignorable="d"
-        Title="MajdataEdit" Height="502" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="517" MouseDoubleClick="TheWindow_MouseDoubleClick" WindowStartupLocation="CenterScreen">
+        Title="MajdataEdit" Height="502" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="517" WindowStartupLocation="CenterScreen">
 
     <Grid Margin="0" DragEnter="Grid_DragEnter" AllowDrop="True" Drop="Grid_Drop">
         <Grid.Background>
@@ -42,11 +42,14 @@
                 <MenuItem Header="{lex:Loc Mirror45}" Click="Mirror45_MenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="{lex:Loc MapInfo}" Click="MenuItem_InfomationEdit_Click"/>
-
+                <Separator/>
+                <MenuItem Header="{lex:Loc FindAndReplace}" Click="MenuFind_Click"/>
             </MenuItem>
             <MenuItem Header="{lex:Loc Setting}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
                 <MenuItem x:Name="VolumnSetting" Header="{lex:Loc Volume}" Click="MenuItem_SoundSetting_Click" IsEnabled="False"/>
+                <Separator/>
                 <MenuItem Header="{lex:Loc EditorSetting}" Click="MenuItem_EditorSetting_Click"/>
+                <MenuItem Header="重新对准编辑器窗口" Click="Menu_ResetViewWindow"/>
             </MenuItem>
             <MenuItem Header="{lex:Loc Tools}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
                 <MenuItem Header="{lex:Loc BPMtap}" Click="BPMtap_MenuItem_Click"/>
@@ -127,6 +130,17 @@
             </Grid.Background>
             <Label Content="{lex:Loc PlayBackSpeed}" Height="26" Margin="44,20,44,0" VerticalAlignment="Top" Foreground="White" HorizontalContentAlignment ="Center"/>
             <Label x:Name="PlbSpdLabel" Content="100%" Margin="34,46,34,20" Foreground="White" FontWeight="Bold" FontSize="22" HorizontalContentAlignment="Center"/>
+        </Grid>
+        <Grid x:Name="FindGrid" Margin="0,30,29,0" Grid.Column="1" HorizontalAlignment="Right" Width="272" Height="69" VerticalAlignment="Top" Visibility="Collapsed">
+            <Grid.Background>
+                <SolidColorBrush Color="Black" Opacity="0.2"/>
+            </Grid.Background>
+            <TextBox x:Name="InputText" HorizontalAlignment="Left" Height="22" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" VerticalContentAlignment="Center"/>
+            <Image x:Name="Find_icon" HorizontalAlignment="Left" Height="22" Margin="246,10,0,0" VerticalAlignment="Top" Width="26" Source="Image/outline_search_white_24dp.png" MouseDown="Find_icon_MouseDown"/>
+            <Image x:Name="Replace_icon" HorizontalAlignment="Left" Height="22" Margin="246,37,0,0" VerticalAlignment="Top" Width="26" Source="Image/outline_find_replace_white_24dp.png" MouseDown="Replace_icon_MouseDown"/>
+            <Label x:Name="FindClose" Content="^" Height="19" Margin="127,53,127,-3" VerticalAlignment="Top" FontSize="11" FontWeight="Bold" Foreground="White" MouseDown="FindClose_MouseDown"/>
+            <TextBox x:Name="ReplaceText" HorizontalAlignment="Left" Height="22" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" VerticalContentAlignment="Center"/>
+
         </Grid>
         <Rectangle x:Name="Cover" Fill="#FF1F1F1F" Margin="0,19,0,0" Stroke="Black" Grid.ColumnSpan="2" d:IsHidden="True"/>
     </Grid>

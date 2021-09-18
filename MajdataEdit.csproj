@@ -221,6 +221,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Image\outline_search_white_24dp.png" />
+    <Resource Include="Image\outline_find_replace_white_24dp.png" />
     <Content Include="lib\PresentationFramework.Aero2.dll" />
     <Resource Include="favicon.ico" />
     <Content Include="lib\bass.dll" />

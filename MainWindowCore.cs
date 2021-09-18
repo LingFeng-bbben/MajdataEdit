@@ -143,7 +143,91 @@ namespace MajdataEdit
             SimaiProcess.ClearNoteListPlayedState();
             DrawCusor(time);
         }
+        
+        //*FIND AND REPLACE
+        private void Find_icon_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            FindAndScroll();
+        }
+        bool isReplaceConformed = false;
+        TextSelection lastFindPosition;
+        private void Replace_icon_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!isReplaceConformed)
+            {
+                FindAndScroll();
+                return;
+            }
+            else
+            {
+                if(FumenContent.Selection == lastFindPosition)
+                {
+                    FumenContent.Selection.Text = ReplaceText.Text;
+                    FindAndScroll();
+                }
+                else
+                {
+                    isReplaceConformed = false;
+                }
+            }
+        }
 
+        public TextRange GetTextRangeFromPosition(TextPointer position, String input)
+        {
+
+            TextRange textRange = null;
+
+            while (position != null)
+            {
+                if (position.CompareTo(FumenContent.Document.ContentEnd) == 0)
+                {
+                    break;
+                }
+
+                if (position.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
+                {
+                    String textRun = position.GetTextInRun(LogicalDirection.Forward);
+                    StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase;
+                    Int32 indexInRun = textRun.IndexOf(input, stringComparison);
+
+                    if (indexInRun >= 0)
+                    {
+                        position = position.GetPositionAtOffset(indexInRun);
+                        TextPointer nextPointer = position.GetPositionAtOffset(input.Length);
+                        textRange = new TextRange(position, nextPointer);
+
+                        // If a none-WholeWord match is found, directly terminate the loop.
+                        position = position.GetPositionAtOffset(input.Length);
+                        break;
+                    }
+                    else
+                    {
+                        // If a match is not found, go over to the next context position after the "textRun".
+                        position = position.GetPositionAtOffset(textRun.Length);
+                    }
+                }
+                else
+                {
+                    //If the current position doesn't represent a text context position, go to the next context position.
+                    // This can effectively ignore the formatting or embed element symbols.
+                    position = position.GetNextContextPosition(LogicalDirection.Forward);
+                }
+            }
+
+            return textRange;
+        }
+        public void FindAndScroll()
+        {
+            var position = GetTextRangeFromPosition(FumenContent.CaretPosition, InputText.Text);
+            if (position == null) {
+                isReplaceConformed = false;
+                return;
+            }
+            FumenContent.Selection.Select(position.Start, position.End);
+            lastFindPosition = FumenContent.Selection;
+            FumenContent.Focus();
+            isReplaceConformed = true;
+        }
         //*FILE CONTROL
         void initFromFile(string path)//file name should not be included in path
         {

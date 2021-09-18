@@ -96,11 +96,6 @@ namespace MajdataEdit
         }
 
         //Window events
-        private void TheWindow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (CheckAndStartView()) return;
-            InternalSwitchWindow();
-        }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (!isSaved)
@@ -425,6 +420,25 @@ namespace MajdataEdit
             EditorSettingPanel esp = new EditorSettingPanel();
             esp.Owner = this;
             esp.Show();
+        }
+
+        private void Menu_ResetViewWindow(object sender, RoutedEventArgs e)
+        {
+            if (CheckAndStartView()) return;
+            InternalSwitchWindow();
+        }
+
+        private void MenuFind_Click(object sender, RoutedEventArgs e)
+        {
+            if (FindGrid.Visibility == Visibility.Collapsed)
+                FindGrid.Visibility = Visibility.Visible;
+            else
+                FindGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void FindClose_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            FindGrid.Visibility = Visibility.Collapsed;
         }
     }
 }

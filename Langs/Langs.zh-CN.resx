@@ -313,4 +313,13 @@
   <data name="RecordModeDiscrp" xml:space="preserve">
     <value>从头开始播放，并带有动画</value>
   </data>
+  <data name="FindAndReplace" xml:space="preserve">
+    <value>查找与替换</value>
+  </data>
+  <data name="FindNext" xml:space="preserve">
+    <value>查找下一个</value>
+  </data>
+  <data name="ReplaceNext" xml:space="preserve">
+    <value>替换下一个</value>
+  </data>
 </root>
