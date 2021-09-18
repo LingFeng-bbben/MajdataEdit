@@ -426,6 +426,7 @@ namespace MajdataEdit
             AddGesture(editorSetting.SendViewerKey, "SendToView");
             AddGesture(editorSetting.IncreasePlaybackSpeedKey, "IncreasePlaybackSpeed");
             AddGesture(editorSetting.DecreasePlaybackSpeedKey, "DecreasePlaybackSpeed");
+            AddGesture("Ctrl+f", "Find");
             FumenContent.FontSize = editorSetting.FontSize;
         }
         public void SaveEditorSetting()

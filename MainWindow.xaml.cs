@@ -302,6 +302,14 @@ namespace MajdataEdit
             ((Timer)sender).Stop();
         }
 
+        private void FindCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (FindGrid.Visibility == Visibility.Collapsed)
+                FindGrid.Visibility = Visibility.Visible;
+            else
+                FindGrid.Visibility = Visibility.Collapsed;
+        }
+
         //Left componients
         private void PlayAndPauseButton_Click(object sender, RoutedEventArgs e)
         {
@@ -440,5 +448,6 @@ namespace MajdataEdit
         {
             FindGrid.Visibility = Visibility.Collapsed;
         }
+
     }
 }

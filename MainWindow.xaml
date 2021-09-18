@@ -84,6 +84,7 @@
                 <RoutedUICommand x:Key="SendToView" Text="SendToView"/>
                 <RoutedUICommand x:Key="IncreasePlaybackSpeed" Text="IncreasePlaybackSpeed"/>
                 <RoutedUICommand x:Key="DecreasePlaybackSpeed" Text="DecreasePlaybackSpeed"/>
+                <RoutedUICommand x:Key="Find" Text="Find"/>
             </RichTextBox.Resources>
             <RichTextBox.Background>
                 <SolidColorBrush Color="#FF171717" Opacity="0.3"/>
@@ -96,6 +97,8 @@
                 <CommandBinding Command="{StaticResource SendToView}" CanExecute="SendToView_CanExecute"/>
                 <CommandBinding Command="{StaticResource IncreasePlaybackSpeed}" CanExecute="IncreasePlaybackSpeed_CanExecute"/>
                 <CommandBinding Command="{StaticResource DecreasePlaybackSpeed}" CanExecute="DecreasePlaybackSpeed_CanExecute"/>
+                <CommandBinding Command="{StaticResource Find}" CanExecute="FindCommand_CanExecute"/>
+
             </RichTextBox.CommandBindings>
             <FlowDocument Language="null"/>
         </RichTextBox>
@@ -136,8 +139,8 @@
                 <SolidColorBrush Color="Black" Opacity="0.2"/>
             </Grid.Background>
             <TextBox x:Name="InputText" HorizontalAlignment="Left" Height="22" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" VerticalContentAlignment="Center"/>
-            <Image x:Name="Find_icon" HorizontalAlignment="Left" Height="22" Margin="246,10,0,0" VerticalAlignment="Top" Width="26" Source="Image/outline_search_white_24dp.png" MouseDown="Find_icon_MouseDown"/>
-            <Image x:Name="Replace_icon" HorizontalAlignment="Left" Height="22" Margin="246,37,0,0" VerticalAlignment="Top" Width="26" Source="Image/outline_find_replace_white_24dp.png" MouseDown="Replace_icon_MouseDown"/>
+            <Image x:Name="Find_icon" HorizontalAlignment="Left" Height="22" Margin="246,10,0,0" VerticalAlignment="Top" Width="26" Source="Image/outline_search_white_24dp.png" MouseDown="Find_icon_MouseDown" ToolTip="{lex:Loc FindNext}"/>
+            <Image x:Name="Replace_icon" HorizontalAlignment="Left" Height="22" Margin="246,37,0,0" VerticalAlignment="Top" Width="26" Source="Image/outline_find_replace_white_24dp.png" MouseDown="Replace_icon_MouseDown" ToolTip="{lex:Loc ReplaceNext}"/>
             <Label x:Name="FindClose" Content="^" Height="19" Margin="127,53,127,-3" VerticalAlignment="Top" FontSize="11" FontWeight="Bold" Foreground="White" MouseDown="FindClose_MouseDown"/>
             <TextBox x:Name="ReplaceText" HorizontalAlignment="Left" Height="22" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" VerticalContentAlignment="Center"/>
 
