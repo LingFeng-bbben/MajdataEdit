@@ -282,16 +282,24 @@ namespace MajdataEdit
         private void ReadWaveFromFile()
         {
             var bgmDecode = Bass.BASS_StreamCreateFile(maidataDir + "/track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
-            var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmDecode,BASSMode.BASS_POS_BYTE));
-            int sampleNumber = (int)((length * 1000) / (sampleTime * 1000)) + 1;
-            waveLevels = new float[sampleNumber];
-            waveEnergies = new float[sampleNumber];
-            for (int i = 0; i < sampleNumber; i++)
+            try
             {
-                waveLevels[i] = Bass.BASS_ChannelGetLevels(bgmDecode, sampleTime, BASSLevel.BASS_LEVEL_MONO)[0];
-                waveEnergies[i] = 0.01f;
+                var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmDecode, BASSMode.BASS_POS_BYTE));
+                int sampleNumber = (int)((length * 1000) / (sampleTime * 1000));
+                waveLevels = new float[sampleNumber];
+                waveEnergies = new float[sampleNumber];
+                for (int i = 0; i < sampleNumber; i++)
+                {
+                    waveLevels[i] = Bass.BASS_ChannelGetLevels(bgmDecode, sampleTime, BASSLevel.BASS_LEVEL_MONO)[0];
+                    waveEnergies[i] = 0.01f;
+                }
+                Bass.BASS_StreamFree(bgmDecode);
             }
-            Bass.BASS_StreamFree(bgmDecode);
+            catch {
+                MessageBox.Show("mp3解码失败。\nMP3 Decode fail.\n"+ Bass.BASS_ErrorGetCode());
+                Bass.BASS_StreamFree(bgmDecode);
+                Process.Start("https://github.com/LingFeng-bbben/MajdataEdit/issues/26");
+            }
         }
         void SetSavedState(bool state)
         {
