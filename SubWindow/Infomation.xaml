@@ -4,17 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MajdataEdit"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        lex:LocalizeDictionary.DesignCulture="zh-CN"
+        lex:ResxLocalizationProvider.DefaultAssembly="MajdataEdit"
+        lex:ResxLocalizationProvider.DefaultDictionary="Langs" 
         mc:Ignorable="d"
-        Title="Infomation" Height="342.289" Width="558.14" ResizeMode="NoResize" Loaded="InfomationWindow_Loaded">
+        Title="Infomation" Height="318.289" Width="667.14" ResizeMode="NoResize" Loaded="InfomationWindow_Loaded">
     <Grid Background="#FF1F1F1F">
-        <Button x:Name="OKButton" Content="OK" Height="34" Margin="220,221,214,0" VerticalAlignment="Top" RenderTransformOrigin="0.476,-3.674" Click="OKButton_Click"/>
-        <Label Content="Title" HorizontalAlignment="Left" Height="24" Margin="105,66,0,0" VerticalAlignment="Top" Width="131" Foreground="White"/>
-        <TextBox x:Name="TitleTextbox" HorizontalAlignment="Right" Height="24" Margin="0,66,104.667,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="264" VerticalContentAlignment="Center"/>
-        <Label Content="Artist" HorizontalAlignment="Left" Height="24" Margin="105,105,0,0" VerticalAlignment="Top" Width="131" Foreground="White"/>
-        <TextBox x:Name="ArtistTextbox" HorizontalAlignment="Right" Margin="0,105,104.667,0" TextWrapping="Wrap" Width="264" VerticalContentAlignment="Center" Height="24" VerticalAlignment="Top"/>
-        <Label Content="Designer" HorizontalAlignment="Left" Height="37" Margin="105,148,0,0" VerticalAlignment="Top" Width="131" Foreground="White"/>
-        <TextBox x:Name="DesignTextbox" HorizontalAlignment="Right" Height="24" Margin="0,148,104.667,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="264" VerticalContentAlignment="Center"/>
-        <Image HorizontalAlignment="Left" Height="139" Margin="0,174,0,0" VerticalAlignment="Top" Width="144" Source="Image/salt.png" Opacity="0.8"/>
+        <Button x:Name="OKButton" Content="OK" Height="34" Margin="387,204,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.476,-3.674" Click="OKButton_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}" HorizontalAlignment="Left" Width="106"/>
+        <Label Content="Title" HorizontalAlignment="Left" Height="24" Margin="268,37,0,0" VerticalAlignment="Top" Width="73" Foreground="White"/>
+        <TextBox x:Name="TitleTextbox" Height="24" Margin="346,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="264"/>
+        <Label Content="Artist" HorizontalAlignment="Left" Height="24" Margin="268,76,0,0" VerticalAlignment="Top" Width="73" Foreground="White"/>
+        <TextBox x:Name="ArtistTextbox" HorizontalAlignment="Left" Margin="346,76,0,0" TextWrapping="Wrap" Width="264" VerticalContentAlignment="Center" Height="24" VerticalAlignment="Top"/>
+        <Label Content="Designer" HorizontalAlignment="Left" Height="37" Margin="268,114,0,0" VerticalAlignment="Top" Width="73" Foreground="White"/>
+        <TextBox x:Name="DesignTextbox" HorizontalAlignment="Left" Height="24" Margin="346,114,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="264" VerticalContentAlignment="Center"/>
+        <Image x:Name="SaltImage" HorizontalAlignment="Left" Height="201" Margin="42,37,0,0" VerticalAlignment="Top" Width="201" Source="/MajdataEdit;component/Image/bg_dummy.jpg" MouseDown="SaltImage_MouseDown"/>
+        <Button x:Name="ReadTrackButton" Content="{lex:Loc LoadFromTrack}" Height="24" Margin="268,161,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.476,-3.674" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}" Click="ReadTrackButton_Click" HorizontalAlignment="Left" Width="167"/>
+        <Button x:Name="ReadFileButton" Content="{lex:Loc LoadFromFile}" Height="24" Margin="444,161,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.476,-3.674" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}" Click="ReadFileButton_Click" HorizontalAlignment="Left" Width="167"/>
 
     </Grid>
 </Window>

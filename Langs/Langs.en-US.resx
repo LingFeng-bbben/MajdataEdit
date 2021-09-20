@@ -334,4 +334,16 @@ Please run the MajdatEdit by "强制软件渲染.bat" in the folder. This may so
   <data name="ReplaceNext" xml:space="preserve">
     <value>Replace Next</value>
   </data>
+  <data name="IsOverridePicture" xml:space="preserve">
+    <value>There is a cover picture in mp3 file. Do you want to use it?</value>
+  </data>
+  <data name="LoadFromFile" xml:space="preserve">
+    <value>From other mp3 file</value>
+  </data>
+  <data name="LoadFromTrack" xml:space="preserve">
+    <value>Load meta from track</value>
+  </data>
+  <data name="RemapViewer" xml:space="preserve">
+    <value>Re-align viewer</value>
+  </data>
 </root>

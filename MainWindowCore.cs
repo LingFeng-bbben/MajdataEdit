@@ -49,7 +49,7 @@ namespace MajdataEdit
         public int slideStream = -114514;
         public int touchStream = -114514;
 
-        public string maidataDir;
+        public static string maidataDir;
         const string majSettingFilename = "majSetting.json";
         const string editorSettingFilename = "EditorSetting.json";
 

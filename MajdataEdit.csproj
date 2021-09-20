@@ -79,6 +79,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="TagLibSharp, Version=2.2.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <HintPath>packages\TagLibSharp.2.2.0\lib\net45\TagLibSharp.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -223,11 +226,11 @@
   <ItemGroup>
     <Resource Include="Image\outline_search_white_24dp.png" />
     <Resource Include="Image\outline_find_replace_white_24dp.png" />
+    <Resource Include="Image\bg_dummy.jpg" />
     <Content Include="lib\PresentationFramework.Aero2.dll" />
     <Resource Include="favicon.ico" />
     <Content Include="lib\bass.dll" />
     <Content Include="lib\Bass.Net.dll" />
-    <Resource Include="Image\salt.png" />
     <Resource Include="lib\Bass.Net.xml" />
   </ItemGroup>
   <ItemGroup>

@@ -340,4 +340,16 @@ WE NEED honn ya ku!!</comment>
   <data name="ReplaceNext" xml:space="preserve">
     <value>次を置換</value>
   </data>
+  <data name="IsOverridePicture" xml:space="preserve">
+    <value>MP3ファイルに画像がいます。利用しますか？</value>
+  </data>
+  <data name="LoadFromFile" xml:space="preserve">
+    <value>他のmp3から読み込む</value>
+  </data>
+  <data name="LoadFromTrack" xml:space="preserve">
+    <value>track.mp3から読み込む</value>
+  </data>
+  <data name="RemapViewer" xml:space="preserve">
+    <value>Viewerを揃える</value>
+  </data>
 </root>

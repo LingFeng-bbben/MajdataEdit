@@ -49,7 +49,7 @@
                 <MenuItem x:Name="VolumnSetting" Header="{lex:Loc Volume}" Click="MenuItem_SoundSetting_Click" IsEnabled="False"/>
                 <Separator/>
                 <MenuItem Header="{lex:Loc EditorSetting}" Click="MenuItem_EditorSetting_Click"/>
-                <MenuItem Header="重新对准编辑器窗口" Click="Menu_ResetViewWindow"/>
+                <MenuItem Header="{lex:Loc RemapViewer}" Click="Menu_ResetViewWindow"/>
             </MenuItem>
             <MenuItem Header="{lex:Loc Tools}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
                 <MenuItem Header="{lex:Loc BPMtap}" Click="BPMtap_MenuItem_Click"/>

@@ -322,4 +322,16 @@
   <data name="ReplaceNext" xml:space="preserve">
     <value>替换下一个</value>
   </data>
+  <data name="IsOverridePicture" xml:space="preserve">
+    <value>mp3中有封面。要一并载入（并替换当前）封面吗？</value>
+  </data>
+  <data name="LoadFromFile" xml:space="preserve">
+    <value>从其他mp3中读取</value>
+  </data>
+  <data name="LoadFromTrack" xml:space="preserve">
+    <value>从track.mp3中读取</value>
+  </data>
+  <data name="RemapViewer" xml:space="preserve">
+    <value>重新对准编辑器窗口</value>
+  </data>
 </root>
