@@ -305,7 +305,10 @@ namespace MajdataEdit
         private void FindCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             if (FindGrid.Visibility == Visibility.Collapsed)
+            {
                 FindGrid.Visibility = Visibility.Visible;
+                InputText.Focus();
+            }
             else
                 FindGrid.Visibility = Visibility.Collapsed;
         }
@@ -439,7 +442,10 @@ namespace MajdataEdit
         private void MenuFind_Click(object sender, RoutedEventArgs e)
         {
             if (FindGrid.Visibility == Visibility.Collapsed)
+            {
                 FindGrid.Visibility = Visibility.Visible;
+                InputText.Focus();
+            }
             else
                 FindGrid.Visibility = Visibility.Collapsed;
         }
@@ -447,6 +453,7 @@ namespace MajdataEdit
         private void FindClose_MouseDown(object sender, MouseButtonEventArgs e)
         {
             FindGrid.Visibility = Visibility.Collapsed;
+            FumenContent.Focus();
         }
 
     }
