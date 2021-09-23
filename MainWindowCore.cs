@@ -503,13 +503,13 @@ namespace MajdataEdit
                     {
                         Bass.BASS_ChannelPlay(exStream, true);
                     }
-                    if (se.hasTouchHold)
-                    {
-                        Bass.BASS_ChannelPlay(holdRiserStream, true);
-                    }
                     if (se.hasTouchHoldEnd)
                     {
                         Bass.BASS_ChannelStop(holdRiserStream);
+                    }
+                    if (se.hasTouchHold)
+                    {
+                        Bass.BASS_ChannelPlay(holdRiserStream, true);
                     }
                     if (se.hasSlide)
                     {
@@ -982,10 +982,10 @@ namespace MajdataEdit
             var startAt = DateTime.Now;
             if (isOpIncluded)
             {
+                generateSoundEffectList(0.0);
                 InternalSwitchWindow(false);
                 Bass.BASS_ChannelSetPosition(bgmStream, 0);
                 startAt = DateTime.Now.AddSeconds(5d);
-                generateSoundEffectList(0.0);
                 Bass.BASS_ChannelPlay(trackStartStream, true);
                 if (!sendRequestRun(startAt, isOpIncluded)) return;
                 Task.Run(() =>
@@ -1007,9 +1007,9 @@ namespace MajdataEdit
             }
             else
             {
+                generateSoundEffectList(playStartTime);
                 playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
                 SimaiProcess.ClearNoteListPlayedState();
-                generateSoundEffectList(playStartTime);
                 clickSoundTimer.Start();
                 waveStopMonitorTimer.Start();
                 startAt = DateTime.Now;
@@ -1270,6 +1270,10 @@ namespace MajdataEdit
                 }
 
                 var notes = noteGroup.getNotes();
+                if (notes.All(o => o.isSlideNoHead))
+                {
+                    stobj.hasClick = false;
+                }
                 if (notes.Any(o => o.isBreak))
                 {
                     stobj.hasBreak = true;
