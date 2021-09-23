@@ -442,6 +442,8 @@ namespace MajdataEdit
             if (noteText.Contains('$'))
             {
                 simaiNote.isForceStar = true;
+                if (noteText.Count(o=>o=='$') == 2)
+                    simaiNote.isFakeRotate = true;
                 noteText = noteText.Replace("$", "");
             }
             simaiNote.noteContent = noteText;
@@ -530,6 +532,7 @@ namespace MajdataEdit
         public bool isEx = false;
         public bool isSlideNoHead = false;
         public bool isForceStar = false;
+        public bool isFakeRotate = false;
 
         public int startPosition = 1; //键位（1-8）
         public char touchArea = ' ';
