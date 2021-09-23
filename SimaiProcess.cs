@@ -415,6 +415,15 @@ namespace MajdataEdit
                 simaiNote.slideTime = getTimeFromBeats(noteText);
                 var timeStarWait = getStarWaitTime(noteText);
                 simaiNote.slideStartTime = time + timeStarWait;
+                if(noteText.Contains('!'))
+                {
+                    simaiNote.isSlideNoHead = true;
+                    noteText = noteText.Replace("!", "");
+                }else if(noteText.Contains('?'))
+                {
+                    simaiNote.isSlideNoHead = true;
+                    noteText = noteText.Replace("?", "");
+                }
                 //Console.WriteLine("Slide:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.slideTime);
             }
             //break
