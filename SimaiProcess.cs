@@ -438,6 +438,12 @@ namespace MajdataEdit
                 simaiNote.isEx = true;
                 noteText = noteText.Replace("x", "");
             }
+            //starHead
+            if (noteText.Contains('$'))
+            {
+                simaiNote.isForceStar = true;
+                noteText = noteText.Replace("$", "");
+            }
             simaiNote.noteContent = noteText;
             return simaiNote;
         }
@@ -523,6 +529,7 @@ namespace MajdataEdit
         public bool isHanabi = false;
         public bool isEx = false;
         public bool isSlideNoHead = false;
+        public bool isForceStar = false;
 
         public int startPosition = 1; //键位（1-8）
         public char touchArea = ' ';
