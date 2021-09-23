@@ -503,13 +503,13 @@ namespace MajdataEdit
                     {
                         Bass.BASS_ChannelPlay(exStream, true);
                     }
-                    if (se.hasTouchHoldEnd)
-                    {
-                        Bass.BASS_ChannelStop(holdRiserStream);
-                    }
                     if (se.hasTouchHold)
                     {
                         Bass.BASS_ChannelPlay(holdRiserStream, true);
+                    }
+                    if (se.hasTouchHoldEnd)
+                    {
+                        Bass.BASS_ChannelStop(holdRiserStream);
                     }
                     if (se.hasSlide)
                     {
