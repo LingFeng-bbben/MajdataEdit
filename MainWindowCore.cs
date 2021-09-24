@@ -1007,8 +1007,8 @@ namespace MajdataEdit
             }
             else
             {
-                generateSoundEffectList(playStartTime);
                 playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                generateSoundEffectList(playStartTime);
                 SimaiProcess.ClearNoteListPlayedState();
                 clickSoundTimer.Start();
                 waveStopMonitorTimer.Start();
