@@ -30,6 +30,7 @@ namespace MajdataEdit
             SimaiProcess.title = TitleTextbox.Text;
             SimaiProcess.artist = ArtistTextbox.Text;
             SimaiProcess.designer = DesignTextbox.Text;
+            SimaiProcess.other_commands = OtherTextbox.Text;
             this.Close();
         }
 
@@ -38,6 +39,7 @@ namespace MajdataEdit
             TitleTextbox.Text = SimaiProcess.title;
             ArtistTextbox.Text = SimaiProcess.artist;
             DesignTextbox.Text = SimaiProcess.designer;
+            OtherTextbox.Text = SimaiProcess.other_commands;
             LoadImageFromDefault();
             RenderOptions.SetBitmapScalingMode(SaltImage, BitmapScalingMode.HighQuality);
         }
@@ -135,6 +137,11 @@ namespace MajdataEdit
             {
                 File.Delete(MainWindow.maidataDir + "/bg.jpg");
             }
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

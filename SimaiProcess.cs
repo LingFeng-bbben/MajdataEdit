@@ -74,12 +74,12 @@ namespace MajdataEdit
                                 i++;
                                 for (; i < maidataTxt.Length; i++)
                                 {
-                                    TheNote += maidataTxt[i] + "\n";
-                                    if ((i + 1) < maidataTxt.Length)
+                                    if ((i) < maidataTxt.Length)
                                     {
-                                        if (maidataTxt[i + 1].StartsWith("&"))
+                                        if (maidataTxt[i].StartsWith("&"))
                                             break;
                                     }
+                                    TheNote += maidataTxt[i] + "\n";
                                 }
                                 fumens[j - 1] = TheNote;
                             }
@@ -91,6 +91,7 @@ namespace MajdataEdit
                     }
 
                 }
+                other_commands = other_commands.Trim();
                 return true;
             }
             catch (Exception e){
@@ -114,14 +115,14 @@ namespace MajdataEdit
             {
                 if (levels[i] != null && levels[i] != "")
                 {
-                    maidata.Add("&lv_" + (i + 1) + "=" + levels[i]);
+                    maidata.Add("&lv_" + (i + 1) + "=" + levels[i].Trim());
                 }
             }
             for (int i = 0; i < fumens.Length; i++)
             {
                 if (fumens[i] != null && fumens[i] != "")
                 {
-                    maidata.Add("&inote_" + (i+1) + "=" + fumens[i]);
+                    maidata.Add("&inote_" + (i+1) + "=" + fumens[i].Trim());
                 }
             }
             File.WriteAllLines(filename, maidata.ToArray(),Encoding.UTF8);
