@@ -13,6 +13,7 @@ namespace MajdataEdit
         static public string title;
         static public string artist;
         static public string designer;
+        static public string other_commands;
         static public float first = 0;
         static public string[] fumens = new string[7];
         static public string[] levels = new string[7];
@@ -46,6 +47,7 @@ namespace MajdataEdit
         static public bool ReadData(string filename)
         {
             int i = 0;
+            other_commands = "";
             try
             {
                 string[] maidataTxt = File.ReadAllLines(filename, Encoding.UTF8);
@@ -53,32 +55,39 @@ namespace MajdataEdit
                 {
                     if (maidataTxt[i].StartsWith("&title="))
                         title = GetValue(maidataTxt[i]);
-                    if (maidataTxt[i].StartsWith("&artist="))
+                    else if (maidataTxt[i].StartsWith("&artist="))
                         artist = GetValue(maidataTxt[i]);
-                    if (maidataTxt[i].StartsWith("&des="))
+                    else if (maidataTxt[i].StartsWith("&des="))
                         designer = GetValue(maidataTxt[i]);
-                    if (maidataTxt[i].StartsWith("&first="))
+                    else if (maidataTxt[i].StartsWith("&first="))
                         first = float.Parse(GetValue(maidataTxt[i]));
-                    for (int j = 1; j < 8 && i < maidataTxt.Length; j++)
+                    else if (maidataTxt[i].StartsWith("&lv_") || maidataTxt[i].StartsWith("&inote_"))
                     {
-                        if (maidataTxt[i].StartsWith("&lv_" + j + "="))
-                            levels[j - 1] = GetValue(maidataTxt[i]);
-                        if (maidataTxt[i].StartsWith("&inote_" + j + "="))
+                        for (int j = 1; j < 8 && i < maidataTxt.Length; j++)
                         {
-                            string TheNote = "";
-                            TheNote += GetValue(maidataTxt[i]) + "\n";
-                            i++;
-                            for (; i < maidataTxt.Length; i++)
+                            if (maidataTxt[i].StartsWith("&lv_" + j + "="))
+                                levels[j - 1] = GetValue(maidataTxt[i]);
+                            if (maidataTxt[i].StartsWith("&inote_" + j + "="))
                             {
-                                TheNote += maidataTxt[i] + "\n";
-                                if ((i + 1) < maidataTxt.Length)
+                                string TheNote = "";
+                                TheNote += GetValue(maidataTxt[i]) + "\n";
+                                i++;
+                                for (; i < maidataTxt.Length; i++)
                                 {
-                                    if (maidataTxt[i + 1].StartsWith("&"))
-                                        break;
+                                    TheNote += maidataTxt[i] + "\n";
+                                    if ((i + 1) < maidataTxt.Length)
+                                    {
+                                        if (maidataTxt[i + 1].StartsWith("&"))
+                                            break;
+                                    }
                                 }
+                                fumens[j - 1] = TheNote;
                             }
-                            fumens[j - 1] = TheNote;
                         }
+                    }
+                    else
+                    {
+                        other_commands += maidataTxt[i].Trim() + "\n";
                     }
 
                 }
@@ -100,6 +109,7 @@ namespace MajdataEdit
             maidata.Add("&artist=" + artist);
             maidata.Add("&first=" + first);
             maidata.Add("&des=" + designer);
+            maidata.Add(other_commands);
             for (int i = 0; i < levels.Length; i++)
             {
                 if (levels[i] != null && levels[i] != "")
