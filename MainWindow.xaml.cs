@@ -335,11 +335,13 @@ namespace MajdataEdit
         }
         private void LevelTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            SetSavedState(false);
             if (selectedDifficulty == -1) return;
             SimaiProcess.levels[selectedDifficulty] = LevelTextBox.Text;
         }
         private void OffsetTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            SetSavedState(false);
             try
             {
                 SimaiProcess.first = float.Parse(OffsetTextBox.Text);
@@ -347,6 +349,25 @@ namespace MajdataEdit
                 DrawWave();
             }
             catch { SimaiProcess.first = 0f; }
+        }
+        private void OffsetTextBox_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var offset = float.Parse(OffsetTextBox.Text);
+            offset += e.Delta > 0 ? 0.01f : -0.01f;
+            OffsetTextBox.Text = offset.ToString();
+        }
+        private void ViewerSpeed_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var offset = float.Parse(ViewerSpeed.Text);
+            offset += e.Delta > 0 ? 0.5f : -0.5f;
+            ViewerSpeed.Text = offset.ToString();
+        }
+
+        private void ViewerCover_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var offset = float.Parse(ViewerCover.Text);
+            offset += e.Delta > 0 ? 0.1f : -0.1f;
+            ViewerCover.Text = offset.ToString();
         }
         private void FollowPlayCheck_Click(object sender, RoutedEventArgs e)
         {
@@ -455,6 +476,5 @@ namespace MajdataEdit
             FindGrid.Visibility = Visibility.Collapsed;
             FumenContent.Focus();
         }
-
     }
 }
