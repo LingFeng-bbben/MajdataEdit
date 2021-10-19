@@ -35,7 +35,7 @@ namespace MajdataEdit
 
         private void SoundSettingWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            SetSlider(BGM_Slider, MainWindow.bgmStream, MainWindow.trackStartStream);
+            SetSlider(BGM_Slider, MainWindow.bgmStream, MainWindow.trackStartStream, MainWindow.allperfectStream);
             SetSlider(Tap_Slider, MainWindow.clickStream);
             SetSlider(Break_Slider, MainWindow.breakStream);
             SetSlider(Slide_Slider, MainWindow.slideStream);
@@ -53,7 +53,7 @@ namespace MajdataEdit
         {
             Dispatcher.Invoke(() =>
             {
-                UpdateProgressBar(BGM_Level, MainWindow.bgmStream, MainWindow.trackStartStream);
+                UpdateProgressBar(BGM_Level, MainWindow.bgmStream, MainWindow.trackStartStream, MainWindow.allperfectStream);
                 UpdateProgressBar(Tap_Level, MainWindow.clickStream);
                 UpdateProgressBar(Break_Level, MainWindow.breakStream);
                 UpdateProgressBar(Slide_Level, MainWindow.slideStream);

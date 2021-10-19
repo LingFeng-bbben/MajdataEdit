@@ -48,6 +48,7 @@ namespace MajdataEdit
         public int trackStartStream = -114514;
         public int slideStream = -114514;
         public int touchStream = -114514;
+        public int allperfectStream = -114514;
 
         public static string maidataDir;
         const string majSettingFilename = "majSetting.json";
@@ -385,6 +386,7 @@ namespace MajdataEdit
             SetBgmPosition(setting.lastEditTime);
             Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL,setting.BGM_Level);
             Bass.BASS_ChannelSetAttribute(trackStartStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
+            Bass.BASS_ChannelSetAttribute(allperfectStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
             Bass.BASS_ChannelSetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
             Bass.BASS_ChannelSetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Slide_Level);
             Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Break_Level);
@@ -468,6 +470,7 @@ namespace MajdataEdit
             trackStartStream = Bass.BASS_StreamCreateFile(path + "track_start.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             slideStream = Bass.BASS_StreamCreateFile(path + "slide.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             touchStream = Bass.BASS_StreamCreateFile(path + "touch.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            allperfectStream = Bass.BASS_StreamCreateFile(path + "all_perfect.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
         }
         private void SoundEffectUpdate()
         {
@@ -514,6 +517,10 @@ namespace MajdataEdit
                     if (se.hasSlide)
                     {
                         Bass.BASS_ChannelPlay(slideStream, true);
+                    }
+                    if (se.hasAllPerfect)
+                    {
+                        Bass.BASS_ChannelPlay(allperfectStream, true);
                     }
                     //
                     Dispatcher.Invoke(() => {
@@ -982,7 +989,7 @@ namespace MajdataEdit
             var startAt = DateTime.Now;
             if (isOpIncluded)
             {
-                generateSoundEffectList(0.0);
+                generateSoundEffectList(0.0, isOpIncluded);
                 InternalSwitchWindow(false);
                 Bass.BASS_ChannelSetPosition(bgmStream, 0);
                 startAt = DateTime.Now.AddSeconds(5d);
@@ -1008,7 +1015,7 @@ namespace MajdataEdit
             else
             {
                 playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                generateSoundEffectList(playStartTime);
+                generateSoundEffectList(playStartTime, isOpIncluded);
                 SimaiProcess.ClearNoteListPlayedState();
                 clickSoundTimer.Start();
                 waveStopMonitorTimer.Start();
@@ -1249,7 +1256,7 @@ namespace MajdataEdit
             this.Left = (ScreenWidth - this.Width + Height) / 2 - 10;
             this.Top = (ScreenHeight - this.Height) / 2;
         }
-        void generateSoundEffectList(double startTime)
+        void generateSoundEffectList(double startTime, bool isOpIncluded)
         {
             waitToBePlayed = new List<SoundEffectTiming>();
             foreach(var noteGroup in SimaiProcess.notelist)
@@ -1354,6 +1361,10 @@ namespace MajdataEdit
                     }
                 }
             }
+            if (isOpIncluded)
+            {
+                waitToBePlayed.Add(new SoundEffectTiming(GetAllPerfectStartTime(), _hasClick: false, _hasAllPerfect: true));
+            }
             waitToBePlayed.Sort((o1,o2) => o1.time<o2.time?-1:1);
         }
 
@@ -1367,11 +1378,12 @@ namespace MajdataEdit
             public bool hasTouchHold = false;
             public bool hasTouchHoldEnd = false;
             public bool hasSlide = false;
+            public bool hasAllPerfect = false;
             public double time;
 
             public SoundEffectTiming(double _time, bool _hasClick = true, bool _hasBreak = false, bool _hasTouch = false,
                                      bool _hasHanabi = false, bool _hasEx = false, bool _hasTouchHold = false,
-                                     bool _hasSlide = false, bool _hasTouchHoldEnd = false)
+                                     bool _hasSlide = false, bool _hasTouchHoldEnd = false, bool _hasAllPerfect = false)
             {
                 time = _time;
                 hasClick = _hasClick;
@@ -1382,6 +1394,7 @@ namespace MajdataEdit
                 hasTouchHold = _hasTouchHold;
                 hasSlide = _hasSlide;
                 hasTouchHoldEnd = _hasTouchHoldEnd;
+                hasAllPerfect = _hasAllPerfect;
             }
         }
     }
