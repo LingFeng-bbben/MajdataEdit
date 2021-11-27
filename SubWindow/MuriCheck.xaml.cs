@@ -335,6 +335,15 @@ namespace MajdataEdit
                     }
                     else if (note.noteType == SimaiNoteType.Slide)
                     {
+                        // 星星头加入队列
+                        opSequence.Add(new MaimaiOperationSlide(
+                            _time: baseTime,
+                            _area: note.startPosition,
+                            _ntype: 0,
+                            _noteContent: note.noteContent,
+                            _positionX: positionX,
+                            _positionY: positionY
+                            ));
                         String sStart;
                         String sType;
                         String sEnd;
