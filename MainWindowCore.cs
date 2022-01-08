@@ -55,6 +55,7 @@ namespace MajdataEdit
         const string editorSettingFilename = "EditorSetting.json";
 
         float[] waveLevels;
+        float[,] waveFFT;
         float[] waveEnergies;
 
         double playStartTime = 0d;
@@ -289,6 +290,8 @@ namespace MajdataEdit
                 int sampleNumber = (int)((length * 1000) / (sampleTime * 1000));
                 waveLevels = new float[sampleNumber];
                 waveEnergies = new float[sampleNumber];
+                waveFFT = new float[sampleNumber, 302];
+                //Bass.BASS_ChannelGetData(bgmDecode, , (int)BASSData.BASS_DATA_FFT1024);
                 for (int i = 0; i < sampleNumber; i++)
                 {
                     waveLevels[i] = Bass.BASS_ChannelGetLevels(bgmDecode, sampleTime, BASSLevel.BASS_LEVEL_MONO)[0];
@@ -582,6 +585,16 @@ namespace MajdataEdit
                     {
                         var lv = waveLevels[i] * 35;
                         graphics.DrawLine(pen, (i + drawoffset) * zoominPower, 37 + lv, (i + drawoffset) * zoominPower, 37 - lv);
+                        for (int j = 0; j < 74; j++)
+                        {
+                            int fftv = (int)(waveFFT[i, (int)(j*302/74)]*100);
+                            if (fftv > 255)
+                            {
+                                fftv = 255;
+                            }
+                            graphics.DrawLine(new System.Drawing.Pen(System.Drawing.Color.FromArgb(fftv, 255, 0, 0), zoominPower),
+                                (i + drawoffset) * zoominPower, 74-j, (i + drawoffset) * zoominPower, 73-j);
+                        }
                     }
 
                     pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(150, 200, 200, 220), 2);
@@ -797,6 +810,7 @@ namespace MajdataEdit
             {
                 //Scroll WaveView
                 var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                var currentSample = (int)(currentTime / sampleTime);
                 MusicWave.Margin = new Thickness(-currentTime / sampleTime * zoominPower, Margin.Left, MusicWave.Margin.Right, Margin.Bottom);
                 MusicWaveCusor.Margin = new Thickness(-currentTime / sampleTime * zoominPower, Margin.Left, MusicWave.Margin.Right, Margin.Bottom);
 
@@ -814,6 +828,9 @@ namespace MajdataEdit
                 PointF[] points = new PointF[1024];
                 for (int i = 0; i < fft.Length; i++)
                 {
+                    if (waveFFT != null)
+                        waveFFT[currentSample, i*302/1024] = fft[i] * 256;
+                    //waveFFT[currentSample, (int)Math.Log10(i + 1) * 100] = fft[i] * 256;
                     points[i] = new PointF((float)Math.Log10(i + 1) * 100f, (240 - fft[i] * 256)); //semilog
                 }
 
@@ -826,7 +843,6 @@ namespace MajdataEdit
                 {
                     try
                     {
-                        var currentSample = (int)(currentTime / sampleTime);
                         if (currentSample < waveEnergies.Length - 1)
                         {
                             waveEnergies[currentSample] = outputHz;
