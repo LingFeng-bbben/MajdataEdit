@@ -49,6 +49,7 @@ namespace MajdataEdit
         public int slideStream = -114514;
         public int touchStream = -114514;
         public int allperfectStream = -114514;
+        public int clockStream = -114514;
 
         public static string maidataDir;
         const string majSettingFilename = "majSetting.json";
@@ -387,6 +388,7 @@ namespace MajdataEdit
             Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL,setting.BGM_Level);
             Bass.BASS_ChannelSetAttribute(trackStartStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
             Bass.BASS_ChannelSetAttribute(allperfectStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
+            Bass.BASS_ChannelSetAttribute(clockStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
             Bass.BASS_ChannelSetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
             Bass.BASS_ChannelSetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Slide_Level);
             Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Break_Level);
@@ -471,6 +473,7 @@ namespace MajdataEdit
             slideStream = Bass.BASS_StreamCreateFile(path + "slide.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             touchStream = Bass.BASS_StreamCreateFile(path + "touch.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             allperfectStream = Bass.BASS_StreamCreateFile(path + "all_perfect.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            clockStream = Bass.BASS_StreamCreateFile(path + "clock.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
         }
         private void SoundEffectUpdate()
         {
@@ -521,6 +524,10 @@ namespace MajdataEdit
                     if (se.hasAllPerfect)
                     {
                         Bass.BASS_ChannelPlay(allperfectStream, true);
+                    }
+                    if (se.hasClock)
+                    {
+                        Bass.BASS_ChannelPlay(clockStream, true);
                     }
                     //
                     Dispatcher.Invoke(() => {
@@ -1259,6 +1266,28 @@ namespace MajdataEdit
         void generateSoundEffectList(double startTime, bool isOpIncluded)
         {
             waitToBePlayed = new List<SoundEffectTiming>();
+            if (isOpIncluded)
+            {
+                var cmds = SimaiProcess.other_commands.Split('\n');
+                foreach (var cmdl in cmds)
+                {
+                    if (cmdl.Length > 12 && cmdl.Substring(1,11)=="clock_count")
+                    {
+                        try
+                        {
+                            int clock_cnt = int.Parse(cmdl.Substring(13));
+                            double clock_int = 60.0d / SimaiProcess.notelist[0].currentBpm;
+                            for (int i = 0; i < clock_cnt; i++)
+                            {
+                                waitToBePlayed.Add(new SoundEffectTiming(i*clock_int, _hasClick: false, _hasClock: true));
+                            }
+                        } catch
+                        {
+
+                        }
+                    }
+                }
+            }
             foreach(var noteGroup in SimaiProcess.notelist)
             {
                 if (noteGroup.time < startTime) { continue; }
@@ -1379,11 +1408,13 @@ namespace MajdataEdit
             public bool hasTouchHoldEnd = false;
             public bool hasSlide = false;
             public bool hasAllPerfect = false;
+            public bool hasClock = false;
             public double time;
 
             public SoundEffectTiming(double _time, bool _hasClick = true, bool _hasBreak = false, bool _hasTouch = false,
                                      bool _hasHanabi = false, bool _hasEx = false, bool _hasTouchHold = false,
-                                     bool _hasSlide = false, bool _hasTouchHoldEnd = false, bool _hasAllPerfect = false)
+                                     bool _hasSlide = false, bool _hasTouchHoldEnd = false, bool _hasAllPerfect = false,
+                                     bool _hasClock = false)
             {
                 time = _time;
                 hasClick = _hasClick;
@@ -1395,6 +1426,7 @@ namespace MajdataEdit
                 hasSlide = _hasSlide;
                 hasTouchHoldEnd = _hasTouchHoldEnd;
                 hasAllPerfect = _hasAllPerfect;
+                hasClock = _hasClock;
             }
         }
     }
