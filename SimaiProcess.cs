@@ -216,16 +216,16 @@ namespace MajdataEdit
                         //Console.WriteLine("BEAT" + beats);
                         continue;
                     }
-                    if (text[i] == '<')
+                    if (text[i] == 'H')
                     //Get HS
                     {
                         haveNote = false;
                         noteTemp = "";
                         string hs_s = "";
-                        if (text[i+1] == 'H' && text[i+2] == 'S' && text[i+3] == '*')
+                        if (text[i+1] == 'S' && text[i+2] == '*')
                         {
-                            i += 4;
-                            Xcount += 4;
+                            i += 3;
+                            Xcount += 3;
                         }
                         while (text[i] != '>')
                         {

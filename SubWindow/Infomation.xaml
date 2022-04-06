@@ -22,7 +22,7 @@
         <Button x:Name="ReadTrackButton" Content="{lex:Loc LoadFromTrack}" Height="24" Margin="42,243,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.476,-3.674" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}" Click="ReadTrackButton_Click" HorizontalAlignment="Left" Width="201"/>
         <Button x:Name="ReadFileButton" Content="{lex:Loc LoadFromFile}" Height="24" Margin="42,272,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.476,-3.674" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}" Click="ReadFileButton_Click" HorizontalAlignment="Left" Width="201"/>
         <Label Content="Other&#x000D;Commands" HorizontalAlignment="Left" Height="40" Margin="268,152,0,0" VerticalAlignment="Top" Width="78" Foreground="White"/>
-        <TextBox x:Name="OtherTextbox" HorizontalAlignment="Left" Height="144" Margin="346,152,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="264" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="OtherTextbox" HorizontalAlignment="Left" Height="144" Margin="346,152,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="264" VerticalContentAlignment="Center" AcceptsReturn="True"/>
         <Button x:Name="CancelButton" Content="Cancel" Height="34" Margin="349,317,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.476,-3.674" Click="CancelButton_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}" HorizontalAlignment="Left" Width="100"/>
 
     </Grid>
