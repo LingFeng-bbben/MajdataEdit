@@ -144,6 +144,7 @@ namespace MajdataEdit
             try
             {
                 float bpm = 0;
+                float curHSpeed = 1f;
                 double time = first; //in seconds
                 double requestedTime = 0;
                 int beats = 4;
@@ -215,6 +216,27 @@ namespace MajdataEdit
                         //Console.WriteLine("BEAT" + beats);
                         continue;
                     }
+                    if (text[i] == '<')
+                    //Get HS
+                    {
+                        haveNote = false;
+                        noteTemp = "";
+                        string hs_s = "";
+                        if (text[i+1] == 'H' && text[i+2] == 'S' && text[i+3] == '*')
+                        {
+                            i += 4;
+                            Xcount += 4;
+                        }
+                        while (text[i] != '>')
+                        {
+                            hs_s += text[i];
+                            i++;
+                            Xcount++;
+                        }
+                        curHSpeed = float.Parse(hs_s);
+                        //Console.WriteLine("HS" + curHSpeed);
+                        continue;
+                    }
                     if (isNote(text[i]))
                     {
                         haveNote = true;
@@ -236,13 +258,13 @@ namespace MajdataEdit
                                 foreach(string fakeEachGroup in fakeEachList)
                                 {
                                     Console.WriteLine(fakeEachGroup);
-                                    _notelist.Add(new SimaiTimingPoint(fakeTime, Xcount, Ycount, fakeEachGroup, bpm));
+                                    _notelist.Add(new SimaiTimingPoint(fakeTime, Xcount, Ycount, fakeEachGroup, bpm, curHSpeed));
                                     fakeTime += timeInterval;
                                 }
                             }
                             else
                             {
-                                _notelist.Add(new SimaiTimingPoint(time, Xcount, Ycount, noteTemp, bpm));
+                                _notelist.Add(new SimaiTimingPoint(time, Xcount, Ycount, noteTemp, bpm, curHSpeed));
                             }
                             //Console.WriteLine("Note:" + noteTemp);
                             
@@ -306,13 +328,15 @@ namespace MajdataEdit
         public string notesContent;
         public float currentBpm = -1;
         public List<SimaiNote> noteList = new List<SimaiNote>(); //only used for json serialize
-        public SimaiTimingPoint(double _time, int textposX = 0, int textposY = 0,string _content = "",float bpm=0f)
+        public float HSpeed = 1f;
+        public SimaiTimingPoint(double _time, int textposX = 0, int textposY = 0,string _content = "",float bpm=0f,float _hspeed = 1f)
         {
             time = _time;
             rawTextPositionX = textposX;
             rawTextPositionY = textposY;
             notesContent = _content.Replace("\n","").Replace(" ","");
             currentBpm = bpm;
+            HSpeed = _hspeed;
         }
 
         public List<SimaiNote> getNotes()
