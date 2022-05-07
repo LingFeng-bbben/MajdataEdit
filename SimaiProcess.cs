@@ -406,82 +406,145 @@ namespace MajdataEdit
         {
             SimaiNote simaiNote = new SimaiNote();
 
+            int consumed = 0;
+            int lengthIdx = noteText.IndexOf('[');
+            string lengthText = string.Empty;
+            if (lengthIdx >= 0)
+            {
+                lengthText = noteText.Substring(lengthIdx);
+                noteText = noteText.Substring(0, lengthIdx);
+            }
+            bool usedLengthPart = false;
+            int originalTextLength = noteText.Length;
+
             if (isTouchNote(noteText))
             {
                 simaiNote.touchArea = noteText[0];
-                if (simaiNote.touchArea != 'C') simaiNote.startPosition = int.Parse(noteText[1].ToString());
-                else simaiNote.startPosition = 8;
+                if (simaiNote.touchArea != 'C')
+                {
+                    simaiNote.startPosition = int.Parse(noteText[1].ToString());
+                    consumed += 2;
+                }
+                else
+                {
+                    simaiNote.startPosition = 8;
+                    consumed++;
+                }
                 simaiNote.noteType = SimaiNoteType.Touch;
             }
             else
             {
                 simaiNote.startPosition = int.Parse(noteText[0].ToString());
                 simaiNote.noteType = SimaiNoteType.Tap; //if nothing happen in following if
+                consumed++;
             }
             if (noteText.Contains('f'))
             {
+                if (simaiNote.noteType != SimaiNoteType.Touch)
+                {
+                    throw new Exception("touch effect only applies to touch note");
+                }
                 simaiNote.isHanabi= true;
+                consumed++;
             }
 
             //hold
             if (noteText.Contains('h')) {
                 if (isTouchNote(noteText)) {
                     simaiNote.noteType = SimaiNoteType.TouchHold;
-                    simaiNote.holdTime = getTimeFromBeats(noteText);
+                    simaiNote.holdTime = getTimeFromBeats(lengthText);
+                    usedLengthPart = true;
                     //Console.WriteLine("Hold:" +simaiNote.touchArea+ simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
                 }
                 else
                 {
                     simaiNote.noteType = SimaiNoteType.Hold;
-                    if (noteText.Last() == 'h')
+                    if (string.IsNullOrEmpty(lengthText))
                     {
                         simaiNote.holdTime = 0;
                     }
                     else
                     {
-                        simaiNote.holdTime = getTimeFromBeats(noteText);
+                        simaiNote.holdTime = getTimeFromBeats(lengthText);
+                        usedLengthPart = true;
                     }
                     //Console.WriteLine("Hold:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.holdTime);
                 }
+                consumed++;
             }
             //slide
             if (isSlideNote(noteText)) {
                 simaiNote.noteType = SimaiNoteType.Slide;
-                simaiNote.slideTime = getTimeFromBeats(noteText);
-                var timeStarWait = getStarWaitTime(noteText);
+                simaiNote.slideTime = getTimeFromBeats(lengthText);
+                var timeStarWait = getStarWaitTime(lengthText);
+                usedLengthPart = true;
                 simaiNote.slideStartTime = time + timeStarWait;
                 if(noteText.Contains('!'))
                 {
                     simaiNote.isSlideNoHead = true;
                     noteText = noteText.Replace("!", "");
-                }else if(noteText.Contains('?'))
+                    consumed++;
+                }
+                else if(noteText.Contains('?'))
                 {
                     simaiNote.isSlideNoHead = true;
                     noteText = noteText.Replace("?", "");
+                    consumed++;
+                }
+                consumed += 2;
+                if (noteText.Contains("pp") || noteText.Contains("qq") || noteText.Contains("V"))
+                {
+                    consumed++;
                 }
                 //Console.WriteLine("Slide:" + simaiNote.startPosition + " TimeLastFor:" + simaiNote.slideTime);
             }
             //break
             if (noteText.Contains('b'))
             {
+                if (!(simaiNote.noteType == SimaiNoteType.Tap || (simaiNote.noteType == SimaiNoteType.Slide && !simaiNote.isSlideNoHead)))
+                {
+                    throw new Exception("break only applies to tap or slide head");
+                }
                 simaiNote.isBreak = true;
                 noteText = noteText.Replace("b", "");
+                consumed++;
             }
             //EX
             if (noteText.Contains('x'))
             {
+                if (!(simaiNote.noteType == SimaiNoteType.Tap || simaiNote.noteType == SimaiNoteType.Hold || (simaiNote.noteType == SimaiNoteType.Slide && !simaiNote.isSlideNoHead)))
+                {
+                    throw new Exception("ex only applies to tap or hold or slide head");
+                }
+                if (simaiNote.isBreak)
+                {
+                    throw new Exception("can't have break and ex at the same time");
+                }
                 simaiNote.isEx = true;
                 noteText = noteText.Replace("x", "");
+                consumed++;
             }
             //starHead
             if (noteText.Contains('$'))
             {
                 simaiNote.isForceStar = true;
-                if (noteText.Count(o=>o=='$') == 2)
+                if (noteText.Contains("$$"))
+                {
                     simaiNote.isFakeRotate = true;
+                    consumed++;
+                }
                 noteText = noteText.Replace("$", "");
+                consumed++;
             }
-            simaiNote.noteContent = noteText;
+            if (!string.IsNullOrEmpty(lengthText) && !usedLengthPart)
+            {
+                throw new Exception("have unused length section");
+            }
+            if (consumed != originalTextLength)
+            {
+                throw new Exception("have unprocessed character");
+            }
+            simaiNote.noteContent = noteText + lengthText;
             return simaiNote;
         }
 
@@ -508,6 +571,10 @@ namespace MajdataEdit
         {
             var startIndex = noteText.IndexOf('[');
             var overIndex = noteText.IndexOf(']');
+            if (startIndex != 0 || overIndex != noteText.Length - 1)
+            {
+                throw new Exception("invalid length part");
+            }
             var innerString = noteText.Substring(startIndex + 1, overIndex - startIndex-1);
             var timeOneBeat = 1d / (currentBpm / 60d);
             if (innerString.Count(o => o == '#') == 1)
