@@ -1155,7 +1155,7 @@ namespace MajdataEdit
         bool sendRequestRun(DateTime StartAt,bool isOpIncluded)
         {
 
-            /**Majson jsonStruct = new Majson();
+            Majson jsonStruct = new Majson();
             foreach (var note in SimaiProcess.notelist)
             {
                 note.noteList = note.getNotes();
@@ -1169,9 +1169,9 @@ namespace MajdataEdit
             jsonStruct.difficulty = SimaiProcess.GetDifficultyText(selectedDifficulty);
             jsonStruct.diffNum = selectedDifficulty;
 
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonStruct);**/
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonStruct);
             var path = maidataDir + "/majdata.json";
-            //System.IO.File.WriteAllText(path, json);
+            System.IO.File.WriteAllText(path, json);
 
             EditRequestjson request = new EditRequestjson();
             if(isOpIncluded)
@@ -1191,7 +1191,7 @@ namespace MajdataEdit
                 request.audioSpeed = GetPlaybackSpeed();
             });
 
-            string json = JsonConvert.SerializeObject(request);
+            json = JsonConvert.SerializeObject(request);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
             if (response == "ERROR") { MessageBox.Show(GetLocalizedString("PortClear")); return false; }
             lastEditorState = EditorControlMethod.Start;
