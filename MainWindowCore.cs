@@ -1155,7 +1155,7 @@ namespace MajdataEdit
         bool sendRequestRun(DateTime StartAt,bool isOpIncluded)
         {
 
-            Majson jsonStruct = new Majson();
+            /**Majson jsonStruct = new Majson();
             foreach (var note in SimaiProcess.notelist)
             {
                 note.noteList = note.getNotes();
@@ -1169,9 +1169,9 @@ namespace MajdataEdit
             jsonStruct.difficulty = SimaiProcess.GetDifficultyText(selectedDifficulty);
             jsonStruct.diffNum = selectedDifficulty;
 
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonStruct);
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonStruct);**/
             var path = maidataDir + "/majdata.json";
-            System.IO.File.WriteAllText(path, json);
+            //System.IO.File.WriteAllText(path, json);
 
             EditRequestjson request = new EditRequestjson();
             if(isOpIncluded)
@@ -1185,12 +1185,13 @@ namespace MajdataEdit
                 request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
                 // request.playSpeed = float.Parse(ViewerSpeed.Text);
                 // 将maimaiDX速度换算为View中的单位速度 MajSpeed = 107.25 / (71.4184491 * (MaiSpeed + 0.9975) ^ -0.985558604)
-                request.playSpeed = (float)(107.25 / (71.4184491 * Math.Pow(float.Parse(ViewerSpeed.Text) + 0.9975, -0.985558604)));
+                request.noteSpeed = float.Parse(ViewerSpeed.Text);
+                request.touchSpeed = request.noteSpeed + 0.5f;
                 request.backgroundCover = float.Parse(ViewerCover.Text);
                 request.audioSpeed = GetPlaybackSpeed();
             });
 
-            json = JsonConvert.SerializeObject(request);
+            string json = JsonConvert.SerializeObject(request);
             var response = WebControl.RequestPOST("http://localhost:8013/", json);
             if (response == "ERROR") { MessageBox.Show(GetLocalizedString("PortClear")); return false; }
             lastEditorState = EditorControlMethod.Start;
