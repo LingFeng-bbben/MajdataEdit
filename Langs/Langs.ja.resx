@@ -369,4 +369,13 @@ Press the Insert key to switch back to normal mode.</value>
     <value>To change these settings, go to "Setting-&gt;Editor Setting".</value>
     <comment>需要翻译</comment>
   </data>
+  <data name="RenderMode" xml:space="preserve">
+    <value>レンダリング モード</value>
+  </data>
+  <data name="RenderModeHW" xml:space="preserve">
+    <value>ハードウェア</value>
+  </data>
+  <data name="RenderModeSW" xml:space="preserve">
+    <value>ソフトウェア</value>
+  </data>
 </root>

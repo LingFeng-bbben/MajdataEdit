@@ -360,4 +360,13 @@ Press the Insert key to switch back to normal mode.</value>
     <value>To change these settings, go to "Setting-&gt;Editor Setting".</value>
     <comment>可能需要翻译润色</comment>
   </data>
+  <data name="RenderMode" xml:space="preserve">
+    <value>Rendering Mode</value>
+  </data>
+  <data name="RenderModeHW" xml:space="preserve">
+    <value>Hardware</value>
+  </data>
+  <data name="RenderModeSW" xml:space="preserve">
+    <value>Software</value>
+  </data>
 </root>

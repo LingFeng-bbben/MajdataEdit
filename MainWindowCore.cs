@@ -417,6 +417,7 @@ namespace MajdataEdit
         {
             editorSetting = new EditorSetting();
             editorSetting.Language = "en-US";   // 在未初始化EditorSetting的时候 以较为通用的英文运行
+            editorSetting.RenderMode = RenderOptions.ProcessRenderMode == RenderMode.SoftwareOnly ? 1 : 0;  // 使用命令行指定强制软件渲染时，同步修改配置值
             File.WriteAllText(editorSettingFilename, JsonConvert.SerializeObject(editorSetting, Formatting.Indented));
 
             EditorSettingPanel esp = new EditorSettingPanel(true);
@@ -432,6 +433,19 @@ namespace MajdataEdit
             }
             var json = File.ReadAllText(editorSettingFilename);
             editorSetting = JsonConvert.DeserializeObject<EditorSetting>(json);
+
+            if (RenderOptions.ProcessRenderMode != RenderMode.SoftwareOnly)
+            {
+                //如果没有通过命令行预先指定渲染模式，则使用设置项的渲染模式
+                RenderOptions.ProcessRenderMode =
+                    editorSetting.RenderMode == 0 ? RenderMode.Default : RenderMode.SoftwareOnly;
+            }
+            else
+            {
+                //如果通过命令行指定了使用软件渲染模式，则覆盖设置项
+                editorSetting.RenderMode = 1;
+            }
+
             LocalizeDictionary.Instance.Culture = new CultureInfo(editorSetting.Language);
             AddGesture(editorSetting.PlayPauseKey, "PlayAndPause");
             AddGesture(editorSetting.PlayStopKey, "StopPlaying");

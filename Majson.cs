@@ -60,5 +60,6 @@ namespace MajdataEdit
         public string IncreasePlaybackSpeedKey = "Ctrl+p";
         public string DecreasePlaybackSpeedKey = "Ctrl+o";
         public float FontSize = 12;
+        public int RenderMode = 0;  //0=硬件渲染(默认)，1=软件渲染
     }
 }

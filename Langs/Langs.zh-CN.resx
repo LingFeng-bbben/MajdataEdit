@@ -347,4 +347,13 @@
   <data name="SpeedSettingTooltip" xml:space="preserve">
     <value>请在 设置-&gt;编辑器设置 中调整</value>
   </data>
+  <data name="RenderMode" xml:space="preserve">
+    <value>渲染模式</value>
+  </data>
+  <data name="RenderModeHW" xml:space="preserve">
+    <value>硬件渲染</value>
+  </data>
+  <data name="RenderModeSW" xml:space="preserve">
+    <value>软件渲染</value>
+  </data>
 </root>

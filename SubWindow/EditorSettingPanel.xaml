@@ -7,42 +7,73 @@
         xmlns:local="clr-namespace:MajdataEdit"
         lex:LocalizeDictionary.DesignCulture="zh-CN"
         lex:ResxLocalizationProvider.DefaultAssembly="MajdataEdit"
-        lex:ResxLocalizationProvider.DefaultDictionary="Langs" 
+        lex:ResxLocalizationProvider.DefaultDictionary="Langs"
         mc:Ignorable="d"
         Background="{DynamicResource WindowBackground}"
-        Title="Editor Setting" Height="184.314" Width="200" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" Topmost="True"
+        Title="Editor Setting" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
+        Topmost="True"
         Loaded="Window_Loaded" Closing="Window_Closing">
     <Window.Resources>
-        
+
     </Window.Resources>
 
 
-    <Grid  Margin="8,5,8,5">
+    <Grid Margin="8,5">
+        <Grid.Resources>
+            <Style TargetType="{x:Type Label}">
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}" />
+            </Style>
+            <Style TargetType="{x:Type ComboBox}">
+                <Setter Property="Margin" Value="0,0,0,5" />
+                <Setter Property="Height" Value="26" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="0,0,0,5" />
+                <Setter Property="Height" Value="26" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="TextAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="Background" Value="{DynamicResource ButtonsBackground}" />
+                <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}" />
+            </Style>
+        </Grid.Resources>
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="100*"/>
-            <RowDefinition Height="100*"/>
-            <RowDefinition Height="100*"/>
-            <RowDefinition Height="100*"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="100*" />
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0"
-               Foreground="{DynamicResource ButtonForeground}"
-               Content="{lex:Loc Key=EditorLanguage}"
-               VerticalAlignment="Center"></Label>
+               Content="{lex:Loc Key=EditorLanguage}" />
         <ComboBox x:Name="LanguageComboBox"
                   Grid.Row="0" Grid.Column="1"
-                  Height="22" VerticalAlignment="Center"
                   SelectionChanged="LanguageComboBox_SelectionChanged">
             <ComboBoxItem>中文</ComboBoxItem>
             <ComboBoxItem>English</ComboBoxItem>
             <ComboBoxItem>日本語</ComboBoxItem>
+        </ComboBox>
+
+        <Label Grid.Row="1" Grid.Column="0"
+               Content="{lex:Loc Key=RenderMode}" />
+        <ComboBox x:Name="RenderModeComboBox"
+                  Grid.Row="1" Grid.Column="1"
+                  SelectionChanged="RenderModeComboBox_OnSelectionChanged">
+            <ComboBoxItem Content="{lex:Loc Key=RenderModeHW}" />
+            <ComboBoxItem Content="{lex:Loc Key=RenderModeSW}" />
         </ComboBox>
 
         <!--<TextBox x:Name="ViewerSpeed" HorizontalAlignment="Left" Height="26" Margin="50,0,0,201" TextWrapping="Wrap" Text="7.0" VerticalAlignment="Bottom" Width="46" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" MouseWheel="ViewerSpeed_MouseWheel"/>
@@ -50,58 +81,42 @@
         <TextBox x:Name="ViewerCover" Height="26" Margin="50,0,0,232" TextWrapping="Wrap" Text="0.6" VerticalAlignment="Bottom" VerticalContentAlignment="Center" TextAlignment="Center" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Left" Width="46" MouseWheel="ViewerCover_MouseWheel"/>
         <Label Content="{lex:Loc Brightness}" HorizontalAlignment="Left" Height="26" Margin="5,0,0,232" VerticalAlignment="Bottom" Width="45" Foreground="White" RenderTransformOrigin="9.667,-2.284"/>-->
 
-        <Label Grid.Row="1" Grid.Column="0"
-               Foreground="{DynamicResource ButtonForeground}"
-               Content="{lex:Loc Key=Brightness}"
-               VerticalAlignment="Center"></Label>
-        <TextBox x:Name="ViewerCover"
-                  Grid.Row="1" Grid.Column="1"
-                  Height="26" Width="70" VerticalAlignment="Bottom" HorizontalAlignment="Left"
-                  TextWrapping="Wrap" Text="0.6"
-                  VerticalContentAlignment="Center" TextAlignment="Center"
-                  Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
-                  MouseWheel="ViewerCover_MouseWheel"
-                  />
-
         <Label Grid.Row="2" Grid.Column="0"
-               Foreground="{DynamicResource ButtonForeground}"
-               Content="{lex:Loc Key=Speed}"
-               VerticalAlignment="Center"></Label>
-        <TextBox x:Name="ViewerSpeed"
-                  Grid.Row="2" Grid.Column="1"
-                  Height="26" Width="70" VerticalAlignment="Bottom" HorizontalAlignment="Left"
-                  TextWrapping="Wrap" Text="7.0"
-                  VerticalContentAlignment="Center" TextAlignment="Center"
-                  Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
-                  MouseWheel="ViewerSpeed_MouseWheel"
-                  />
+               Content="{lex:Loc Key=Brightness}" />
+        <TextBox x:Name="ViewerCover"
+                 Grid.Row="2" Grid.Column="1"
+                 Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
+                 Text="0.6"
+                 MouseWheel="ViewerCover_MouseWheel" />
 
         <Label Grid.Row="3" Grid.Column="0"
-               Foreground="{DynamicResource ButtonForeground}"
-               Content="{lex:Loc Key=TouchSpeed}"
-               VerticalAlignment="Center"></Label>
+               Content="{lex:Loc Key=Speed}" />
+        <TextBox x:Name="ViewerSpeed"
+                 Grid.Row="3" Grid.Column="1"
+                 Text="7.0"
+                 MouseWheel="ViewerSpeed_MouseWheel" />
+
+        <Label Grid.Row="4" Grid.Column="0"
+               Content="{lex:Loc Key=TouchSpeed}" />
         <TextBox x:Name="ViewerTouchSpeed"
-                  Grid.Row="3" Grid.Column="1"
-                  Height="26" Width="70" VerticalAlignment="Bottom" HorizontalAlignment="Left"
-                  TextWrapping="Wrap" Text="7.5"
-                  VerticalContentAlignment="Center" TextAlignment="Center"
-                  Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
-                  MouseWheel="ViewerTouchSpeed_MouseWheel"
-                  />
+                 Grid.Row="4" Grid.Column="1"
+                 Text="7.5"
+                 MouseWheel="ViewerTouchSpeed_MouseWheel" />
 
 
         <StackPanel Orientation="Horizontal"
-                    Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                    Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"
+                    Margin="0,5,0,0">
             <Button x:Name="Save_Button" Content="{lex:Loc Key=Save}"
                     Width="70" Height="28" Margin="0,0,10,0"
                     Foreground="{DynamicResource ButtonForeground}"
                     Background="{DynamicResource ButtonsBackground}"
-                    Click="Save_Button_Click"/>
+                    Click="Save_Button_Click" />
             <Button x:Name="Cancel_Button" Content="{lex:Loc Key=Cancel}"
                     Width="70" Height="28" Margin="10,0,0,0"
                     Foreground="{DynamicResource ButtonForeground}"
-                    Background="{DynamicResource ButtonsBackground}" 
-                    Click="Cancel_Button_Click"/>
+                    Background="{DynamicResource ButtonsBackground}"
+                    Click="Cancel_Button_Click" />
         </StackPanel>
     </Grid>
 
