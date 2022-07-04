@@ -387,7 +387,15 @@ namespace MajdataEdit
             if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked)
                 return;
             var time = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
-            if (Keyboard.IsKeyDown(Key.LeftCtrl))
+
+            //按住Ctrl，同时按下鼠标左键/上下左右方向键时，才改变进度，其他包含Ctrl的组合键不影响进度。
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) && (
+                Mouse.LeftButton == MouseButtonState.Pressed ||
+                Keyboard.IsKeyDown(Key.Left) ||
+                Keyboard.IsKeyDown(Key.Right) ||
+                Keyboard.IsKeyDown(Key.Up) ||
+                Keyboard.IsKeyDown(Key.Down)
+            ))
             {
                 if(Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
                     TogglePause();
