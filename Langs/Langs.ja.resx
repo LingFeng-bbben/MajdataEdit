@@ -352,4 +352,13 @@ WE NEED honn ya ku!!</comment>
   <data name="RemapViewer" xml:space="preserve">
     <value>Viewerを揃える</value>
   </data>
+  <data name="OverwriteModeTooltip" xml:space="preserve">
+    <value>Overwrite mode allows you to replace text as you type.
+Press the Insert key to switch back to normal mode.</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="OverwriteMode" xml:space="preserve">
+    <value>Overwrite Mode</value>
+    <comment>需要翻译</comment>
+  </data>
 </root>

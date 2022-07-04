@@ -346,4 +346,11 @@ Please run the MajdatEdit by "强制软件渲染.bat" in the folder. This may so
   <data name="RemapViewer" xml:space="preserve">
     <value>Re-align viewer</value>
   </data>
+  <data name="OverwriteModeTooltip" xml:space="preserve">
+    <value>Overwrite mode allows you to replace text as you type.
+Press the Insert key to switch back to normal mode.</value>
+  </data>
+  <data name="OverwriteMode" xml:space="preserve">
+    <value>Overwrite mode</value>
+  </data>
 </root>

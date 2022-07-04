@@ -76,7 +76,8 @@
                      VerticalScrollBarVisibility="Visible" 
                      SelectionChanged="FumenContent_SelectionChanged" Grid.ColumnSpan="2"
                      InputMethod.IsInputMethodEnabled="False"
-                     AutoWordSelection="False">
+                     AutoWordSelection="False"
+                     PreviewKeyDown="FumenContent_OnPreviewKeyDown">
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause"/>
                 <RoutedUICommand x:Key="SaveFile" Text="SaveFile"/>
@@ -143,8 +144,23 @@
             <Image x:Name="Replace_icon" HorizontalAlignment="Left" Height="22" Margin="246,37,0,0" VerticalAlignment="Top" Width="26" Source="Image/outline_find_replace_white_24dp.png" MouseDown="Replace_icon_MouseDown" ToolTip="{lex:Loc ReplaceNext}"/>
             <Label x:Name="FindClose" Content="^" Height="19" Margin="127,53,127,-3" VerticalAlignment="Top" FontSize="11" FontWeight="Bold" Foreground="White" MouseDown="FindClose_MouseDown"/>
             <TextBox x:Name="ReplaceText" HorizontalAlignment="Left" Height="22" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" VerticalContentAlignment="Center"/>
-
         </Grid>
+        <StackPanel x:Name="OverrideModeTipsPopup" Margin="105,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Visibility="Collapsed">
+            <StackPanel.Background>
+                <SolidColorBrush Color="Black" Opacity="0.8"/>
+            </StackPanel.Background>
+            <Label Content="{lex:Loc OverwriteMode}" Foreground="White"/>
+            <Label Foreground="{DynamicResource HelperForeground}" Margin="3,0,0,0">
+                <Label.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{lex:Loc Key=OverwriteModeTooltip}"></TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Label.ToolTip>
+                <TextBlock TextDecorations="Underline" FontSize="10" Text="{lex:Loc Key=WhatsThis}"></TextBlock>
+            </Label>
+        </StackPanel>
         <Rectangle x:Name="Cover" Fill="#FF1F1F1F" Margin="0,19,0,0" Stroke="Black" Grid.ColumnSpan="2" d:IsHidden="True"/>
     </Grid>
 </Window>

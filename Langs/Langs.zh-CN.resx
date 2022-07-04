@@ -334,4 +334,11 @@
   <data name="RemapViewer" xml:space="preserve">
     <value>重新对准编辑器窗口</value>
   </data>
+  <data name="OverwriteModeTooltip" xml:space="preserve">
+    <value>覆盖模式下，输入的文字将替换光标后的内容。
+按Insert键回到标准模式。</value>
+  </data>
+  <data name="OverwriteMode" xml:space="preserve">
+    <value>覆盖模式</value>
+  </data>
 </root>

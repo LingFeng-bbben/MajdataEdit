@@ -389,7 +389,7 @@ namespace MajdataEdit
             var time = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
 
             //按住Ctrl，同时按下鼠标左键/上下左右方向键时，才改变进度，其他包含Ctrl的组合键不影响进度。
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) && (
+            if (Keyboard.Modifiers == ModifierKeys.Control && (
                 Mouse.LeftButton == MouseButtonState.Pressed ||
                 Keyboard.IsKeyDown(Key.Left) ||
                 Keyboard.IsKeyDown(Key.Right) ||
@@ -412,6 +412,16 @@ namespace MajdataEdit
             SetSavedState(false);
             SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
             DrawWave();
+        }
+
+        private void FumenContent_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // 按下Insert键，同时未按下任何组合键，切换覆盖模式
+            if (e.Key == Key.Insert && Keyboard.Modifiers == ModifierKeys.None)
+            {
+                SwitchFumenOverwriteMode();
+                e.Handled = true;
+            }
         }
 
         //Wave displayer

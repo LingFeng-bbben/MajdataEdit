@@ -25,6 +25,7 @@ using Un4seen.Bass.AddOn.Fx;
 using Newtonsoft.Json.Linq;
 using WPFLocalizeExtension.Extensions;
 using System.Globalization;
+using System.Reflection;
 using WPFLocalizeExtension.Engine;
 
 namespace MajdataEdit
@@ -77,6 +78,8 @@ namespace MajdataEdit
         public JObject SLIDE_TIME; // 无理检测用的SLIDE_TIME数据
 
         List<SoundEffectTiming> waitToBePlayed;
+
+        private bool fumenOverwriteMode = false;    //谱面文本覆盖模式
 
         //*TEXTBOX CONTROL
         string GetRawFumenText()
@@ -1396,6 +1399,23 @@ namespace MajdataEdit
                 waitToBePlayed.Add(new SoundEffectTiming(GetAllPerfectStartTime(), _hasClick: false, _hasAllPerfect: true));
             }
             waitToBePlayed.Sort((o1,o2) => o1.time<o2.time?-1:1);
+        }
+
+        private void SwitchFumenOverwriteMode()
+        {
+            fumenOverwriteMode = !fumenOverwriteMode;
+
+            //修改覆盖模式启用状态
+            // fetch TextEditor from FumenContent
+            var textEditorProperty = typeof(TextBox).GetProperty("TextEditor", BindingFlags.NonPublic | BindingFlags.Instance);
+            var textEditor = textEditorProperty.GetValue(FumenContent, null);
+
+            // set _OvertypeMode on the TextEditor
+            var overtypeModeProperty = textEditor.GetType().GetProperty("_OvertypeMode", BindingFlags.NonPublic | BindingFlags.Instance);
+            overtypeModeProperty.SetValue(textEditor, fumenOverwriteMode, null);
+
+            //修改提示弹窗可见性
+            OverrideModeTipsPopup.Visibility = fumenOverwriteMode ? Visibility.Visible : Visibility.Collapsed;
         }
 
         class SoundEffectTiming
