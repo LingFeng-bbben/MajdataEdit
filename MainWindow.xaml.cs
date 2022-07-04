@@ -356,19 +356,6 @@ namespace MajdataEdit
             offset += e.Delta > 0 ? 0.01f : -0.01f;
             OffsetTextBox.Text = offset.ToString();
         }
-        private void ViewerSpeed_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            var offset = float.Parse(ViewerSpeed.Text);
-            offset += e.Delta > 0 ? 0.5f : -0.5f;
-            ViewerSpeed.Text = offset.ToString();
-        }
-
-        private void ViewerCover_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            var offset = float.Parse(ViewerCover.Text);
-            offset += e.Delta > 0 ? 0.1f : -0.1f;
-            ViewerCover.Text = offset.ToString();
-        }
         private void FollowPlayCheck_Click(object sender, RoutedEventArgs e)
         {
             FumenContent.Focus();

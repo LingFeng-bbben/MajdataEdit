@@ -218,6 +218,7 @@
   </data>
   <data name="Speed" xml:space="preserve">
     <value>速度</value>
+    <comment>是不是应该是スピード？</comment>
   </data>
   <data name="TextFollow" xml:space="preserve">
     <value>譜面フォロー</value>
@@ -359,6 +360,13 @@ Press the Insert key to switch back to normal mode.</value>
   </data>
   <data name="OverwriteMode" xml:space="preserve">
     <value>Overwrite Mode</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="TouchSpeed" xml:space="preserve">
+    <value>タッチ速度</value>
+  </data>
+  <data name="SpeedSettingTooltip" xml:space="preserve">
+    <value>To change these settings, go to "Setting-&gt;Editor Setting".</value>
     <comment>需要翻译</comment>
   </data>
 </root>

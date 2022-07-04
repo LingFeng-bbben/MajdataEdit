@@ -353,4 +353,11 @@ Press the Insert key to switch back to normal mode.</value>
   <data name="OverwriteMode" xml:space="preserve">
     <value>Overwrite mode</value>
   </data>
+  <data name="TouchSpeed" xml:space="preserve">
+    <value>Touch Speed</value>
+  </data>
+  <data name="SpeedSettingTooltip" xml:space="preserve">
+    <value>To change these settings, go to "Setting-&gt;Editor Setting".</value>
+    <comment>可能需要翻译润色</comment>
+  </data>
 </root>

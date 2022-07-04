@@ -56,6 +56,10 @@ namespace MajdataEdit
                 boxIndex = 1;
             }
             LanguageComboBox.SelectedIndex = boxIndex;
+
+            ViewerCover.Text = ((MainWindow)Owner).editorSetting.backgroundCover.ToString();
+            ViewerSpeed.Text = ((MainWindow)Owner).editorSetting.playSpeed.ToString("F1");    // 转化为形如"7.0", "9.5"这样的速度
+            ViewerTouchSpeed.Text = ((MainWindow)Owner).editorSetting.touchSpeed.ToString("F1");
         }
 
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -64,10 +68,34 @@ namespace MajdataEdit
             LocalizeDictionary.Instance.Culture = new CultureInfo(langList[LanguageComboBox.SelectedIndex]);
         }
 
+        private void ViewerCover_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var offset = float.Parse(ViewerCover.Text);
+            offset += e.Delta > 0 ? 0.1f : -0.1f;
+            ViewerCover.Text = offset.ToString();
+        }
+
+        private void ViewerSpeed_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var offset = float.Parse(ViewerSpeed.Text);
+            offset += e.Delta > 0 ? 0.5f : -0.5f;
+            ViewerSpeed.Text = offset.ToString();
+        }
+
+        private void ViewerTouchSpeed_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var offset = float.Parse(ViewerTouchSpeed.Text);
+            offset += e.Delta > 0 ? 0.5f : -0.5f;
+            ViewerTouchSpeed.Text = offset.ToString();
+        }
+
         private void Save_Button_Click(object sender, RoutedEventArgs e)
         {
             saveFlag = true;
             ((MainWindow)Owner).editorSetting.Language = langList[LanguageComboBox.SelectedIndex];
+            ((MainWindow)Owner).editorSetting.backgroundCover = float.Parse(ViewerCover.Text);
+            ((MainWindow)Owner).editorSetting.playSpeed = float.Parse(ViewerSpeed.Text);
+            ((MainWindow)Owner).editorSetting.touchSpeed = float.Parse(ViewerTouchSpeed.Text);
             ((MainWindow)Owner).SaveEditorSetting();
             this.Close();
         }

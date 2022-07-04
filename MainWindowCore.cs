@@ -365,8 +365,6 @@ namespace MajdataEdit
         void SaveSetting()
         {
             MajSetting setting = new MajSetting();
-            setting.backgroundCover = float.Parse(ViewerCover.Text);
-            setting.playSpeed = float.Parse(ViewerSpeed.Text);
             setting.lastEditDiff = selectedDifficulty;
             setting.lastEditTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.BGM_Level);
@@ -383,8 +381,6 @@ namespace MajdataEdit
             var path = maidataDir + "/" + majSettingFilename;
             if (!File.Exists(path)) return;
             var setting = JsonConvert.DeserializeObject<MajSetting>(File.ReadAllText(path));
-            ViewerCover.Text = setting.backgroundCover.ToString();
-            ViewerSpeed.Text = setting.playSpeed.ToString("F1");    // 转化为形如"7.0", "9.5"这样的速度
             LevelSelector.SelectedIndex = setting.lastEditDiff;
             selectedDifficulty = setting.lastEditDiff;
             SetBgmPosition(setting.lastEditTime);
@@ -399,6 +395,8 @@ namespace MajdataEdit
             Bass.BASS_ChannelSetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
             Bass.BASS_ChannelSetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
             Bass.BASS_ChannelSetAttribute(holdRiserStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
+
+            SaveSetting(); // 覆盖旧版本setting
         }
         private void CreateNewFumen(string path)
         {
@@ -443,6 +441,12 @@ namespace MajdataEdit
             AddGesture(editorSetting.DecreasePlaybackSpeedKey, "DecreasePlaybackSpeed");
             AddGesture("Ctrl+f", "Find");
             FumenContent.FontSize = editorSetting.FontSize;
+            
+            ViewerCover.Content = editorSetting.backgroundCover.ToString();
+            ViewerSpeed.Content = editorSetting.playSpeed.ToString("F1");    // 转化为形如"7.0", "9.5"这样的速度
+            ViewerTouchSpeed.Content = editorSetting.touchSpeed.ToString("F1");
+
+            SaveEditorSetting(); // 覆盖旧版本setting
         }
         public void SaveEditorSetting()
         {
@@ -1188,9 +1192,9 @@ namespace MajdataEdit
                 request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
                 // request.playSpeed = float.Parse(ViewerSpeed.Text);
                 // 将maimaiDX速度换算为View中的单位速度 MajSpeed = 107.25 / (71.4184491 * (MaiSpeed + 0.9975) ^ -0.985558604)
-                request.noteSpeed = float.Parse(ViewerSpeed.Text);
-                request.touchSpeed = request.noteSpeed + 0.5f;
-                request.backgroundCover = float.Parse(ViewerCover.Text);
+                request.noteSpeed = editorSetting.playSpeed;
+                request.touchSpeed = editorSetting.touchSpeed;
+                request.backgroundCover = editorSetting.backgroundCover;
                 request.audioSpeed = GetPlaybackSpeed();
             });
 

@@ -36,9 +36,6 @@ namespace MajdataEdit
 
     class MajSetting
     {
-        public float playSpeed;
-        public float backgroundCover;
-
         public int lastEditDiff;
         public double lastEditTime;
 
@@ -52,6 +49,9 @@ namespace MajdataEdit
 
     public class EditorSetting
     {
+        public float playSpeed = 7.0f;
+        public float touchSpeed = 7.5f;
+        public float backgroundCover = 0.6f;
         public string Language = "zh-CN";
         public string PlayPauseKey = "Ctrl+Shift+c";
         public string PlayStopKey = "Ctrl+Shift+x";

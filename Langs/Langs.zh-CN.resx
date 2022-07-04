@@ -130,7 +130,7 @@
     <value>BPM Tap</value>
   </data>
   <data name="Brightness" xml:space="preserve">
-    <value>暗化</value>
+    <value>背景亮度</value>
   </data>
   <data name="Difficulty" xml:space="preserve">
     <value>难度</value>
@@ -340,5 +340,11 @@
   </data>
   <data name="OverwriteMode" xml:space="preserve">
     <value>覆盖模式</value>
+  </data>
+  <data name="TouchSpeed" xml:space="preserve">
+    <value>Touch速度</value>
+  </data>
+  <data name="SpeedSettingTooltip" xml:space="preserve">
+    <value>请在 设置-&gt;编辑器设置 中调整</value>
   </data>
 </root>
