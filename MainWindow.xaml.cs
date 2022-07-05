@@ -21,6 +21,7 @@ using Un4seen.Bass.Misc;
 using System.Drawing;
 using System.Media;
 using System.ComponentModel;
+using Path = System.IO.Path;
 
 namespace MajdataEdit
 {
@@ -31,14 +32,50 @@ namespace MajdataEdit
     {
         public MainWindow()
         {
+            //强制将工作目录设置为程序所在目录
+            //将文件拖拽到exe上面打开时，工作目录会被设定为文件所在目录，导致依赖工作目录进行读取的文件无法读取到，出现异常情况。
+            Environment.CurrentDirectory = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+
             InitializeComponent();
-            if (Environment.GetCommandLineArgs().Contains("--ForceSoftwareRender"))
+
+            //将参数转换为列表，以移除已处理的参数
+            var args = Environment.GetCommandLineArgs().ToList();
+            args.RemoveAt(0); //第一个值是自身路径，忽略
+
+            //判断是否使用软件渲染
+            if (args.Contains("--ForceSoftwareRender"))
             {
                 MessageBox.Show("正在以软件渲染模式运行\nソフトウェア・レンダリング・モードで動作\nBooting as software rendering mode.");
                 RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+                args.Remove("--ForceSoftwareRender");
+            }
+
+            //判断是否指定了有效的谱面/项目/音源文件或所在目录
+            string targetProjectDir = null;
+            foreach (var arg in args)
+            {
+                string dir = null;
+                if (File.Exists(arg)) dir = Path.GetDirectoryName(arg);
+                else if (Directory.Exists(arg)) dir = arg;
+
+                if (string.IsNullOrEmpty(dir)) continue;
+
+                //判断目录下是否存在谱面/项目/音源文件
+                if (!File.Exists(Path.Combine(dir, maidataFilename)) &&
+                    !File.Exists(Path.Combine(dir, majProjectFilename)) &&
+                    !File.Exists(Path.Combine(dir, trackFilename))) continue;
+
+                targetProjectDir = dir;
+                break;
+            }
+
+            if (!string.IsNullOrEmpty(targetProjectDir))
+            {
+                //设置maidataDir，在窗口加载之后判断并加载
+                maidataDir = targetProjectDir;
             }
         }
-       
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             CheckAndStartView();
@@ -59,17 +96,34 @@ namespace MajdataEdit
             VisualEffectRefreshTimer.Start();
             waveStopMonitorTimer.Elapsed += WaveStopMonitorTimer_Elapsed;
             PlbHideTimer.Elapsed += PlbHideTimer_Elapsed;
+
+            if (!string.IsNullOrEmpty(maidataDir))
+            {
+                //如果目录下不包含音源，提示无法打开
+                if (!File.Exists(Path.Combine(maidataDir, trackFilename)))
+                {
+                    MessageBox.Show(string.Format(GetLocalizedString("ArgOpenFailedFileMissing"), trackFilename),
+                        GetLocalizedString("Error"));
+                    return;
+                }
+
+                //如果不存在maidata，创建
+                if (!File.Exists(Path.Combine(maidataDir, maidataFilename)))
+                {
+                    CreateNewFumen(maidataDir);
+                }
+
+                //打开
+                initFromFile(maidataDir);
+            }
         }
 
 
         //start the view and wait for boot, then set window pos
         private void SetWindowPosTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Timer setWindowPosTimer = (Timer)sender;
-            Dispatcher.Invoke(() =>
-            {
-                InternalSwitchWindow();
-            });
+            Timer setWindowPosTimer = (Timer) sender;
+            Dispatcher.Invoke(() => { InternalSwitchWindow(); });
             setWindowPosTimer.Stop();
             setWindowPosTimer.Dispose();
         }
@@ -79,16 +133,19 @@ namespace MajdataEdit
         {
             DrawFFT();
         }
+
         // This update very freqently to play sound effect.
         private void ClickSoundTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             SoundEffectUpdate();
         }
+
         // This update less frequently. set the time text.
         private void CurrentTimeRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             UpdateTimeDisplay();
         }
+
         // This update "middle" frequently to monitor if the wave has to be stopped
         private void WaveStopMonitorTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -106,10 +163,12 @@ namespace MajdataEdit
                     return;
                 }
             }
+
             var process = Process.GetProcessesByName("MajdataView");
             if (process.Length > 0)
             {
-                var result = MessageBox.Show(GetLocalizedString("AskCloseView"), GetLocalizedString("Attention"), MessageBoxButton.YesNo);
+                var result = MessageBox.Show(GetLocalizedString("AskCloseView"), GetLocalizedString("Attention"),
+                    MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                     process[0].Kill();
             }
@@ -141,6 +200,7 @@ namespace MajdataEdit
         {
             e.Effects = DragDropEffects.Move;
         }
+
         private void Grid_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -148,16 +208,16 @@ namespace MajdataEdit
                 //Console.WriteLine(e.Data.GetData(DataFormats.FileDrop).ToString());
                 if (e.Data.GetData(DataFormats.FileDrop).ToString() == "System.String[]")
                 {
-                    var path = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
+                    var path = ((string[]) e.Data.GetData(DataFormats.FileDrop))[0];
                     if (path.ToLower().Contains("maidata.txt"))
                     {
                         if (!isSaved)
                         {
                             if (!AskSave()) return;
                         }
+
                         FileInfo fileInfo = new FileInfo(path);
                         initFromFile(fileInfo.DirectoryName);
-
                     }
 
                     return;
@@ -172,79 +232,94 @@ namespace MajdataEdit
             {
                 if (!AskSave()) return;
             }
+
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "track.mp3|track.mp3";
-            if ((bool)openFileDialog.ShowDialog())
+            openFileDialog.Title = "Music select";
+            openFileDialog.Filter = $"{trackFilename}|{trackFilename}";
+            if ((bool) openFileDialog.ShowDialog())
             {
                 FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
                 CreateNewFumen(fileInfo.DirectoryName);
                 initFromFile(fileInfo.DirectoryName);
             }
         }
+
         private void Menu_Open_Click(object sender, RoutedEventArgs e)
         {
             if (!isSaved)
             {
                 if (!AskSave()) return;
             }
+
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "maidata.txt|maidata.txt";
-            if ((bool)openFileDialog.ShowDialog())
+            openFileDialog.Filter =
+                $"All supported types|{majProjectFilename};{maidataFilename}|maidata files|{maidataFilename}|Majdata project files|{majProjectFilename}";
+            if ((bool) openFileDialog.ShowDialog())
             {
                 FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
                 initFromFile(fileInfo.DirectoryName);
             }
         }
+
         private void Menu_Save_Click(object sender, RoutedEventArgs e)
         {
             SaveFumen(true);
             SystemSounds.Beep.Play();
         }
+
         private void Menu_SaveAs_Click(object sender, RoutedEventArgs e)
         {
-
         }
+
         private void MirrorLeftRight_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var result = Mirror.NoteMirrorLeftRight(FumenContent.Selection.Text);
             FumenContent.Selection.Text = result;
         }
+
         private void MirrorUpDown_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var result = Mirror.NoteMirrorUpDown(FumenContent.Selection.Text);
             FumenContent.Selection.Text = result;
         }
+
         private void Mirror180_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var result = Mirror.NoteMirror180(FumenContent.Selection.Text);
             FumenContent.Selection.Text = result;
         }
+
         private void Mirror45_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var result = Mirror.NoteMirrorSpin45(FumenContent.Selection.Text);
             FumenContent.Selection.Text = result;
         }
+
         private void BPMtap_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             BPMtap tap = new BPMtap();
             tap.Owner = this;
             tap.Show();
         }
+
         private void MenuItem_InfomationEdit_Click(object sender, RoutedEventArgs e)
         {
             var infoWindow = new Infomation();
             infoWindow.ShowDialog();
             TheWindow.Title = "MajdataEdit - " + SimaiProcess.title;
         }
+
         private void MenuItem_SimaiWiki_Click(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://w.atwiki.jp/simai/pages/25.html");
             //maidata.txtの譜面書式
         }
+
         private void MenuItem_GitHub_Click(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/LingFeng-bbben/MajdataView");
         }
+
         private void MenuItem_SoundSetting_Click(object sender, RoutedEventArgs e)
         {
             soundSetting = new SoundSetting();
@@ -257,19 +332,23 @@ namespace MajdataEdit
         {
             TogglePlayAndStop();
         }
+
         private void StopPlaying_CanExecute(object sender, CanExecuteRoutedEventArgs e) //快捷键
         {
             TogglePlayAndPause();
         }
+
         private void SaveFile_Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             SaveFumen(true);
             SystemSounds.Beep.Play();
         }
+
         private void SendToView_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             TogglePlayAndStop(true);
         }
+
         private void IncreasePlaybackSpeed_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING) return;
@@ -285,7 +364,7 @@ namespace MajdataEdit
 
         private void DecreasePlaybackSpeed_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (Bass.BASS_ChannelIsActive(bgmStream)==BASSActive.BASS_ACTIVE_PLAYING) return;
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING) return;
             float speed = GetPlaybackSpeed();
             Console.WriteLine(speed);
             speed -= 0.25f;
@@ -295,11 +374,13 @@ namespace MajdataEdit
             PlbHideTimer.Stop();
             PlbHideTimer.Start();
         }
+
         Timer PlbHideTimer = new Timer(1000);
+
         private void PlbHideTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             Dispatcher.Invoke(() => { PlbSpdAdjGrid.Visibility = Visibility.Collapsed; });
-            ((Timer)sender).Stop();
+            ((Timer) sender).Stop();
         }
 
         private void FindCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -318,10 +399,12 @@ namespace MajdataEdit
         {
             TogglePlayAndPause();
         }
+
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             ToggleStop();
         }
+
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int i = LevelSelector.SelectedIndex;
@@ -331,14 +414,15 @@ namespace MajdataEdit
             SetSavedState(true);
             SimaiProcess.Serialize(GetRawFumenText());
             DrawWave();
-
         }
+
         private void LevelTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             SetSavedState(false);
             if (selectedDifficulty == -1) return;
             SimaiProcess.levels[selectedDifficulty] = LevelTextBox.Text;
         }
+
         private void OffsetTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             SetSavedState(false);
@@ -348,18 +432,24 @@ namespace MajdataEdit
                 SimaiProcess.Serialize(GetRawFumenText());
                 DrawWave();
             }
-            catch { SimaiProcess.first = 0f; }
+            catch
+            {
+                SimaiProcess.first = 0f;
+            }
         }
+
         private void OffsetTextBox_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             var offset = float.Parse(OffsetTextBox.Text);
             offset += e.Delta > 0 ? 0.01f : -0.01f;
             OffsetTextBox.Text = offset.ToString();
         }
+
         private void FollowPlayCheck_Click(object sender, RoutedEventArgs e)
         {
             FumenContent.Focus();
         }
+
         private void Export_Button_Click(object sender, RoutedEventArgs e)
         {
             TogglePlayAndStop(true);
@@ -369,9 +459,10 @@ namespace MajdataEdit
         private void FumenContent_SelectionChanged(object sender, RoutedEventArgs e)
         {
             NoteNowText.Content = "" + (
-                 new TextRange(FumenContent.Document.ContentStart, FumenContent.CaretPosition).Text.
-                 Replace("\r", "").Count(o => o == '\n') + 1) + " 行";
-            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked)
+                new TextRange(FumenContent.Document.ContentStart, FumenContent.CaretPosition).Text.Replace("\r", "")
+                    .Count(o => o == '\n') + 1) + " 行";
+            if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING &&
+                (bool) FollowPlayCheck.IsChecked)
                 return;
             var time = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
 
@@ -384,17 +475,19 @@ namespace MajdataEdit
                 Keyboard.IsKeyDown(Key.Down)
             ))
             {
-                if(Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
+                if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
                     TogglePause();
                 SetBgmPosition(time);
             }
+
             //Console.WriteLine("SelectionChanged");
             SimaiProcess.ClearNoteListPlayedState();
             DrawCusor(time);
         }
+
         private void FumenContent_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (GetRawFumenText() == ""||isLoading) return;
+            if (GetRawFumenText() == "" || isLoading) return;
             Console.WriteLine("TextChanged");
             SetSavedState(false);
             SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
@@ -414,34 +507,39 @@ namespace MajdataEdit
         //Wave displayer
         private void WaveViewZoomIn_Click(object sender, RoutedEventArgs e)
         {
-            if (zoominPower <6)
+            if (zoominPower < 6)
                 zoominPower += 1;
             DrawWave();
             FumenContent.Focus();
         }
+
         private void WaveViewZoomOut_Click(object sender, RoutedEventArgs e)
         {
-            if(zoominPower>1)
-            zoominPower -= 1;
+            if (zoominPower > 1)
+                zoominPower -= 1;
             DrawWave();
             FumenContent.Focus();
         }
+
         private void MusicWave_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             ScrollWave(e.Delta);
         }
+
         private void MusicWave_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //lastMousePointX = e.GetPosition(this).X;
         }
+
         private void MusicWave_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 double delta = e.GetPosition(this).X - lastMousePointX;
                 lastMousePointX = e.GetPosition(this).X;
-                ScrollWave(delta*zoominPower*4d);
+                ScrollWave(delta * zoominPower * 4d);
             }
+
             lastMousePointX = e.GetPosition(this).X;
         }
 

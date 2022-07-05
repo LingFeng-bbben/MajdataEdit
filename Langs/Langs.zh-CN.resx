@@ -356,4 +356,7 @@
   <data name="RenderModeSW" xml:space="preserve">
     <value>软件渲染</value>
   </data>
+  <data name="ArgOpenFailedFileMissing" xml:space="preserve">
+    <value>无法打开项目：缺少文件{0}。</value>
+  </data>
 </root>

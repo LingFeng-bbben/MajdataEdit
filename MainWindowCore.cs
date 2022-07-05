@@ -27,6 +27,7 @@ using WPFLocalizeExtension.Extensions;
 using System.Globalization;
 using System.Reflection;
 using WPFLocalizeExtension.Engine;
+using Path = System.IO.Path;
 
 namespace MajdataEdit
 {
@@ -53,8 +54,17 @@ namespace MajdataEdit
         public int clockStream = -114514;
 
         public static string maidataDir;
-        const string majSettingFilename = "majSetting.json";
-        const string editorSettingFilename = "EditorSetting.json";
+        private const string majProjectFilename = "majdata.majproj";
+        private const string majSettingFilename = "majSetting.json";
+        private const string editorSettingFilename = "EditorSetting.json";
+        private const string maidataFilename = "maidata.txt";
+        private const string maidataBakFilename = "maidata.bak.txt";
+        private const string trackFilename = "track.mp3";
+
+        //记录项目是否被读取，仅在被读取过的情况下保存项目设置，解决两个bug:
+        //1. 谱面打开过程中出现异常，关闭时设置会被覆盖成无效值，下次打开谱面会出现数组下标无效的异常（因为lastEditDiff默认值为-1）
+        //2. 未打开任何谱面时关闭程序，会在程序所在盘符根目录创建项目文件
+        private bool projectLoaded;
 
         float[] waveLevels;
         float[] waveEnergies;
@@ -238,8 +248,8 @@ namespace MajdataEdit
         {
             if (soundSetting != null)
                 soundSetting.Close();
-            var audioPath = path + "/track.mp3";
-            var dataPath = path + "/maidata.txt";
+            var audioPath = Path.Combine(path, trackFilename);
+            var dataPath = Path.Combine(path, maidataFilename);
             if (!File.Exists(audioPath)) MessageBox.Show(GetLocalizedString("NoTrack_mp3"), GetLocalizedString("Error"));
             if (!File.Exists(dataPath)) MessageBox.Show(GetLocalizedString("NoMaidata_txt"), GetLocalizedString("Error"));
             maidataDir = path;
@@ -286,7 +296,7 @@ namespace MajdataEdit
         }
         private void ReadWaveFromFile()
         {
-            var bgmDecode = Bass.BASS_StreamCreateFile(maidataDir + "/track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
+            var bgmDecode = Bass.BASS_StreamCreateFile(Path.Combine(maidataDir, trackFilename), 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
             try
             {
                 var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmDecode, BASSMode.BASS_POS_BYTE));
@@ -347,23 +357,31 @@ namespace MajdataEdit
             if (maidataDir == "")
             {
                 var saveDialog = new Microsoft.Win32.SaveFileDialog();
-                saveDialog.Filter = "maidata.txt|maidata.txt";
+                saveDialog.Filter = $"{maidataFilename}|{maidataFilename}";
                 saveDialog.OverwritePrompt = true;
                 if ((bool)saveDialog.ShowDialog())
                 {
                     maidataDir = new FileInfo(saveDialog.FileName).DirectoryName;
                 }
             }
-            SimaiProcess.SaveData(maidataDir + "/maidata.bak.txt");
+            
             SaveSetting();
             if (writeToDisk)
             {
-                SimaiProcess.SaveData(maidataDir + "/maidata.txt");
+                //正式保存
+                SimaiProcess.SaveData(Path.Combine(maidataDir, maidataFilename));
                 SetSavedState(true);
+            }
+            else
+            {
+                //临时保存，播放前使用
+                SimaiProcess.SaveData(Path.Combine(maidataDir, maidataBakFilename));
             }
         }
         void SaveSetting()
         {
+            if (!projectLoaded) return;
+
             MajSetting setting = new MajSetting();
             setting.lastEditDiff = selectedDifficulty;
             setting.lastEditTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
@@ -378,35 +396,39 @@ namespace MajdataEdit
         }
         void ReadSetting()
         {
-            var path = maidataDir + "/" + majSettingFilename;
-            if (!File.Exists(path)) return;
-            var setting = JsonConvert.DeserializeObject<MajSetting>(File.ReadAllText(path));
-            LevelSelector.SelectedIndex = setting.lastEditDiff;
-            selectedDifficulty = setting.lastEditDiff;
-            SetBgmPosition(setting.lastEditTime);
-            Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL,setting.BGM_Level);
-            Bass.BASS_ChannelSetAttribute(trackStartStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
-            Bass.BASS_ChannelSetAttribute(allperfectStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
-            Bass.BASS_ChannelSetAttribute(clockStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
-            Bass.BASS_ChannelSetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
-            Bass.BASS_ChannelSetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Slide_Level);
-            Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Break_Level);
-            Bass.BASS_ChannelSetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
-            Bass.BASS_ChannelSetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
-            Bass.BASS_ChannelSetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
-            Bass.BASS_ChannelSetAttribute(holdRiserStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
+            var path = Path.Combine(maidataDir, majSettingFilename);
+            if (File.Exists(path))
+            {
+                var setting = JsonConvert.DeserializeObject<MajSetting>(File.ReadAllText(path));
+                LevelSelector.SelectedIndex = setting.lastEditDiff;
+                selectedDifficulty = setting.lastEditDiff;
+                SetBgmPosition(setting.lastEditTime);
+                Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL,setting.BGM_Level);
+                Bass.BASS_ChannelSetAttribute(trackStartStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
+                Bass.BASS_ChannelSetAttribute(allperfectStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
+                Bass.BASS_ChannelSetAttribute(clockStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
+                Bass.BASS_ChannelSetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
+                Bass.BASS_ChannelSetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Slide_Level);
+                Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Break_Level);
+                Bass.BASS_ChannelSetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
+                Bass.BASS_ChannelSetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
+                Bass.BASS_ChannelSetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
+                Bass.BASS_ChannelSetAttribute(holdRiserStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
+            }
+            //即使未读取到文件，也视为项目已加载，同时保存默认配置
 
+            projectLoaded = true;
             SaveSetting(); // 覆盖旧版本setting
         }
         private void CreateNewFumen(string path)
         {
-            if (File.Exists(path + "/maidata.txt"))
+            if (File.Exists(Path.Combine(path, maidataFilename)))
             {
                 MessageBox.Show(GetLocalizedString("MaidataExist"));
             }
             else
             {
-                File.WriteAllText(path + "/maidata.txt",
+                File.WriteAllText(Path.Combine(path, maidataFilename),
                     "&title="+GetLocalizedString("SetTitle")+"\n" +
                     "&artist=" + GetLocalizedString("SetArtist") + "\n" +
                     "&des=" + GetLocalizedString("SetDes") + "\n" +

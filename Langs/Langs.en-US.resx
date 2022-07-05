@@ -369,4 +369,7 @@ Press the Insert key to switch back to normal mode.</value>
   <data name="RenderModeSW" xml:space="preserve">
     <value>Software</value>
   </data>
+  <data name="ArgOpenFailedFileMissing" xml:space="preserve">
+    <value>Failed to open project: Missing file {0}.</value>
+  </data>
 </root>
