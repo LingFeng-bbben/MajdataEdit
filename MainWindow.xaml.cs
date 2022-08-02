@@ -481,5 +481,13 @@ namespace MajdataEdit
             FindGrid.Visibility = Visibility.Collapsed;
             FumenContent.Focus();
         }
+
+        private void SettingLabel_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            // 单击设置的时候也可以进入设置界面
+            EditorSettingPanel esp = new EditorSettingPanel();
+            esp.Owner = this;
+            esp.Show();
+        }
     }
 }

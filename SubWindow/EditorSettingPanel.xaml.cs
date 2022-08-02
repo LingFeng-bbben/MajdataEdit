@@ -111,6 +111,10 @@ namespace MajdataEdit
             window.editorSetting.touchSpeed = float.Parse(ViewerTouchSpeed.Text);
             window.SaveEditorSetting();
 
+            window.ViewerCover.Content = window.editorSetting.backgroundCover.ToString();
+            window.ViewerSpeed.Content = window.editorSetting.playSpeed.ToString("F1");    // 转化为形如"7.0", "9.5"这样的速度
+            window.ViewerTouchSpeed.Content = window.editorSetting.touchSpeed.ToString("F1");
+
             saveFlag = true;
             this.Close();
         }
