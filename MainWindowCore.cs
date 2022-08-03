@@ -42,6 +42,7 @@ namespace MajdataEdit
 
         public int bgmStream = -114514;
         public int clickStream = -114514;
+        public int judgeStream = -114514;
         public int breakStream = -114514;
         public int exStream = -114514;
         public int hanabiStream = -114514;
@@ -369,6 +370,7 @@ namespace MajdataEdit
             setting.lastEditTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.BGM_Level);
             Bass.BASS_ChannelGetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Tap_Level);
+            Bass.BASS_ChannelGetAttribute(judgeStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Tap_Level);
             Bass.BASS_ChannelGetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Break_Level);
             Bass.BASS_ChannelGetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Ex_Level);
             Bass.BASS_ChannelGetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Slide_Level);
@@ -389,6 +391,7 @@ namespace MajdataEdit
             Bass.BASS_ChannelSetAttribute(allperfectStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
             Bass.BASS_ChannelSetAttribute(clockStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
             Bass.BASS_ChannelSetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
+            Bass.BASS_ChannelSetAttribute(judgeStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
             Bass.BASS_ChannelSetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Slide_Level);
             Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Break_Level);
             Bass.BASS_ChannelSetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
@@ -485,7 +488,8 @@ namespace MajdataEdit
         private void ReadSoundEffect()
         {
             var path = Environment.CurrentDirectory + "/SFX/";
-            clickStream = Bass.BASS_StreamCreateFile(path + "tap.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            clickStream = Bass.BASS_StreamCreateFile(path + "answer.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            judgeStream = Bass.BASS_StreamCreateFile(path + "judge.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             breakStream = Bass.BASS_StreamCreateFile(path + "break.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             exStream = Bass.BASS_StreamCreateFile(path + "ex.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             hanabiStream = Bass.BASS_StreamCreateFile(path + "hanabi.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
@@ -513,6 +517,10 @@ namespace MajdataEdit
                     if (se.hasClick)
                     {
                         Bass.BASS_ChannelPlay(clickStream, true);
+                    }
+                    if (se.hasJudge)
+                    {
+                        Bass.BASS_ChannelPlay(judgeStream, true);
                     }
                     if (se.hasBreak) //may cause delay
                     {
@@ -542,11 +550,11 @@ namespace MajdataEdit
                     {
                         Bass.BASS_ChannelPlay(slideStream, true);
                     }
-                    if (se.hasAllPerfect)
+                    if (se.isAllPerfect)
                     {
                         Bass.BASS_ChannelPlay(allperfectStream, true);
                     }
-                    if (se.hasClock)
+                    if (se.isClock)
                     {
                         Bass.BASS_ChannelPlay(clockStream, true);
                     }
@@ -1301,7 +1309,7 @@ namespace MajdataEdit
                             double clock_int = 60.0d / SimaiProcess.notelist[0].currentBpm;
                             for (int i = 0; i < clock_cnt; i++)
                             {
-                                waitToBePlayed.Add(new SoundEffectTiming(i*clock_int, _hasClick: false, _hasClock: true));
+                                waitToBePlayed.Add(new SoundEffectTiming(i*clock_int, _isClock: true));
                             }
                         } catch
                         {
@@ -1319,66 +1327,102 @@ namespace MajdataEdit
                 var combIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - noteGroup.time) < 0.001f);
                 if (combIndex != -1)
                 {
+                    // 此时间点已经有SETiming对象 则选取此对象
                     stobj = waitToBePlayed[combIndex];
-                    stobj.hasClick = true;
                 }
                 else
                 {
+                    // 否则 新建一个SETiming对象
                     stobj = new SoundEffectTiming(noteGroup.time);
                 }
 
                 var notes = noteGroup.getNotes();
-                if (notes.All(o => o.isSlideNoHead))
-                {
-                    stobj.hasClick = false;
-                }
-                if (notes.Any(o => o.isBreak))
-                {
-                    stobj.hasBreak = true;
-                }
-                if (notes.Any(o => o.noteType == SimaiNoteType.Touch))
-                {
-                    stobj.hasTouch = true;
-                }
-                if (notes.Any(o => o.isHanabi && o.noteType == SimaiNoteType.Touch)) //may cause delay
-                {
-                    stobj.hasHanabi = true;
-                }
-                if (notes.Any(o => o.isEx))
-                {
-                    stobj.hasEx = true;
-                }
-                if (notes.Any(o => o.noteType == SimaiNoteType.TouchHold))
-                {
-                    stobj.hasTouchHold = true;
-                }
-
-                if (combIndex != -1)
-                {
-                    waitToBePlayed[combIndex] = stobj;
-                }else
-                {
-                    waitToBePlayed.Add(stobj);
-                }
 
                 foreach (var note in notes)
                 {
+                    if (note.noteType == SimaiNoteType.Tap)
+                    {
+                        // Tap: 播放click, break/ex/judge
+                        stobj.hasClick = true;
+                        if (note.isBreak)
+                        {
+                            stobj.hasBreak = true;
+                        } else if (note.isEx)
+                        {
+                            stobj.hasEx = true;
+                        } else
+                        {
+                            stobj.hasJudge = true;
+                        }
+                    }
                     if (note.noteType == SimaiNoteType.Hold)
                     {
+                        // Hold: 开头播放click 结尾播放click, judge
+                        stobj.hasClick = true;
+
+                        // Hold结束时刻
                         var targetTime = noteGroup.time + note.holdTime;
                         var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
                         if (nearIndex != -1)
                         {
                             waitToBePlayed[nearIndex].hasClick = true;
+                            waitToBePlayed[nearIndex].hasJudge = true;
                         }
                         else
                         {
-                            SoundEffectTiming holdRelease = new SoundEffectTiming(targetTime);
+                            SoundEffectTiming holdRelease = new SoundEffectTiming(targetTime, _hasClick: true, _hasJudge: true);
                             waitToBePlayed.Add(holdRelease);
+                        }
+                    }
+                    if (note.noteType == SimaiNoteType.Slide)
+                    {
+                        // Slide: 播放Tap 启动时刻播放slide
+                        if (!note.isSlideNoHead)
+                        {
+                            stobj.hasClick = true;
+                            if (note.isBreak)
+                            {
+                                stobj.hasBreak = true;
+                            }
+                            else if (note.isEx)
+                            {
+                                stobj.hasEx = true;
+                            }
+                            else
+                            {
+                                stobj.hasJudge = true;
+                            }
+                        }
+
+                        var targetTime = note.slideStartTime;
+                        var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
+                        // Slide启动时刻
+                        if (nearIndex != -1)
+                        {
+                            waitToBePlayed[nearIndex].hasSlide = true;
+                        }
+                        else
+                        {
+                            SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasSlide: true);
+                            waitToBePlayed.Add(slide);
+                        }
+                    }
+                    if (note.noteType == SimaiNoteType.Touch)
+                    {
+                        // Touch: 播放click, touch, hanabi(if so)
+                        stobj.hasClick = true;
+                        stobj.hasTouch = true;
+                        if (note.isHanabi)
+                        {
+                            stobj.hasHanabi = true;
                         }
                     }
                     if (note.noteType == SimaiNoteType.TouchHold)
                     {
+                        // TouchHold: 开头播放click 结尾播放click, touch, hanabi(if so)
+                        stobj.hasClick = true;
+
+                        // TouchHold结束时刻
                         var targetTime = noteGroup.time + note.holdTime;
                         var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
                         if (nearIndex != -1)
@@ -1389,32 +1433,28 @@ namespace MajdataEdit
                             }
                             waitToBePlayed[nearIndex].hasClick = true;
                             waitToBePlayed[nearIndex].hasTouchHoldEnd = true;
+                            waitToBePlayed[nearIndex].hasTouch = true;
                         }
                         else
                         {
-                            SoundEffectTiming tHoldRelease = new SoundEffectTiming(targetTime, _hasHanabi: note.isHanabi, _hasTouchHoldEnd: true);
+                            SoundEffectTiming tHoldRelease = new SoundEffectTiming(targetTime, _hasClick: true, _hasTouch: true, _hasHanabi: note.isHanabi, _hasTouchHoldEnd: true);
                             waitToBePlayed.Add(tHoldRelease);
                         }
                     }
-                    if (note.noteType == SimaiNoteType.Slide)
-                    {
-                        var targetTime = note.slideStartTime;
-                        var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
-                        if (nearIndex != -1)
-                        {
-                            waitToBePlayed[nearIndex].hasSlide = true;
-                        }
-                        else
-                        {
-                            SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasClick: false, _hasSlide: true);
-                            waitToBePlayed.Add(slide);
-                        }
-                    }
+                }
+
+                if (combIndex != -1)
+                {
+                    waitToBePlayed[combIndex] = stobj;
+                }
+                else
+                {
+                    waitToBePlayed.Add(stobj);
                 }
             }
             if (isOpIncluded)
             {
-                waitToBePlayed.Add(new SoundEffectTiming(GetAllPerfectStartTime(), _hasClick: false, _hasAllPerfect: true));
+                waitToBePlayed.Add(new SoundEffectTiming(GetAllPerfectStartTime(),_isAllPerfect: true));
             }
             waitToBePlayed.Sort((o1,o2) => o1.time<o2.time?-1:1);
         }
@@ -1438,7 +1478,8 @@ namespace MajdataEdit
 
         class SoundEffectTiming
         {
-            public bool hasClick = true;
+            public bool hasClick = false;
+            public bool hasJudge = false;
             public bool hasBreak = false;
             public bool hasTouch = false;
             public bool hasHanabi = false;
@@ -1446,17 +1487,18 @@ namespace MajdataEdit
             public bool hasTouchHold = false;
             public bool hasTouchHoldEnd = false;
             public bool hasSlide = false;
-            public bool hasAllPerfect = false;
-            public bool hasClock = false;
+            public bool isAllPerfect = false;
+            public bool isClock = false;
             public double time;
 
-            public SoundEffectTiming(double _time, bool _hasClick = true, bool _hasBreak = false, bool _hasTouch = false,
-                                     bool _hasHanabi = false, bool _hasEx = false, bool _hasTouchHold = false,
-                                     bool _hasSlide = false, bool _hasTouchHoldEnd = false, bool _hasAllPerfect = false,
-                                     bool _hasClock = false)
+            public SoundEffectTiming(double _time, bool _hasClick = false, bool _hasJudge = false, bool _hasBreak = false,
+                                     bool _hasTouch = false,  bool _hasHanabi = false, bool _hasEx = false, bool _hasTouchHold = false,
+                                     bool _hasSlide = false, bool _hasTouchHoldEnd = false, bool _isAllPerfect = false,
+                                     bool _isClock = false)
             {
                 time = _time;
                 hasClick = _hasClick;
+                hasJudge = _hasJudge;
                 hasBreak = _hasBreak;
                 hasTouch = _hasTouch;
                 hasHanabi = _hasHanabi;
@@ -1464,8 +1506,35 @@ namespace MajdataEdit
                 hasTouchHold = _hasTouchHold;
                 hasSlide = _hasSlide;
                 hasTouchHoldEnd = _hasTouchHoldEnd;
-                hasAllPerfect = _hasAllPerfect;
-                hasClock = _hasClock;
+                isAllPerfect = _isAllPerfect;
+                isClock = _isClock;
+            }
+
+            override
+            public string ToString()
+            {
+                string res = "{" + time.ToString() + ": ";
+                Dictionary<string, bool> status = new Dictionary<string, bool>();
+                status.Add("hasClick", hasClick);
+                status.Add("hasBreak", hasBreak);
+                status.Add("hasTouch", hasTouch);
+                status.Add("hasHanabi", hasHanabi);
+                status.Add("hasEx", hasEx);
+                status.Add("hasTouchHold", hasTouchHold);
+                status.Add("hasSlide", hasSlide);
+                status.Add("hasTouchHoldEnd", hasTouchHoldEnd);
+                status.Add("isAllPerfect", isAllPerfect);
+                status.Add("isClock", isClock);
+
+                foreach (var e in status)
+                {
+                    if (e.Value)
+                    {
+                        res += e.Key + ", ";
+                    }
+                }
+
+                return res.Substring(0, res.Length - 2) + "}";
             }
         }
     }

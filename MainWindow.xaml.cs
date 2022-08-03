@@ -126,6 +126,8 @@ namespace MajdataEdit
             Bass.BASS_StreamFree(bgmStream);
             Bass.BASS_ChannelStop(clickStream);
             Bass.BASS_StreamFree(clickStream);
+            Bass.BASS_ChannelStop(judgeStream);
+            Bass.BASS_StreamFree(judgeStream);
             Bass.BASS_ChannelStop(breakStream);
             Bass.BASS_StreamFree(breakStream);
             Bass.BASS_ChannelStop(exStream);
