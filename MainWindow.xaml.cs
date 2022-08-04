@@ -59,6 +59,11 @@ namespace MajdataEdit
             VisualEffectRefreshTimer.Start();
             waveStopMonitorTimer.Elapsed += WaveStopMonitorTimer_Elapsed;
             PlbHideTimer.Elapsed += PlbHideTimer_Elapsed;
+
+            if (editorSetting.AutoCheckUpdate)
+            {
+                CheckUpdate(onStart: true);
+            }
         }
 
 
@@ -488,6 +493,11 @@ namespace MajdataEdit
             EditorSettingPanel esp = new EditorSettingPanel();
             esp.Owner = this;
             esp.Show();
+        }
+
+        private void CheckUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            CheckUpdate();
         }
     }
 }

@@ -362,4 +362,22 @@
   <data name="SetVolumeDefaultSuccess" xml:space="preserve">
     <value>设置成功，之后新建的新谱面将会沿用目前的音量设置</value>
   </data>
+  <data name="CheckUpdate" xml:space="preserve">
+    <value>检查更新</value>
+  </data>
+  <data name="AutoUpdateCheckTip" xml:space="preserve">
+    <value>(你可以在editorSetting.json中禁用自动检查更新功能)</value>
+  </data>
+  <data name="NewVersionDetected" xml:space="preserve">
+    <value>检查到新版本 {0}
+(当前版本为 {1})
+
+是否前往下载？</value>
+  </data>
+  <data name="NoNewVersion" xml:space="preserve">
+    <value>您已经是最新版本了，无需更新</value>
+  </data>
+  <data name="RequestFail" xml:space="preserve">
+    <value>网络请求失败，请检查网络后重试</value>
+  </data>
 </root>

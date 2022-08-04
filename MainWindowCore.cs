@@ -32,6 +32,9 @@ namespace MajdataEdit
 {
     public partial class MainWindow : Window
     {
+        public const string MAJDATA_VERSION = "Beta3.1";
+        bool UpdateCheckLock = false;
+
         Timer currentTimeRefreshTimer = new Timer(100);
         Timer clickSoundTimer = new Timer(1);
         Timer VisualEffectRefreshTimer = new Timer(1);
@@ -1456,6 +1459,73 @@ namespace MajdataEdit
 
             //修改提示弹窗可见性
             OverrideModeTipsPopup.Visibility = fumenOverwriteMode ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void CheckUpdate(bool onStart = false)
+        {
+            if (UpdateCheckLock)
+            {
+                return;
+            }
+            UpdateCheckLock = true;
+
+            void requestHandler(object sender, System.Net.DownloadDataCompletedEventArgs e)
+            {
+                UpdateCheckLock = false;
+
+                if (e.Error != null)
+                {
+                    // 网络请求失败
+                    if (!onStart)
+                    {
+                        MessageBox.Show(GetLocalizedString("RequestFail"), GetLocalizedString("CheckUpdate"));
+                    }
+                    return;
+                }
+
+                string response = Encoding.UTF8.GetString(e.Result);
+                var resJson = JsonConvert.DeserializeObject<JObject>(response);
+                string latestVersion = resJson["tag_name"].ToString();
+                string releaseUrl = resJson["html_url"].ToString();
+
+                if (latestVersion != MAJDATA_VERSION)
+                {
+                    // 版本不同，需要更新
+                    string msgboxText = String.Format(GetLocalizedString("NewVersionDetected"), latestVersion, MAJDATA_VERSION);
+                    if (onStart)
+                    {
+                        msgboxText += "\n\n" + GetLocalizedString("AutoUpdateCheckTip");
+                    }
+
+                    MessageBoxResult result = MessageBox.Show(
+                        msgboxText,
+                        GetLocalizedString("CheckUpdate"),
+                        MessageBoxButton.YesNo);
+                    switch (result)
+                    {
+                        case MessageBoxResult.Yes:
+                            var startInfo = new ProcessStartInfo(releaseUrl)
+                            {
+                                UseShellExecute = true
+                            };
+                            Process.Start(startInfo);
+                            break;
+                        case MessageBoxResult.No:
+                            break;
+                    }
+                }
+                else
+                {
+                    // 没有新版本，可以不用更新
+                    if (!onStart)
+                    {
+                        MessageBox.Show(GetLocalizedString("NoNewVersion"), GetLocalizedString("CheckUpdate"));
+                    }
+                }
+            }
+            // 检查是否需要更新软件
+            WebControl.RequestGETAsync("http://api.github.com/repos/LingFeng-bbben/MajdataView/releases/latest", requestHandler);
+            
         }
 
         class SoundEffectTiming

@@ -386,4 +386,27 @@ Press the Insert key to switch back to normal mode.</value>
     <value>Success! Your new chart will use these volume setting as default.</value>
     <comment>需要翻译</comment>
   </data>
+  <data name="CheckUpdate" xml:space="preserve">
+    <value>CheckUpdate</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="AutoUpdateCheckTip" xml:space="preserve">
+    <value>(You can disabled AutoCheckUpdate in editorSetting.json)</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="NewVersionDetected" xml:space="preserve">
+    <value>New version detected: {0}
+(your current version: {1})
+
+Open Browser to download latest update of Majdata?</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="NoNewVersion" xml:space="preserve">
+    <value>Your Majdata doesn't need to update.</value>
+    <comment>需要翻译</comment>
+  </data>
+  <data name="RequestFail" xml:space="preserve">
+    <value>Internet request fail, please check your internet connection.</value>
+    <comment>需要翻译</comment>
+  </data>
 </root>

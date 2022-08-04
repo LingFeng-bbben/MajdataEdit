@@ -57,6 +57,7 @@
             </MenuItem>
             <MenuItem Header="{lex:Loc SimaiWiki}" Click="MenuItem_SimaiWiki_Click" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
             <MenuItem Header="{lex:Loc Github}" Click="MenuItem_GitHub_Click" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
+            <MenuItem Header="{lex:Loc CheckUpdate}" Click="CheckUpdate_Click" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
         </Menu>
         <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,14,92" Width="255" Height="255" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
             <Image.RenderTransform>
