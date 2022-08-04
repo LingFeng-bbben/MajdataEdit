@@ -378,4 +378,12 @@ Press the Insert key to switch back to normal mode.</value>
   <data name="RenderModeSW" xml:space="preserve">
     <value>ソフトウェア</value>
   </data>
+  <data name="SetDefaultVolume" xml:space="preserve">
+    <value>現在の音量をデフォルトに設定</value>
+    <comment>我机翻的（</comment>
+  </data>
+  <data name="SetVolumeDefaultSuccess" xml:space="preserve">
+    <value>Success! Your new chart will use these volume setting as default.</value>
+    <comment>需要翻译</comment>
+  </data>
 </root>

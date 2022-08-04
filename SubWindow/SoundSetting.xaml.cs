@@ -22,6 +22,8 @@ namespace MajdataEdit
     public partial class SoundSetting : Window
     {
         MainWindow MainWindow;
+        Dictionary<Slider, Label> SliderValueBindingMap = new Dictionary<Slider, Label>(); // Slider和ValueLabel的绑定关系
+
         public SoundSetting()
         {
             MainWindow = Application.Current.Windows
@@ -35,12 +37,21 @@ namespace MajdataEdit
 
         private void SoundSettingWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            SliderValueBindingMap.Add(BGM_Slider, BGM_Value);
+            SliderValueBindingMap.Add(Tap_Slider, Tap_Value);
+            SliderValueBindingMap.Add(Break_Slider, Break_Value);
+            SliderValueBindingMap.Add(Slide_Slider, Slide_Value);
+            SliderValueBindingMap.Add(EX_Slider, EX_Value);
+            SliderValueBindingMap.Add(Touch_Slider, Touch_Value);
+            SliderValueBindingMap.Add(Hanabi_Slider, Hanabi_Value);
+
             SetSlider(BGM_Slider, MainWindow.bgmStream, MainWindow.trackStartStream, MainWindow.allperfectStream, MainWindow.clockStream);
             SetSlider(Tap_Slider, MainWindow.clickStream);
             SetSlider(Break_Slider, MainWindow.breakStream);
             SetSlider(Slide_Slider, MainWindow.slideStream);
 
-            SetSlider(EX_Slider, MainWindow.exStream, MainWindow.touchStream);
+            SetSlider(EX_Slider, MainWindow.exStream);
+            SetSlider(Touch_Slider, MainWindow.touchStream);
 
             SetSlider(Hanabi_Slider, MainWindow.hanabiStream, MainWindow.holdRiserStream);
 
@@ -57,7 +68,8 @@ namespace MajdataEdit
                 UpdateProgressBar(Tap_Level, MainWindow.clickStream);
                 UpdateProgressBar(Break_Level, MainWindow.breakStream);
                 UpdateProgressBar(Slide_Level, MainWindow.slideStream);
-                UpdateProgressBar(EX_Level, MainWindow.exStream, MainWindow.touchStream);
+                UpdateProgressBar(EX_Level, MainWindow.exStream);
+                UpdateProgressBar(Touch_Level, MainWindow.touchStream);
                 UpdateProgressBar(Hanabi_Level, MainWindow.hanabiStream, MainWindow.holdRiserStream);
             });
         }
@@ -85,10 +97,15 @@ namespace MajdataEdit
             foreach(var channel in channels)
                 Bass.BASS_ChannelGetAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, ref ampLevel);
             slider.Value = ampLevel;
+            SliderValueBindingMap[slider].Content = slider.Value.ToString("P0");
             void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
             {
+                Slider sld = (Slider)sender;
                 foreach (var channel in channels)
-                    Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, (float)((Slider)sender).Value);
+                    Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, (float)sld.Value);
+
+                SliderValueBindingMap[sld].Content = sld.Value.ToString("P0");
+
             }
             slider.ValueChanged += Slider_ValueChanged;
         }
@@ -97,6 +114,19 @@ namespace MajdataEdit
         {
             UpdateLevelTimer.Stop();
             UpdateLevelTimer.Dispose();
+        }
+
+        private void BtnSetDefault_Click(object sender, RoutedEventArgs e)
+        {
+            Bass.BASS_ChannelGetAttribute(MainWindow.bgmStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_BGM_Level);
+            Bass.BASS_ChannelGetAttribute(MainWindow.clickStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Tap_Level);
+            Bass.BASS_ChannelGetAttribute(MainWindow.breakStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Break_Level);
+            Bass.BASS_ChannelGetAttribute(MainWindow.slideStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Slide_Level);
+            Bass.BASS_ChannelGetAttribute(MainWindow.exStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Ex_Level);
+            Bass.BASS_ChannelGetAttribute(MainWindow.touchStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Touch_Level);
+            Bass.BASS_ChannelGetAttribute(MainWindow.hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Hanabi_Level);
+            MainWindow.SaveEditorSetting();
+            MessageBox.Show(MainWindow.GetLocalizedString("SetVolumeDefaultSuccess"));
         }
     }
 }

@@ -356,4 +356,10 @@
   <data name="RenderModeSW" xml:space="preserve">
     <value>软件渲染</value>
   </data>
+  <data name="SetDefaultVolume" xml:space="preserve">
+    <value>将当前音量设为默认</value>
+  </data>
+  <data name="SetVolumeDefaultSuccess" xml:space="preserve">
+    <value>设置成功，之后新建的新谱面将会沿用目前的音量设置</value>
+  </data>
 </root>

@@ -254,7 +254,17 @@ namespace MajdataEdit
             bgmStream = BassFx.BASS_FX_TempoCreate(decodeStream, BASSFlag.BASS_FX_FREESOURCE);
             //Bass.BASS_StreamCreateFile(audioPath, 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
 
-            Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, 0.7f);
+            Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_BGM_Level);
+            Bass.BASS_ChannelSetAttribute(trackStartStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_BGM_Level);
+            Bass.BASS_ChannelSetAttribute(allperfectStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_BGM_Level);
+            Bass.BASS_ChannelSetAttribute(clockStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_BGM_Level);
+            Bass.BASS_ChannelSetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Tap_Level);
+            Bass.BASS_ChannelSetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Slide_Level);
+            Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Break_Level);
+            Bass.BASS_ChannelSetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Ex_Level);
+            Bass.BASS_ChannelSetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Touch_Level);
+            Bass.BASS_ChannelSetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Hanabi_Level);
+            Bass.BASS_ChannelSetAttribute(holdRiserStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Hanabi_Level);
             var info = Bass.BASS_ChannelGetInfo(bgmStream);
             if (info.freq != 44100) MessageBox.Show(GetLocalizedString("Warn44100Hz"), GetLocalizedString("Attention"));
             ReadWaveFromFile();
@@ -371,6 +381,7 @@ namespace MajdataEdit
             Bass.BASS_ChannelGetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Tap_Level);
             Bass.BASS_ChannelGetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Break_Level);
             Bass.BASS_ChannelGetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Ex_Level);
+            Bass.BASS_ChannelGetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Touch_Level);
             Bass.BASS_ChannelGetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Slide_Level);
             Bass.BASS_ChannelGetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Hanabi_Level);
             string json = JsonConvert.SerializeObject(setting);
@@ -392,7 +403,7 @@ namespace MajdataEdit
             Bass.BASS_ChannelSetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Slide_Level);
             Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Break_Level);
             Bass.BASS_ChannelSetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
-            Bass.BASS_ChannelSetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
+            Bass.BASS_ChannelSetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Touch_Level);
             Bass.BASS_ChannelSetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
             Bass.BASS_ChannelSetAttribute(holdRiserStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
 
@@ -418,6 +429,16 @@ namespace MajdataEdit
             editorSetting = new EditorSetting();
             editorSetting.Language = "en-US";   // 在未初始化EditorSetting的时候 以较为通用的英文运行
             editorSetting.RenderMode = RenderOptions.ProcessRenderMode == RenderMode.SoftwareOnly ? 1 : 0;  // 使用命令行指定强制软件渲染时，同步修改配置值
+
+            // 设置默认音量
+            editorSetting.Default_BGM_Level = 0.8f;
+            editorSetting.Default_Tap_Level = 1f;
+            editorSetting.Default_Slide_Level = 0.3f;
+            editorSetting.Default_Break_Level = 0.6f;
+            editorSetting.Default_Ex_Level = 0.4f;
+            editorSetting.Default_Touch_Level = 0.5f;
+            editorSetting.Default_Hanabi_Level = 0.4f;
+
             File.WriteAllText(editorSettingFilename, JsonConvert.SerializeObject(editorSetting, Formatting.Indented));
 
             EditorSettingPanel esp = new EditorSettingPanel(true);

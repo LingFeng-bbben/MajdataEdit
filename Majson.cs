@@ -44,6 +44,7 @@ namespace MajdataEdit
         public float Slide_Level;
         public float Break_Level;
         public float Ex_Level;
+        public float Touch_Level;
         public float Hanabi_Level;
     }
 
@@ -61,5 +62,12 @@ namespace MajdataEdit
         public string DecreasePlaybackSpeedKey = "Ctrl+o";
         public float FontSize = 12;
         public int RenderMode = 0;  //0=硬件渲染(默认)，1=软件渲染
+        public float Default_BGM_Level;
+        public float Default_Tap_Level;
+        public float Default_Slide_Level;
+        public float Default_Break_Level;
+        public float Default_Ex_Level;
+        public float Default_Touch_Level;
+        public float Default_Hanabi_Level;
     }
 }
