@@ -10,7 +10,7 @@
         lex:ResxLocalizationProvider.DefaultDictionary="Langs" 
         mc:Ignorable="d"
         Background="{DynamicResource WindowBackground}"
-        Title="{lex:Loc Key=MapMuriDetc}" Height="150" Width="338.806" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+        Title="{lex:Loc Key=MapMuriDetc}" Height="150" Width="338.806" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner">
     <Window.Resources>
 
     </Window.Resources>
@@ -53,7 +53,7 @@
             
         </Label>
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-            <TextBox x:Name="SlideAccuracy_TextBox" Text="0.15" 
+            <TextBox x:Name="SlideAccuracy_TextBox" Text="0.2" 
                      Width="70" Height="18" HorizontalAlignment="Left"  VerticalAlignment="Top"
                      FontSize="12" Margin="5,5,0,0" />
             <Label Foreground="{DynamicResource HelperForeground}" Margin="3,3,0,0">

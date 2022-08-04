@@ -50,9 +50,7 @@ namespace MajdataEdit
 
     public class EditorSetting
     {
-        public float playSpeed = 7.0f;
-        public float touchSpeed = 7.5f;
-        public float backgroundCover = 0.6f;
+        public float DefaultSlideAccuracy = 0.2f;
         public string Language = "zh-CN";
         public string PlayPauseKey = "Ctrl+Shift+c";
         public string PlayStopKey = "Ctrl+Shift+x";
@@ -62,6 +60,9 @@ namespace MajdataEdit
         public string DecreasePlaybackSpeedKey = "Ctrl+o";
         public float FontSize = 12;
         public int RenderMode = 0;  //0=硬件渲染(默认)，1=软件渲染
+        public float playSpeed = 7.0f;
+        public float touchSpeed = 7.5f;
+        public float backgroundCover = 0.6f;
         public float Default_BGM_Level;
         public float Default_Tap_Level;
         public float Default_Slide_Level;

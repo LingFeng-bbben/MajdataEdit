@@ -548,5 +548,10 @@ namespace MajdataEdit
                 );
             }
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            SlideAccuracy_TextBox.Text = ((MainWindow)Owner).editorSetting.DefaultSlideAccuracy.ToString();
+        }
     }
 }

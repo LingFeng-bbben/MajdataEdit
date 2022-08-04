@@ -430,6 +430,7 @@ namespace MajdataEdit
             editorSetting.Language = "en-US";   // 在未初始化EditorSetting的时候 以较为通用的英文运行
             editorSetting.RenderMode = RenderOptions.ProcessRenderMode == RenderMode.SoftwareOnly ? 1 : 0;  // 使用命令行指定强制软件渲染时，同步修改配置值
 
+            editorSetting.DefaultSlideAccuracy = 0.2f; // 大家都要做能pass 200ms撞尾检测的好孩子喔
             // 设置默认音量
             editorSetting.Default_BGM_Level = 0.8f;
             editorSetting.Default_Tap_Level = 1f;
