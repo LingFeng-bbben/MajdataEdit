@@ -403,8 +403,16 @@ namespace MajdataEdit
         {
             if (GetRawFumenText() == ""||isLoading) return;
             SetSavedState(false);
-            chartChangeTimer.Stop();
-            chartChangeTimer.Start();
+            if (chartChangeTimer.Interval < 33)
+            {
+                SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
+                DrawWave();
+            }
+            else
+            {
+                chartChangeTimer.Stop();
+                chartChangeTimer.Start();
+            }
         }
 
         private void FumenContent_OnPreviewKeyDown(object sender, KeyEventArgs e)
