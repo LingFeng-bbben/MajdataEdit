@@ -366,7 +366,7 @@
     <value>检查更新</value>
   </data>
   <data name="AutoUpdateCheckTip" xml:space="preserve">
-    <value>(你可以在editorSetting.json中禁用自动检查更新功能)</value>
+    <value>(你可以在编辑器设置中禁用自动检查更新功能)</value>
   </data>
   <data name="NewVersionDetected" xml:space="preserve">
     <value>检查到新版本 {0}
@@ -382,5 +382,8 @@
   </data>
   <data name="ChartRefreshDelay" xml:space="preserve">
     <value>谱面刷新延迟(毫秒)</value>
+  </data>
+  <data name="AutoCheckUpdate" xml:space="preserve">
+    <value>自动检查更新(启动时)</value>
   </data>
 </root>

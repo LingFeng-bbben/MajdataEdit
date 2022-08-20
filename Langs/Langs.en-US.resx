@@ -380,7 +380,7 @@ Press the Insert key to switch back to normal mode.</value>
     <value>CheckUpdate</value>
   </data>
   <data name="AutoUpdateCheckTip" xml:space="preserve">
-    <value>(You can disabled AutoCheckUpdate in editorSetting.json)</value>
+    <value>(You can disabled AutoCheckUpdate in Editor Setting Panel)</value>
   </data>
   <data name="NewVersionDetected" xml:space="preserve">
     <value>New version detected: {0}
@@ -398,5 +398,8 @@ Open Browser to download latest update of Majdata?</value>
   <data name="ChartRefreshDelay" xml:space="preserve">
     <value>Chart Refresh Delay(ms)</value>
     <comment>可能需要翻译润色</comment>
+  </data>
+  <data name="AutoCheckUpdate" xml:space="preserve">
+    <value>Auto Check Update (when start)</value>
   </data>
 </root>

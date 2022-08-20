@@ -51,6 +51,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -105,9 +106,15 @@
                  Text="7.5"
                  MouseWheel="ViewerTouchSpeed_MouseWheel" />
 
+        <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <CheckBox x:Name="AutoUpdate" VerticalAlignment="Center"/>
+            <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
+               Content="{lex:Loc Key=AutoCheckUpdate}" />
+        </StackPanel>
+
 
         <StackPanel Orientation="Horizontal"
-                    Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"
+                    Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"
                     Margin="0,5,0,0">
             <Button x:Name="Save_Button" Content="{lex:Loc Key=Save}"
                     Width="70" Height="28" Margin="0,0,10,0"

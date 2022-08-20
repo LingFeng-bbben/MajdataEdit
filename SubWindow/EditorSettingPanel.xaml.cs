@@ -68,6 +68,7 @@ namespace MajdataEdit
             ViewerTouchSpeed.Text = window.editorSetting.touchSpeed.ToString("F1");
 
             ChartRefreshDelay.Text = window.editorSetting.ChartRefreshDelay.ToString();
+            AutoUpdate.IsChecked = window.editorSetting.AutoCheckUpdate;
         }
 
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -112,6 +113,7 @@ namespace MajdataEdit
             window.editorSetting.playSpeed = float.Parse(ViewerSpeed.Text);
             window.editorSetting.touchSpeed = float.Parse(ViewerTouchSpeed.Text);
             window.editorSetting.ChartRefreshDelay = int.Parse(ChartRefreshDelay.Text);
+            window.editorSetting.AutoCheckUpdate = (bool)AutoUpdate.IsChecked;
             window.SaveEditorSetting();
 
             window.ViewerCover.Content = window.editorSetting.backgroundCover.ToString();
