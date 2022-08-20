@@ -66,6 +66,8 @@ namespace MajdataEdit
             ViewerCover.Text = window.editorSetting.backgroundCover.ToString();
             ViewerSpeed.Text = window.editorSetting.playSpeed.ToString("F1"); // 转化为形如"7.0", "9.5"这样的速度
             ViewerTouchSpeed.Text = window.editorSetting.touchSpeed.ToString("F1");
+
+            ChartRefreshDelay.Text = window.editorSetting.ChartRefreshDelay.ToString();
         }
 
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -109,11 +111,14 @@ namespace MajdataEdit
             window.editorSetting.backgroundCover = float.Parse(ViewerCover.Text);
             window.editorSetting.playSpeed = float.Parse(ViewerSpeed.Text);
             window.editorSetting.touchSpeed = float.Parse(ViewerTouchSpeed.Text);
+            window.editorSetting.ChartRefreshDelay = int.Parse(ChartRefreshDelay.Text);
             window.SaveEditorSetting();
 
             window.ViewerCover.Content = window.editorSetting.backgroundCover.ToString();
             window.ViewerSpeed.Content = window.editorSetting.playSpeed.ToString("F1");    // 转化为形如"7.0", "9.5"这样的速度
             window.ViewerTouchSpeed.Content = window.editorSetting.touchSpeed.ToString("F1");
+            window.chartChangeTimer.Interval = window.editorSetting.ChartRefreshDelay;
+
 
             saveFlag = true;
             this.Close();

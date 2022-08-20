@@ -51,6 +51,7 @@ namespace MajdataEdit
     public class EditorSetting
     {
         public bool AutoCheckUpdate = true;
+        public int ChartRefreshDelay = 1000;
         public float DefaultSlideAccuracy = 0.2f;
         public string Language = "zh-CN";
         public string PlayPauseKey = "Ctrl+Shift+c";

@@ -27,6 +27,7 @@ using WPFLocalizeExtension.Extensions;
 using System.Globalization;
 using System.Reflection;
 using WPFLocalizeExtension.Engine;
+using System.Windows.Threading;
 
 namespace MajdataEdit
 {
@@ -83,6 +84,8 @@ namespace MajdataEdit
         List<SoundEffectTiming> waitToBePlayed;
 
         private bool fumenOverwriteMode = false;    //谱面文本覆盖模式
+
+        public Timer chartChangeTimer = new Timer(1000);    // 谱面变更延迟解析
 
         //*TEXTBOX CONTROL
         string GetRawFumenText()
@@ -484,6 +487,8 @@ namespace MajdataEdit
             ViewerCover.Content = editorSetting.backgroundCover.ToString();
             ViewerSpeed.Content = editorSetting.playSpeed.ToString("F1");    // 转化为形如"7.0", "9.5"这样的速度
             ViewerTouchSpeed.Content = editorSetting.touchSpeed.ToString("F1");
+
+            chartChangeTimer.Interval = editorSetting.ChartRefreshDelay; // 设置更新延迟
 
             SaveEditorSetting(); // 覆盖旧版本setting
         }

@@ -409,4 +409,8 @@ Open Browser to download latest update of Majdata?</value>
     <value>Internet request fail, please check your internet connection.</value>
     <comment>需要翻译</comment>
   </data>
+  <data name="ChartRefreshDelay" xml:space="preserve">
+    <value>Chart Refresh Delay(ms)</value>
+    <comment>需要翻译</comment>
+  </data>
 </root>

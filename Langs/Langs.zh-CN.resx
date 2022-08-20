@@ -380,4 +380,7 @@
   <data name="RequestFail" xml:space="preserve">
     <value>网络请求失败，请检查网络后重试</value>
   </data>
+  <data name="ChartRefreshDelay" xml:space="preserve">
+    <value>谱面刷新延迟(毫秒)</value>
+  </data>
 </root>

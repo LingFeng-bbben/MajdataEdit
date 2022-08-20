@@ -52,6 +52,8 @@ namespace MajdataEdit
             ReadEditorSetting();
             ReadMuriCheckSlideTime();
 
+            chartChangeTimer.Elapsed += ChartChangeTimer_Elapsed;
+            chartChangeTimer.AutoReset = false;
             currentTimeRefreshTimer.Elapsed += CurrentTimeRefreshTimer_Elapsed;
             currentTimeRefreshTimer.Start();
             clickSoundTimer.Elapsed += ClickSoundTimer_Elapsed;
@@ -400,10 +402,9 @@ namespace MajdataEdit
         private void FumenContent_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (GetRawFumenText() == ""||isLoading) return;
-            Console.WriteLine("TextChanged");
             SetSavedState(false);
-            SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
-            DrawWave();
+            chartChangeTimer.Stop();
+            chartChangeTimer.Start();
         }
 
         private void FumenContent_OnPreviewKeyDown(object sender, KeyEventArgs e)
@@ -498,6 +499,25 @@ namespace MajdataEdit
         private void CheckUpdate_Click(object sender, RoutedEventArgs e)
         {
             CheckUpdate();
+        }
+
+        /// <summary>
+        /// 谱面变更延迟解析
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChartChangeTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Console.WriteLine("TextChanged");
+            Dispatcher.Invoke(
+                new Action(
+                    delegate
+                    {
+                        SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
+                        DrawWave();
+                    }
+                )
+            );
         }
     }
 }
