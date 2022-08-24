@@ -252,68 +252,68 @@
   <data name="CheckDone1" xml:space="preserve">
     <value>Check Finished, {0} Multi-Notes Error，{1} Slide-Tap Error. You can get more information in the Result Window.
 PS: The results is not 100% accurate.</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="CheckDone2" xml:space="preserve">
     <value>Check Finished, {0} Slide-Tap Error. You can get more information in the Result Window.
 PS: The results is not 100% accurate.</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="DetResult" xml:space="preserve">
     <value>Result</value>
   </data>
   <data name="GotoLineTooltip" xml:space="preserve">
     <value>Double click to jump to the error line.</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="Info" xml:space="preserve">
     <value>Info</value>
   </data>
   <data name="MultNoteEnable" xml:space="preserve">
     <value>Multi-Notes Detection</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="MultNoteError1" xml:space="preserve">
     <value>[MultiNotesError] </value>
   </data>
   <data name="MultNoteError2" xml:space="preserve">
     <value> may appear in the same time.({0} Notes)</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="MultNoteTooltip" xml:space="preserve">
     <value>It will warn you if there are more than 3 notes appearing at the same time.
 You can get this option disabled if this situation is allowed to happen, e.g. UTAGE map.</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="SlideAccInputError" xml:space="preserve">
     <value>Slide Detection Accuracy must be a number! Please check your input and delete unnecessary characters like space.</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="SlideAccuracy" xml:space="preserve">
     <value>Slide-Tap Detection Acc:</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation. Acc means accuracy. See more in "SlideTooltip"</comment>
   </data>
   <data name="SlideError" xml:space="preserve">
     <value>[SlideTapError] "{0}"({1}L,{2}C) may obstructs "{3}"({4}L,{5}C). Interval:{6}ms</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="SlideTooltip" xml:space="preserve">
     <value>Slide-Tap Error: when a SLIDE runs into a TAP in "A Area", it may
 accidentally get this TAP triggered.
 The accuracy of detection on Slide-Tap Error. Unit: second.
 Please DO NOT enter a value less than 0.15, or some of the
-unreasonable notes may be missed out.
+wrong notes may be not detected.
 An accuracy to 0.2 or higher is recommended if you want to
-get the map more reasonable.</value>
-    <comment>可能需要翻译润色</comment>
+get the map greater.</value>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="StartCheck" xml:space="preserve">
     <value>Start Check</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation. This text means user will let program to find out errors in his chart.</comment>
   </data>
   <data name="SyntaxError" xml:space="preserve">
     <value>[SyntaxError] "{0}"({1}L,{2}C) fail to analyze，may be a syntax error here.</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="WhatsThis" xml:space="preserve">
     <value>What's This</value>
@@ -358,7 +358,7 @@ Press the Insert key to switch back to normal mode.</value>
   </data>
   <data name="SpeedSettingTooltip" xml:space="preserve">
     <value>To change these settings, go to "Setting-&gt;Editor Setting".</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="RenderMode" xml:space="preserve">
     <value>Rendering Mode</value>
@@ -374,7 +374,7 @@ Press the Insert key to switch back to normal mode.</value>
   </data>
   <data name="SetVolumeDefaultSuccess" xml:space="preserve">
     <value>Success! Your new chart will use these volume setting as default.</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="CheckUpdate" xml:space="preserve">
     <value>CheckUpdate</value>
@@ -387,7 +387,7 @@ Press the Insert key to switch back to normal mode.</value>
 (your current version: {1})
 
 Open Browser to download latest update of Majdata?</value>
-    <comment>能看懂就行（</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="NoNewVersion" xml:space="preserve">
     <value>Your Majdata doesn't need to update.</value>
@@ -397,7 +397,7 @@ Open Browser to download latest update of Majdata?</value>
   </data>
   <data name="ChartRefreshDelay" xml:space="preserve">
     <value>Chart Refresh Delay(ms)</value>
-    <comment>可能需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="AutoCheckUpdate" xml:space="preserve">
     <value>Auto Check Update (when start)</value>

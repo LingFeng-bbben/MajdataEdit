@@ -218,7 +218,7 @@
   </data>
   <data name="Speed" xml:space="preserve">
     <value>速度</value>
-    <comment>是不是应该是スピード？</comment>
+    <comment>May be スピード？</comment>
   </data>
   <data name="TextFollow" xml:space="preserve">
     <value>譜面フォロー</value>
@@ -253,53 +253,53 @@
   <data name="CheckDone1" xml:space="preserve">
     <value>Check Finished, {0} Multi-Notes Error，{1} Slide-Tap Error. You can get more information in the Result Window.
 PS: The results is not 100% accurate.</value>
-    <comment>需要翻译，其中{0}是多押无理数量，{1}是撞尾物理数量</comment>
+    <comment>Translation required. {0} is the number of Multi-Notes Errors. {1} is the number of Slide-Tap Error</comment>
   </data>
   <data name="CheckDone2" xml:space="preserve">
     <value>Check Finished, {0} Slide-Tap Error. You can get more information in the Result Window.
 PS: The results is not 100% accurate.</value>
-    <comment>需要翻译，其中{0}是撞尾物理数量</comment>
+    <comment>Translation required. {0} means the number of Slide-Tap Error(a slide accidently trigger a tap note)</comment>
   </data>
   <data name="DetResult" xml:space="preserve">
     <value>結果</value>
-    <comment>需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="GotoLineTooltip" xml:space="preserve">
     <value>ダブルクリックしてエラー行にジャンプできます</value>
-    <comment>需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="Info" xml:space="preserve">
     <value>メッセージ</value>
-    <comment>需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="MultNoteEnable" xml:space="preserve">
     <value>Multi-Notes Detection</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="MultNoteError1" xml:space="preserve">
     <value>[MultiNotesError]</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="MultNoteError2" xml:space="preserve">
     <value>may be appear in the same time.({0} Notes)</value>
-    <comment>需要翻译，其中{0}是指形成了多少押</comment>
+    <comment>Translation required. {0} means how many Note appear in the same time(so-called Multi-Notes Error, which is not allowed).</comment>
   </data>
   <data name="MultNoteTooltip" xml:space="preserve">
     <value>It will warn you if there is more than 3 notes appear in the same time.
 If your map allow this situation, e.g. UTAGE map, you can disable this option.</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="SlideAccInputError" xml:space="preserve">
     <value>Slide Detection Accuracy must be a number! Please check your input and delete unnecessary charactors like space.</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="SlideAccuracy" xml:space="preserve">
     <value>Slide-Tap Detection Acc:</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="SlideError" xml:space="preserve">
     <value>[SlideTapError] "{0}"({1}L,{2}C) may obstructs "{3}"({4}L,{5}C). Interval:{6}ms</value>
-    <comment>需要翻译，其中{0},{3}是语句内容，{1},{2},{4},{5}是行号和列号，{6}是两个note的时间间隔</comment>
+    <comment>Translation required. {0} and {3} is the simai-language text which has SlideTapError. {6} is the time gap between two note. {1}, {2}, {4} and {5} means Line and Column which may not needed to be translate.</comment>
   </data>
   <data name="SlideTooltip" xml:space="preserve">
     <value>Slide-Tap Error: when a SLIDE pass a TAP in "A Area", it may 
@@ -309,25 +309,24 @@ Please DO NOT enter a value less than 0.15, or some of
 Impossible Notes will not be found out.
 If you wanna an excellent map, you can set the accuracy to
 0.2 or higher.</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="StartCheck" xml:space="preserve">
     <value>検査</value>
-    <comment>需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="SyntaxError" xml:space="preserve">
     <value>[SyntaxError] "{0}"({1}L,{2}C) fail to analyze，may be a syntax error here.</value>
-    <comment>需要翻译，其中{0}是语句内容，{1}和{2}是行号和列号</comment>
+    <comment>Translation required. {0} is the simai-language text which has Syntax Error. {1} and {2} is Line and Column index(which may not needed to be translate)</comment>
   </data>
   <data name="WhatsThis" xml:space="preserve">
     <value>なにこれ</value>
-    <comment>需要翻译润色</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="SoftRenderError" xml:space="preserve">
     <value>Render Thread Failure！
 Please run the MajdatEdit by "强制软件渲染.bat" in the folder. This may solve the problem.</value>
-    <comment>需要翻译!!
-WE NEED honn ya ku!!</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="RecordModeDiscrp" xml:space="preserve">
     <value>はちめからプレイ（info/AP付）</value>
@@ -356,18 +355,18 @@ WE NEED honn ya ku!!</comment>
   <data name="OverwriteModeTooltip" xml:space="preserve">
     <value>Overwrite mode allows you to replace text as you type.
 Press the Insert key to switch back to normal mode.</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="OverwriteMode" xml:space="preserve">
     <value>Overwrite Mode</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="TouchSpeed" xml:space="preserve">
     <value>タッチ速度</value>
   </data>
   <data name="SpeedSettingTooltip" xml:space="preserve">
     <value>To change these settings, go to "Setting-&gt;Editor Setting".</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="RenderMode" xml:space="preserve">
     <value>レンダリング モード</value>
@@ -380,41 +379,41 @@ Press the Insert key to switch back to normal mode.</value>
   </data>
   <data name="SetDefaultVolume" xml:space="preserve">
     <value>現在の音量をデフォルトに設定</value>
-    <comment>我机翻的（</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="SetVolumeDefaultSuccess" xml:space="preserve">
     <value>Success! Your new chart will use these volume setting as default.</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="CheckUpdate" xml:space="preserve">
     <value>CheckUpdate</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="AutoUpdateCheckTip" xml:space="preserve">
     <value>(You can disabled AutoCheckUpdate in Editor Setting Panel)</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="NewVersionDetected" xml:space="preserve">
     <value>New version detected: {0}
 (your current version: {1})
 
 Open Browser to download latest update of Majdata?</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="NoNewVersion" xml:space="preserve">
     <value>Your Majdata doesn't need to update.</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="RequestFail" xml:space="preserve">
     <value>Internet request fail, please check your internet connection.</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="ChartRefreshDelay" xml:space="preserve">
     <value>Chart Refresh Delay(ms)</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
   <data name="AutoCheckUpdate" xml:space="preserve">
     <value>Auto Check Update (when start)</value>
-    <comment>需要翻译</comment>
+    <comment>Translation required</comment>
   </data>
 </root>
