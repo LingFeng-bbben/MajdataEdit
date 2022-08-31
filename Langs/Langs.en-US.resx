@@ -121,7 +121,7 @@
     <value>Close Viewer?</value>
   </data>
   <data name="AskSave" xml:space="preserve">
-    <value>File not saved. Save now?</value>
+    <value>Changes not saved. Save now?</value>
   </data>
   <data name="Attention" xml:space="preserve">
     <value>Attention</value>
@@ -148,7 +148,7 @@
     <value>GitHub</value>
   </data>
   <data name="MaidataExist" xml:space="preserve">
-    <value>maidata.txt already exist.</value>
+    <value>maidata.txt already exists.</value>
   </data>
   <data name="MapInfo" xml:space="preserve">
     <value>Map info</value>
@@ -172,13 +172,13 @@
     <value>New</value>
   </data>
   <data name="NoMaidata_txt" xml:space="preserve">
-    <value>Please make sure maidata.txt exists.</value>
+    <value>maidata.txt not found.</value>
   </data>
   <data name="NoTrack_mp3" xml:space="preserve">
-    <value>Please make sure track.mp3 exists.</value>
+    <value>track.mp3 not found.</value>
   </data>
   <data name="Offset" xml:space="preserve">
-    <value>Offset</value>
+    <value>Music Offset</value>
   </data>
   <data name="Open" xml:space="preserve">
     <value>Open</value>
@@ -196,7 +196,7 @@
     <value>Save</value>
   </data>
   <data name="SaveAs" xml:space="preserve">
-    <value>SaveAs</value>
+    <value>Save As</value>
   </data>
   <data name="SetArtist" xml:space="preserve">
     <value>SetArtist</value>
@@ -214,7 +214,7 @@
     <value>SimaiWiki</value>
   </data>
   <data name="SoftRender" xml:space="preserve">
-    <value>Booting as software rendering mode.</value>
+    <value>Launching with software rendering.</value>
   </data>
   <data name="Speed" xml:space="preserve">
     <value>Speed</value>
@@ -232,7 +232,7 @@
     <value>Volume</value>
   </data>
   <data name="Warn44100Hz" xml:space="preserve">
-    <value>MP3 file that is not 44100Hz may not be supported.</value>
+    <value>MP3 sampling frequencies outside of 44100Hz are unsupported.</value>
   </data>
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
@@ -244,50 +244,48 @@
     <value>Language</value>
   </data>
   <data name="EditorSetting" xml:space="preserve">
-    <value>Editor Setting</value>
+    <value>Editor Settings</value>
   </data>
   <data name="NoEditorSetting" xml:space="preserve">
     <value>Please complete the initial setup of the editor.</value>
   </data>
   <data name="CheckDone1" xml:space="preserve">
-    <value>Check Finished, {0} Multi-Notes Error，{1} Slide-Tap Error. You can get more information in the Result Window.
-PS: The results is not 100% accurate.</value>
-    <comment>Maybe not the most accurate translation</comment>
+    <value>Check Finished: {0} Excess Note Warning; {1} Slide-Tap Collision.
+More info in the Results Window. Results are approximate.
+    </value>
   </data>
   <data name="CheckDone2" xml:space="preserve">
-    <value>Check Finished, {0} Slide-Tap Error. You can get more information in the Result Window.
-PS: The results is not 100% accurate.</value>
-    <comment>Maybe not the most accurate translation</comment>
+    <value>Check Finished, {0} Slide-Tap Collision.
+More info in the Results Window. Results are approximate.
+    </value>
   </data>
   <data name="DetResult" xml:space="preserve">
     <value>Result</value>
   </data>
   <data name="GotoLineTooltip" xml:space="preserve">
-    <value>Double click to jump to the error line.</value>
-    <comment>Maybe not the most accurate translation</comment>
+    <value>Double-click to jump to the error.</value>
   </data>
   <data name="Info" xml:space="preserve">
     <value>Info</value>
   </data>
   <data name="MultNoteEnable" xml:space="preserve">
-    <value>Multi-Notes Detection</value>
+    <value>Excess Note Detection</value>
     <comment>Maybe not the most accurate translation</comment>
+    <comment>TL: This is the best name I could come up with, probably best to keep the underlying name the same</comment>
   </data>
   <data name="MultNoteError1" xml:space="preserve">
-    <value>[MultiNotesError] </value>
+    <value>[ExcessNoteWarning] </value>
   </data>
   <data name="MultNoteError2" xml:space="preserve">
-    <value> may appear in the same time.({0} Notes)</value>
+    <value> Found {0} occurrences of Excess Notes.</value>
     <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="MultNoteTooltip" xml:space="preserve">
-    <value>It will warn you if there are more than 3 notes appearing at the same time.
-You can get this option disabled if this situation is allowed to happen, e.g. UTAGE map.</value>
-    <comment>Maybe not the most accurate translation</comment>
+    <value>Warns when too many notes appear simultaneously (3 or more)
+Recommended to keep this option enabled if you are not making UTAGE (gimmick) maps.</value>
   </data>
   <data name="SlideAccInputError" xml:space="preserve">
-    <value>Slide Detection Accuracy must be a number! Please check your input and delete unnecessary characters like space.</value>
-    <comment>Maybe not the most accurate translation</comment>
+    <value>Slide Detection Accuracy must be a number; trim all whitespace.</value>
   </data>
   <data name="SlideAccuracy" xml:space="preserve">
     <value>Slide-Tap Detection Acc:</value>
@@ -298,32 +296,28 @@ You can get this option disabled if this situation is allowed to happen, e.g. UT
     <comment>Maybe not the most accurate translation</comment>
   </data>
   <data name="SlideTooltip" xml:space="preserve">
-    <value>Slide-Tap Error: when a SLIDE runs into a TAP in "A Area", it may
-accidentally get this TAP triggered.
-The accuracy of detection on Slide-Tap Error. Unit: second.
-Please DO NOT enter a value less than 0.15, or some of the
-wrong notes may be not detected.
-An accuracy to 0.2 or higher is recommended if you want to
-get the map greater.</value>
-    <comment>Maybe not the most accurate translation</comment>
+    <value>The accuracy of detection on Slide-Tap Collision (in seconds)
+Slide-Tap Collision: when a SLIDE enters a TAP's "A Area", it can trigger the TAP too early.
+Recommended to stay above 0.2 for the best detection.
+Values lower than 0.15 will cause the detection to miss.
+    </value>
+    <comment>TL: I'm not sure what an "A Area is"...</comment>
   </data>
   <data name="StartCheck" xml:space="preserve">
-    <value>Start Check</value>
-    <comment>Maybe not the most accurate translation. This text means user will let program to find out errors in his chart.</comment>
+    <value>Begin Error Checking</value>
   </data>
   <data name="SyntaxError" xml:space="preserve">
-    <value>[SyntaxError] "{0}"({1}L,{2}C) fail to analyze，may be a syntax error here.</value>
-    <comment>Maybe not the most accurate translation</comment>
+    <value>[SyntaxError] at "{0}"({1}L,{2}C)</value>
   </data>
   <data name="WhatsThis" xml:space="preserve">
-    <value>What's This</value>
+    <value>What's This?</value>
   </data>
   <data name="SoftRenderError" xml:space="preserve">
     <value>Render Thread Failure！
-Please run the MajdatEdit by "强制软件渲染.bat" in the folder. This may solve the problem.</value>
+Try run "强制软件渲染.bat", this might solve the problem (good luck).</value>
   </data>
   <data name="RecordModeDiscrp" xml:space="preserve">
-    <value>Play from start with animation</value>
+    <value>Renders the chart in MajViewer</value>
   </data>
   <data name="FindAndReplace" xml:space="preserve">
     <value>Find and Replace</value>
@@ -335,20 +329,20 @@ Please run the MajdatEdit by "强制软件渲染.bat" in the folder. This may so
     <value>Replace Next</value>
   </data>
   <data name="IsOverridePicture" xml:space="preserve">
-    <value>There is a cover picture in mp3 file. Do you want to use it?</value>
+    <value>MP3 has a cover picture already, do you want to use it?</value>
   </data>
   <data name="LoadFromFile" xml:space="preserve">
-    <value>From other mp3 file</value>
+    <value>Load from MP3 file</value>
   </data>
   <data name="LoadFromTrack" xml:space="preserve">
-    <value>Load meta from track</value>
+    <value>Load from chart metadata</value>
   </data>
   <data name="RemapViewer" xml:space="preserve">
     <value>Re-align viewer</value>
   </data>
   <data name="OverwriteModeTooltip" xml:space="preserve">
-    <value>Overwrite mode allows you to replace text as you type.
-Press the Insert key to switch back to normal mode.</value>
+    <value>Overwrite mode replaces text as you type.
+Insert key to switch back to normal mode.</value>
   </data>
   <data name="OverwriteMode" xml:space="preserve">
     <value>Overwrite mode</value>
@@ -357,8 +351,7 @@ Press the Insert key to switch back to normal mode.</value>
     <value>Touch Speed</value>
   </data>
   <data name="SpeedSettingTooltip" xml:space="preserve">
-    <value>To change these settings, go to "Setting-&gt;Editor Setting".</value>
-    <comment>Maybe not the most accurate translation</comment>
+    <value>For advanced settings, go to "Setting-&gt;Editor Setting".</value>
   </data>
   <data name="RenderMode" xml:space="preserve">
     <value>Rendering Mode</value>
@@ -370,36 +363,33 @@ Press the Insert key to switch back to normal mode.</value>
     <value>Software</value>
   </data>
   <data name="SetDefaultVolume" xml:space="preserve">
-    <value>Set these volume as the Default</value>
+    <value>Use volumes as Default</value>
   </data>
   <data name="SetVolumeDefaultSuccess" xml:space="preserve">
-    <value>Success! Your new chart will use these volume setting as default.</value>
-    <comment>Maybe not the most accurate translation</comment>
+    <value>Default set</value>
   </data>
   <data name="CheckUpdate" xml:space="preserve">
-    <value>CheckUpdate</value>
+    <value>Check for Updates</value>
   </data>
   <data name="AutoUpdateCheckTip" xml:space="preserve">
-    <value>(You can disabled AutoCheckUpdate in Editor Setting Panel)</value>
+    <value>You can disable AutoCheckUpdate in "Setting-&gt;Editor Setting"</value>
   </data>
   <data name="NewVersionDetected" xml:space="preserve">
-    <value>New version detected: {0}
-(your current version: {1})
+    <value>New Version detected: {0}
+(Current Version: {1})
 
-Open Browser to download latest update of Majdata?</value>
-    <comment>Maybe not the most accurate translation</comment>
+Do you want to download the latest update of Majdata?</value>
   </data>
   <data name="NoNewVersion" xml:space="preserve">
-    <value>Your Majdata doesn't need to update.</value>
+    <value>You are already at the latest version</value>
   </data>
   <data name="RequestFail" xml:space="preserve">
-    <value>Internet request fail, please check your internet connection.</value>
+    <value>Failed to fetch data, please check your internet connection.</value>
   </data>
   <data name="ChartRefreshDelay" xml:space="preserve">
-    <value>Chart Refresh Delay(ms)</value>
-    <comment>Maybe not the most accurate translation</comment>
+    <value>Chart Refresh Interval (ms)</value>
   </data>
   <data name="AutoCheckUpdate" xml:space="preserve">
-    <value>Auto Check Update (when start)</value>
+    <value>Auto Check Update on Startup</value>
   </data>
 </root>
