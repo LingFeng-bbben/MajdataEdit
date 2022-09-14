@@ -38,7 +38,8 @@ namespace MajdataEdit
         private void SoundSettingWindow_Loaded(object sender, RoutedEventArgs e)
         {
             SliderValueBindingMap.Add(BGM_Slider, BGM_Value);
-            SliderValueBindingMap.Add(Tap_Slider, Tap_Value);
+            SliderValueBindingMap.Add(Answer_Slider, Answer_Value);
+            SliderValueBindingMap.Add(Judge_Slider, Judge_Value);
             SliderValueBindingMap.Add(Break_Slider, Break_Value);
             SliderValueBindingMap.Add(Slide_Slider, Slide_Value);
             SliderValueBindingMap.Add(EX_Slider, EX_Value);
@@ -46,13 +47,12 @@ namespace MajdataEdit
             SliderValueBindingMap.Add(Hanabi_Slider, Hanabi_Value);
 
             SetSlider(BGM_Slider, MainWindow.bgmStream, MainWindow.trackStartStream, MainWindow.allperfectStream, MainWindow.clockStream);
-            SetSlider(Tap_Slider, MainWindow.answerStream, MainWindow.judgeStream);
+            SetSlider(Answer_Slider, MainWindow.answerStream);
+            SetSlider(Judge_Slider, MainWindow.judgeStream);
             SetSlider(Break_Slider, MainWindow.breakStream, MainWindow.judgeBreakStream);
             SetSlider(Slide_Slider, MainWindow.slideStream);
-
             SetSlider(EX_Slider, MainWindow.judgeExStream);
             SetSlider(Touch_Slider, MainWindow.touchStream);
-
             SetSlider(Hanabi_Slider, MainWindow.hanabiStream, MainWindow.holdRiserStream);
 
             UpdateLevelTimer.AutoReset = true;
@@ -65,8 +65,9 @@ namespace MajdataEdit
             Dispatcher.Invoke(() =>
             {
                 UpdateProgressBar(BGM_Level, MainWindow.bgmStream, MainWindow.trackStartStream, MainWindow.allperfectStream, MainWindow.clockStream);
-                UpdateProgressBar(Tap_Level, MainWindow.answerStream);
-                UpdateProgressBar(Break_Level, MainWindow.breakStream);
+                UpdateProgressBar(Answer_Level, MainWindow.answerStream);
+                UpdateProgressBar(Judge_Level, MainWindow.judgeStream);
+                UpdateProgressBar(Break_Level, MainWindow.breakStream, MainWindow.judgeBreakStream);
                 UpdateProgressBar(Slide_Level, MainWindow.slideStream);
                 UpdateProgressBar(EX_Level, MainWindow.judgeExStream);
                 UpdateProgressBar(Touch_Level, MainWindow.touchStream);
@@ -119,7 +120,8 @@ namespace MajdataEdit
         private void BtnSetDefault_Click(object sender, RoutedEventArgs e)
         {
             Bass.BASS_ChannelGetAttribute(MainWindow.bgmStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_BGM_Level);
-            Bass.BASS_ChannelGetAttribute(MainWindow.answerStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Tap_Level);
+            Bass.BASS_ChannelGetAttribute(MainWindow.answerStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Answer_Level);
+            Bass.BASS_ChannelGetAttribute(MainWindow.judgeStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Judge_Level);
             Bass.BASS_ChannelGetAttribute(MainWindow.breakStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Break_Level);
             Bass.BASS_ChannelGetAttribute(MainWindow.slideStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Slide_Level);
             Bass.BASS_ChannelGetAttribute(MainWindow.judgeExStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Ex_Level);
@@ -127,6 +129,18 @@ namespace MajdataEdit
             Bass.BASS_ChannelGetAttribute(MainWindow.hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Hanabi_Level);
             MainWindow.SaveEditorSetting();
             MessageBox.Show(MainWindow.GetLocalizedString("SetVolumeDefaultSuccess"));
+        }
+
+        private void BtnSetToDefault_Click(object sender, RoutedEventArgs e)
+        {
+            BGM_Slider.Value = MainWindow.editorSetting.Default_BGM_Level;
+            Answer_Slider.Value = MainWindow.editorSetting.Default_Answer_Level;
+            Judge_Slider.Value = MainWindow.editorSetting.Default_Judge_Level;
+            Break_Slider.Value = MainWindow.editorSetting.Default_Break_Level;
+            Slide_Slider.Value = MainWindow.editorSetting.Default_Slide_Level;
+            EX_Slider.Value = MainWindow.editorSetting.Default_Ex_Level;
+            Touch_Slider.Value = MainWindow.editorSetting.Default_Touch_Level;
+            Hanabi_Slider.Value = MainWindow.editorSetting.Default_Hanabi_Level;
         }
     }
 }

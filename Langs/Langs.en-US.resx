@@ -402,4 +402,7 @@ Open Browser to download latest update of Majdata?</value>
   <data name="AutoCheckUpdate" xml:space="preserve">
     <value>Auto Check Update (when start)</value>
   </data>
+  <data name="SetToDefaultVolume" xml:space="preserve">
+    <value>Set Volume as Default Setting</value>
+  </data>
 </root>

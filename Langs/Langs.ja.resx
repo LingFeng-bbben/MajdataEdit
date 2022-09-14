@@ -416,4 +416,8 @@ Open Browser to download latest update of Majdata?</value>
     <value>Auto Check Update (when start)</value>
     <comment>Translation required</comment>
   </data>
+  <data name="SetToDefaultVolume" xml:space="preserve">
+    <value>Set Volume as Default Setting</value>
+    <comment>Translation required</comment>
+  </data>
 </root>

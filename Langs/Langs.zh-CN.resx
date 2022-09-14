@@ -386,4 +386,7 @@
   <data name="AutoCheckUpdate" xml:space="preserve">
     <value>自动检查更新(启动时)</value>
   </data>
+  <data name="SetToDefaultVolume" xml:space="preserve">
+    <value>重置音量到默认值</value>
+  </data>
 </root>
