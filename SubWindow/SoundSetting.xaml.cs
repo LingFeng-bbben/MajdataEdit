@@ -46,11 +46,11 @@ namespace MajdataEdit
             SliderValueBindingMap.Add(Hanabi_Slider, Hanabi_Value);
 
             SetSlider(BGM_Slider, MainWindow.bgmStream, MainWindow.trackStartStream, MainWindow.allperfectStream, MainWindow.clockStream);
-            SetSlider(Tap_Slider, MainWindow.clickStream);
-            SetSlider(Break_Slider, MainWindow.breakStream);
+            SetSlider(Tap_Slider, MainWindow.answerStream, MainWindow.judgeStream);
+            SetSlider(Break_Slider, MainWindow.breakStream, MainWindow.judgeBreakStream);
             SetSlider(Slide_Slider, MainWindow.slideStream);
 
-            SetSlider(EX_Slider, MainWindow.exStream);
+            SetSlider(EX_Slider, MainWindow.judgeExStream);
             SetSlider(Touch_Slider, MainWindow.touchStream);
 
             SetSlider(Hanabi_Slider, MainWindow.hanabiStream, MainWindow.holdRiserStream);
@@ -65,10 +65,10 @@ namespace MajdataEdit
             Dispatcher.Invoke(() =>
             {
                 UpdateProgressBar(BGM_Level, MainWindow.bgmStream, MainWindow.trackStartStream, MainWindow.allperfectStream, MainWindow.clockStream);
-                UpdateProgressBar(Tap_Level, MainWindow.clickStream);
+                UpdateProgressBar(Tap_Level, MainWindow.answerStream);
                 UpdateProgressBar(Break_Level, MainWindow.breakStream);
                 UpdateProgressBar(Slide_Level, MainWindow.slideStream);
-                UpdateProgressBar(EX_Level, MainWindow.exStream);
+                UpdateProgressBar(EX_Level, MainWindow.judgeExStream);
                 UpdateProgressBar(Touch_Level, MainWindow.touchStream);
                 UpdateProgressBar(Hanabi_Level, MainWindow.hanabiStream, MainWindow.holdRiserStream);
             });
@@ -119,10 +119,10 @@ namespace MajdataEdit
         private void BtnSetDefault_Click(object sender, RoutedEventArgs e)
         {
             Bass.BASS_ChannelGetAttribute(MainWindow.bgmStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_BGM_Level);
-            Bass.BASS_ChannelGetAttribute(MainWindow.clickStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Tap_Level);
+            Bass.BASS_ChannelGetAttribute(MainWindow.answerStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Tap_Level);
             Bass.BASS_ChannelGetAttribute(MainWindow.breakStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Break_Level);
             Bass.BASS_ChannelGetAttribute(MainWindow.slideStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Slide_Level);
-            Bass.BASS_ChannelGetAttribute(MainWindow.exStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Ex_Level);
+            Bass.BASS_ChannelGetAttribute(MainWindow.judgeExStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Ex_Level);
             Bass.BASS_ChannelGetAttribute(MainWindow.touchStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Touch_Level);
             Bass.BASS_ChannelGetAttribute(MainWindow.hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Hanabi_Level);
             MainWindow.SaveEditorSetting();

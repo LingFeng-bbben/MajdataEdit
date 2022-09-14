@@ -45,9 +45,11 @@ namespace MajdataEdit
         public EditorSetting editorSetting = null;
 
         public int bgmStream = -114514;
-        public int clickStream = -114514;
-        public int breakStream = -114514;
-        public int exStream = -114514;
+        public int answerStream = -114514;
+        public int judgeStream = -114514;
+        public int judgeBreakStream = -114514;   // 这个是break的判定音效 不是欢呼声
+        public int breakStream = -114514;        // 这个才是欢呼声
+        public int judgeExStream = -114514;
         public int hanabiStream = -114514;
         public int holdRiserStream = -114514;
         public int trackStartStream = -114514;
@@ -264,10 +266,12 @@ namespace MajdataEdit
             Bass.BASS_ChannelSetAttribute(trackStartStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_BGM_Level);
             Bass.BASS_ChannelSetAttribute(allperfectStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_BGM_Level);
             Bass.BASS_ChannelSetAttribute(clockStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_BGM_Level);
-            Bass.BASS_ChannelSetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Tap_Level);
+            Bass.BASS_ChannelSetAttribute(answerStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Tap_Level);
+            Bass.BASS_ChannelSetAttribute(judgeStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Tap_Level);
+            Bass.BASS_ChannelSetAttribute(judgeBreakStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Tap_Level);
             Bass.BASS_ChannelSetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Slide_Level);
             Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Break_Level);
-            Bass.BASS_ChannelSetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Ex_Level);
+            Bass.BASS_ChannelSetAttribute(judgeExStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Ex_Level);
             Bass.BASS_ChannelSetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Touch_Level);
             Bass.BASS_ChannelSetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Hanabi_Level);
             Bass.BASS_ChannelSetAttribute(holdRiserStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Hanabi_Level);
@@ -384,9 +388,9 @@ namespace MajdataEdit
             setting.lastEditDiff = selectedDifficulty;
             setting.lastEditTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.BGM_Level);
-            Bass.BASS_ChannelGetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Tap_Level);
+            Bass.BASS_ChannelGetAttribute(answerStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Tap_Level);
             Bass.BASS_ChannelGetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Break_Level);
-            Bass.BASS_ChannelGetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Ex_Level);
+            Bass.BASS_ChannelGetAttribute(judgeExStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Ex_Level);
             Bass.BASS_ChannelGetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Touch_Level);
             Bass.BASS_ChannelGetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Slide_Level);
             Bass.BASS_ChannelGetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Hanabi_Level);
@@ -405,10 +409,12 @@ namespace MajdataEdit
             Bass.BASS_ChannelSetAttribute(trackStartStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
             Bass.BASS_ChannelSetAttribute(allperfectStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
             Bass.BASS_ChannelSetAttribute(clockStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
-            Bass.BASS_ChannelSetAttribute(clickStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
+            Bass.BASS_ChannelSetAttribute(answerStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
+            Bass.BASS_ChannelSetAttribute(judgeStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Tap_Level);
+            Bass.BASS_ChannelSetAttribute(judgeBreakStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Break_Level);
             Bass.BASS_ChannelSetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Slide_Level);
             Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Break_Level);
-            Bass.BASS_ChannelSetAttribute(exStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
+            Bass.BASS_ChannelSetAttribute(judgeExStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Ex_Level);
             Bass.BASS_ChannelSetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Touch_Level);
             Bass.BASS_ChannelSetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
             Bass.BASS_ChannelSetAttribute(holdRiserStream, BASSAttribute.BASS_ATTRIB_VOL, setting.Hanabi_Level);
@@ -515,9 +521,11 @@ namespace MajdataEdit
         private void ReadSoundEffect()
         {
             var path = Environment.CurrentDirectory + "/SFX/";
-            clickStream = Bass.BASS_StreamCreateFile(path + "tap.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            answerStream = Bass.BASS_StreamCreateFile(path + "answer.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            judgeStream = Bass.BASS_StreamCreateFile(path + "judge.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            judgeBreakStream = Bass.BASS_StreamCreateFile(path + "judge_break.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            judgeExStream = Bass.BASS_StreamCreateFile(path + "judge_ex.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             breakStream = Bass.BASS_StreamCreateFile(path + "break.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            exStream = Bass.BASS_StreamCreateFile(path + "ex.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             hanabiStream = Bass.BASS_StreamCreateFile(path + "hanabi.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             holdRiserStream = Bass.BASS_StreamCreateFile(path + "touchHold_riser.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             trackStartStream = Bass.BASS_StreamCreateFile(path + "track_start.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
@@ -540,11 +548,23 @@ namespace MajdataEdit
                     SoundEffectTiming se = waitToBePlayed[0];
                     waitToBePlayed.RemoveAt(0);
 
-                    if (se.hasClick)
+                    if (se.hasAnswer)
                     {
-                        Bass.BASS_ChannelPlay(clickStream, true);
+                        Bass.BASS_ChannelPlay(answerStream, true);
                     }
-                    if (se.hasBreak) //may cause delay
+                    if (se.hasJudge)
+                    {
+                        Bass.BASS_ChannelPlay(judgeStream, true);
+                    }
+                    if (se.hasJudgeBreak)
+                    {
+                        Bass.BASS_ChannelPlay(judgeBreakStream, true);
+                    }
+                    if (se.hasJudgeEx)
+                    {
+                        Bass.BASS_ChannelPlay(judgeExStream, true);
+                    }
+                    if (se.hasBreak)
                     {
                         Bass.BASS_ChannelPlay(breakStream, true);
                     }
@@ -555,10 +575,6 @@ namespace MajdataEdit
                     if (se.hasHanabi) //may cause delay
                     {
                         Bass.BASS_ChannelPlay(hanabiStream, true);
-                    }
-                    if (se.hasEx)
-                    {
-                        Bass.BASS_ChannelPlay(exStream, true);
                     }
                     if (se.hasTouchHold)
                     {
@@ -1331,7 +1347,7 @@ namespace MajdataEdit
                             double clock_int = 60.0d / SimaiProcess.notelist[0].currentBpm;
                             for (int i = 0; i < clock_cnt; i++)
                             {
-                                waitToBePlayed.Add(new SoundEffectTiming(i*clock_int, _hasClick: false, _hasClock: true));
+                                waitToBePlayed.Add(new SoundEffectTiming(i*clock_int, _hasClock: true));
                             }
                         } catch
                         {
@@ -1346,11 +1362,11 @@ namespace MajdataEdit
 
                 SoundEffectTiming stobj;
 
+                // 如果目前为止已经有一个SE了 那么就直接使用这个SE
                 var combIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - noteGroup.time) < 0.001f);
                 if (combIndex != -1)
                 {
                     stobj = waitToBePlayed[combIndex];
-                    stobj.hasClick = true;
                 }
                 else
                 {
@@ -1358,108 +1374,166 @@ namespace MajdataEdit
                 }
 
                 var notes = noteGroup.getNotes();
-                if (notes.All(o => o.isSlideNoHead))
+                foreach (SimaiNote note in notes)
                 {
-                    stobj.hasClick = false;
-                }
-                if (notes.Any(o => o.isBreak))
-                {
-                    stobj.hasBreak = true;
-                }
-                if (notes.Any(o => o.noteType == SimaiNoteType.Touch))
-                {
-                    stobj.hasTouch = true;
-                }
-                if (notes.Any(o => o.isHanabi && o.noteType == SimaiNoteType.Touch)) //may cause delay
-                {
-                    stobj.hasHanabi = true;
-                }
-                if (notes.Any(o => o.isEx))
-                {
-                    stobj.hasEx = true;
-                }
-                if (notes.Any(o => o.noteType == SimaiNoteType.TouchHold))
-                {
-                    stobj.hasTouchHold = true;
+                    switch (note.noteType)
+                    {
+                        case SimaiNoteType.Tap:
+                            {
+                                stobj.hasAnswer = true;
+                                if (note.isBreak)
+                                {
+                                    // 如果是Break 则有Break判定音和Break欢呼音（2600）
+                                    stobj.hasBreak = true;
+                                    stobj.hasJudgeBreak = true;
+                                }
+                                if (note.isEx)
+                                {
+                                    // 如果是Ex 则有Ex判定音
+                                    stobj.hasJudgeEx = true;
+                                }
+                                if (!note.isBreak && !note.isEx)
+                                {
+                                    // 如果二者皆没有 则是普通note 播放普通判定音
+                                    stobj.hasJudge = true;
+                                }
+                                break;
+                            }
+                        case SimaiNoteType.Hold:
+                            {
+                                stobj.hasAnswer = true;
+                                // 类似于Tap 判断Break和Ex的音效 二者皆无则为普通
+                                if (note.isBreak)
+                                {
+                                    stobj.hasBreak = true;
+                                    stobj.hasJudgeBreak = true;
+                                }
+                                if (note.isEx)
+                                {
+                                    stobj.hasJudgeEx = true;
+                                }
+                                if (!note.isBreak && !note.isEx)
+                                {
+                                    stobj.hasJudge = true;
+                                }
+
+                                // 计算Hold尾部的音效
+                                var targetTime = noteGroup.time + note.holdTime;
+                                var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
+                                if (nearIndex != -1)
+                                {
+                                    waitToBePlayed[nearIndex].hasAnswer = true;
+                                    if (!note.isBreak && !note.isEx)
+                                    {
+                                        waitToBePlayed[nearIndex].hasJudge = true;
+                                    }
+                                }
+                                else
+                                {
+                                    // 只有最普通的Hold才有结尾的判定音 Break和Ex型则没有（Break没有为推定）
+                                    SoundEffectTiming holdRelease = new SoundEffectTiming(targetTime, _hasAnswer: true, _hasJudge: !note.isBreak && !note.isEx);
+                                    waitToBePlayed.Add(holdRelease);
+                                }
+                                break;
+                            }
+                        case SimaiNoteType.Slide:
+                            {
+                                if (!note.isSlideNoHead)
+                                {
+                                    // 当Slide不是无头星星的时候 才有answer音和判定音
+                                    stobj.hasAnswer = true;
+                                    if (note.isBreak)
+                                    {
+                                        stobj.hasBreak = true;
+                                        stobj.hasJudgeBreak = true;
+                                    }
+                                    if (note.isEx)
+                                    {
+                                        stobj.hasJudgeEx = true;
+                                    }
+                                    if (!note.isBreak && !note.isEx)
+                                    {
+                                        stobj.hasJudge = true;
+                                    }
+                                }
+
+                                // Slide启动音效
+                                var targetTime = note.slideStartTime;
+                                var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
+                                if (nearIndex != -1)
+                                {
+                                    waitToBePlayed[nearIndex].hasSlide = true;
+                                }
+                                else
+                                {
+                                    SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasSlide: true);
+                                    waitToBePlayed.Add(slide);
+                                }
+                                // Slide尾巴 如果是Break Slide的话 就要添加一个Break音效
+                                if (note.isSlideBreak)
+                                {
+                                    targetTime = note.slideStartTime + note.slideTime;
+                                    nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
+                                    if (nearIndex != -1)
+                                    {
+                                        waitToBePlayed[nearIndex].hasBreak = true;
+                                    }
+                                    else
+                                    {
+                                        SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasBreak: true);
+                                        waitToBePlayed.Add(slide);
+                                    }
+                                }
+                                break;
+                            }
+                        case SimaiNoteType.Touch:
+                            {
+                                stobj.hasAnswer = true;
+                                stobj.hasTouch = true;
+                                if (note.isHanabi)
+                                {
+                                    stobj.hasHanabi = true;
+                                }
+                                break;
+                            }
+                        case SimaiNoteType.TouchHold:
+                            {
+                                stobj.hasAnswer = true;
+                                stobj.hasTouch = true;
+                                // 计算TouchHold结尾
+                                var targetTime = noteGroup.time + note.holdTime;
+                                var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
+                                if (nearIndex != -1)
+                                {
+                                    if (note.isHanabi)
+                                    {
+                                        waitToBePlayed[nearIndex].hasHanabi = true;
+                                    }
+                                    waitToBePlayed[nearIndex].hasAnswer = true;
+                                    waitToBePlayed[nearIndex].hasTouchHoldEnd = true;
+                                }
+                                else
+                                {
+                                    SoundEffectTiming tHoldRelease = new SoundEffectTiming(targetTime, _hasAnswer: true, _hasHanabi: note.isHanabi, _hasTouchHoldEnd: true);
+                                    waitToBePlayed.Add(tHoldRelease);
+                                }
+                                break;
+                            }
+                    }
                 }
 
                 if (combIndex != -1)
                 {
                     waitToBePlayed[combIndex] = stobj;
-                }else
+                }
+                else
                 {
                     waitToBePlayed.Add(stobj);
-                }
-
-                foreach (var note in notes)
-                {
-                    if (note.noteType == SimaiNoteType.Hold)
-                    {
-                        var targetTime = noteGroup.time + note.holdTime;
-                        var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
-                        if (nearIndex != -1)
-                        {
-                            waitToBePlayed[nearIndex].hasClick = true;
-                        }
-                        else
-                        {
-                            SoundEffectTiming holdRelease = new SoundEffectTiming(targetTime);
-                            waitToBePlayed.Add(holdRelease);
-                        }
-                    }
-                    if (note.noteType == SimaiNoteType.TouchHold)
-                    {
-                        var targetTime = noteGroup.time + note.holdTime;
-                        var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
-                        if (nearIndex != -1)
-                        {
-                            if (note.isHanabi)
-                            {
-                                waitToBePlayed[nearIndex].hasHanabi = true;
-                            }
-                            waitToBePlayed[nearIndex].hasClick = true;
-                            waitToBePlayed[nearIndex].hasTouchHoldEnd = true;
-                        }
-                        else
-                        {
-                            SoundEffectTiming tHoldRelease = new SoundEffectTiming(targetTime, _hasHanabi: note.isHanabi, _hasTouchHoldEnd: true);
-                            waitToBePlayed.Add(tHoldRelease);
-                        }
-                    }
-                    if (note.noteType == SimaiNoteType.Slide)
-                    {
-                        var targetTime = note.slideStartTime;
-                        var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
-                        if (nearIndex != -1)
-                        {
-                            waitToBePlayed[nearIndex].hasSlide = true;
-                        }
-                        else
-                        {
-                            SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasClick: false, _hasSlide: true);
-                            waitToBePlayed.Add(slide);
-                        }
-                        // Slide尾巴 如果是Break Slide的话 就要添加一个Break音效
-                        if (note.isSlideBreak)
-                        {
-                            targetTime = note.slideStartTime + note.slideTime;
-                            nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
-                            if (nearIndex != -1)
-                            {
-                                waitToBePlayed[nearIndex].hasBreak = true;
-                            }
-                            else
-                            {
-                                SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasClick: false, _hasBreak: true);
-                                waitToBePlayed.Add(slide);
-                            }
-                        }
-                    }
                 }
             }
             if (isOpIncluded)
             {
-                waitToBePlayed.Add(new SoundEffectTiming(GetAllPerfectStartTime(), _hasClick: false, _hasAllPerfect: true));
+                waitToBePlayed.Add(new SoundEffectTiming(GetAllPerfectStartTime(), _hasAllPerfect: true));
             }
             waitToBePlayed.Sort((o1,o2) => o1.time<o2.time?-1:1);
         }
@@ -1550,11 +1624,13 @@ namespace MajdataEdit
 
         class SoundEffectTiming
         {
-            public bool hasClick = true;
+            public bool hasAnswer = false;
+            public bool hasJudge = false;
+            public bool hasJudgeBreak = false;
             public bool hasBreak = false;
             public bool hasTouch = false;
             public bool hasHanabi = false;
-            public bool hasEx = false;
+            public bool hasJudgeEx = false;
             public bool hasTouchHold = false;
             public bool hasTouchHoldEnd = false;
             public bool hasSlide = false;
@@ -1562,17 +1638,18 @@ namespace MajdataEdit
             public bool hasClock = false;
             public double time;
 
-            public SoundEffectTiming(double _time, bool _hasClick = true, bool _hasBreak = false, bool _hasTouch = false,
-                                     bool _hasHanabi = false, bool _hasEx = false, bool _hasTouchHold = false,
-                                     bool _hasSlide = false, bool _hasTouchHoldEnd = false, bool _hasAllPerfect = false,
-                                     bool _hasClock = false)
+            public SoundEffectTiming(double _time, bool _hasAnswer = false, bool _hasJudge = false, bool _hasJudgeBreak = false,
+                                     bool _hasBreak = false, bool _hasTouch = false, bool _hasHanabi = false,
+                                     bool _hasJudgeEx = false, bool _hasTouchHold = false, bool _hasSlide = false,
+                                     bool _hasTouchHoldEnd = false, bool _hasAllPerfect = false, bool _hasClock = false)
             {
                 time = _time;
-                hasClick = _hasClick;
+                hasAnswer = _hasAnswer;
+                hasJudge = _hasJudge;
                 hasBreak = _hasBreak;
                 hasTouch = _hasTouch;
                 hasHanabi = _hasHanabi;
-                hasEx = _hasEx;
+                hasJudgeEx = _hasJudgeEx;
                 hasTouchHold = _hasTouchHold;
                 hasSlide = _hasSlide;
                 hasTouchHoldEnd = _hasTouchHoldEnd;
