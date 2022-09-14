@@ -342,6 +342,10 @@ namespace MajdataEdit
 
         public List<SimaiNote> getNotes()
         {
+            if (noteList.Count != 0)
+            {
+                return noteList;
+            }
             
             List<SimaiNote> simaiNotes = new List<SimaiNote>();
             if (notesContent == "") return simaiNotes;
@@ -376,11 +380,13 @@ namespace MajdataEdit
                     return simaiNotes;
                 }
                 simaiNotes.Add(getSingleNote(notesContent));
+                noteList = simaiNotes;
                 return simaiNotes;
             }
             catch
             {
-                return new List<SimaiNote>();
+                noteList = new List<SimaiNote>();
+                return noteList;
             }
         }
         
@@ -465,7 +471,37 @@ namespace MajdataEdit
             //break
             if (noteText.Contains('b'))
             {
-                simaiNote.isBreak = true;
+                if (simaiNote.noteType == SimaiNoteType.Slide)
+                {
+                    // 如果是Slide 则要检查这个b到底是星星头的还是Slide本体的
+
+                    // !!! **SHIT CODE HERE** !!!
+                    int startIndex = 0;
+                    while ((startIndex = noteText.IndexOf('b', startIndex)) != -1)
+                    {
+                        if (startIndex < noteText.Length - 1)
+                        {
+                            // 如果不成立 那么说明这个b符号是整个文本的最后一个字符 我们就忽略它
+                            // 反之 如果成立 我们就检查b之后一个字符是不是`[`符号 如果是 那么就是break slide
+                            if (noteText[startIndex + 1] == '[')
+                            {
+                                simaiNote.isSlideBreak = true;
+                            }
+                            else
+                            {
+                                // 否则 那么不管这个break出现在slide的哪一个地方 我们都认为他是星星头的break
+                                // SHIT CODE!
+                                simaiNote.isBreak = true;
+                            }
+                        }
+                        startIndex++;
+                    }
+                }
+                else
+                {
+                    // 除此之外的Break就无所谓了
+                    simaiNote.isBreak = true;
+                }
                 noteText = noteText.Replace("b", "");
             }
             //EX
@@ -564,6 +600,7 @@ namespace MajdataEdit
     {
         public SimaiNoteType noteType;
         public bool isBreak = false;
+        public bool isSlideBreak = false;
         public bool isHanabi = false;
         public bool isEx = false;
         public bool isSlideNoHead = false;

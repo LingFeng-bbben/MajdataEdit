@@ -1439,6 +1439,21 @@ namespace MajdataEdit
                             SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasClick: false, _hasSlide: true);
                             waitToBePlayed.Add(slide);
                         }
+                        // Slide尾巴 如果是Break Slide的话 就要添加一个Break音效
+                        if (note.isSlideBreak)
+                        {
+                            targetTime = note.slideStartTime + note.slideTime;
+                            nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
+                            if (nearIndex != -1)
+                            {
+                                waitToBePlayed[nearIndex].hasBreak = true;
+                            }
+                            else
+                            {
+                                SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasClick: false, _hasBreak: true);
+                                waitToBePlayed.Add(slide);
+                            }
+                        }
                     }
                 }
             }
