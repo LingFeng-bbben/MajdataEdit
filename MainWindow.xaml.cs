@@ -101,6 +101,24 @@ namespace MajdataEdit
         {
             WaveStopMonitorUpdate();
         }
+        /// <summary>
+        /// 谱面变更延迟解析
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChartChangeTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Console.WriteLine("TextChanged");
+            Dispatcher.Invoke(
+                new Action(
+                    delegate
+                    {
+                        SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
+                        DrawWave();
+                    }
+                )
+            );
+        }
 
         //Window events
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -172,7 +190,7 @@ namespace MajdataEdit
             }
         }
 
-        //MENU BARS
+#region MENU BARS
         private void Menu_New_Click(object sender, RoutedEventArgs e)
         {
             if (!isSaved)
@@ -256,10 +274,44 @@ namespace MajdataEdit
         {
             soundSetting = new SoundSetting();
             soundSetting.Owner = this;
-            soundSetting.Show();
+            soundSetting.ShowDialog();
+        }
+        private void MuriCheck_Click_1(object sender, RoutedEventArgs e)
+        {
+            MuriCheck muriCheck = new MuriCheck();
+            muriCheck.Owner = this;
+            muriCheck.Show();
+        }
+        private void MenuItem_EditorSetting_Click(object sender, RoutedEventArgs e)
+        {
+            EditorSettingPanel esp = new EditorSettingPanel();
+            esp.Owner = this;
+            esp.ShowDialog();
+        }
+        private void Menu_ResetViewWindow(object sender, RoutedEventArgs e)
+        {
+            if (CheckAndStartView()) return;
+            InternalSwitchWindow();
+        }
+        private void MenuFind_Click(object sender, RoutedEventArgs e)
+        {
+            if (FindGrid.Visibility == Visibility.Collapsed)
+            {
+                FindGrid.Visibility = Visibility.Visible;
+                InputText.Focus();
+            }
+            else
+                FindGrid.Visibility = Visibility.Collapsed;
+        }
+        private void CheckUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            CheckUpdate();
         }
 
-        //快捷键
+
+#endregion
+
+#region 快捷键
         private void PlayAndPause_CanExecute(object sender, CanExecuteRoutedEventArgs e) //快捷键
         {
             TogglePlayAndStop();
@@ -319,8 +371,9 @@ namespace MajdataEdit
             else
                 FindGrid.Visibility = Visibility.Collapsed;
         }
+#endregion
 
-        //Left componients
+#region Left componients
         private void PlayAndPauseButton_Click(object sender, RoutedEventArgs e)
         {
             TogglePlayAndPause();
@@ -371,8 +424,17 @@ namespace MajdataEdit
         {
             TogglePlayAndStop(true);
         }
+        private void SettingLabel_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            // 单击设置的时候也可以进入设置界面
+            EditorSettingPanel esp = new EditorSettingPanel();
+            esp.Owner = this;
+            esp.ShowDialog();
+        }
 
-        //RichTextbox events
+#endregion
+
+#region RichTextbox events
         private void FumenContent_SelectionChanged(object sender, RoutedEventArgs e)
         {
             NoteNowText.Content = "" + (
@@ -424,8 +486,9 @@ namespace MajdataEdit
                 e.Handled = true;
             }
         }
+#endregion
 
-        //Wave displayer
+#region Wave displayer
         private void WaveViewZoomIn_Click(object sender, RoutedEventArgs e)
         {
             if (zoominPower <6)
@@ -458,74 +521,13 @@ namespace MajdataEdit
             }
             lastMousePointX = e.GetPosition(this).X;
         }
-
-        private void MuriCheck_Click_1(object sender, RoutedEventArgs e)
-        {
-            MuriCheck muriCheck = new MuriCheck();
-            muriCheck.Owner = this;
-            muriCheck.Show();
-        }
-
-        private void MenuItem_EditorSetting_Click(object sender, RoutedEventArgs e)
-        {
-            EditorSettingPanel esp = new EditorSettingPanel();
-            esp.Owner = this;
-            esp.Show();
-        }
-
-        private void Menu_ResetViewWindow(object sender, RoutedEventArgs e)
-        {
-            if (CheckAndStartView()) return;
-            InternalSwitchWindow();
-        }
-
-        private void MenuFind_Click(object sender, RoutedEventArgs e)
-        {
-            if (FindGrid.Visibility == Visibility.Collapsed)
-            {
-                FindGrid.Visibility = Visibility.Visible;
-                InputText.Focus();
-            }
-            else
-                FindGrid.Visibility = Visibility.Collapsed;
-        }
-
+#endregion
         private void FindClose_MouseDown(object sender, MouseButtonEventArgs e)
         {
             FindGrid.Visibility = Visibility.Collapsed;
             FumenContent.Focus();
         }
 
-        private void SettingLabel_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            // 单击设置的时候也可以进入设置界面
-            EditorSettingPanel esp = new EditorSettingPanel();
-            esp.Owner = this;
-            esp.Show();
-        }
 
-        private void CheckUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            CheckUpdate();
-        }
-
-        /// <summary>
-        /// 谱面变更延迟解析
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ChartChangeTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            Console.WriteLine("TextChanged");
-            Dispatcher.Invoke(
-                new Action(
-                    delegate
-                    {
-                        SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
-                        DrawWave();
-                    }
-                )
-            );
-        }
     }
 }

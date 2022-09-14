@@ -284,8 +284,9 @@ namespace MajdataEdit
                 //Console.WriteLine(notelist.ToArray());
                 return requestedTime;
             }
-            catch
+            catch(Exception e)
             {
+                Console.WriteLine(e.Message);
                 return 0;
             }
         }
