@@ -445,11 +445,11 @@ namespace MajdataEdit
 
             editorSetting.DefaultSlideAccuracy = 0.2f; // 大家都要做能pass 200ms撞尾检测的好孩子喔
             // 设置默认音量
-            editorSetting.Default_BGM_Level = 0.8f;
+            editorSetting.Default_BGM_Level = 0.85f;
             editorSetting.Default_Answer_Level = 0.95f;
             editorSetting.Default_Judge_Level = 0.5f;
             editorSetting.Default_Slide_Level = 0.35f;
-            editorSetting.Default_Break_Level = 0.6f;
+            editorSetting.Default_Break_Level = 0.55f;
             editorSetting.Default_Ex_Level = 0.4f;
             editorSetting.Default_Touch_Level = 0.5f;
             editorSetting.Default_Hanabi_Level = 0.4f;
