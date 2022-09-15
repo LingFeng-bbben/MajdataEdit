@@ -1502,6 +1502,7 @@ namespace MajdataEdit
                             {
                                 stobj.hasAnswer = true;
                                 stobj.hasTouch = true;
+                                stobj.hasTouchHold = true;
                                 // 计算TouchHold结尾
                                 var targetTime = noteGroup.time + note.holdTime;
                                 var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
