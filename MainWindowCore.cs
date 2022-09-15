@@ -33,7 +33,7 @@ namespace MajdataEdit
 {
     public partial class MainWindow : Window
     {
-        public const string MAJDATA_VERSION = "Beta3.1";
+        public const string MAJDATA_VERSION = "4.0-SNAPSHOT";
         bool UpdateCheckLock = false;
 
         Timer currentTimeRefreshTimer = new Timer(100);
