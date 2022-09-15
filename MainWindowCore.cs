@@ -33,7 +33,7 @@ namespace MajdataEdit
 {
     public partial class MainWindow : Window
     {
-        public const string MAJDATA_VERSION = "v4.0-SNAPSHOT.1";
+        public const string MAJDATA_VERSION = "v4.0-SNAPSHOT.2";
         bool UpdateCheckLock = false;
 
         Timer currentTimeRefreshTimer = new Timer(100);
@@ -1539,6 +1539,7 @@ namespace MajdataEdit
                 waitToBePlayed.Add(new SoundEffectTiming(GetAllPerfectStartTime(), _hasAllPerfect: true));
             }
             waitToBePlayed.Sort((o1,o2) => o1.time<o2.time?-1:1);
+            Console.WriteLine(JsonConvert.SerializeObject(waitToBePlayed));
         }
 
         private void SwitchFumenOverwriteMode()
@@ -1649,6 +1650,7 @@ namespace MajdataEdit
                 time = _time;
                 hasAnswer = _hasAnswer;
                 hasJudge = _hasJudge;
+                hasJudgeBreak = _hasJudgeBreak; // 我是笨蛋
                 hasBreak = _hasBreak;
                 hasTouch = _hasTouch;
                 hasHanabi = _hasHanabi;
