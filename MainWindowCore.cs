@@ -33,7 +33,7 @@ namespace MajdataEdit
 {
     public partial class MainWindow : Window
     {
-        public const string MAJDATA_VERSION = "v4.0-SNAPSHOT.2";
+        public const string MAJDATA_VERSION = "v4.0-SNAPSHOT.3";
         bool UpdateCheckLock = false;
 
         Timer currentTimeRefreshTimer = new Timer(100);
@@ -332,13 +332,13 @@ namespace MajdataEdit
             {
                 isSaved = true;
                 LevelSelector.IsEnabled = true;
-                TheWindow.Title = "MajdataEdit - " + SimaiProcess.title;
+                TheWindow.Title = GetWindowsTitleString(SimaiProcess.title);
             }
             else
             {
                 isSaved = false;
                 LevelSelector.IsEnabled = false;
-                TheWindow.Title = "MajdataEdit - "+GetLocalizedString("Unsaved") + SimaiProcess.title;
+                TheWindow.Title = GetWindowsTitleString(GetLocalizedString("Unsaved") + SimaiProcess.title);
             }
         }
         /// <summary>
@@ -1695,6 +1695,16 @@ namespace MajdataEdit
             // 检查是否需要更新软件
             WebControl.RequestGETAsync("http://api.github.com/repos/LingFeng-bbben/MajdataView/releases/latest", requestHandler);
             
+        }
+
+        public string GetWindowsTitleString()
+        {
+            return "MajdataEdit(" + MAJDATA_VERSION + ")";
+        }
+
+        public string GetWindowsTitleString(string info)
+        {
+            return GetWindowsTitleString() + " - " + info;
         }
 
         class SoundEffectTiming

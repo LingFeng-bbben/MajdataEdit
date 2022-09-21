@@ -43,6 +43,8 @@ namespace MajdataEdit
         {
             CheckAndStartView();
 
+            TheWindow.Title = GetWindowsTitleString();
+
             SetWindowGoldenPosition();
 
             var handle = (new WindowInteropHelper(this)).Handle;
@@ -259,7 +261,7 @@ namespace MajdataEdit
         {
             var infoWindow = new Infomation();
             infoWindow.ShowDialog();
-            TheWindow.Title = "MajdataEdit - " + SimaiProcess.title;
+            TheWindow.Title = GetWindowsTitleString(SimaiProcess.title);
         }
         private void MenuItem_SimaiWiki_Click(object sender, RoutedEventArgs e)
         {
