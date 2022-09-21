@@ -1420,21 +1420,25 @@ namespace MajdataEdit
                                 }
 
                                 // 计算Hold尾部的音效
-                                var targetTime = noteGroup.time + note.holdTime;
-                                var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
-                                if (nearIndex != -1)
+                                if (!(note.holdTime <= 0.005f))
                                 {
-                                    waitToBePlayed[nearIndex].hasAnswer = true;
-                                    if (!note.isBreak && !note.isEx)
+                                    // 如果是短hold（六角tap），则忽略尾部音效。否则，才会计算尾部音效
+                                    var targetTime = noteGroup.time + note.holdTime;
+                                    var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
+                                    if (nearIndex != -1)
                                     {
-                                        waitToBePlayed[nearIndex].hasJudge = true;
+                                        waitToBePlayed[nearIndex].hasAnswer = true;
+                                        if (!note.isBreak && !note.isEx)
+                                        {
+                                            waitToBePlayed[nearIndex].hasJudge = true;
+                                        }
                                     }
-                                }
-                                else
-                                {
-                                    // 只有最普通的Hold才有结尾的判定音 Break和Ex型则没有（Break没有为推定）
-                                    SoundEffectTiming holdRelease = new SoundEffectTiming(targetTime, _hasAnswer: true, _hasJudge: !note.isBreak && !note.isEx);
-                                    waitToBePlayed.Add(holdRelease);
+                                    else
+                                    {
+                                        // 只有最普通的Hold才有结尾的判定音 Break和Ex型则没有（Break没有为推定）
+                                        SoundEffectTiming holdRelease = new SoundEffectTiming(targetTime, _hasAnswer: true, _hasJudge: !note.isBreak && !note.isEx);
+                                        waitToBePlayed.Add(holdRelease);
+                                    }
                                 }
                                 break;
                             }
