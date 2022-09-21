@@ -728,7 +728,7 @@ namespace MajdataEdit
                     {
                         if (note == null) { break; }
                         var notes = note.getNotes();
-                        bool isEach = notes.Count > 1;
+                        bool isEach = notes.Count(o => !o.isSlideNoHead) > 1;
 
                         float x = (float)(note.time / sampleTime) * zoominPower;
 
@@ -755,9 +755,40 @@ namespace MajdataEdit
 
                             if (noteD.noteType == SimaiNoteType.Tap)
                             {
-                                pen.Width = 2;
-                                pen.Color = isEach ? System.Drawing.Color.Gold : System.Drawing.Color.LightPink;
-                                graphics.DrawEllipse(pen, x - 2.5f, y - 2.5f, 5, 5);
+                                if (noteD.isForceStar)
+                                {
+                                    pen.Width = 3;
+                                    if (noteD.isBreak)
+                                    {
+                                        pen.Color = System.Drawing.Color.OrangeRed;
+                                    }
+                                    else if (isEach)
+                                    {
+                                        pen.Color = System.Drawing.Color.Gold;
+                                    }
+                                    else
+                                    {
+                                        pen.Color = System.Drawing.Color.DeepSkyBlue;
+                                    }
+                                    System.Drawing.Brush brush = new SolidBrush(pen.Color);
+                                    graphics.DrawString("*", new Font("Consolas", 12, System.Drawing.FontStyle.Bold), brush, new PointF(x - 7f, y - 7f));
+                                } else
+                                {
+                                    pen.Width = 2;
+                                    if (noteD.isBreak)
+                                    {
+                                        pen.Color = System.Drawing.Color.OrangeRed;
+                                    }
+                                    else if (isEach)
+                                    {
+                                        pen.Color = System.Drawing.Color.Gold;
+                                    }
+                                    else
+                                    {
+                                        pen.Color = System.Drawing.Color.LightPink;
+                                    }
+                                    graphics.DrawEllipse(pen, x - 2.5f, y - 2.5f, 5, 5);
+                                }
                             }
 
                             if (noteD.noteType == SimaiNoteType.Touch)
@@ -771,7 +802,18 @@ namespace MajdataEdit
                             if (noteD.noteType == SimaiNoteType.Hold)
                             {
                                 pen.Width = 3;
-                                pen.Color = isEach ? System.Drawing.Color.Gold : System.Drawing.Color.LightPink;
+                                if (noteD.isBreak)
+                                {
+                                    pen.Color = System.Drawing.Color.OrangeRed;
+                                }
+                                else if (isEach)
+                                {
+                                    pen.Color = System.Drawing.Color.Gold;
+                                }
+                                else
+                                {
+                                    pen.Color = System.Drawing.Color.LightPink;
+                                }
 
                                 float xRight = x + (float)(noteD.holdTime / sampleTime) * zoominPower;
                                 if (xRight - x < 1f) xRight = x + 5;
@@ -798,12 +840,37 @@ namespace MajdataEdit
 
                             if (noteD.noteType == SimaiNoteType.Slide)
                             {
-                                pen.Width = 3;
-                                pen.Color = System.Drawing.Color.DeepSkyBlue;
-                                System.Drawing.Brush brush = new SolidBrush(pen.Color);
-                                graphics.DrawString("*", new Font("Consolas", 12, System.Drawing.FontStyle.Bold), brush, new PointF(x - 7f, y - 7f));
+                                if (!noteD.isSlideNoHead)
+                                {
+                                    pen.Width = 3;
+                                    if (noteD.isBreak)
+                                    {
+                                        pen.Color = System.Drawing.Color.OrangeRed;
+                                    }
+                                    else if (isEach)
+                                    {
+                                        pen.Color = System.Drawing.Color.Gold;
+                                    }
+                                    else
+                                    {
+                                        pen.Color = System.Drawing.Color.DeepSkyBlue;
+                                    }
+                                    System.Drawing.Brush brush = new SolidBrush(pen.Color);
+                                    graphics.DrawString("*", new Font("Consolas", 12, System.Drawing.FontStyle.Bold), brush, new PointF(x - 7f, y - 7f));
+                                }
 
-                                pen.Color = System.Drawing.Color.SkyBlue;
+                                if (noteD.isSlideBreak)
+                                {
+                                    pen.Color = System.Drawing.Color.OrangeRed;
+                                }
+                                else if (notes.Count(o => o.noteType == SimaiNoteType.Slide) >= 2)
+                                {
+                                    pen.Color = System.Drawing.Color.Gold;
+                                }
+                                else
+                                {
+                                    pen.Color = System.Drawing.Color.SkyBlue;
+                                }
                                 pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
                                 float xSlide = (float)(noteD.slideStartTime / sampleTime) * zoominPower;
                                 float xSlideRight = (float)(noteD.slideTime / sampleTime) * zoominPower + xSlide;
@@ -1420,7 +1487,7 @@ namespace MajdataEdit
                                 }
 
                                 // 计算Hold尾部的音效
-                                if (!(note.holdTime <= 0.005f))
+                                if (!(note.holdTime <= 0.00f))
                                 {
                                     // 如果是短hold（六角tap），则忽略尾部音效。否则，才会计算尾部音效
                                     var targetTime = noteGroup.time + note.holdTime;
