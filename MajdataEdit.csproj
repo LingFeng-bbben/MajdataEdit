@@ -63,6 +63,9 @@
     <Reference Include="PresentationFramework.Aero2">
       <Private>True</Private>
     </Reference>
+    <Reference Include="Semver, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Semver.2.2.0\lib\net452\Semver.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
