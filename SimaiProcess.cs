@@ -481,8 +481,7 @@ namespace MajdataEdit
                     {
                         if (startIndex < noteText.Length - 1)
                         {
-                            // 如果不成立 那么说明这个b符号是整个文本的最后一个字符 我们就忽略它
-                            // 反之 如果成立 我们就检查b之后一个字符是不是`[`符号 如果是 那么就是break slide
+                            // 如果b不是最后一个字符 我们就检查b之后一个字符是不是`[`符号：如果是 那么就是break slide
                             if (noteText[startIndex + 1] == '[')
                             {
                                 simaiNote.isSlideBreak = true;
@@ -493,6 +492,11 @@ namespace MajdataEdit
                                 // SHIT CODE!
                                 simaiNote.isBreak = true;
                             }
+                        }
+                        else
+                        {
+                            // 如果b符号是整个文本的最后一个字符 那么也是break slide（Simai语法）
+                            simaiNote.isSlideBreak = true;
                         }
                         startIndex++;
                     }
