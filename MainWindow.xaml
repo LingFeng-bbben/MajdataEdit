@@ -40,7 +40,7 @@
                 <MenuItem Header="{lex:Loc MirrorUD}" Click="MirrorUpDown_MenuItem_Click"/>
                 <MenuItem Header="{lex:Loc Mirror180}" Click="Mirror180_MenuItem_Click"/>
                 <MenuItem Header="{lex:Loc Mirror45}" Click="Mirror45_MenuItem_Click"/>
-                <MenuItem Header="{lex:Loc MirrorCcw45}" Click="MirrorAc45_MenuItem_Click"/>
+                <MenuItem Header="{lex:Loc MirrorCcw45}" Click="MirrorCcw45_MenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="{lex:Loc MapInfo}" Click="MenuItem_InfomationEdit_Click"/>
                 <Separator/>
@@ -88,6 +88,11 @@
                 <RoutedUICommand x:Key="IncreasePlaybackSpeed" Text="IncreasePlaybackSpeed"/>
                 <RoutedUICommand x:Key="DecreasePlaybackSpeed" Text="DecreasePlaybackSpeed"/>
                 <RoutedUICommand x:Key="Find" Text="Find"/>
+                <RoutedUICommand x:Key="MirrorLR" Text="MirrorLR"/>
+                <RoutedUICommand x:Key="MirrorUD" Text="MirrorUD"/>
+                <RoutedUICommand x:Key="Mirror180" Text="Mirror180"/>
+                <RoutedUICommand x:Key="Mirror45" Text="Mirror45"/>
+                <RoutedUICommand x:Key="MirrorCcw45" Text="MirrorCcw45"/>
             </RichTextBox.Resources>
             <RichTextBox.Background>
                 <SolidColorBrush Color="#FF171717" Opacity="0.3"/>
@@ -101,6 +106,11 @@
                 <CommandBinding Command="{StaticResource IncreasePlaybackSpeed}" CanExecute="IncreasePlaybackSpeed_CanExecute"/>
                 <CommandBinding Command="{StaticResource DecreasePlaybackSpeed}" CanExecute="DecreasePlaybackSpeed_CanExecute"/>
                 <CommandBinding Command="{StaticResource Find}" CanExecute="FindCommand_CanExecute"/>
+                <CommandBinding Command="{StaticResource MirrorLR}" CanExecute="MirrorLRCommand_CanExecute"/>
+                <CommandBinding Command="{StaticResource MirrorUD}" CanExecute="MirrorUDCommand_CanExecute"/>
+                <CommandBinding Command="{StaticResource Mirror180}" CanExecute="Mirror180Command_CanExecute"/>
+                <CommandBinding Command="{StaticResource Mirror45}" CanExecute="Mirror45Command_CanExecute"/>
+                <CommandBinding Command="{StaticResource MirrorCcw45}" CanExecute="MirrorCcw45Command_CanExecute"/>
 
             </RichTextBox.CommandBindings>
             <FlowDocument/>

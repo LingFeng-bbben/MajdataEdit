@@ -507,6 +507,11 @@ namespace MajdataEdit
             AddGesture(editorSetting.IncreasePlaybackSpeedKey, "IncreasePlaybackSpeed");
             AddGesture(editorSetting.DecreasePlaybackSpeedKey, "DecreasePlaybackSpeed");
             AddGesture("Ctrl+f", "Find");
+            AddGesture(editorSetting.MirrorLeftRightKey, "MirrorLR");
+            AddGesture(editorSetting.MirrorUpDownKey, "MirrorUD");
+            AddGesture(editorSetting.Mirror180Key, "Mirror180");
+            AddGesture(editorSetting.Mirror45Key, "Mirror45");
+            AddGesture(editorSetting.MirrorCcw45Key, "MirrorCcw45");
             FumenContent.FontSize = editorSetting.FontSize;
             
             ViewerCover.Content = editorSetting.backgroundCover.ToString();

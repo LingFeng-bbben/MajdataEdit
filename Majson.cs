@@ -61,6 +61,11 @@ namespace MajdataEdit
         public string SaveKey = "Ctrl+s";
         public string IncreasePlaybackSpeedKey = "Ctrl+p";
         public string DecreasePlaybackSpeedKey = "Ctrl+o";
+        public string MirrorLeftRightKey = "Ctrl+j";
+        public string MirrorUpDownKey = "Ctrl+k";
+        public string Mirror180Key = "Ctrl+l";
+        public string Mirror45Key = "Ctrl+OemSemicolon";
+        public string MirrorCcw45Key = "Ctrl+OemQuotes";
         public float FontSize = 12;
         public int RenderMode = 0;  //0=硬件渲染(默认)，1=软件渲染
         public float playSpeed = 7.0f;
