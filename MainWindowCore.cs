@@ -245,11 +245,26 @@ namespace MajdataEdit
         void initFromFile(string path)//file name should not be included in path
         {
             if (soundSetting != null)
+            {
                 soundSetting.Close();
+            }
+            if (editorSetting == null)
+            {
+                ReadEditorSetting();
+            }
+
             var audioPath = path + "/track.mp3";
             var dataPath = path + "/maidata.txt";
-            if (!File.Exists(audioPath)) MessageBox.Show(GetLocalizedString("NoTrack_mp3"), GetLocalizedString("Error"));
-            if (!File.Exists(dataPath)) MessageBox.Show(GetLocalizedString("NoMaidata_txt"), GetLocalizedString("Error"));
+            if (!File.Exists(audioPath))
+            {
+                MessageBox.Show(GetLocalizedString("NoTrack_mp3"), GetLocalizedString("Error"));
+                return;
+            }
+            if (!File.Exists(dataPath))
+            {
+                MessageBox.Show(GetLocalizedString("NoMaidata_txt"), GetLocalizedString("Error"));
+                return;
+            }
             maidataDir = path;
             SetRawFumenText("");
             if (bgmStream != -1024)
@@ -257,7 +272,7 @@ namespace MajdataEdit
                 Bass.BASS_ChannelStop(bgmStream);
                 Bass.BASS_StreamFree(bgmStream);
             }
-            soundSetting.Close();
+            //soundSetting.Close();
             var decodeStream = Bass.BASS_StreamCreateFile(audioPath, 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
             bgmStream = BassFx.BASS_FX_TempoCreate(decodeStream, BASSFlag.BASS_FX_FREESOURCE);
             //Bass.BASS_StreamCreateFile(audioPath, 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
