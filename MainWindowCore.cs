@@ -855,9 +855,9 @@ namespace MajdataEdit
 
                             if (noteD.noteType == SimaiNoteType.Slide)
                             {
+                                pen.Width = 3;
                                 if (!noteD.isSlideNoHead)
                                 {
-                                    pen.Width = 3;
                                     if (noteD.isBreak)
                                     {
                                         pen.Color = System.Drawing.Color.OrangeRed;
