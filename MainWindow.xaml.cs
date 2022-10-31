@@ -251,6 +251,11 @@ namespace MajdataEdit
             var result = Mirror.NoteMirrorSpin45(FumenContent.Selection.Text);
             FumenContent.Selection.Text = result;
         }
+        private void MirrorAc45_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var result = Mirror.NoteMirrorSpinCcw45(FumenContent.Selection.Text);
+            FumenContent.Selection.Text = result;
+        }
         private void BPMtap_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             BPMtap tap = new BPMtap();

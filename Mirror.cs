@@ -288,5 +288,93 @@ namespace MajdataEdit
             }
             return s;
         }
+        static public string NoteMirrorSpinCcw45(string str)
+        {
+            // anti-clockwise
+            string s = "";
+            Dictionary<string, string> Mirror45 = new Dictionary<string, string>();
+            Mirror45.Add("1", "8");
+            Mirror45.Add("2", "1");
+            Mirror45.Add("3", "2");
+            Mirror45.Add("4", "3");
+            Mirror45.Add("5", "4");
+            Mirror45.Add("6", "5");
+            Mirror45.Add("7", "6");
+            Mirror45.Add("8", "7");
+            Dictionary<string, string> Mirror45special = new Dictionary<string, string>();//3或7键位旋转改变<>符号
+            Mirror45special.Add("<", ">");
+            Mirror45special.Add(">", "<");
+            char[] a = str.ToCharArray();
+            for (int i = 0; i < a.Length; i++)
+            {
+                string s1 = a[i].ToString();
+                if (a[i] == '{' || a[i] == '[' || a[i] == '(')
+                {
+                    s += s1;
+
+                    while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+                    {
+                        i += 1;
+                        s += a[i];
+                    }
+                }
+                else
+                {
+                    if (Mirror45.ContainsKey(s1))
+                    {
+                        if (i + 2 < a.Length && (a[i] == '3' || a[i] == '7') && a[i + 1] != '[')
+                        {
+                            s += Mirror45[s1];
+                            while (i + 1 < a.Length && a[i] != ',')
+                            {
+                                i += 1;
+                                string st = a[i].ToString();
+                                if (st == "/")
+                                {
+                                    s += "/";
+                                    break;
+                                }
+                                else if (st == "[")
+                                {
+                                    s += st;
+
+                                    while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+                                    {
+                                        i += 1;
+                                        s += a[i];
+
+
+                                    }
+                                }
+                                else if (Mirror45special.ContainsKey(st))
+                                {
+                                    s += Mirror45special[st];
+
+                                }
+                                else if (Mirror45.ContainsKey(st))
+                                {
+                                    s += Mirror45[st];
+                                }
+                                else
+                                {
+                                    s += st;
+
+                                }
+                            }
+                        }
+                        else
+                        {
+                            s += Mirror45[s1];
+                        }
+                    }
+
+                    else
+                    {
+                        s += s1;
+                    }
+                }
+            }
+            return s;
+        }
     }
 }

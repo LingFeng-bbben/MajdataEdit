@@ -40,6 +40,7 @@
                 <MenuItem Header="{lex:Loc MirrorUD}" Click="MirrorUpDown_MenuItem_Click"/>
                 <MenuItem Header="{lex:Loc Mirror180}" Click="Mirror180_MenuItem_Click"/>
                 <MenuItem Header="{lex:Loc Mirror45}" Click="Mirror45_MenuItem_Click"/>
+                <MenuItem Header="{lex:Loc MirrorCcw45}" Click="MirrorAc45_MenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="{lex:Loc MapInfo}" Click="MenuItem_InfomationEdit_Click"/>
                 <Separator/>

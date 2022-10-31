@@ -389,4 +389,7 @@
   <data name="SetToDefaultVolume" xml:space="preserve">
     <value>重置音量到默认值</value>
   </data>
+  <data name="MirrorCcw45" xml:space="preserve">
+    <value>45°逆时针旋转选择</value>
+  </data>
 </root>
