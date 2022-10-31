@@ -102,7 +102,7 @@
                 <CommandBinding Command="{StaticResource Find}" CanExecute="FindCommand_CanExecute"/>
 
             </RichTextBox.CommandBindings>
-            <FlowDocument Language="null"/>
+            <FlowDocument/>
         </RichTextBox>
         <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Left" Height="64" Margin="0,17,0,0" VerticalAlignment="Top" Width="105" Foreground="White" FontFamily="Bahnschrift Light" FontSize="50" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
         <ComboBox x:Name="LevelSelector" Margin="10,117,0,0" SelectionChanged="ComboBox_SelectionChanged" HorizontalAlignment="Left" Width="87" Height="21" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkComboBox}">
