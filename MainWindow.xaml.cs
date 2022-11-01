@@ -251,6 +251,11 @@ namespace MajdataEdit
             var result = Mirror.NoteMirrorSpin45(FumenContent.Selection.Text);
             FumenContent.Selection.Text = result;
         }
+        private void MirrorCcw45_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var result = Mirror.NoteMirrorSpinCcw45(FumenContent.Selection.Text);
+            FumenContent.Selection.Text = result;
+        }
         private void BPMtap_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             BPMtap tap = new BPMtap();
@@ -373,9 +378,30 @@ namespace MajdataEdit
             else
                 FindGrid.Visibility = Visibility.Collapsed;
         }
+
+        private void MirrorLRCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            MirrorLeftRight_MenuItem_Click(sender, null);
+        }
+        private void MirrorUDCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            MirrorUpDown_MenuItem_Click(sender, null);
+        }
+        private void Mirror180Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            Mirror180_MenuItem_Click(sender, null);
+        }
+        private void Mirror45Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            Mirror45_MenuItem_Click(sender, null);
+        }
+        private void MirrorCcw45Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            MirrorCcw45_MenuItem_Click(sender, null);
+        }
 #endregion
 
-#region Left componients
+        #region Left componients
         private void PlayAndPauseButton_Click(object sender, RoutedEventArgs e)
         {
             TogglePlayAndPause();

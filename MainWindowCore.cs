@@ -28,12 +28,14 @@ using System.Globalization;
 using System.Reflection;
 using WPFLocalizeExtension.Engine;
 using System.Windows.Threading;
+using Semver;
 
 namespace MajdataEdit
 {
     public partial class MainWindow : Window
     {
-        public const string MAJDATA_VERSION = "v4.0-SNAPSHOT.3";
+        public static readonly string MAJDATA_VERSION_STRING = "v4.0.0-rc";
+        public static readonly SemVersion MAJDATA_VERSION = SemVersion.Parse(MAJDATA_VERSION_STRING, SemVersionStyles.Any);
         bool UpdateCheckLock = false;
 
         Timer currentTimeRefreshTimer = new Timer(100);
@@ -245,11 +247,26 @@ namespace MajdataEdit
         void initFromFile(string path)//file name should not be included in path
         {
             if (soundSetting != null)
+            {
                 soundSetting.Close();
+            }
+            if (editorSetting == null)
+            {
+                ReadEditorSetting();
+            }
+
             var audioPath = path + "/track.mp3";
             var dataPath = path + "/maidata.txt";
-            if (!File.Exists(audioPath)) MessageBox.Show(GetLocalizedString("NoTrack_mp3"), GetLocalizedString("Error"));
-            if (!File.Exists(dataPath)) MessageBox.Show(GetLocalizedString("NoMaidata_txt"), GetLocalizedString("Error"));
+            if (!File.Exists(audioPath))
+            {
+                MessageBox.Show(GetLocalizedString("NoTrack_mp3"), GetLocalizedString("Error"));
+                return;
+            }
+            if (!File.Exists(dataPath))
+            {
+                MessageBox.Show(GetLocalizedString("NoMaidata_txt"), GetLocalizedString("Error"));
+                return;
+            }
             maidataDir = path;
             SetRawFumenText("");
             if (bgmStream != -1024)
@@ -257,7 +274,7 @@ namespace MajdataEdit
                 Bass.BASS_ChannelStop(bgmStream);
                 Bass.BASS_StreamFree(bgmStream);
             }
-            soundSetting.Close();
+            //soundSetting.Close();
             var decodeStream = Bass.BASS_StreamCreateFile(audioPath, 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
             bgmStream = BassFx.BASS_FX_TempoCreate(decodeStream, BASSFlag.BASS_FX_FREESOURCE);
             //Bass.BASS_StreamCreateFile(audioPath, 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
@@ -490,6 +507,11 @@ namespace MajdataEdit
             AddGesture(editorSetting.IncreasePlaybackSpeedKey, "IncreasePlaybackSpeed");
             AddGesture(editorSetting.DecreasePlaybackSpeedKey, "DecreasePlaybackSpeed");
             AddGesture("Ctrl+f", "Find");
+            AddGesture(editorSetting.MirrorLeftRightKey, "MirrorLR");
+            AddGesture(editorSetting.MirrorUpDownKey, "MirrorUD");
+            AddGesture(editorSetting.Mirror180Key, "Mirror180");
+            AddGesture(editorSetting.Mirror45Key, "Mirror45");
+            AddGesture(editorSetting.MirrorCcw45Key, "MirrorCcw45");
             FumenContent.FontSize = editorSetting.FontSize;
             
             ViewerCover.Content = editorSetting.backgroundCover.ToString();
@@ -840,9 +862,9 @@ namespace MajdataEdit
 
                             if (noteD.noteType == SimaiNoteType.Slide)
                             {
+                                pen.Width = 3;
                                 if (!noteD.isSlideNoHead)
                                 {
-                                    pen.Width = 3;
                                     if (noteD.isBreak)
                                     {
                                         pen.Color = System.Drawing.Color.OrangeRed;
@@ -1638,6 +1660,64 @@ namespace MajdataEdit
             }
             UpdateCheckLock = true;
 
+            #region 子函数
+            SemVersion oldVersionCompatible(string versionString)
+            {
+                SemVersion result = SemVersion.Parse("v0.0.0", SemVersionStyles.Any);
+                try
+                {
+                    // 尝试解析版本号，解析失败说明是旧版本格式
+                    result = SemVersion.Parse(versionString, SemVersionStyles.Any);
+                }
+                catch (FormatException)
+                {
+                    if (versionString.Contains("Back2Root"))
+                    {
+                        // back to root特别版本
+                        result = SemVersion.Parse("v0.0.0", SemVersionStyles.Any);
+                    }
+                    else if (versionString.Contains("Early Access"))
+                    {
+                        // EA版本
+                        result = SemVersion.Parse("v0.0.1", SemVersionStyles.Any);
+                    }
+                    else if (versionString.Contains("Alpha"))
+                    {
+                        // 旧版本格式 Alpha<MainVersion>.<SubVersion>[.<ModifiedVersion>]
+                        // 从4.0开始，结束于6.4
+                        // 在原版本号基础上增加 0. 主版本前缀，并增加 -alpha 后缀
+                        int startPos = versionString.IndexOfAny("0123456789".ToArray());
+                        versionString = "0." + versionString.Substring(startPos);
+                        if (versionString.Count((c) => { return c == '.'; }) > 2)
+                        {
+                            versionString = versionString.Substring(0, versionString.LastIndexOf('.'));
+                        }
+                        versionString += "-alpha";
+                        result = SemVersion.Parse(versionString, SemVersionStyles.Any);
+                    }
+                    else if (versionString.Contains("Beta"))
+                    {
+                        // 旧版本格式 Beta<MainVersion>.<SubVersion>[.<ModifiedVersion>]
+                        // 从1.0开始，结束于3.1。后续的语义化版本号继承该版本号进度，从4.0开始
+                        // 增加 -beta 后缀
+                        int startPos = versionString.IndexOfAny("0123456789".ToArray());
+                        versionString = versionString.Substring(startPos);
+                        if (versionString.Contains(' '))
+                        {
+                            versionString = versionString.Substring(0, versionString.IndexOf(' '));
+                        }
+                        versionString += "-beta";
+                        result = SemVersion.Parse(versionString, SemVersionStyles.Any);
+                    }
+                    else
+                    {
+                        // 其他无法识别的版本，均设置为v0.0.1-unknown
+                        result = SemVersion.Parse("v0.0.1-unknown", SemVersionStyles.Any);
+                    }
+                }
+
+                return result;
+            }
             void requestHandler(object sender, System.Net.DownloadDataCompletedEventArgs e)
             {
                 UpdateCheckLock = false;
@@ -1654,13 +1734,15 @@ namespace MajdataEdit
 
                 string response = Encoding.UTF8.GetString(e.Result);
                 var resJson = JsonConvert.DeserializeObject<JObject>(response);
-                string latestVersion = resJson["tag_name"].ToString();
+                string latestVersionString = resJson["tag_name"].ToString();
                 string releaseUrl = resJson["html_url"].ToString();
 
-                if (latestVersion != MAJDATA_VERSION)
+                SemVersion latestVersion = oldVersionCompatible(latestVersionString);
+
+                if (latestVersion.ComparePrecedenceTo(MAJDATA_VERSION) > 0)
                 {
                     // 版本不同，需要更新
-                    string msgboxText = String.Format(GetLocalizedString("NewVersionDetected"), latestVersion, MAJDATA_VERSION);
+                    string msgboxText = String.Format(GetLocalizedString("NewVersionDetected"), latestVersionString, MAJDATA_VERSION_STRING);
                     if (onStart)
                     {
                         msgboxText += "\n\n" + GetLocalizedString("AutoUpdateCheckTip");
@@ -1692,6 +1774,8 @@ namespace MajdataEdit
                     }
                 }
             }
+            #endregion
+
             // 检查是否需要更新软件
             WebControl.RequestGETAsync("http://api.github.com/repos/LingFeng-bbben/MajdataView/releases/latest", requestHandler);
             
@@ -1699,7 +1783,7 @@ namespace MajdataEdit
 
         public string GetWindowsTitleString()
         {
-            return "MajdataEdit(" + MAJDATA_VERSION + ")";
+            return "MajdataEdit(" + MAJDATA_VERSION_STRING + ")";
         }
 
         public string GetWindowsTitleString(string info)

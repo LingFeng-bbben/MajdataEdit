@@ -481,8 +481,7 @@ namespace MajdataEdit
                     {
                         if (startIndex < noteText.Length - 1)
                         {
-                            // 如果不成立 那么说明这个b符号是整个文本的最后一个字符 我们就忽略它
-                            // 反之 如果成立 我们就检查b之后一个字符是不是`[`符号 如果是 那么就是break slide
+                            // 如果b不是最后一个字符 我们就检查b之后一个字符是不是`[`符号：如果是 那么就是break slide
                             if (noteText[startIndex + 1] == '[')
                             {
                                 simaiNote.isSlideBreak = true;
@@ -493,6 +492,11 @@ namespace MajdataEdit
                                 // SHIT CODE!
                                 simaiNote.isBreak = true;
                             }
+                        }
+                        else
+                        {
+                            // 如果b符号是整个文本的最后一个字符 那么也是break slide（Simai语法）
+                            simaiNote.isSlideBreak = true;
                         }
                         startIndex++;
                     }
@@ -543,34 +547,79 @@ namespace MajdataEdit
 
         private double getTimeFromBeats(string noteText)
         {
-            var startIndex = noteText.IndexOf('[');
-            var overIndex = noteText.IndexOf(']');
-            var innerString = noteText.Substring(startIndex + 1, overIndex - startIndex-1);
-            var timeOneBeat = 1d / (currentBpm / 60d);
-            if (innerString.Count(o => o == '#') == 1)
+            if (noteText.Count((c) => { return c == '['; }) > 1)
             {
-                var times = innerString.Split('#');
-                if (times[1].Contains(':'))
-                {
-                    innerString = times[1];
-                    timeOneBeat = 1d / (double.Parse(times[0]) / 60d);
-                }
-                else
-                {
-                    return double.Parse(times[1]);
-                }
-            }
-            if (innerString.Count(o => o == '#') == 2)
-            {
-                var times = innerString.Split('#');
-                return double.Parse(times[2]);
-            }
-            var numbers = innerString.Split(':');   //TODO:customBPM
-            var divide = int.Parse(numbers[0]);
-            var count = int.Parse(numbers[1]);
-            
+                // 组合slide 有多个时长
+                double wholeTime = 0;
 
-            return (timeOneBeat*4d / (double)divide) * (double)count; 
+                int partStartIndex = 0;
+                while (noteText.IndexOf('[', partStartIndex) >= 0)
+                {
+                    var startIndex = noteText.IndexOf('[', partStartIndex);
+                    var overIndex = noteText.IndexOf(']', partStartIndex);
+                    partStartIndex = overIndex + 1;
+                    var innerString = noteText.Substring(startIndex + 1, overIndex - startIndex - 1);
+                    var timeOneBeat = 1d / (currentBpm / 60d);
+                    if (innerString.Count(o => o == '#') == 1)
+                    {
+                        var times = innerString.Split('#');
+                        if (times[1].Contains(':'))
+                        {
+                            innerString = times[1];
+                            timeOneBeat = 1d / (double.Parse(times[0]) / 60d);
+                        }
+                        else
+                        {
+                            wholeTime += double.Parse(times[1]);
+                            continue;
+                        }
+                    }
+                    if (innerString.Count(o => o == '#') == 2)
+                    {
+                        var times = innerString.Split('#');
+                        wholeTime += double.Parse(times[2]);
+                        continue;
+                    }
+                    var numbers = innerString.Split(':');
+                    var divide = int.Parse(numbers[0]);
+                    var count = int.Parse(numbers[1]);
+
+
+                    wholeTime += (timeOneBeat * 4d / (double)divide) * (double)count;
+                }
+                return wholeTime;
+            }
+            else
+            {
+                var startIndex = noteText.IndexOf('[');
+                var overIndex = noteText.IndexOf(']');
+                var innerString = noteText.Substring(startIndex + 1, overIndex - startIndex - 1);
+                var timeOneBeat = 1d / (currentBpm / 60d);
+                if (innerString.Count(o => o == '#') == 1)
+                {
+                    var times = innerString.Split('#');
+                    if (times[1].Contains(':'))
+                    {
+                        innerString = times[1];
+                        timeOneBeat = 1d / (double.Parse(times[0]) / 60d);
+                    }
+                    else
+                    {
+                        return double.Parse(times[1]);
+                    }
+                }
+                if (innerString.Count(o => o == '#') == 2)
+                {
+                    var times = innerString.Split('#');
+                    return double.Parse(times[2]);
+                }
+                var numbers = innerString.Split(':');   //TODO:customBPM
+                var divide = int.Parse(numbers[0]);
+                var count = int.Parse(numbers[1]);
+
+
+                return (timeOneBeat * 4d / (double)divide) * (double)count;
+            }
         }
 
         private double getStarWaitTime(string noteText)

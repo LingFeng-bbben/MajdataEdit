@@ -420,4 +420,7 @@ Open Browser to download latest update of Majdata?</value>
     <value>Set Volume as Default Setting</value>
     <comment>Translation required</comment>
   </data>
+  <data name="MirrorCcw45" xml:space="preserve">
+    <value>45°回転（反時計回り）</value>
+  </data>
 </root>

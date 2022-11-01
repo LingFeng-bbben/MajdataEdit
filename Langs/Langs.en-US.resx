@@ -405,4 +405,7 @@ Open Browser to download latest update of Majdata?</value>
   <data name="SetToDefaultVolume" xml:space="preserve">
     <value>Set Volume as Default Setting</value>
   </data>
+  <data name="MirrorCcw45" xml:space="preserve">
+    <value>45° (CCW) Rotate Selection</value>
+  </data>
 </root>
