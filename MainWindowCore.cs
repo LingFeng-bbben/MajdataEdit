@@ -34,7 +34,7 @@ namespace MajdataEdit
 {
     public partial class MainWindow : Window
     {
-        public static readonly string MAJDATA_VERSION_STRING = "v4.0-rc";
+        public static readonly string MAJDATA_VERSION_STRING = "v4.0.0-rc";
         public static readonly SemVersion MAJDATA_VERSION = SemVersion.Parse(MAJDATA_VERSION_STRING, SemVersionStyles.Any);
         bool UpdateCheckLock = false;
 
