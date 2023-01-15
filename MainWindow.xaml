@@ -34,6 +34,10 @@
                 <MenuItem x:Name="Menu_Open" Header="{lex:Loc Open}" Click="Menu_Open_Click"/>
                 <MenuItem x:Name="Menu_Save" Header="{lex:Loc Save}" Click="Menu_Save_Click"/>
                 <MenuItem x:Name="Menu_SaveAs" Header="{lex:Loc SaveAs}" Click="Menu_SaveAs_Click" IsEnabled="False" Visibility="Collapsed"/>
+                <Separator/>
+                <!--TODO: 本地化-->
+                <MenuItem x:Name="Menu_ExportRender" Header="导出视频" Click="Menu_ExportRender_Click"/>
+
             </MenuItem>
             <MenuItem x:Name="MenuEdit" Header="{lex:Loc Edit}" IsEnabled="False" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">
                 <MenuItem Header="{lex:Loc MirrorLR}" Click="MirrorLeftRight_MenuItem_Click"/>
@@ -135,7 +139,7 @@
         <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="58,0,0,91" Width="38" Click="PlayAndPauseButton_Click" Height="38" VerticalAlignment="Bottom" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
         <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="9,0,0,91" VerticalAlignment="Bottom" Width="38" Click="StopButton_Click" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkButton}"/>
         <Label x:Name="NoteNowText" Content="行" HorizontalAlignment="Left" Margin="0,74,0,0" VerticalAlignment="Top" Foreground="White" Width="105" HorizontalContentAlignment="Center" Height="25"/>
-        <Button x:Name="Export_Button" Content="{lex:Loc RecMode}" Height="30" Margin="9,0,0,166" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Export_Button_Click" HorizontalAlignment="Left" Width="87" Template="{DynamicResource DarkButton}" Foreground="{DynamicResource ButtonForeground}" Background= "{DynamicResource ButtonsBackground}" ToolTip="{lex:Loc RecordModeDiscrp}"/>
+        <Button x:Name="Op_Button" Content="{lex:Loc RecMode}" Height="30" Margin="9,0,0,166" VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Op_Button_Click" HorizontalAlignment="Left" Width="87" Template="{DynamicResource DarkButton}" Foreground="{DynamicResource ButtonForeground}" Background= "{DynamicResource ButtonsBackground}" ToolTip="{lex:Loc RecordModeDiscrp}"/>
         <Label Content="{lex:Loc TouchSpeed}" MouseUp="SettingLabel_MouseUp" HorizontalAlignment="Left" Height="24" Margin="5,0,0,201" VerticalAlignment="Bottom" Width="80" Foreground="White" RenderTransformOrigin="9.667,-2.284" ToolTip="{lex:Loc SpeedSettingTooltip}"/>
         <Label x:Name="ViewerTouchSpeed" MouseUp="SettingLabel_MouseUp" HorizontalAlignment="Left" Height="24" Margin="65,0,0,201" Content="7.0" VerticalAlignment="Bottom" Width="35" VerticalContentAlignment="Center" Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Center" ToolTip="{lex:Loc SpeedSettingTooltip}"/>
         <Label Content="{lex:Loc Speed}" MouseUp="SettingLabel_MouseUp" HorizontalAlignment="Left" Height="24" Margin="5,0,0,227" VerticalAlignment="Bottom" Width="60" Foreground="White" RenderTransformOrigin="9.667,-2.284" ToolTip="{lex:Loc SpeedSettingTooltip}"/>

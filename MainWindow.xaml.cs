@@ -231,6 +231,12 @@ namespace MajdataEdit
         {
 
         }
+
+        private void Menu_ExportRender_Click(object sender, RoutedEventArgs e)
+        {
+            TogglePlayAndPause(PlayMethod.Record);
+        }
+
         private void MirrorLeftRight_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var result = Mirror.NoteMirrorLeftRight(FumenContent.Selection.Text);
@@ -334,7 +340,7 @@ namespace MajdataEdit
         }
         private void SendToView_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            TogglePlayAndStop(true);
+            TogglePlayAndStop(PlayMethod.Op);
         }
         private void IncreasePlaybackSpeed_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -401,7 +407,7 @@ namespace MajdataEdit
         }
 #endregion
 
-        #region Left componients
+#region Left componients
         private void PlayAndPauseButton_Click(object sender, RoutedEventArgs e)
         {
             TogglePlayAndPause();
@@ -448,9 +454,9 @@ namespace MajdataEdit
         {
             FumenContent.Focus();
         }
-        private void Export_Button_Click(object sender, RoutedEventArgs e)
+        private void Op_Button_Click(object sender, RoutedEventArgs e)
         {
-            TogglePlayAndStop(true);
+            TogglePlayAndStop(PlayMethod.Op);
         }
         private void SettingLabel_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -555,7 +561,6 @@ namespace MajdataEdit
             FindGrid.Visibility = Visibility.Collapsed;
             FumenContent.Focus();
         }
-
 
     }
 }

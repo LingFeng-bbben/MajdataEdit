@@ -1118,11 +1118,16 @@ namespace MajdataEdit
         }
 
         //*PLAY CONTROL
-        void TogglePlay(bool isOpIncluded = false)
-        {
-            if (Export_Button.IsEnabled == false) return;
 
-            if (lastEditorState == EditorControlMethod.Start || isOpIncluded)
+        enum PlayMethod
+        {
+            Normal, Op, Record
+        }
+        void TogglePlay(PlayMethod playMethod = PlayMethod.Normal)
+        {
+            if (Op_Button.IsEnabled == false) return;
+
+            if (lastEditorState == EditorControlMethod.Start || playMethod != PlayMethod.Normal)
             {
                 if (!sendRequestStop()) return;
             }
@@ -1130,7 +1135,7 @@ namespace MajdataEdit
             FumenContent.Focus();
             SaveFumen();
             if (CheckAndStartView()) return;
-            Export_Button.IsEnabled = false;
+            Op_Button.IsEnabled = false;
             isPlaying = true;
             isPlan2Stop = false;
 
@@ -1151,52 +1156,61 @@ namespace MajdataEdit
             PlayAndPauseButton.Content = "  ▌▌ ";
             var CusorTime = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());//scan first
 
+            //TODO: Moeying改一下你的generateSoundEffect然后把下面这行删了
+            bool isOpIncluded = playMethod == PlayMethod.Normal ? false : true;
+
             var startAt = DateTime.Now;
-            if (isOpIncluded)
+            switch (playMethod)
             {
-                generateSoundEffectList(0.0, isOpIncluded);
-                InternalSwitchWindow(false);
-                Bass.BASS_ChannelSetPosition(bgmStream, 0);
-                startAt = DateTime.Now.AddSeconds(5d);
-                Bass.BASS_ChannelPlay(trackStartStream, true);
-                if (!sendRequestRun(startAt, isOpIncluded)) return;
-                Task.Run(() =>
-                {
-                    while (DateTime.Now.Ticks < startAt.Ticks )
+                case PlayMethod.Record:
+                    InternalSwitchWindow(false);
+                    startAt = DateTime.Now.AddSeconds(5d);
+                    if (!sendRequestRun(startAt, playMethod)) return;
+                    break;
+                case PlayMethod.Op:
+                    generateSoundEffectList(0.0, isOpIncluded);
+                    InternalSwitchWindow(false);
+                    Bass.BASS_ChannelSetPosition(bgmStream, 0);
+                    startAt = DateTime.Now.AddSeconds(5d);
+                    Bass.BASS_ChannelPlay(trackStartStream, true);
+                    if (!sendRequestRun(startAt, playMethod)) return;
+                    Task.Run(() =>
                     {
-                        if (lastEditorState != EditorControlMethod.Start)
-                            return;
-                    }
-                    Dispatcher.Invoke(() =>
-                    {
-                        playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                        SimaiProcess.ClearNoteListPlayedState();
-                        clickSoundTimer.Start();
-                        waveStopMonitorTimer.Start();
-                        Bass.BASS_ChannelPlay(bgmStream, false);
+                        while (DateTime.Now.Ticks < startAt.Ticks )
+                        {
+                            if (lastEditorState != EditorControlMethod.Start)
+                                return;
+                        }
+                        Dispatcher.Invoke(() =>
+                        {
+                            playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                            SimaiProcess.ClearNoteListPlayedState();
+                            clickSoundTimer.Start();
+                            waveStopMonitorTimer.Start();
+                            Bass.BASS_ChannelPlay(bgmStream, false);
+                        });
                     });
-                });
-            }
-            else
-            {
-                playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                generateSoundEffectList(playStartTime, isOpIncluded);
-                SimaiProcess.ClearNoteListPlayedState();
-                clickSoundTimer.Start();
-                waveStopMonitorTimer.Start();
-                startAt = DateTime.Now;
-                Bass.BASS_ChannelPlay(bgmStream, false);
-                Task.Run(() =>
-                {
-                    if (lastEditorState == EditorControlMethod.Pause)
+                    break;
+                case PlayMethod.Normal:
+                    playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                    generateSoundEffectList(playStartTime, isOpIncluded);
+                    SimaiProcess.ClearNoteListPlayedState();
+                    clickSoundTimer.Start();
+                    waveStopMonitorTimer.Start();
+                    startAt = DateTime.Now;
+                    Bass.BASS_ChannelPlay(bgmStream, false);
+                    Task.Run(() =>
                     {
-                        if (!sendRequestContinue(startAt)) return;
-                    }
-                    else
-                    {
-                        if (!sendRequestRun(startAt, isOpIncluded)) return;
-                    }
-                });
+                        if (lastEditorState == EditorControlMethod.Pause)
+                        {
+                            if (!sendRequestContinue(startAt)) return;
+                        }
+                        else
+                        {
+                            if (!sendRequestRun(startAt, playMethod)) return;
+                        }
+                    });
+                    break;
             }
 
             DrawWave();
@@ -1204,7 +1218,7 @@ namespace MajdataEdit
         }
         void TogglePause()
         {
-            Export_Button.IsEnabled = true;
+            Op_Button.IsEnabled = true;
             isPlaying = false;
             isPlan2Stop = false;
 
@@ -1219,7 +1233,7 @@ namespace MajdataEdit
         }
         void ToggleStop()
         {
-            Export_Button.IsEnabled = true;
+            Op_Button.IsEnabled = true;
             isPlaying = false;
             isPlan2Stop = false;
 
@@ -1233,7 +1247,7 @@ namespace MajdataEdit
             Bass.BASS_ChannelSetPosition(bgmStream, playStartTime);
             DrawWave();
         }
-        void TogglePlayAndPause(bool isOpIncluded = false)
+        void TogglePlayAndPause(PlayMethod playMethod = PlayMethod.Normal)
         {
             if (isPlaying)
             {
@@ -1241,10 +1255,10 @@ namespace MajdataEdit
             }
             else
             {
-                TogglePlay(isOpIncluded);
+                TogglePlay(playMethod);
             }
         }
-        void TogglePlayAndStop(bool isOpIncluded = false)
+        void TogglePlayAndStop(PlayMethod playMethod = PlayMethod.Normal)
         {
             if (isPlaying)
             {
@@ -1252,7 +1266,7 @@ namespace MajdataEdit
             }
             else
             {
-                TogglePlay(isOpIncluded);
+                TogglePlay(playMethod);
             }
         }
         void SetPlaybackSpeed(float speed)
@@ -1310,7 +1324,7 @@ namespace MajdataEdit
             lastEditorState = EditorControlMethod.Start;
             return true;
         }
-        bool sendRequestRun(DateTime StartAt,bool isOpIncluded)
+        bool sendRequestRun(DateTime StartAt, PlayMethod playMethod)
         {
 
             Majson jsonStruct = new Majson();
@@ -1332,10 +1346,13 @@ namespace MajdataEdit
             System.IO.File.WriteAllText(path, json);
 
             EditRequestjson request = new EditRequestjson();
-            if(isOpIncluded)
+            if (playMethod == PlayMethod.Op)
                 request.control = EditorControlMethod.OpStart;
-            else
+            else if (playMethod == PlayMethod.Normal)
                 request.control = EditorControlMethod.Start;
+            else
+                request.control = EditorControlMethod.Record;
+
             Dispatcher.Invoke(() =>
             {
                 request.jsonPath = path;
@@ -1789,43 +1806,6 @@ namespace MajdataEdit
         public string GetWindowsTitleString(string info)
         {
             return GetWindowsTitleString() + " - " + info;
-        }
-
-        class SoundEffectTiming
-        {
-            public bool hasAnswer = false;
-            public bool hasJudge = false;
-            public bool hasJudgeBreak = false;
-            public bool hasBreak = false;
-            public bool hasTouch = false;
-            public bool hasHanabi = false;
-            public bool hasJudgeEx = false;
-            public bool hasTouchHold = false;
-            public bool hasTouchHoldEnd = false;
-            public bool hasSlide = false;
-            public bool hasAllPerfect = false;
-            public bool hasClock = false;
-            public double time;
-
-            public SoundEffectTiming(double _time, bool _hasAnswer = false, bool _hasJudge = false, bool _hasJudgeBreak = false,
-                                     bool _hasBreak = false, bool _hasTouch = false, bool _hasHanabi = false,
-                                     bool _hasJudgeEx = false, bool _hasTouchHold = false, bool _hasSlide = false,
-                                     bool _hasTouchHoldEnd = false, bool _hasAllPerfect = false, bool _hasClock = false)
-            {
-                time = _time;
-                hasAnswer = _hasAnswer;
-                hasJudge = _hasJudge;
-                hasJudgeBreak = _hasJudgeBreak; // 我是笨蛋
-                hasBreak = _hasBreak;
-                hasTouch = _hasTouch;
-                hasHanabi = _hasHanabi;
-                hasJudgeEx = _hasJudgeEx;
-                hasTouchHold = _hasTouchHold;
-                hasSlide = _hasSlide;
-                hasTouchHoldEnd = _hasTouchHoldEnd;
-                hasAllPerfect = _hasAllPerfect;
-                hasClock = _hasClock;
-            }
         }
     }
 }

@@ -101,6 +101,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SoundEffectTiming.cs" />
     <Compile Include="SubWindow\EditorSettingPanel.xaml.cs">
       <DependentUpon>EditorSettingPanel.xaml</DependentUpon>
     </Compile>
