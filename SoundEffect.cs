@@ -422,7 +422,7 @@ namespace MajdataEdit
             waitToBePlayed.Sort((o1, o2) => o1.time < o2.time ? -1 : 1);
             Console.WriteLine(JsonConvert.SerializeObject(waitToBePlayed));
         }
-        void renderSoundEffect()
+        void renderSoundEffect(double delaySeconds)
         {
             var path = Environment.CurrentDirectory + "/SFX/";
 
@@ -469,6 +469,7 @@ namespace MajdataEdit
             Bass.BASS_ChannelGetAttribute(answerStream, BASSAttribute.BASS_ATTRIB_VOL, ref answerVol);
 
             List<byte> filedata = new List<byte>();
+            byte[] delayEmpty = new byte[(int)(delaySeconds * freq * 4)];
             List<byte> filehead = CreateWaveFileHeader(bgmRAW.Length, 2, freq, 16).ToList();
 
             for (int i = 0; i < bgmRAW.Length; i++)
@@ -482,7 +483,7 @@ namespace MajdataEdit
                 bgmRAW[i] = (Int16)value;
                 filedata.AddRange(BitConverter.GetBytes(bgmRAW[i]));
             }
-
+            filehead.AddRange(delayEmpty);
             filehead.AddRange(filedata);
             File.WriteAllBytes(maidataDir+"/out.wav", filehead.ToArray());
 

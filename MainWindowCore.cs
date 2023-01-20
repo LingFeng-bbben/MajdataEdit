@@ -982,9 +982,10 @@ namespace MajdataEdit
             {
                 case PlayMethod.Record:
                     InternalSwitchWindow(false);
+                    Bass.BASS_ChannelSetPosition(bgmStream, 0);
                     startAt = DateTime.Now.AddSeconds(5d);
                     generateSoundEffectList(0.0, isOpIncluded);
-                    renderSoundEffect();
+                    renderSoundEffect(5d);
                     if (!sendRequestRun(startAt, playMethod)) return;
                     break;
                 case PlayMethod.Op:
