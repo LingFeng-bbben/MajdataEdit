@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace MajdataEdit
 {
@@ -78,9 +80,20 @@ namespace MajdataEdit
     public partial class MuriCheck : Window
     {
         MuriCheckResult mcr = null;
+        public JObject SLIDE_TIME; // 无理检测用的SLIDE_TIME数据
+
         public MuriCheck()
         {
             InitializeComponent();
+        }
+
+        void ReadMuriCheckSlideTime()
+        {
+            using (StreamReader r = new StreamReader("./slide_time.json"))
+            {
+                string json = r.ReadToEnd();
+                SLIDE_TIME = JsonConvert.DeserializeObject<JObject>(json);
+            }
         }
 
         private int notePos(int pos, bool relative)
@@ -411,7 +424,7 @@ namespace MajdataEdit
                         JToken sTimeInfo;
                         try
                         {
-                            sTimeInfo = ((MainWindow)this.Owner).SLIDE_TIME[sType][sEnd];
+                            sTimeInfo = SLIDE_TIME[sType][sEnd];
                             foreach (var each in sTimeInfo)
                             {
                                 double timeRatio = each["time"].ToObject<double>();
@@ -552,6 +565,11 @@ namespace MajdataEdit
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             SlideAccuracy_TextBox.Text = ((MainWindow)Owner).editorSetting.DefaultSlideAccuracy.ToString();
+        }
+
+        private void Window_Initialized(object sender, EventArgs e)
+        {
+            ReadMuriCheckSlideTime();
         }
     }
 }
