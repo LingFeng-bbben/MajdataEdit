@@ -470,7 +470,7 @@ namespace MajdataEdit
 
             List<byte> filedata = new List<byte>();
             byte[] delayEmpty = new byte[(int)(delaySeconds * freq * 4)];
-            List<byte> filehead = CreateWaveFileHeader(bgmRAW.Length, 2, freq, 16).ToList();
+            List<byte> filehead = CreateWaveFileHeader(bgmRAW.Length + delayEmpty.Length, 2, freq, 16).ToList();
 
             for (int i = 0; i < bgmRAW.Length; i++)
             {
