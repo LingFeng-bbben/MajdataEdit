@@ -54,6 +54,7 @@ namespace MajdataEdit
         bool isLoading = false;
 
         int selectedDifficulty = -1;
+        double songLength = 0;
         float sampleTime = 0.02f;
         int zoominPower = 4;
         EditorControlMethod lastEditorState;
@@ -297,8 +298,8 @@ namespace MajdataEdit
             var bgmDecode = Bass.BASS_StreamCreateFile(maidataDir + "/track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
             try
             {
-                var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmDecode, BASSMode.BASS_POS_BYTE));
-                int sampleNumber = (int)((length * 1000) / (sampleTime * 1000));
+                songLength = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmDecode, BASSMode.BASS_POS_BYTE));
+                int sampleNumber = (int)((songLength * 1000) / (sampleTime * 1000));
                 waveLevels = new float[sampleNumber];
                 waveEnergies = new float[sampleNumber];
                 for (int i = 0; i < sampleNumber; i++)
@@ -982,6 +983,8 @@ namespace MajdataEdit
                 case PlayMethod.Record:
                     InternalSwitchWindow(false);
                     startAt = DateTime.Now.AddSeconds(5d);
+                    generateSoundEffectList(0.0, isOpIncluded);
+                    renderSoundEffect();
                     if (!sendRequestRun(startAt, playMethod)) return;
                     break;
                 case PlayMethod.Op:
