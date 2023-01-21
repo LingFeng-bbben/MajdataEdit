@@ -291,6 +291,7 @@ namespace MajdataEdit
             MenuEdit.IsEnabled = true;
             VolumnSetting.IsEnabled = true;
             MenuMuriCheck.IsEnabled = true;
+            Menu_ExportRender.IsEnabled = true;
             SetSavedState(true);
         }
         private void ReadWaveFromFile()
@@ -984,6 +985,8 @@ namespace MajdataEdit
                     InternalSwitchWindow(false);
                     Bass.BASS_ChannelSetPosition(bgmStream, 0);
                     startAt = DateTime.Now.AddSeconds(5d);
+                    //TODO: i18n
+                    MessageBox.Show("即将开始渲染，将导出视频到谱面目录。\n请注意在渲染时不要改变Viewer窗口大小。\n现在按Viewer右上角< >可以设置渲染分辨率。", "导出提示");
                     generateSoundEffectList(0.0, isOpIncluded);
                     renderSoundEffect(5d);
                     if (!sendRequestRun(startAt, playMethod)) return;
