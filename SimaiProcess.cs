@@ -388,6 +388,7 @@ namespace MajdataEdit
                 noteList = new List<SimaiNote>();
                 return noteList;
             }
+
         }
         
         private List<SimaiNote> getSameHeadSlide(string content)

@@ -436,6 +436,7 @@ namespace MajdataEdit
                  Replace("\r", "").Count(o => o == '\n') + 1) + " 行";
             if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked)
                 return;
+            //TODO:这个应该换成用fumen text position来在已经serialized的timinglist里面找。。 然后直接去掉这个double的返回和position的入参。。。
             var time = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
 
             //按住Ctrl，同时按下鼠标左键/上下左右方向键时，才改变进度，其他包含Ctrl的组合键不影响进度。

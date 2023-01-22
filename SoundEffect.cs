@@ -420,10 +420,11 @@ namespace MajdataEdit
                 waitToBePlayed.Add(new SoundEffectTiming(GetAllPerfectStartTime(), _hasAllPerfect: true));
             }
             waitToBePlayed.Sort((o1, o2) => o1.time < o2.time ? -1 : 1);
-            Console.WriteLine(JsonConvert.SerializeObject(waitToBePlayed));
+            //Console.WriteLine(JsonConvert.SerializeObject(waitToBePlayed));
         }
         void renderSoundEffect(double delaySeconds)
         {
+            //TODO: 改为异步并增加提示窗口
             var path = Environment.CurrentDirectory + "/SFX/";
 
             //默认参数：16bit
@@ -457,6 +458,7 @@ namespace MajdataEdit
                 if (soundtiming.hasAnswer)
                 {
                     var startindex = (int)(soundtiming.time * 2 * freq); //乘2因为有两个channel
+                    //这一步还会覆盖之前没有播完的answer
                     for(int i = startindex; i < answerRAW.Length + startindex; i++)
                     {
                         answerTrackRAW[i] = answerRAW[i - startindex];

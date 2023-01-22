@@ -97,22 +97,17 @@ namespace MajdataEdit
         void SeekTextFromTime()
         {
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-            var timingList = SimaiProcess.timinglist;
+            List<SimaiTimingPoint> timingList = new List<SimaiTimingPoint>();
+            timingList.AddRange(SimaiProcess.timinglist);
             var noteList = SimaiProcess.notelist;
             if (SimaiProcess.timinglist.Count <= 0) return;
             timingList.Sort((x, y) => Math.Abs(time - x.time).CompareTo(Math.Abs(time - y.time)));
             var theNote = timingList[0];
-            timingList = SimaiProcess.timinglist;
+            timingList.Clear();
+            timingList.AddRange(SimaiProcess.timinglist);
             var indexOfTheNote = timingList.IndexOf(theNote);
-            SimaiTimingPoint prevNote;
-            if (indexOfTheNote > 0)
-                prevNote = timingList[indexOfTheNote - 1];
-            else
-                prevNote = theNote;
-            //this may fuck up when the text changed and reload the document may solve it. it could be a bug of .net or something.
-            var pointer = FumenContent.Document.Blocks.ToList()[prevNote.rawTextPositionY].ContentStart.GetPositionAtOffset(prevNote.rawTextPositionX);
-            var pointer1 = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
-            FumenContent.Selection.Select(pointer, pointer1);
+            var pointer = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
+            FumenContent.Selection.Select(pointer, pointer);
         }
         public void ScrollToFumenContentSelection(int positionX, int positionY)
         {
@@ -593,9 +588,7 @@ namespace MajdataEdit
         }
         private async void DrawWave()
         {
-
             if (isDrawing) return;
-            Console.WriteLine("DrawWave");
             isDrawing = true;
             var writableBitmap = new WriteableBitmap(waveLevels.Length * zoominPower, 74, 72, 72, PixelFormats.Pbgra32, null);
             writableBitmap.Lock();
@@ -841,7 +834,9 @@ namespace MajdataEdit
 
                     }
                 }
-                catch{}
+                catch (Exception e){
+                    Console.WriteLine(e.Message);
+                }
             }
             );
             graphics.Flush();
@@ -853,7 +848,6 @@ namespace MajdataEdit
             writableBitmap.Unlock();
             isDrawing = false;
             GC.Collect();
-
         }
         private async void DrawCusor(double ghostCusorPositionTime = 0)
         {
