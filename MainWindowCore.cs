@@ -42,7 +42,7 @@ namespace MajdataEdit
         SoundSetting soundSetting = new SoundSetting();
         public EditorSetting editorSetting = null;
 
-        public static string maidataDir;
+        public static string maidataDir = "";
         const string majSettingFilename = "majSetting.json";
         const string editorSettingFilename = "EditorSetting.json";
 
@@ -369,6 +369,7 @@ namespace MajdataEdit
         }
         void SaveSetting()
         {
+            if (maidataDir == "") return;
             MajSetting setting = new MajSetting();
             setting.lastEditDiff = selectedDifficulty;
             setting.lastEditTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
@@ -936,7 +937,7 @@ namespace MajdataEdit
         {
             Normal, Op, Record
         }
-        void TogglePlay(PlayMethod playMethod = PlayMethod.Normal)
+        async Task TogglePlayAsync(PlayMethod playMethod = PlayMethod.Normal)
         {
             if (Op_Button.IsEnabled == false) return;
 
@@ -951,20 +952,6 @@ namespace MajdataEdit
             Op_Button.IsEnabled = false;
             isPlaying = true;
             isPlan2Stop = false;
-
-            double apTime = GetAllPerfectStartTime();
-            double waveLength = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetLength(bgmStream));
-            if (waveLength < apTime + 4.0)
-            {
-                // 如果BGM的时长不足以播放完AP特效 这里假设AP特效持续4秒
-                extraTime4AllPerfect = apTime + 4.0 - waveLength; // 预留给AP的额外时间（播放结束后）
-                Debug.Print(extraTime4AllPerfect.ToString());
-            }
-            else
-            {
-                // 如果足够播完 那么就等到BGM结束再停止
-                extraTime4AllPerfect = -1;
-            }
 
             PlayAndPauseButton.Content = "  ▌▌ ";
             var CusorTime = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());//scan first
@@ -982,7 +969,7 @@ namespace MajdataEdit
                     MessageBox.Show("即将开始渲染，将导出视频到谱面目录。\n请注意在渲染时不要改变Viewer窗口大小。\n现在按Viewer右上角< >可以设置渲染分辨率。", "导出提示");
                     InternalSwitchWindow(false);
                     generateSoundEffectList(0.0, isOpIncluded);
-                    renderSoundEffect(5d);
+                    await Task.Run(() =>renderSoundEffect(5d));
                     if (!sendRequestRun(startAt, playMethod)) return;
                     break;
                 case PlayMethod.Op:
@@ -992,7 +979,7 @@ namespace MajdataEdit
                     startAt = DateTime.Now.AddSeconds(5d);
                     Bass.BASS_ChannelPlay(trackStartStream, true);
                     if (!sendRequestRun(startAt, playMethod)) return;
-                    Task.Run(() =>
+                    await Task.Run(() =>
                     {
                         while (DateTime.Now.Ticks < startAt.Ticks )
                         {
@@ -1017,7 +1004,7 @@ namespace MajdataEdit
                     waveStopMonitorTimer.Start();
                     startAt = DateTime.Now;
                     Bass.BASS_ChannelPlay(bgmStream, false);
-                    Task.Run(() =>
+                    await Task.Run(() =>
                     {
                         if (lastEditorState == EditorControlMethod.Pause)
                         {
@@ -1073,7 +1060,7 @@ namespace MajdataEdit
             }
             else
             {
-                TogglePlay(playMethod);
+                TogglePlayAsync(playMethod);
             }
         }
         void TogglePlayAndStop(PlayMethod playMethod = PlayMethod.Normal)
@@ -1084,7 +1071,7 @@ namespace MajdataEdit
             }
             else
             {
-                TogglePlay(playMethod);
+                TogglePlayAsync(playMethod);
             }
         }
         void SetPlaybackSpeed(float speed)
