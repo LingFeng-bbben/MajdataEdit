@@ -21,6 +21,8 @@ using Un4seen.Bass.Misc;
 using System.Drawing;
 using System.Media;
 using System.ComponentModel;
+using DiscordRPC.Logging;
+using DiscordRPC;
 
 namespace MajdataEdit
 {
@@ -46,6 +48,9 @@ namespace MajdataEdit
             TheWindow.Title = GetWindowsTitleString();
 
             SetWindowGoldenPosition();
+
+            DCRPCclient.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
+            DCRPCclient.Initialize();
 
             var handle = (new WindowInteropHelper(this)).Handle;
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);

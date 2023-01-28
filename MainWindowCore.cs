@@ -29,6 +29,7 @@ using System.Reflection;
 using WPFLocalizeExtension.Engine;
 using System.Windows.Threading;
 using Semver;
+using DiscordRPC;
 
 namespace MajdataEdit
 {
@@ -38,6 +39,7 @@ namespace MajdataEdit
         public static readonly SemVersion MAJDATA_VERSION = SemVersion.Parse(MAJDATA_VERSION_STRING, SemVersionStyles.Any);
         bool UpdateCheckLock = false;
 
+        public DiscordRpcClient DCRPCclient = new DiscordRpcClient("1068882546932326481");
 
         SoundSetting soundSetting = new SoundSetting();
         public EditorSetting editorSetting = null;
@@ -1399,6 +1401,17 @@ namespace MajdataEdit
 
         public string GetWindowsTitleString(string info)
         {
+            DCRPCclient.SetPresence(new RichPresence()
+            {
+                Details = "Editing: " + SimaiProcess.artist + " - "+ SimaiProcess.title,
+                State = "With note count of " + SimaiProcess.notelist.Count,
+                Assets = new Assets()
+                {
+                    LargeImageKey = "salt",
+                    LargeImageText = "Majdata",
+                    SmallImageKey = "None"
+                }
+            });
             return GetWindowsTitleString() + " - " + info;
         }
     }
