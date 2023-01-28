@@ -429,55 +429,243 @@ namespace MajdataEdit
 
             //默认参数：16bit
             int bgmSample = Bass.BASS_SampleLoad(maidataDir + "/track.mp3", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+
+            
+
             int answerSample = Bass.BASS_SampleLoad(path + "answer.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            int judgeSample = Bass.BASS_SampleLoad(path + "judge.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            int judgeBreakSample = Bass.BASS_SampleLoad(path + "judge_break.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            int judgeExSample = Bass.BASS_SampleLoad(path + "judge_ex.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            int breakSample = Bass.BASS_SampleLoad(path + "break.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            int hanabiSample = Bass.BASS_SampleLoad(path + "hanabi.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            int holdRiserSample = Bass.BASS_SampleLoad(path + "touchHold_riser.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            int trackStartSample = Bass.BASS_SampleLoad(path + "track_start.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            int slideSample = Bass.BASS_SampleLoad(path + "slide.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            int touchSample = Bass.BASS_SampleLoad(path + "touch.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            int apSample = Bass.BASS_SampleLoad(path + "all_perfect.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            int clockSample = Bass.BASS_SampleLoad(path + "clock.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
 
             //读取各个文件的信息
             var bgmInfo = Bass.BASS_SampleGetInfo(bgmSample);
             var answerInfo = Bass.BASS_SampleGetInfo(answerSample);
+            var judgeInfo = Bass.BASS_SampleGetInfo(judgeSample);
+            var judgeBreakInfo = Bass.BASS_SampleGetInfo(judgeBreakSample);
+            var judgeExInfo = Bass.BASS_SampleGetInfo(judgeExSample);
+            var breakInfo = Bass.BASS_SampleGetInfo(breakSample);
+            var hanabiInfo = Bass.BASS_SampleGetInfo(hanabiSample);
+            var holdRiserInfo = Bass.BASS_SampleGetInfo(holdRiserSample);
+            var trackStartInfo = Bass.BASS_SampleGetInfo(trackStartSample);
+            var slideInfo = Bass.BASS_SampleGetInfo(slideSample);
+            var touchInfo = Bass.BASS_SampleGetInfo(touchSample);
+            var apInfo = Bass.BASS_SampleGetInfo(apSample);
+            var clockInfo = Bass.BASS_SampleGetInfo(clockSample);
 
-            if(bgmInfo.freq!= answerInfo.freq)
-            {
-                throw new Exception("bgm和effect采样率不一致，无法混音，cnm");
-            }
+
+            if (bgmInfo.freq != answerInfo.freq)
+                throw new Exception("bgm和answer采样率不一致，无法混音，cnm");
+            if (bgmInfo.freq != judgeInfo.freq)
+                throw new Exception("bgm和judge采样率不一致，无法混音，cnm");
+            if (bgmInfo.freq != judgeBreakInfo.freq)
+                throw new Exception("bgm和judgeBreak采样率不一致，无法混音，cnm");
+            if (bgmInfo.freq != judgeExInfo.freq)
+                throw new Exception("bgm和judgeEx采样率不一致，无法混音，cnm");
+            if (bgmInfo.freq != breakInfo.freq)
+                throw new Exception("bgm和break采样率不一致，无法混音，cnm");
+            if (bgmInfo.freq != hanabiInfo.freq)
+                throw new Exception("bgm和hanabi采样率不一致，无法混音，cnm");
+            if (bgmInfo.freq != holdRiserInfo.freq)
+                throw new Exception("bgm和holdRiser采样率不一致，无法混音，cnm");
+            if (bgmInfo.freq != trackStartInfo.freq)
+                throw new Exception("bgm和trackStart采样率不一致，无法混音，cnm");
+            if (bgmInfo.freq != slideInfo.freq)
+                throw new Exception("bgm和slide采样率不一致，无法混音，cnm");
+            if (bgmInfo.freq != touchInfo.freq)
+                throw new Exception("bgm和touch采样率不一致，无法混音，cnm");
+            if (bgmInfo.freq != apInfo.freq)
+                throw new Exception("bgm和allperfect采样率不一致，无法混音，cnm");
+            if (bgmInfo.freq != clockInfo.freq)
+                throw new Exception("bgm和clock采样率不一致，无法混音，cnm");
+
             var freq = bgmInfo.freq;
 
 
             //读取原始采样数据
-            long sampleCount = (long)(songLength * freq * 4);
+            long sampleCount = (long)(songLength * freq * 4 + (apInfo.length / 2));
             Int16[] bgmRAW = new Int16[sampleCount];
             Bass.BASS_SampleGetData(bgmSample, bgmRAW);
 
             Int16[] answerRAW = new Int16[answerInfo.length / 2];
+            Int16[] judgeRAW = new Int16[judgeInfo.length / 2];
+            Int16[] judgeBreakRAW = new Int16[judgeBreakInfo.length / 2];
+            Int16[] judgeExRAW = new Int16[judgeExInfo.length / 2];
+            Int16[] breakRAW = new Int16[breakInfo.length / 2];
+            Int16[] hanabiRAW = new Int16[hanabiInfo.length / 2];
+            Int16[] holdRiserRAW = new Int16[holdRiserInfo.length / 2];
+            Int16[] trackStartRAW = new Int16[trackStartInfo.length / 2];
+            Int16[] slideRAW = new Int16[slideInfo.length / 2];
+            Int16[] touchRAW = new Int16[touchInfo.length / 2];
+            Int16[] apRAW = new Int16[apInfo.length / 2];
+            Int16[] clockRAW = new Int16[clockInfo.length / 2];
             Bass.BASS_SampleGetData(answerSample, answerRAW);
+            Bass.BASS_SampleGetData(judgeSample, judgeRAW);
+            Bass.BASS_SampleGetData(judgeBreakSample, judgeBreakRAW);
+            Bass.BASS_SampleGetData(judgeExSample, judgeExRAW);
+            Bass.BASS_SampleGetData(breakSample, breakRAW);
+            Bass.BASS_SampleGetData(hanabiSample, hanabiRAW);
+            Bass.BASS_SampleGetData(holdRiserSample, holdRiserRAW);
+            Bass.BASS_SampleGetData(trackStartSample, trackStartRAW);
+            Bass.BASS_SampleGetData(slideSample, slideRAW);
+            Bass.BASS_SampleGetData(touchSample, touchRAW);
+            Bass.BASS_SampleGetData(apSample, apRAW);
+            Bass.BASS_SampleGetData(clockSample, clockRAW);
 
             //创建一个和BGM一样长的answer音轨
             Int16[] answerTrackRAW = new Int16[sampleCount];
+            Int16[] judgeTrackRAW = new Int16[sampleCount];
+            Int16[] judgeBreakTrackRAW = new Int16[sampleCount];
+            Int16[] judgeExTrackRAW = new Int16[sampleCount];
+            Int16[] breakTrackRAW = new Int16[sampleCount];
+            Int16[] hanabiTrackRAW = new Int16[sampleCount];
+            Int16[] holdRiserTrackRAW = new Int16[sampleCount];
+            //Int16[] trackStartTrackRAW = new Int16[sampleCount];
+            Int16[] slideTrackRAW = new Int16[sampleCount];
+            Int16[] touchTrackRAW = new Int16[sampleCount];
+            Int16[] apTrackRAW = new Int16[sampleCount];
+            Int16[] clockTrackRAW = new Int16[sampleCount];
 
+            //生成每个音效的track
             foreach (var soundtiming in waitToBePlayed)
             {
+                var startindex = (int)(soundtiming.time * 2 * freq); //乘2因为有两个channel
                 if (soundtiming.hasAnswer)
                 {
-                    var startindex = (int)(soundtiming.time * 2 * freq); //乘2因为有两个channel
                     //这一步还会覆盖之前没有播完的answer
                     for(int i = startindex; i < answerRAW.Length + startindex; i++)
                     {
                         answerTrackRAW[i] = answerRAW[i - startindex];
                     }
                 }
+                if (soundtiming.hasJudge)
+                {
+                    for (int i = startindex; i < judgeRAW.Length + startindex; i++)
+                    {
+                        judgeTrackRAW[i] = judgeRAW[i - startindex];
+                    }
+                }
+                if (soundtiming.hasJudgeBreak)
+                {
+                    for (int i = startindex; i < judgeBreakRAW.Length + startindex; i++)
+                    {
+                        judgeBreakTrackRAW[i] = judgeBreakRAW[i - startindex];
+                    }
+                }
+                if (soundtiming.hasJudgeEx)
+                {
+                    for (int i = startindex; i < judgeExRAW.Length + startindex; i++)
+                    {
+                        judgeExTrackRAW[i] = judgeExRAW[i - startindex];
+                    }
+                }
+                if (soundtiming.hasBreak)
+                {
+                    for (int i = startindex; i < breakRAW.Length + startindex; i++)
+                    {
+                        breakTrackRAW[i] = breakRAW[i - startindex];
+                    }
+                }
+                if (soundtiming.hasHanabi)
+                {
+                    for (int i = startindex; i < hanabiRAW.Length + startindex; i++)
+                    {
+                        hanabiTrackRAW[i] = hanabiRAW[i - startindex];
+                    }
+                }
+                if (soundtiming.hasTouchHold)
+                {
+                    for (int i = startindex; i < holdRiserRAW.Length + startindex; i++)
+                    {
+                        holdRiserTrackRAW[i] = holdRiserRAW[i - startindex];
+                    }
+                }
+                if (soundtiming.hasTouchHoldEnd)
+                {
+                    //不覆盖整个track，只覆盖可能有的部分
+                    for (int i = startindex; i < holdRiserRAW.Length + startindex; i++)
+                    {
+                        holdRiserTrackRAW[i] = 0;
+                    }
+                }
+                if (soundtiming.hasSlide)
+                {
+                    for (int i = startindex; i < slideRAW.Length + startindex; i++)
+                    {
+                        slideTrackRAW[i] = slideRAW[i - startindex];
+                    }
+                }
+                if (soundtiming.hasTouch)
+                {
+                    for (int i = startindex; i < touchRAW.Length + startindex; i++)
+                    {
+                        touchTrackRAW[i] = touchRAW[i - startindex];
+                    }
+                }
+                if (soundtiming.hasAllPerfect)
+                {
+                    for (int i = startindex; i < apRAW.Length + startindex; i++)
+                    {
+                        apTrackRAW[i] = apRAW[i - startindex];
+                    }
+                }
+                if (soundtiming.hasClock)
+                {
+                    for (int i = startindex; i < clockRAW.Length + startindex; i++)
+                    {
+                        clockTrackRAW[i] = clockRAW[i - startindex];
+                    }
+                }
             }
             //获取原来实时播放时候的音量
-            float bgmVol = 1f, answerVol = 1f;
+            
+            float bgmVol = 1f, answerVol = 1f , judgeVol = 1f ,judgeExVol = 1f,
+                hanabiVol = 1f, touchVol = 1f, slideVol = 1f ,breakVol = 1f;
             Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, ref bgmVol);
             Bass.BASS_ChannelGetAttribute(answerStream, BASSAttribute.BASS_ATTRIB_VOL, ref answerVol);
+            Bass.BASS_ChannelGetAttribute(judgeStream, BASSAttribute.BASS_ATTRIB_VOL, ref judgeVol);
+            Bass.BASS_ChannelGetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, ref breakVol);
+            Bass.BASS_ChannelGetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, ref slideVol);
+            Bass.BASS_ChannelGetAttribute(judgeExStream, BASSAttribute.BASS_ATTRIB_VOL, ref judgeExVol);
+            Bass.BASS_ChannelGetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, ref touchVol);
+            Bass.BASS_ChannelGetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, ref hanabiVol);
 
             List<byte> filedata = new List<byte>();
-            byte[] delayEmpty = new byte[(int)(delaySeconds * freq * 4)];
+            Int16[] delayEmpty = new Int16[(int)(delaySeconds * freq * 2)];
             List<byte> filehead = CreateWaveFileHeader(bgmRAW.Length + delayEmpty.Length, 2, freq, 16).ToList();
+
+            //if (trackStartRAW.Length > delayEmpty.Length)
+            //    throw new Exception("track_start音效过长,请勿大于5秒");
+
+            for(int i = 0; i < delayEmpty.Length; i++)
+            {
+                if(i<trackStartRAW.Length)
+                    delayEmpty[i] = trackStartRAW[i];
+                filehead.AddRange(BitConverter.GetBytes(delayEmpty[i]));
+            }
 
             for (int i = 0; i < bgmRAW.Length; i++)
             {
                 //嗯加
-                var value = (long)(bgmRAW[i]*bgmVol) + (long)(answerTrackRAW[i]*answerVol);
+                var value = (long)(bgmRAW[i] * bgmVol) 
+                    + (long)(answerTrackRAW[i] * answerVol)
+                    + (long)(judgeTrackRAW[i] * judgeVol)
+                    + (long)(judgeBreakTrackRAW[i] * breakVol)
+                    + (long)(judgeExTrackRAW[i] * judgeExVol)
+                    + (long)(breakTrackRAW[i] * breakVol)
+                    + (long)(hanabiTrackRAW[i] * hanabiVol)
+                    + (long)(holdRiserTrackRAW[i] * hanabiVol)
+                    + (long)(slideTrackRAW[i] * slideVol)
+                    + (long)(touchTrackRAW[i] * touchVol)
+                    + (long)(apTrackRAW[i] * bgmVol)
+                    + (long)(clockTrackRAW[i] * bgmVol);
                 if (value > Int16.MaxValue)
                     value = Int16.MaxValue;
                 if (value < Int16.MinValue)
@@ -485,7 +673,6 @@ namespace MajdataEdit
                 bgmRAW[i] = (Int16)value;
                 filedata.AddRange(BitConverter.GetBytes(bgmRAW[i]));
             }
-            filehead.AddRange(delayEmpty);
             filehead.AddRange(filedata);
             File.WriteAllBytes(maidataDir+"/out.wav", filehead.ToArray());
 
