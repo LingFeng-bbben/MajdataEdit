@@ -110,7 +110,7 @@
         <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
             <CheckBox x:Name="ComboDisplay" VerticalAlignment="Center"/>
             <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
-               Content="COMBO显示" />
+               Content="{lex:Loc Key=ComboDisplay}" />
         </StackPanel>
 
         <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">

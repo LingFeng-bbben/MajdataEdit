@@ -474,29 +474,29 @@ namespace MajdataEdit
 
 
             if (bgmInfo.freq != answerInfo.freq)
-                throw new Exception("bgm和answer采样率不一致，无法混音，cnm");
+                throw new Exception("bgm and answer do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != judgeInfo.freq)
-                throw new Exception("bgm和judge采样率不一致，无法混音，cnm");
+                throw new Exception("bgm and judge do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != judgeBreakInfo.freq)
-                throw new Exception("bgm和judgeBreak采样率不一致，无法混音，cnm");
+                throw new Exception("bgm and judgeBreak do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != judgeExInfo.freq)
-                throw new Exception("bgm和judgeEx采样率不一致，无法混音，cnm");
+                throw new Exception("bgm and judgeEx do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != breakInfo.freq)
-                throw new Exception("bgm和break采样率不一致，无法混音，cnm");
+                throw new Exception("bgm and break do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != hanabiInfo.freq)
-                throw new Exception("bgm和hanabi采样率不一致，无法混音，cnm");
+                throw new Exception("bgm and hanabi do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != holdRiserInfo.freq)
-                throw new Exception("bgm和holdRiser采样率不一致，无法混音，cnm");
+                throw new Exception("bgm and holdRiser do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != trackStartInfo.freq)
-                throw new Exception("bgm和trackStart采样率不一致，无法混音，cnm");
+                throw new Exception("bgm and trackStart do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != slideInfo.freq)
-                throw new Exception("bgm和slide采样率不一致，无法混音，cnm");
+                throw new Exception("bgm and slide do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != touchInfo.freq)
-                throw new Exception("bgm和touch采样率不一致，无法混音，cnm");
+                throw new Exception("bgm and touch do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != apInfo.freq)
-                throw new Exception("bgm和allperfect采样率不一致，无法混音，cnm");
+                throw new Exception("bgm and allperfect do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != clockInfo.freq)
-                throw new Exception("bgm和clock采样率不一致，无法混音，cnm");
+                throw new Exception("bgm and clock do not share the same sample rate. Please make them both 44100Hz");
 
             var freq = bgmInfo.freq;
 
@@ -532,7 +532,7 @@ namespace MajdataEdit
             Bass.BASS_SampleGetData(apSample, apRAW);
             Bass.BASS_SampleGetData(clockSample, clockRAW);
 
-            //创建一个和BGM一样长的answer音轨
+            //创建一个 and BGM一样长的answer音轨
             Int16[] answerTrackRAW = new Int16[sampleCount];
             Int16[] judgeTrackRAW = new Int16[sampleCount];
             Int16[] judgeBreakTrackRAW = new Int16[sampleCount];

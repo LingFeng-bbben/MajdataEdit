@@ -35,8 +35,7 @@
                 <MenuItem x:Name="Menu_Save" Header="{lex:Loc Save}" Click="Menu_Save_Click"/>
                 <MenuItem x:Name="Menu_SaveAs" Header="{lex:Loc SaveAs}" Click="Menu_SaveAs_Click" IsEnabled="False" Visibility="Collapsed"/>
                 <Separator/>
-                <!--TODO: 本地化-->
-                <MenuItem x:Name="Menu_ExportRender" Header="导出视频" Click="Menu_ExportRender_Click" IsEnabled="False"/>
+                <MenuItem x:Name="Menu_ExportRender" Header="{lex:Loc ExportVideo}" Click="Menu_ExportRender_Click" IsEnabled="False"/>
 
             </MenuItem>
             <MenuItem x:Name="MenuEdit" Header="{lex:Loc Edit}" IsEnabled="False" Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}">

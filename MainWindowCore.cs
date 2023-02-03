@@ -35,7 +35,7 @@ namespace MajdataEdit
 {
     public partial class MainWindow : Window
     {
-        public static readonly string MAJDATA_VERSION_STRING = "v4.0.0-rc";
+        public static readonly string MAJDATA_VERSION_STRING = "v4.1.0";
         public static readonly SemVersion MAJDATA_VERSION = SemVersion.Parse(MAJDATA_VERSION_STRING, SemVersionStyles.Any);
         bool UpdateCheckLock = false;
 
@@ -968,7 +968,7 @@ namespace MajdataEdit
                     Bass.BASS_ChannelSetPosition(bgmStream, 0);
                     startAt = DateTime.Now.AddSeconds(5d);
                     //TODO: i18n
-                    MessageBox.Show("即将开始渲染，将导出视频到谱面目录。\n请注意在渲染时不要改变Viewer窗口大小。\n现在按Viewer右上角< >可以设置渲染分辨率。", "导出提示");
+                    MessageBox.Show(GetLocalizedString("AskRender"), GetLocalizedString("Attention"));
                     InternalSwitchWindow(false);
                     generateSoundEffectList(0.0, isOpIncluded);
                     await Task.Run(() =>renderSoundEffect(5d));
