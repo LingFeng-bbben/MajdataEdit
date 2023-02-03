@@ -66,6 +66,7 @@ namespace MajdataEdit
             ViewerCover.Text = window.editorSetting.backgroundCover.ToString();
             ViewerSpeed.Text = window.editorSetting.playSpeed.ToString("F1"); // 转化为形如"7.0", "9.5"这样的速度
             ViewerTouchSpeed.Text = window.editorSetting.touchSpeed.ToString("F1");
+            ComboDisplay.IsChecked = window.editorSetting.isComboEnabled;
 
             ChartRefreshDelay.Text = window.editorSetting.ChartRefreshDelay.ToString();
             AutoUpdate.IsChecked = window.editorSetting.AutoCheckUpdate;
@@ -114,6 +115,7 @@ namespace MajdataEdit
             window.editorSetting.touchSpeed = float.Parse(ViewerTouchSpeed.Text);
             window.editorSetting.ChartRefreshDelay = int.Parse(ChartRefreshDelay.Text);
             window.editorSetting.AutoCheckUpdate = (bool)AutoUpdate.IsChecked;
+            window.editorSetting.isComboEnabled = (bool)ComboDisplay.IsChecked;
             window.SaveEditorSetting();
 
             window.ViewerCover.Content = window.editorSetting.backgroundCover.ToString();

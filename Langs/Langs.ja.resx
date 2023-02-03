@@ -423,4 +423,17 @@ Open Browser to download latest update of Majdata?</value>
   <data name="MirrorCcw45" xml:space="preserve">
     <value>45°回転（反時計回り）</value>
   </data>
+  <data name="AskRender" xml:space="preserve">
+    <value>譜面動画は譜面フォルダにエクスポートされます。
+レンダリング中にViewerのサイズを変更しないでください。
+ただし、[&lt;&gt;] ボタンを使用して解像度を変更できます。
+幅が偶数であることを確認してください。
+[OK] をクリックして生成を開始します。</value>
+  </data>
+  <data name="ComboDisplay" xml:space="preserve">
+    <value>COMBO表示</value>
+  </data>
+  <data name="ExportVideo" xml:space="preserve">
+    <value>譜面動画を生成</value>
+  </data>
 </root>

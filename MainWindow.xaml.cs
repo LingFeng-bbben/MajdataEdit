@@ -21,6 +21,8 @@ using Un4seen.Bass.Misc;
 using System.Drawing;
 using System.Media;
 using System.ComponentModel;
+using DiscordRPC.Logging;
+using DiscordRPC;
 
 namespace MajdataEdit
 {
@@ -47,22 +49,24 @@ namespace MajdataEdit
 
             SetWindowGoldenPosition();
 
+            DCRPCclient.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
+            DCRPCclient.Initialize();
+
             var handle = (new WindowInteropHelper(this)).Handle;
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
 
             ReadSoundEffect();
             ReadEditorSetting();
-            ReadMuriCheckSlideTime();
 
             chartChangeTimer.Elapsed += ChartChangeTimer_Elapsed;
             chartChangeTimer.AutoReset = false;
             currentTimeRefreshTimer.Elapsed += CurrentTimeRefreshTimer_Elapsed;
             currentTimeRefreshTimer.Start();
-            clickSoundTimer.Elapsed += ClickSoundTimer_Elapsed;
-            VisualEffectRefreshTimer.Elapsed += VisualEffectRefreshTimer_Elapsed;
-            VisualEffectRefreshTimer.Start();
+            soundEffectTimer.Elapsed += SoundEffectTimer_Elapsed;
+            visualEffectRefreshTimer.Elapsed += VisualEffectRefreshTimer_Elapsed;
+            visualEffectRefreshTimer.Start();
             waveStopMonitorTimer.Elapsed += WaveStopMonitorTimer_Elapsed;
-            PlbHideTimer.Elapsed += PlbHideTimer_Elapsed;
+            playbackSpeedHideTimer.Elapsed += PlbHideTimer_Elapsed;
 
             if (editorSetting.AutoCheckUpdate)
             {
@@ -81,45 +85,6 @@ namespace MajdataEdit
             });
             setWindowPosTimer.Stop();
             setWindowPosTimer.Dispose();
-        }
-
-        // This update very freqently to Draw FFT wave.
-        private void VisualEffectRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            DrawFFT();
-        }
-        // This update very freqently to play sound effect.
-        private void ClickSoundTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            SoundEffectUpdate();
-        }
-        // This update less frequently. set the time text.
-        private void CurrentTimeRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            UpdateTimeDisplay();
-        }
-        // This update "middle" frequently to monitor if the wave has to be stopped
-        private void WaveStopMonitorTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            WaveStopMonitorUpdate();
-        }
-        /// <summary>
-        /// 谱面变更延迟解析
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ChartChangeTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            Console.WriteLine("TextChanged");
-            Dispatcher.Invoke(
-                new Action(
-                    delegate
-                    {
-                        SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
-                        DrawWave();
-                    }
-                )
-            );
         }
 
         //Window events
@@ -142,7 +107,7 @@ namespace MajdataEdit
             }
 
             currentTimeRefreshTimer.Stop();
-            VisualEffectRefreshTimer.Stop();
+            visualEffectRefreshTimer.Stop();
 
             soundSetting.Close();
             //if (bpmtap != null) { bpmtap.Close(); }
@@ -231,6 +196,12 @@ namespace MajdataEdit
         {
 
         }
+
+        private void Menu_ExportRender_Click(object sender, RoutedEventArgs e)
+        {
+            TogglePlayAndPause(PlayMethod.Record);
+        }
+
         private void MirrorLeftRight_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var result = Mirror.NoteMirrorLeftRight(FumenContent.Selection.Text);
@@ -334,7 +305,7 @@ namespace MajdataEdit
         }
         private void SendToView_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            TogglePlayAndStop(true);
+            TogglePlayAndStop(PlayMethod.Op);
         }
         private void IncreasePlaybackSpeed_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -345,8 +316,8 @@ namespace MajdataEdit
             PlbSpdLabel.Content = speed * 100 + "%";
             SetPlaybackSpeed(speed);
             PlbSpdAdjGrid.Visibility = Visibility.Visible;
-            PlbHideTimer.Stop();
-            PlbHideTimer.Start();
+            playbackSpeedHideTimer.Stop();
+            playbackSpeedHideTimer.Start();
         }
 
         private void DecreasePlaybackSpeed_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -358,10 +329,10 @@ namespace MajdataEdit
             PlbSpdLabel.Content = speed * 100 + "%";
             SetPlaybackSpeed(speed);
             PlbSpdAdjGrid.Visibility = Visibility.Visible;
-            PlbHideTimer.Stop();
-            PlbHideTimer.Start();
+            playbackSpeedHideTimer.Stop();
+            playbackSpeedHideTimer.Start();
         }
-        Timer PlbHideTimer = new Timer(1000);
+        Timer playbackSpeedHideTimer = new Timer(1000);
         private void PlbHideTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             Dispatcher.Invoke(() => { PlbSpdAdjGrid.Visibility = Visibility.Collapsed; });
@@ -401,7 +372,7 @@ namespace MajdataEdit
         }
 #endregion
 
-        #region Left componients
+#region Left componients
         private void PlayAndPauseButton_Click(object sender, RoutedEventArgs e)
         {
             TogglePlayAndPause();
@@ -448,9 +419,9 @@ namespace MajdataEdit
         {
             FumenContent.Focus();
         }
-        private void Export_Button_Click(object sender, RoutedEventArgs e)
+        private void Op_Button_Click(object sender, RoutedEventArgs e)
         {
-            TogglePlayAndStop(true);
+            TogglePlayAndStop(PlayMethod.Op);
         }
         private void SettingLabel_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -470,6 +441,7 @@ namespace MajdataEdit
                  Replace("\r", "").Count(o => o == '\n') + 1) + " 行";
             if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked)
                 return;
+            //TODO:这个应该换成用fumen text position来在已经serialized的timinglist里面找。。 然后直接去掉这个double的返回和position的入参。。。
             var time = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
 
             //按住Ctrl，同时按下鼠标左键/上下左右方向键时，才改变进度，其他包含Ctrl的组合键不影响进度。
@@ -555,7 +527,6 @@ namespace MajdataEdit
             FindGrid.Visibility = Visibility.Collapsed;
             FumenContent.Focus();
         }
-
 
     }
 }

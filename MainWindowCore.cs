@@ -29,67 +29,41 @@ using System.Reflection;
 using WPFLocalizeExtension.Engine;
 using System.Windows.Threading;
 using Semver;
+using DiscordRPC;
 
 namespace MajdataEdit
 {
     public partial class MainWindow : Window
     {
-        public static readonly string MAJDATA_VERSION_STRING = "v4.0.0-rc";
+        public static readonly string MAJDATA_VERSION_STRING = "v4.1.0";
         public static readonly SemVersion MAJDATA_VERSION = SemVersion.Parse(MAJDATA_VERSION_STRING, SemVersionStyles.Any);
         bool UpdateCheckLock = false;
 
-        Timer currentTimeRefreshTimer = new Timer(100);
-        Timer clickSoundTimer = new Timer(1);
-        Timer VisualEffectRefreshTimer = new Timer(1);
-        Timer waveStopMonitorTimer = new Timer(33);
+        public DiscordRpcClient DCRPCclient = new DiscordRpcClient("1068882546932326481");
 
         SoundSetting soundSetting = new SoundSetting();
         public EditorSetting editorSetting = null;
 
-        public int bgmStream = -114514;
-        public int answerStream = -114514;
-        public int judgeStream = -114514;
-        public int judgeBreakStream = -114514;   // 这个是break的判定音效 不是欢呼声
-        public int breakStream = -114514;        // 这个才是欢呼声
-        public int judgeExStream = -114514;
-        public int hanabiStream = -114514;
-        public int holdRiserStream = -114514;
-        public int trackStartStream = -114514;
-        public int slideStream = -114514;
-        public int touchStream = -114514;
-        public int allperfectStream = -114514;
-        public int clockStream = -114514;
-
-        public static string maidataDir;
+        public static string maidataDir = "";
         const string majSettingFilename = "majSetting.json";
         const string editorSettingFilename = "EditorSetting.json";
 
         float[] waveLevels;
         float[] waveEnergies;
 
-        double playStartTime = 0d;
-        double extraTime4AllPerfect;     // 需要在播放完后等待All Perfect特效的秒数
-
         bool isDrawing = false;
         bool isSaved = true;
         bool isLoading = false;
-        bool isPlaying = false;          // 为了解决播放到结束时自动停止
-        bool isPlan2Stop = false;        // 已准备停止 当all perfect无法在播放完BGM前结束时需要此功能
 
         int selectedDifficulty = -1;
+        double songLength = 0;
         float sampleTime = 0.02f;
         int zoominPower = 4;
         EditorControlMethod lastEditorState;
 
         double lastMousePointX; //Used for drag scroll
 
-        public JObject SLIDE_TIME; // 无理检测用的SLIDE_TIME数据
-
-        List<SoundEffectTiming> waitToBePlayed;
-
         private bool fumenOverwriteMode = false;    //谱面文本覆盖模式
-
-        public Timer chartChangeTimer = new Timer(1000);    // 谱面变更延迟解析
 
         //*TEXTBOX CONTROL
         string GetRawFumenText()
@@ -125,22 +99,17 @@ namespace MajdataEdit
         void SeekTextFromTime()
         {
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-            var timingList = SimaiProcess.timinglist;
+            List<SimaiTimingPoint> timingList = new List<SimaiTimingPoint>();
+            timingList.AddRange(SimaiProcess.timinglist);
             var noteList = SimaiProcess.notelist;
             if (SimaiProcess.timinglist.Count <= 0) return;
             timingList.Sort((x, y) => Math.Abs(time - x.time).CompareTo(Math.Abs(time - y.time)));
             var theNote = timingList[0];
-            timingList = SimaiProcess.timinglist;
+            timingList.Clear();
+            timingList.AddRange(SimaiProcess.timinglist);
             var indexOfTheNote = timingList.IndexOf(theNote);
-            SimaiTimingPoint prevNote;
-            if (indexOfTheNote > 0)
-                prevNote = timingList[indexOfTheNote - 1];
-            else
-                prevNote = theNote;
-            //this may fuck up when the text changed and reload the document may solve it. it could be a bug of .net or something.
-            var pointer = FumenContent.Document.Blocks.ToList()[prevNote.rawTextPositionY].ContentStart.GetPositionAtOffset(prevNote.rawTextPositionX);
-            var pointer1 = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
-            FumenContent.Selection.Select(pointer, pointer1);
+            var pointer = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
+            FumenContent.Selection.Select(pointer, pointer);
         }
         public void ScrollToFumenContentSelection(int positionX, int positionY)
         {
@@ -319,6 +288,7 @@ namespace MajdataEdit
             MenuEdit.IsEnabled = true;
             VolumnSetting.IsEnabled = true;
             MenuMuriCheck.IsEnabled = true;
+            Menu_ExportRender.IsEnabled = true;
             SetSavedState(true);
         }
         private void ReadWaveFromFile()
@@ -326,8 +296,8 @@ namespace MajdataEdit
             var bgmDecode = Bass.BASS_StreamCreateFile(maidataDir + "/track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
             try
             {
-                var length = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmDecode, BASSMode.BASS_POS_BYTE));
-                int sampleNumber = (int)((length * 1000) / (sampleTime * 1000));
+                songLength = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmDecode, BASSMode.BASS_POS_BYTE));
+                int sampleNumber = (int)((songLength * 1000) / (sampleTime * 1000));
                 waveLevels = new float[sampleNumber];
                 waveEnergies = new float[sampleNumber];
                 for (int i = 0; i < sampleNumber; i++)
@@ -401,6 +371,7 @@ namespace MajdataEdit
         }
         void SaveSetting()
         {
+            if (maidataDir == "") return;
             MajSetting setting = new MajSetting();
             setting.lastEditDiff = selectedDifficulty;
             setting.lastEditTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
@@ -526,14 +497,7 @@ namespace MajdataEdit
         {
             File.WriteAllText(editorSettingFilename, JsonConvert.SerializeObject(editorSetting, Formatting.Indented));
         }
-        void ReadMuriCheckSlideTime()
-        {
-            using (StreamReader r = new StreamReader("./slide_time.json"))
-            {
-                string json = r.ReadToEnd();
-                SLIDE_TIME = JsonConvert.DeserializeObject<JObject>(json);
-            }
-        }
+
         void AddGesture( string keyGusture,string command)
         {
             var gesture = (KeyGesture)new KeyGestureConverter().ConvertFromString(keyGusture);
@@ -541,126 +505,93 @@ namespace MajdataEdit
             FumenContent.InputBindings.Add(inputBinding);
         }
 
-        //*SOUND EFFECT
-        private void ReadSoundEffect()
-        {
-            var path = Environment.CurrentDirectory + "/SFX/";
-            answerStream = Bass.BASS_StreamCreateFile(path + "answer.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            judgeStream = Bass.BASS_StreamCreateFile(path + "judge.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            judgeBreakStream = Bass.BASS_StreamCreateFile(path + "judge_break.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            judgeExStream = Bass.BASS_StreamCreateFile(path + "judge_ex.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            breakStream = Bass.BASS_StreamCreateFile(path + "break.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            hanabiStream = Bass.BASS_StreamCreateFile(path + "hanabi.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            holdRiserStream = Bass.BASS_StreamCreateFile(path + "touchHold_riser.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            trackStartStream = Bass.BASS_StreamCreateFile(path + "track_start.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            slideStream = Bass.BASS_StreamCreateFile(path + "slide.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            touchStream = Bass.BASS_StreamCreateFile(path + "touch.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            allperfectStream = Bass.BASS_StreamCreateFile(path + "all_perfect.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-            clockStream = Bass.BASS_StreamCreateFile(path + "clock.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
-        }
-        private void SoundEffectUpdate()
-        {
-            try
-            {
-                var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                //var waitToBePlayed = SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime);
-                if (waitToBePlayed.Count < 1) return;
-                var nearestTime = waitToBePlayed[0].time;
-                //Console.WriteLine(nearestTime);
-                if (Math.Abs(currentTime - nearestTime) < 0.055)
-                {
-                    SoundEffectTiming se = waitToBePlayed[0];
-                    waitToBePlayed.RemoveAt(0);
-
-                    if (se.hasAnswer)
-                    {
-                        Bass.BASS_ChannelPlay(answerStream, true);
-                    }
-                    if (se.hasJudge)
-                    {
-                        Bass.BASS_ChannelPlay(judgeStream, true);
-                    }
-                    if (se.hasJudgeBreak)
-                    {
-                        Bass.BASS_ChannelPlay(judgeBreakStream, true);
-                    }
-                    if (se.hasJudgeEx)
-                    {
-                        Bass.BASS_ChannelPlay(judgeExStream, true);
-                    }
-                    if (se.hasBreak)
-                    {
-                        Bass.BASS_ChannelPlay(breakStream, true);
-                    }
-                    if (se.hasTouch)
-                    {
-                        Bass.BASS_ChannelPlay(touchStream, true);
-                    }
-                    if (se.hasHanabi) //may cause delay
-                    {
-                        Bass.BASS_ChannelPlay(hanabiStream, true);
-                    }
-                    if (se.hasTouchHold)
-                    {
-                        Bass.BASS_ChannelPlay(holdRiserStream, true);
-                    }
-                    if (se.hasTouchHoldEnd)
-                    {
-                        Bass.BASS_ChannelStop(holdRiserStream);
-                    }
-                    if (se.hasSlide)
-                    {
-                        Bass.BASS_ChannelPlay(slideStream, true);
-                    }
-                    if (se.hasAllPerfect)
-                    {
-                        Bass.BASS_ChannelPlay(allperfectStream, true);
-                    }
-                    if (se.hasClock)
-                    {
-                        Bass.BASS_ChannelPlay(clockStream, true);
-                    }
-                    //
-                    Dispatcher.Invoke(() => {
-
-                        if ((bool)FollowPlayCheck.IsChecked)
-                            SeekTextFromTime();
-                    });
-                }
-
-            }
-            catch { }
-        }
-        private void SlideTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            Bass.BASS_ChannelPlay(slideStream, true);
-            var father = (Timer)sender;
-            father.Stop();
-            father.Dispose();
-        }
-        private void HoldHanibiTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            Bass.BASS_ChannelPlay(hanabiStream, true);
-            var father = (Timer)sender;
-            father.Stop();
-            father.Dispose();
-        }
-        private void HoldRiserTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            Bass.BASS_ChannelStop(holdRiserStream);
-            //Console.WriteLine("stop");
-            var father = (Timer)sender;
-            father.Stop();
-            father.Dispose();
-        }
-
 
         //*UI DRAWING
+        Timer visualEffectRefreshTimer = new Timer(1);
+        Timer currentTimeRefreshTimer = new Timer(100);
+        public Timer chartChangeTimer = new Timer(1000);    // 谱面变更延迟解析]\
+
+        // This update very freqently to Draw FFT wave.
+        private void VisualEffectRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            DrawFFT();
+        }
+        // 谱面变更延迟解析
+        private void ChartChangeTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Console.WriteLine("TextChanged");
+            Dispatcher.Invoke(
+                new Action(
+                    delegate
+                    {
+                        SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
+                        DrawWave();
+                    }
+                )
+            );
+        }
+        private void DrawFFT()
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                //Scroll WaveView
+                var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                MusicWave.Margin = new Thickness(-currentTime / sampleTime * zoominPower, Margin.Left, MusicWave.Margin.Right, Margin.Bottom);
+                MusicWaveCusor.Margin = new Thickness(-currentTime / sampleTime * zoominPower, Margin.Left, MusicWave.Margin.Right, Margin.Bottom);
+
+                var writableBitmap = new WriteableBitmap(255, 255, 72, 72, PixelFormats.Pbgra32, null);
+                FFTImage.Source = writableBitmap;
+                writableBitmap.Lock();
+                Bitmap backBitmap = new Bitmap(255, 255, writableBitmap.BackBufferStride,
+                    System.Drawing.Imaging.PixelFormat.Format32bppArgb, writableBitmap.BackBuffer);
+
+                Graphics graphics = Graphics.FromImage(backBitmap);
+                graphics.Clear(System.Drawing.Color.Transparent);
+
+                float[] fft = new float[1024];
+                Bass.BASS_ChannelGetData(bgmStream, fft, (int)BASSData.BASS_DATA_FFT1024);
+                PointF[] points = new PointF[1024];
+                for (int i = 0; i < fft.Length; i++)
+                {
+                    points[i] = new PointF((float)Math.Log10(i + 1) * 100f, (240 - fft[i] * 256)); //semilog
+                }
+
+                graphics.DrawCurve(new System.Drawing.Pen(System.Drawing.Color.LightSkyBlue, 1), points);
+
+                float outputHz = 0;
+                new Visuals().DetectPeakFrequency(bgmStream, out outputHz);
+
+                if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
+                {
+                    try
+                    {
+                        var currentSample = (int)(currentTime / sampleTime);
+                        if (currentSample < waveEnergies.Length - 1)
+                        {
+                            waveEnergies[currentSample] = outputHz;
+                        }
+                    }
+                    catch { }
+                }
+                //no please
+                /*
+                var isSuccess = new Visuals().CreateSpectrumWave(bgmStream, graphics, new System.Drawing.Rectangle(0, 0, 255, 255),
+                    System.Drawing.Color.White, System.Drawing.Color.Red,
+                    System.Drawing.Color.Black, 1, 
+                    false, false, false);
+                Console.WriteLine(isSuccess);
+                */
+                graphics.Flush();
+                graphics.Dispose();
+                backBitmap.Dispose();
+
+                writableBitmap.AddDirtyRect(new Int32Rect(0, 0, 255, 255));
+                writableBitmap.Unlock();
+            }));
+        }
         private async void DrawWave()
         {
-
             if (isDrawing) return;
-            Console.WriteLine("DrawWave");
             isDrawing = true;
             var writableBitmap = new WriteableBitmap(waveLevels.Length * zoominPower, 74, 72, 72, PixelFormats.Pbgra32, null);
             writableBitmap.Lock();
@@ -906,7 +837,9 @@ namespace MajdataEdit
 
                     }
                 }
-                catch{}
+                catch (Exception e){
+                    Console.WriteLine(e.Message);
+                }
             }
             );
             graphics.Flush();
@@ -918,7 +851,6 @@ namespace MajdataEdit
             writableBitmap.Unlock();
             isDrawing = false;
             GC.Collect();
-
         }
         private async void DrawCusor(double ghostCusorPositionTime = 0)
         {
@@ -956,64 +888,11 @@ namespace MajdataEdit
             writableBitmap.AddDirtyRect(new Int32Rect(0, 0, writableBitmap.PixelWidth, writableBitmap.PixelHeight));
             writableBitmap.Unlock();
         }
-        private void DrawFFT()
+        
+        // This update less frequently. set the time text.
+        private void CurrentTimeRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                //Scroll WaveView
-                var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                MusicWave.Margin = new Thickness(-currentTime / sampleTime * zoominPower, Margin.Left, MusicWave.Margin.Right, Margin.Bottom);
-                MusicWaveCusor.Margin = new Thickness(-currentTime / sampleTime * zoominPower, Margin.Left, MusicWave.Margin.Right, Margin.Bottom);
-
-                var writableBitmap = new WriteableBitmap(255, 255, 72, 72, PixelFormats.Pbgra32, null);
-                FFTImage.Source = writableBitmap;
-                writableBitmap.Lock();
-                Bitmap backBitmap = new Bitmap(255, 255, writableBitmap.BackBufferStride,
-                    System.Drawing.Imaging.PixelFormat.Format32bppArgb, writableBitmap.BackBuffer);
-
-                Graphics graphics = Graphics.FromImage(backBitmap);
-                graphics.Clear(System.Drawing.Color.Transparent);
-
-                float[] fft = new float[1024];
-                Bass.BASS_ChannelGetData(bgmStream, fft, (int)BASSData.BASS_DATA_FFT1024);
-                PointF[] points = new PointF[1024];
-                for (int i = 0; i < fft.Length; i++)
-                {
-                    points[i] = new PointF((float)Math.Log10(i + 1) * 100f, (240 - fft[i] * 256)); //semilog
-                }
-
-                graphics.DrawCurve(new System.Drawing.Pen(System.Drawing.Color.LightSkyBlue, 1), points);
-
-                float outputHz = 0;
-                new Visuals().DetectPeakFrequency(bgmStream, out outputHz);
-
-                if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING)
-                {
-                    try
-                    {
-                        var currentSample = (int)(currentTime / sampleTime);
-                        if (currentSample < waveEnergies.Length - 1)
-                        {
-                            waveEnergies[currentSample] = outputHz;
-                        }
-                    }
-                    catch { }
-                }
-                //no please
-                /*
-                var isSuccess = new Visuals().CreateSpectrumWave(bgmStream, graphics, new System.Drawing.Rectangle(0, 0, 255, 255),
-                    System.Drawing.Color.White, System.Drawing.Color.Red,
-                    System.Drawing.Color.Black, 1, 
-                    false, false, false);
-                Console.WriteLine(isSuccess);
-                */
-                graphics.Flush();
-                graphics.Dispose();
-                backBitmap.Dispose();
-
-                writableBitmap.AddDirtyRect(new Int32Rect(0, 0, 255, 255));
-                writableBitmap.Unlock();
-            }));
+            UpdateTimeDisplay();
         }
         private void UpdateTimeDisplay()
         {
@@ -1021,37 +900,6 @@ namespace MajdataEdit
             int minute = (int)currentPlayTime / 60;
             double second = (int)( currentPlayTime - (60 * minute));
             Dispatcher.Invoke(new Action(() => { TimeLabel.Content = String.Format("{0}:{1:00}", minute, second); }));
-        }
-        private void WaveStopMonitorUpdate()
-        {
-            // 监控是否应当停止
-            if (!isPlan2Stop &&
-                isPlaying &&
-                Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_STOPPED)
-            {
-                isPlan2Stop = true;
-                if (extraTime4AllPerfect < 0)
-                {
-                    // 足够播完 直接停止
-                    Dispatcher.Invoke(() => { ToggleStop(); });
-                }
-                else
-                {
-                    // 不够播完 等待后停止
-                    Timer stopPlayingTimer = new Timer((int)(extraTime4AllPerfect * 1000))
-                    {
-                        AutoReset = false
-                    };
-                    stopPlayingTimer.Elapsed += (object sender, ElapsedEventArgs e) =>
-                    {
-                        Dispatcher.Invoke(() =>
-                        {
-                            ToggleStop();
-                        });
-                    };
-                    stopPlayingTimer.Start();
-                }
-            }
         }
         void ScrollWave(double delta)
         {
@@ -1084,45 +932,18 @@ namespace MajdataEdit
             return localizedString;
         }
 
-        double GetAllPerfectStartTime()
-        {
-            // 获取All Perfect理论上播放的时间点 也就是最后一个被完成的note
-            double latestNoteFinishTime = -1;
-            double baseTime, noteTime;
-            foreach (var noteGroup in SimaiProcess.notelist)
-            {
-                baseTime = noteGroup.time;
-                foreach (var note in noteGroup.getNotes())
-                {
-                    if(note.noteType == SimaiNoteType.Tap || note.noteType == SimaiNoteType.Touch)
-                    {
-                        noteTime = baseTime;
-                    }else if(note.noteType == SimaiNoteType.Hold || note.noteType == SimaiNoteType.TouchHold)
-                    {
-                        noteTime = baseTime + note.holdTime;
-                    }else if(note.noteType == SimaiNoteType.Slide)
-                    {
-                        noteTime = note.slideStartTime + note.slideTime;
-                    }
-                    else
-                    {
-                        noteTime = -1;
-                    }
-                    if(noteTime > latestNoteFinishTime)
-                    {
-                        latestNoteFinishTime = noteTime;
-                    }
-                }
-            }
-            return latestNoteFinishTime;
-        }
 
         //*PLAY CONTROL
-        void TogglePlay(bool isOpIncluded = false)
-        {
-            if (Export_Button.IsEnabled == false) return;
 
-            if (lastEditorState == EditorControlMethod.Start || isOpIncluded)
+        enum PlayMethod
+        {
+            Normal, Op, Record
+        }
+        async Task TogglePlayAsync(PlayMethod playMethod = PlayMethod.Normal)
+        {
+            if (Op_Button.IsEnabled == false) return;
+
+            if (lastEditorState == EditorControlMethod.Start || playMethod != PlayMethod.Normal)
             {
                 if (!sendRequestStop()) return;
             }
@@ -1130,73 +951,73 @@ namespace MajdataEdit
             FumenContent.Focus();
             SaveFumen();
             if (CheckAndStartView()) return;
-            Export_Button.IsEnabled = false;
+            Op_Button.IsEnabled = false;
             isPlaying = true;
             isPlan2Stop = false;
-
-            double apTime = GetAllPerfectStartTime();
-            double waveLength = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetLength(bgmStream));
-            if (waveLength < apTime + 4.0)
-            {
-                // 如果BGM的时长不足以播放完AP特效 这里假设AP特效持续4秒
-                extraTime4AllPerfect = apTime + 4.0 - waveLength; // 预留给AP的额外时间（播放结束后）
-                Debug.Print(extraTime4AllPerfect.ToString());
-            }
-            else
-            {
-                // 如果足够播完 那么就等到BGM结束再停止
-                extraTime4AllPerfect = -1;
-            }
 
             PlayAndPauseButton.Content = "  ▌▌ ";
             var CusorTime = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());//scan first
 
+            //TODO: Moeying改一下你的generateSoundEffect然后把下面这行删了
+            bool isOpIncluded = playMethod == PlayMethod.Normal ? false : true;
+
             var startAt = DateTime.Now;
-            if (isOpIncluded)
+            switch (playMethod)
             {
-                generateSoundEffectList(0.0, isOpIncluded);
-                InternalSwitchWindow(false);
-                Bass.BASS_ChannelSetPosition(bgmStream, 0);
-                startAt = DateTime.Now.AddSeconds(5d);
-                Bass.BASS_ChannelPlay(trackStartStream, true);
-                if (!sendRequestRun(startAt, isOpIncluded)) return;
-                Task.Run(() =>
-                {
-                    while (DateTime.Now.Ticks < startAt.Ticks )
+                case PlayMethod.Record:
+                    Bass.BASS_ChannelSetPosition(bgmStream, 0);
+                    startAt = DateTime.Now.AddSeconds(5d);
+                    //TODO: i18n
+                    MessageBox.Show(GetLocalizedString("AskRender"), GetLocalizedString("Attention"));
+                    InternalSwitchWindow(false);
+                    generateSoundEffectList(0.0, isOpIncluded);
+                    await Task.Run(() =>renderSoundEffect(5d));
+                    if (!sendRequestRun(startAt, playMethod)) return;
+                    break;
+                case PlayMethod.Op:
+                    generateSoundEffectList(0.0, isOpIncluded);
+                    InternalSwitchWindow(false);
+                    Bass.BASS_ChannelSetPosition(bgmStream, 0);
+                    startAt = DateTime.Now.AddSeconds(5d);
+                    Bass.BASS_ChannelPlay(trackStartStream, true);
+                    if (!sendRequestRun(startAt, playMethod)) return;
+                    await Task.Run(() =>
                     {
-                        if (lastEditorState != EditorControlMethod.Start)
-                            return;
-                    }
-                    Dispatcher.Invoke(() =>
-                    {
-                        playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                        SimaiProcess.ClearNoteListPlayedState();
-                        clickSoundTimer.Start();
-                        waveStopMonitorTimer.Start();
-                        Bass.BASS_ChannelPlay(bgmStream, false);
+                        while (DateTime.Now.Ticks < startAt.Ticks )
+                        {
+                            if (lastEditorState != EditorControlMethod.Start)
+                                return;
+                        }
+                        Dispatcher.Invoke(() =>
+                        {
+                            playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                            SimaiProcess.ClearNoteListPlayedState();
+                            soundEffectTimer.Start();
+                            waveStopMonitorTimer.Start();
+                            Bass.BASS_ChannelPlay(bgmStream, false);
+                        });
                     });
-                });
-            }
-            else
-            {
-                playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-                generateSoundEffectList(playStartTime, isOpIncluded);
-                SimaiProcess.ClearNoteListPlayedState();
-                clickSoundTimer.Start();
-                waveStopMonitorTimer.Start();
-                startAt = DateTime.Now;
-                Bass.BASS_ChannelPlay(bgmStream, false);
-                Task.Run(() =>
-                {
-                    if (lastEditorState == EditorControlMethod.Pause)
+                    break;
+                case PlayMethod.Normal:
+                    playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                    generateSoundEffectList(playStartTime, isOpIncluded);
+                    SimaiProcess.ClearNoteListPlayedState();
+                    soundEffectTimer.Start();
+                    waveStopMonitorTimer.Start();
+                    startAt = DateTime.Now;
+                    Bass.BASS_ChannelPlay(bgmStream, false);
+                    await Task.Run(() =>
                     {
-                        if (!sendRequestContinue(startAt)) return;
-                    }
-                    else
-                    {
-                        if (!sendRequestRun(startAt, isOpIncluded)) return;
-                    }
-                });
+                        if (lastEditorState == EditorControlMethod.Pause)
+                        {
+                            if (!sendRequestContinue(startAt)) return;
+                        }
+                        else
+                        {
+                            if (!sendRequestRun(startAt, playMethod)) return;
+                        }
+                    });
+                    break;
             }
 
             DrawWave();
@@ -1204,7 +1025,7 @@ namespace MajdataEdit
         }
         void TogglePause()
         {
-            Export_Button.IsEnabled = true;
+            Op_Button.IsEnabled = true;
             isPlaying = false;
             isPlan2Stop = false;
 
@@ -1212,14 +1033,14 @@ namespace MajdataEdit
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
             Bass.BASS_ChannelStop(holdRiserStream);
-            clickSoundTimer.Stop();
+            soundEffectTimer.Stop();
             waveStopMonitorTimer.Stop();
             sendRequestPause();
             DrawWave();
         }
         void ToggleStop()
         {
-            Export_Button.IsEnabled = true;
+            Op_Button.IsEnabled = true;
             isPlaying = false;
             isPlan2Stop = false;
 
@@ -1227,13 +1048,13 @@ namespace MajdataEdit
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
             Bass.BASS_ChannelStop(holdRiserStream);
-            clickSoundTimer.Stop();
+            soundEffectTimer.Stop();
             waveStopMonitorTimer.Stop();
             sendRequestStop();
             Bass.BASS_ChannelSetPosition(bgmStream, playStartTime);
             DrawWave();
         }
-        void TogglePlayAndPause(bool isOpIncluded = false)
+        void TogglePlayAndPause(PlayMethod playMethod = PlayMethod.Normal)
         {
             if (isPlaying)
             {
@@ -1241,10 +1062,10 @@ namespace MajdataEdit
             }
             else
             {
-                TogglePlay(isOpIncluded);
+                TogglePlayAsync(playMethod);
             }
         }
-        void TogglePlayAndStop(bool isOpIncluded = false)
+        void TogglePlayAndStop(PlayMethod playMethod = PlayMethod.Normal)
         {
             if (isPlaying)
             {
@@ -1252,7 +1073,7 @@ namespace MajdataEdit
             }
             else
             {
-                TogglePlay(isOpIncluded);
+                TogglePlayAsync(playMethod);
             }
         }
         void SetPlaybackSpeed(float speed)
@@ -1310,7 +1131,7 @@ namespace MajdataEdit
             lastEditorState = EditorControlMethod.Start;
             return true;
         }
-        bool sendRequestRun(DateTime StartAt,bool isOpIncluded)
+        bool sendRequestRun(DateTime StartAt, PlayMethod playMethod)
         {
 
             Majson jsonStruct = new Majson();
@@ -1332,10 +1153,13 @@ namespace MajdataEdit
             System.IO.File.WriteAllText(path, json);
 
             EditRequestjson request = new EditRequestjson();
-            if(isOpIncluded)
+            if (playMethod == PlayMethod.Op)
                 request.control = EditorControlMethod.OpStart;
-            else
+            else if (playMethod == PlayMethod.Normal)
                 request.control = EditorControlMethod.Start;
+            else
+                request.control = EditorControlMethod.Record;
+
             Dispatcher.Invoke(() =>
             {
                 request.jsonPath = path;
@@ -1346,6 +1170,7 @@ namespace MajdataEdit
                 request.noteSpeed = editorSetting.playSpeed;
                 request.touchSpeed = editorSetting.touchSpeed;
                 request.backgroundCover = editorSetting.backgroundCover;
+                request.isComboEnabled = editorSetting.isComboEnabled;
                 request.audioSpeed = GetPlaybackSpeed();
             });
 
@@ -1421,218 +1246,6 @@ namespace MajdataEdit
 
             this.Left = (ScreenWidth - this.Width + Height) / 2 - 10;
             this.Top = (ScreenHeight - this.Height) / 2;
-        }
-        void generateSoundEffectList(double startTime, bool isOpIncluded)
-        {
-            waitToBePlayed = new List<SoundEffectTiming>();
-            if (isOpIncluded)
-            {
-                var cmds = SimaiProcess.other_commands.Split('\n');
-                foreach (var cmdl in cmds)
-                {
-                    if (cmdl.Length > 12 && cmdl.Substring(1,11)=="clock_count")
-                    {
-                        try
-                        {
-                            int clock_cnt = int.Parse(cmdl.Substring(13));
-                            double clock_int = 60.0d / SimaiProcess.notelist[0].currentBpm;
-                            for (int i = 0; i < clock_cnt; i++)
-                            {
-                                waitToBePlayed.Add(new SoundEffectTiming(i*clock_int, _hasClock: true));
-                            }
-                        } catch
-                        {
-
-                        }
-                    }
-                }
-            }
-            foreach(var noteGroup in SimaiProcess.notelist)
-            {
-                if (noteGroup.time < startTime) { continue; }
-
-                SoundEffectTiming stobj;
-
-                // 如果目前为止已经有一个SE了 那么就直接使用这个SE
-                var combIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - noteGroup.time) < 0.001f);
-                if (combIndex != -1)
-                {
-                    stobj = waitToBePlayed[combIndex];
-                }
-                else
-                {
-                    stobj = new SoundEffectTiming(noteGroup.time);
-                }
-
-                var notes = noteGroup.getNotes();
-                foreach (SimaiNote note in notes)
-                {
-                    switch (note.noteType)
-                    {
-                        case SimaiNoteType.Tap:
-                            {
-                                stobj.hasAnswer = true;
-                                if (note.isBreak)
-                                {
-                                    // 如果是Break 则有Break判定音和Break欢呼音（2600）
-                                    stobj.hasBreak = true;
-                                    stobj.hasJudgeBreak = true;
-                                }
-                                if (note.isEx)
-                                {
-                                    // 如果是Ex 则有Ex判定音
-                                    stobj.hasJudgeEx = true;
-                                }
-                                if (!note.isBreak && !note.isEx)
-                                {
-                                    // 如果二者皆没有 则是普通note 播放普通判定音
-                                    stobj.hasJudge = true;
-                                }
-                                break;
-                            }
-                        case SimaiNoteType.Hold:
-                            {
-                                stobj.hasAnswer = true;
-                                // 类似于Tap 判断Break和Ex的音效 二者皆无则为普通
-                                if (note.isBreak)
-                                {
-                                    stobj.hasBreak = true;
-                                    stobj.hasJudgeBreak = true;
-                                }
-                                if (note.isEx)
-                                {
-                                    stobj.hasJudgeEx = true;
-                                }
-                                if (!note.isBreak && !note.isEx)
-                                {
-                                    stobj.hasJudge = true;
-                                }
-
-                                // 计算Hold尾部的音效
-                                if (!(note.holdTime <= 0.00f))
-                                {
-                                    // 如果是短hold（六角tap），则忽略尾部音效。否则，才会计算尾部音效
-                                    var targetTime = noteGroup.time + note.holdTime;
-                                    var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
-                                    if (nearIndex != -1)
-                                    {
-                                        waitToBePlayed[nearIndex].hasAnswer = true;
-                                        if (!note.isBreak && !note.isEx)
-                                        {
-                                            waitToBePlayed[nearIndex].hasJudge = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // 只有最普通的Hold才有结尾的判定音 Break和Ex型则没有（Break没有为推定）
-                                        SoundEffectTiming holdRelease = new SoundEffectTiming(targetTime, _hasAnswer: true, _hasJudge: !note.isBreak && !note.isEx);
-                                        waitToBePlayed.Add(holdRelease);
-                                    }
-                                }
-                                break;
-                            }
-                        case SimaiNoteType.Slide:
-                            {
-                                if (!note.isSlideNoHead)
-                                {
-                                    // 当Slide不是无头星星的时候 才有answer音和判定音
-                                    stobj.hasAnswer = true;
-                                    if (note.isBreak)
-                                    {
-                                        stobj.hasBreak = true;
-                                        stobj.hasJudgeBreak = true;
-                                    }
-                                    if (note.isEx)
-                                    {
-                                        stobj.hasJudgeEx = true;
-                                    }
-                                    if (!note.isBreak && !note.isEx)
-                                    {
-                                        stobj.hasJudge = true;
-                                    }
-                                }
-
-                                // Slide启动音效
-                                var targetTime = note.slideStartTime;
-                                var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
-                                if (nearIndex != -1)
-                                {
-                                    waitToBePlayed[nearIndex].hasSlide = true;
-                                }
-                                else
-                                {
-                                    SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasSlide: true);
-                                    waitToBePlayed.Add(slide);
-                                }
-                                // Slide尾巴 如果是Break Slide的话 就要添加一个Break音效
-                                if (note.isSlideBreak)
-                                {
-                                    targetTime = note.slideStartTime + note.slideTime;
-                                    nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
-                                    if (nearIndex != -1)
-                                    {
-                                        waitToBePlayed[nearIndex].hasBreak = true;
-                                    }
-                                    else
-                                    {
-                                        SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasBreak: true);
-                                        waitToBePlayed.Add(slide);
-                                    }
-                                }
-                                break;
-                            }
-                        case SimaiNoteType.Touch:
-                            {
-                                stobj.hasAnswer = true;
-                                stobj.hasTouch = true;
-                                if (note.isHanabi)
-                                {
-                                    stobj.hasHanabi = true;
-                                }
-                                break;
-                            }
-                        case SimaiNoteType.TouchHold:
-                            {
-                                stobj.hasAnswer = true;
-                                stobj.hasTouch = true;
-                                stobj.hasTouchHold = true;
-                                // 计算TouchHold结尾
-                                var targetTime = noteGroup.time + note.holdTime;
-                                var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
-                                if (nearIndex != -1)
-                                {
-                                    if (note.isHanabi)
-                                    {
-                                        waitToBePlayed[nearIndex].hasHanabi = true;
-                                    }
-                                    waitToBePlayed[nearIndex].hasAnswer = true;
-                                    waitToBePlayed[nearIndex].hasTouchHoldEnd = true;
-                                }
-                                else
-                                {
-                                    SoundEffectTiming tHoldRelease = new SoundEffectTiming(targetTime, _hasAnswer: true, _hasHanabi: note.isHanabi, _hasTouchHoldEnd: true);
-                                    waitToBePlayed.Add(tHoldRelease);
-                                }
-                                break;
-                            }
-                    }
-                }
-
-                if (combIndex != -1)
-                {
-                    waitToBePlayed[combIndex] = stobj;
-                }
-                else
-                {
-                    waitToBePlayed.Add(stobj);
-                }
-            }
-            if (isOpIncluded)
-            {
-                waitToBePlayed.Add(new SoundEffectTiming(GetAllPerfectStartTime(), _hasAllPerfect: true));
-            }
-            waitToBePlayed.Sort((o1,o2) => o1.time<o2.time?-1:1);
-            Console.WriteLine(JsonConvert.SerializeObject(waitToBePlayed));
         }
 
         private void SwitchFumenOverwriteMode()
@@ -1788,44 +1401,18 @@ namespace MajdataEdit
 
         public string GetWindowsTitleString(string info)
         {
-            return GetWindowsTitleString() + " - " + info;
-        }
-
-        class SoundEffectTiming
-        {
-            public bool hasAnswer = false;
-            public bool hasJudge = false;
-            public bool hasJudgeBreak = false;
-            public bool hasBreak = false;
-            public bool hasTouch = false;
-            public bool hasHanabi = false;
-            public bool hasJudgeEx = false;
-            public bool hasTouchHold = false;
-            public bool hasTouchHoldEnd = false;
-            public bool hasSlide = false;
-            public bool hasAllPerfect = false;
-            public bool hasClock = false;
-            public double time;
-
-            public SoundEffectTiming(double _time, bool _hasAnswer = false, bool _hasJudge = false, bool _hasJudgeBreak = false,
-                                     bool _hasBreak = false, bool _hasTouch = false, bool _hasHanabi = false,
-                                     bool _hasJudgeEx = false, bool _hasTouchHold = false, bool _hasSlide = false,
-                                     bool _hasTouchHoldEnd = false, bool _hasAllPerfect = false, bool _hasClock = false)
+            DCRPCclient.SetPresence(new RichPresence()
             {
-                time = _time;
-                hasAnswer = _hasAnswer;
-                hasJudge = _hasJudge;
-                hasJudgeBreak = _hasJudgeBreak; // 我是笨蛋
-                hasBreak = _hasBreak;
-                hasTouch = _hasTouch;
-                hasHanabi = _hasHanabi;
-                hasJudgeEx = _hasJudgeEx;
-                hasTouchHold = _hasTouchHold;
-                hasSlide = _hasSlide;
-                hasTouchHoldEnd = _hasTouchHoldEnd;
-                hasAllPerfect = _hasAllPerfect;
-                hasClock = _hasClock;
-            }
+                Details = "Editing: " + SimaiProcess.artist + " - "+ SimaiProcess.title,
+                State = "With note count of " + SimaiProcess.notelist.Count,
+                Assets = new Assets()
+                {
+                    LargeImageKey = "salt",
+                    LargeImageText = "Majdata",
+                    SmallImageKey = "None"
+                }
+            });
+            return GetWindowsTitleString() + " - " + info;
         }
     }
 }

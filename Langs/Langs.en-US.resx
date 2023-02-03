@@ -408,4 +408,17 @@ Open Browser to download latest update of Majdata?</value>
   <data name="MirrorCcw45" xml:space="preserve">
     <value>45° (CCW) Rotate Selection</value>
   </data>
+  <data name="AskRender" xml:space="preserve">
+    <value>The video will be exported to the chart folder.
+DO NOT CHANGE THE VIEWER WINDOW SIZE DURING THE RENDER.
+But you can change the resolution now using the "&lt;&gt;" button.
+Please make sure that the width is even number.
+Click OK to start render.</value>
+  </data>
+  <data name="ComboDisplay" xml:space="preserve">
+    <value>Combo Display</value>
+  </data>
+  <data name="ExportVideo" xml:space="preserve">
+    <value>Export Video</value>
+  </data>
 </root>
