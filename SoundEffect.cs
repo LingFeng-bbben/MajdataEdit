@@ -166,7 +166,6 @@ namespace MajdataEdit
                     //
                     Dispatcher.Invoke(() =>
                     {
-
                         if ((bool)FollowPlayCheck.IsChecked)
                             SeekTextFromTime();
                     });
@@ -417,21 +416,22 @@ namespace MajdataEdit
             }
             if (isOpIncluded)
             {
-
-                double apTime = GetAllPerfectStartTime();
-                if (songLength < apTime + 4.0)
-                {
-                    // 如果BGM的时长不足以播放完AP特效 这里假设AP特效持续4秒
-                    extraTime4AllPerfect = apTime + 4.0 - songLength; // 预留给AP的额外时间（播放结束后）
-                }
-                else
-                {
-                    // 如果足够播完 那么就等到BGM结束再停止
-                    extraTime4AllPerfect = -1;
-                }
                 waitToBePlayed.Add(new SoundEffectTiming(GetAllPerfectStartTime(), _hasAllPerfect: true));
             }
             waitToBePlayed.Sort((o1, o2) => o1.time < o2.time ? -1 : 1);
+
+            double apTime = GetAllPerfectStartTime();
+            if (songLength < apTime + 4.0)
+            {
+                // 如果BGM的时长不足以播放完AP特效 这里假设AP特效持续4秒
+                extraTime4AllPerfect = apTime + 4.0 - songLength; // 预留给AP的额外时间（播放结束后）
+            }
+            else
+            {
+                // 如果足够播完 那么就等到BGM结束再停止
+                extraTime4AllPerfect = -1;
+            }
+
             //Console.WriteLine(JsonConvert.SerializeObject(waitToBePlayed));
         }
         void renderSoundEffect(double delaySeconds)
