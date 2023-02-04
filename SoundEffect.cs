@@ -549,7 +549,7 @@ namespace MajdataEdit
             //生成每个音效的track
             foreach (var soundtiming in waitToBePlayed)
             {
-                var startindex = (int)(soundtiming.time * 2 * freq); //乘2因为有两个channel
+                var startindex = (int)(soundtiming.time * freq) * 2; //乘2因为有两个channel
                 if (soundtiming.hasAnswer)
                 {
                     //这一步还会覆盖之前没有播完的answer
