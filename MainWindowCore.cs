@@ -939,7 +939,7 @@ namespace MajdataEdit
         {
             Normal, Op, Record
         }
-        async Task TogglePlayAsync(PlayMethod playMethod = PlayMethod.Normal)
+        void TogglePlay(PlayMethod playMethod = PlayMethod.Normal)
         {
             if (Op_Button.IsEnabled == false) return;
 
@@ -971,7 +971,17 @@ namespace MajdataEdit
                     MessageBox.Show(GetLocalizedString("AskRender"), GetLocalizedString("Attention"));
                     InternalSwitchWindow(false);
                     generateSoundEffectList(0.0, isOpIncluded);
-                    await Task.Run(() =>renderSoundEffect(5d));
+                    Task task = new Task(() => renderSoundEffect(5d));
+                    try
+                    {
+                        task.Start();
+                        task.Wait();
+                    }
+                    catch(AggregateException e)
+                    {
+                        MessageBox.Show(task.Exception.InnerException.Message + "\n" + e.Message);
+                        return;
+                    }
                     if (!sendRequestRun(startAt, playMethod)) return;
                     break;
                 case PlayMethod.Op:
@@ -980,9 +990,9 @@ namespace MajdataEdit
                     Bass.BASS_ChannelSetPosition(bgmStream, 0);
                     startAt = DateTime.Now.AddSeconds(5d);
                     Bass.BASS_ChannelPlay(trackStartStream, true);
-                    if (!sendRequestRun(startAt, playMethod)) return;
-                    await Task.Run(() =>
+                    Task.Run(() =>
                     {
+                        if (!sendRequestRun(startAt, playMethod)) return;
                         while (DateTime.Now.Ticks < startAt.Ticks )
                         {
                             if (lastEditorState != EditorControlMethod.Start)
@@ -1006,7 +1016,7 @@ namespace MajdataEdit
                     waveStopMonitorTimer.Start();
                     startAt = DateTime.Now;
                     Bass.BASS_ChannelPlay(bgmStream, false);
-                    await Task.Run(() =>
+                    Task.Run(() =>
                     {
                         if (lastEditorState == EditorControlMethod.Pause)
                         {
@@ -1062,7 +1072,7 @@ namespace MajdataEdit
             }
             else
             {
-                TogglePlayAsync(playMethod);
+                TogglePlay(playMethod);
             }
         }
         void TogglePlayAndStop(PlayMethod playMethod = PlayMethod.Normal)
@@ -1073,7 +1083,7 @@ namespace MajdataEdit
             }
             else
             {
-                TogglePlayAsync(playMethod);
+                TogglePlay(playMethod);
             }
         }
         void SetPlaybackSpeed(float speed)

@@ -472,7 +472,6 @@ namespace MajdataEdit
             var apInfo = Bass.BASS_SampleGetInfo(apSample);
             var clockInfo = Bass.BASS_SampleGetInfo(clockSample);
 
-
             if (bgmInfo.freq != answerInfo.freq)
                 throw new Exception("bgm and answer do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != judgeInfo.freq)
