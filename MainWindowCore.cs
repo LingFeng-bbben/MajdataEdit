@@ -1411,17 +1411,24 @@ namespace MajdataEdit
 
         public string GetWindowsTitleString(string info)
         {
-            DCRPCclient.SetPresence(new RichPresence()
+            try
             {
-                Details = "Editing: " + SimaiProcess.artist + " - "+ SimaiProcess.title,
-                State = "With note count of " + SimaiProcess.notelist.Count,
-                Assets = new Assets()
+                string details = "Editing: " + SimaiProcess.title;
+                if (details.Length > 50)
+                    details = details.Substring(0, 50);
+                DCRPCclient.SetPresence(new RichPresence()
                 {
-                    LargeImageKey = "salt",
-                    LargeImageText = "Majdata",
-                    SmallImageKey = "None"
-                }
-            });
+                    Details = details,
+                    State = "With note count of " + SimaiProcess.notelist.Count,
+                    Assets = new Assets()
+                    {
+                        LargeImageKey = "salt",
+                        LargeImageText = "Majdata",
+                        SmallImageKey = "None"
+                    }
+                });
+            }
+            catch { }
             return GetWindowsTitleString() + " - " + info;
         }
     }
