@@ -436,4 +436,7 @@ Open Browser to download latest update of Majdata?</value>
   <data name="ExportVideo" xml:space="preserve">
     <value>譜面動画を生成</value>
   </data>
+  <data name="AutoSave" xml:space="preserve">
+    <value>オートセーブ （秒）</value>
+  </data>
 </root>

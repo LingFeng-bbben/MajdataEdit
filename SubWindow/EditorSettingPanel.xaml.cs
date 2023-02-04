@@ -105,23 +105,32 @@ namespace MajdataEdit
             ViewerTouchSpeed.Text = offset.ToString();
         }
 
+        private void AutoSaveFrequency_OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var frequency = float.Parse(ViewerTouchSpeed.Text);
+            frequency += e.Delta > 0 ? 1 : -1;
+            AutoSaveFrequency.Text = frequency.ToString();
+        }
+        
         private void Save_Button_Click(object sender, RoutedEventArgs e)
         {
             var window = (MainWindow) Owner;
             window.editorSetting.Language = langList[LanguageComboBox.SelectedIndex];
             window.editorSetting.RenderMode = RenderModeComboBox.SelectedIndex;
+            window.editorSetting.AutoSaveFrequency = float.Parse(AutoSaveFrequency.Text);
             window.editorSetting.backgroundCover = float.Parse(ViewerCover.Text);
             window.editorSetting.playSpeed = float.Parse(ViewerSpeed.Text);
             window.editorSetting.touchSpeed = float.Parse(ViewerTouchSpeed.Text);
             window.editorSetting.ChartRefreshDelay = int.Parse(ChartRefreshDelay.Text);
-            window.editorSetting.AutoCheckUpdate = (bool)AutoUpdate.IsChecked;
-            window.editorSetting.isComboEnabled = (bool)ComboDisplay.IsChecked;
+            window.editorSetting.AutoCheckUpdate = AutoUpdate.IsChecked is true;
+            window.editorSetting.isComboEnabled = ComboDisplay.IsChecked is true;
             window.SaveEditorSetting();
 
             window.ViewerCover.Content = window.editorSetting.backgroundCover.ToString();
             window.ViewerSpeed.Content = window.editorSetting.playSpeed.ToString("F1");    // 转化为形如"7.0", "9.5"这样的速度
             window.ViewerTouchSpeed.Content = window.editorSetting.touchSpeed.ToString("F1");
             window.chartChangeTimer.Interval = window.editorSetting.ChartRefreshDelay;
+            window.autoSaveTimer.Interval = window.editorSetting.AutoSaveFrequency;
 
 
             saveFlag = true;

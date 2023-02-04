@@ -53,6 +53,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -84,8 +85,15 @@
         <TextBox x:Name="ChartRefreshDelay"
                  Grid.Row="2" Grid.Column="1"
                  Text="1000" />
-
+        
         <Label Grid.Row="3" Grid.Column="0"
+               Content="{lex:Loc Key=AutoSave}" />
+        <TextBox x:Name="AutoSaveFrequency"
+                 Grid.Row="6" Grid.Column="1"
+                 Text="0"
+                 MouseWheel="AutoSaveFrequency_OnMouseWheel" />
+
+        <Label Grid.Row="4" Grid.Column="0"
                Content="{lex:Loc Key=Brightness}" />
         <TextBox x:Name="ViewerCover"
                  Grid.Row="3" Grid.Column="1"
@@ -93,27 +101,27 @@
                  Text="0.6"
                  MouseWheel="ViewerCover_MouseWheel" />
 
-        <Label Grid.Row="4" Grid.Column="0"
+        <Label Grid.Row="5" Grid.Column="0"
                Content="{lex:Loc Key=Speed}" />
         <TextBox x:Name="ViewerSpeed"
                  Grid.Row="4" Grid.Column="1"
                  Text="7.0"
                  MouseWheel="ViewerSpeed_MouseWheel" />
 
-        <Label Grid.Row="5" Grid.Column="0"
+        <Label Grid.Row="6" Grid.Column="0"
                Content="{lex:Loc Key=TouchSpeed}" />
         <TextBox x:Name="ViewerTouchSpeed"
                  Grid.Row="5" Grid.Column="1"
                  Text="7.5"
                  MouseWheel="ViewerTouchSpeed_MouseWheel" />
 
-        <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+        <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
             <CheckBox x:Name="ComboDisplay" VerticalAlignment="Center"/>
             <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
                Content="{lex:Loc Key=ComboDisplay}" />
         </StackPanel>
 
-        <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+        <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
             <CheckBox x:Name="AutoUpdate" VerticalAlignment="Center"/>
             <Label Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
                Content="{lex:Loc Key=AutoCheckUpdate}" />
@@ -121,7 +129,7 @@
 
 
         <StackPanel Orientation="Horizontal"
-                    Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                    Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
             <Button x:Name="Save_Button" Content="{lex:Loc Key=Save}"
                     Width="70" Height="28" Margin="0,5,10,5"
                     Foreground="{DynamicResource ButtonForeground}"

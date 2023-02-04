@@ -421,4 +421,7 @@ Click OK to start render.</value>
   <data name="ExportVideo" xml:space="preserve">
     <value>Export Video</value>
   </data>
+  <data name="AutoSave" xml:space="preserve">
+    <value>Autosave (s)</value>
+  </data>
 </root>

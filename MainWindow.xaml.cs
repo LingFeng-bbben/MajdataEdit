@@ -1,28 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Diagnostics;
 using System.IO;
 using Un4seen.Bass;
-using Un4seen.Bass.Misc;
-using System.Drawing;
 using System.Media;
-using System.ComponentModel;
 using DiscordRPC.Logging;
-using DiscordRPC;
 
 namespace MajdataEdit
 {
@@ -60,6 +49,10 @@ namespace MajdataEdit
 
             chartChangeTimer.Elapsed += ChartChangeTimer_Elapsed;
             chartChangeTimer.AutoReset = false;
+            
+            autoSaveTimer.Elapsed += AutoSaveTimer_Elapsed;
+            autoSaveTimer.AutoReset = false;
+            
             currentTimeRefreshTimer.Elapsed += CurrentTimeRefreshTimer_Elapsed;
             currentTimeRefreshTimer.Start();
             soundEffectTimer.Elapsed += SoundEffectTimer_Elapsed;
@@ -73,12 +66,19 @@ namespace MajdataEdit
                 CheckUpdate(onStart: true);
             }
         }
+        
+        public Timer autoSaveTimer = new Timer(1000);
 
-
+        private void AutoSaveTimer_Elapsed(object _sender, ElapsedEventArgs _e)
+        {
+            SaveFumen(true);
+            SystemSounds.Beep.Play();
+        }
+        
         //start the view and wait for boot, then set window pos
         private void SetWindowPosTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Timer setWindowPosTimer = (Timer)sender;
+            var setWindowPosTimer = (Timer)sender;
             Dispatcher.Invoke(() =>
             {
                 InternalSwitchWindow();

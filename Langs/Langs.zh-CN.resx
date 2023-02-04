@@ -405,4 +405,7 @@
   <data name="ExportVideo" xml:space="preserve">
     <value>导出视频</value>
   </data>
+  <data name="AutoSave" xml:space="preserve">
+    <value>自动保存（秒）</value>
+  </data>
 </root>

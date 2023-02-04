@@ -490,6 +490,7 @@ namespace MajdataEdit
             ViewerTouchSpeed.Content = editorSetting.touchSpeed.ToString("F1");
 
             chartChangeTimer.Interval = editorSetting.ChartRefreshDelay; // 设置更新延迟
+            autoSaveTimer.Interval = editorSetting.AutoSaveFrequency * 1000;
 
             SaveEditorSetting(); // 覆盖旧版本setting
         }
@@ -509,8 +510,8 @@ namespace MajdataEdit
         //*UI DRAWING
         Timer visualEffectRefreshTimer = new Timer(1);
         Timer currentTimeRefreshTimer = new Timer(100);
-        public Timer chartChangeTimer = new Timer(1000);    // 谱面变更延迟解析]\
-
+        public Timer chartChangeTimer = new Timer(1000); // 谱面变更延迟解析]\
+        
         // This update very freqently to Draw FFT wave.
         private void VisualEffectRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -530,6 +531,7 @@ namespace MajdataEdit
                 )
             );
         }
+
         private void DrawFFT()
         {
             Dispatcher.Invoke(new Action(() =>
