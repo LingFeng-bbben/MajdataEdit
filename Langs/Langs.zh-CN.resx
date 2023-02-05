@@ -405,4 +405,34 @@
   <data name="ExportVideo" xml:space="preserve">
     <value>导出视频</value>
   </data>
+  <data name="ComboDisplayAccClassic" xml:space="preserve">
+    <value>Achievement (+) (Classic)</value>
+  </data>
+  <data name="ComboDisplayAccDeluxe" xml:space="preserve">
+    <value>Achievement (+) (Deluxe)</value>
+  </data>
+  <data name="ComboDisplayAccDownClassic" xml:space="preserve">
+    <value>Achievement (-) (Classic)</value>
+  </data>
+  <data name="ComboDisplayAccDownDeluxe" xml:space="preserve">
+    <value>Achievement (-) 1 (Deluxe)</value>
+  </data>
+  <data name="ComboDisplayCombo" xml:space="preserve">
+    <value>Combo</value>
+  </data>
+  <data name="ComboDisplayCScoreDedeluxe" xml:space="preserve">
+    <value>Normalized Score (+)</value>
+  </data>
+  <data name="ComboDisplayCScoreDownDedeluxe" xml:space="preserve">
+    <value>Normalized Score (-)</value>
+  </data>
+  <data name="ComboDisplayNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="ComboDisplayScoreClassic" xml:space="preserve">
+    <value>Score (Classic)</value>
+  </data>
+  <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
+    <value>DX Score</value>
+  </data>
 </root>

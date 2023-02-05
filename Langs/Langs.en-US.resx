@@ -416,9 +416,42 @@ Please make sure that the width is even number.
 Click OK to start render.</value>
   </data>
   <data name="ComboDisplay" xml:space="preserve">
-    <value>Combo Display</value>
+    <value>Display at Center</value>
   </data>
   <data name="ExportVideo" xml:space="preserve">
     <value>Export Video</value>
+  </data>
+  <data name="ComboDisplayAccClassic" xml:space="preserve">
+    <value>Achievement (+) (Classic)</value>
+  </data>
+  <data name="ComboDisplayAccDeluxe" xml:space="preserve">
+    <value>Achievement (+) (Deluxe)</value>
+  </data>
+  <data name="ComboDisplayAccDownClassic" xml:space="preserve">
+    <value>Achievement (-) (Classic)</value>
+  </data>
+  <data name="ComboDisplayAccDownDeluxe" xml:space="preserve">
+    <value>Achievement (-) 1 (Deluxe)</value>
+    <comment>Acc down (1) starts from 100%. They should know already.</comment>
+  </data>
+  <data name="ComboDisplayCombo" xml:space="preserve">
+    <value>Combo</value>
+  </data>
+  <data name="ComboDisplayCScoreDedeluxe" xml:space="preserve">
+    <value>Normalized Score (+)</value>
+    <comment>Custom: Normal Score but with forced DX Scale.</comment>
+  </data>
+  <data name="ComboDisplayCScoreDownDedeluxe" xml:space="preserve">
+    <value>Normalized Score (-)</value>
+    <comment>Custom: Normal Score but with forced DX Scale.</comment>
+  </data>
+  <data name="ComboDisplayNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="ComboDisplayScoreClassic" xml:space="preserve">
+    <value>Score (Classic)</value>
+  </data>
+  <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
+    <value>DX Score</value>
   </data>
 </root>

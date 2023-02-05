@@ -1170,7 +1170,7 @@ namespace MajdataEdit
                 request.noteSpeed = editorSetting.playSpeed;
                 request.touchSpeed = editorSetting.touchSpeed;
                 request.backgroundCover = editorSetting.backgroundCover;
-                request.isComboEnabled = editorSetting.isComboEnabled;
+                request.comboStatusType = editorSetting.comboStatusType;
                 request.audioSpeed = GetPlaybackSpeed();
             });
 

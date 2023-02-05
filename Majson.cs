@@ -27,7 +27,19 @@ namespace MajdataEdit
         public float touchSpeed;
         public float backgroundCover;
         public float audioSpeed;
-        public bool isComboEnabled;
+        public EditorComboIndicator comboStatusType;
+    }
+
+    public enum EditorComboIndicator
+    {
+        None,
+        // List of viable indicators that won't be a static content.
+        // ScoreBorder, AchievementMaxDown, ScoreDownDeluxe are static.
+        Combo, ScoreClassic, AchievementClassic, AchievementDownClassic,
+        AchievementDeluxe = 11, AchievementDownDeluxe, ScoreDeluxe,
+        // Please prefix custom indicator with C
+        CScoreDedeluxe = 101, CScoreDownDedeluxe,
+        MAX
     }
 
     enum EditorControlMethod
@@ -74,7 +86,7 @@ namespace MajdataEdit
         public float playSpeed = 7.0f;
         public float touchSpeed = 7.5f;
         public float backgroundCover = 0.6f;
-        public bool isComboEnabled = false;
+        public EditorComboIndicator comboStatusType = (EditorComboIndicator)0;
         public float Default_BGM_Level = 0.7f;
         public float Default_Answer_Level = 0.7f;
         public float Default_Judge_Level = 0.7f;
