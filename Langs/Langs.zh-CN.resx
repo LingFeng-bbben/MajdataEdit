@@ -400,9 +400,39 @@
 按确定开始渲染。</value>
   </data>
   <data name="ComboDisplay" xml:space="preserve">
-    <value>Combo显示</value>
+    <value>屏幕中心显示</value>
   </data>
   <data name="ExportVideo" xml:space="preserve">
     <value>导出视频</value>
+  </data>
+  <data name="ComboDisplayAccClassic" xml:space="preserve">
+    <value>Achievement (+) (旧框)</value>
+  </data>
+  <data name="ComboDisplayAccDeluxe" xml:space="preserve">
+    <value>Achievement (+) (DX)</value>
+  </data>
+  <data name="ComboDisplayAccDownClassic" xml:space="preserve">
+    <value>Achievement (-) (旧框)</value>
+  </data>
+  <data name="ComboDisplayAccDownDeluxe" xml:space="preserve">
+    <value>Achievement (-) 1 (DX)</value>
+  </data>
+  <data name="ComboDisplayCombo" xml:space="preserve">
+    <value>Combo</value>
+  </data>
+  <data name="ComboDisplayCScoreDedeluxe" xml:space="preserve">
+    <value>Normalized Score (+)</value>
+  </data>
+  <data name="ComboDisplayCScoreDownDedeluxe" xml:space="preserve">
+    <value>Normalized Score (-)</value>
+  </data>
+  <data name="ComboDisplayNone" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="ComboDisplayScoreClassic" xml:space="preserve">
+    <value>Score (Classic)</value>
+  </data>
+  <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
+    <value>DX Score</value>
   </data>
 </root>

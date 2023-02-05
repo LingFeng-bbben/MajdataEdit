@@ -107,11 +107,21 @@
                  Text="7.5"
                  MouseWheel="ViewerTouchSpeed_MouseWheel" />
 
-        <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <CheckBox x:Name="ComboDisplay" VerticalAlignment="Center"/>
-            <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
+        <Label Grid.Row="6" Grid.Column="0"
                Content="{lex:Loc Key=ComboDisplay}" />
-        </StackPanel>
+        <ComboBox x:Name="ComboDisplay"
+					  Grid.Row="6" Grid.Column="1">
+            <ComboBoxItem Content="{lex:Loc Key=ComboDisplayNone}" />
+            <ComboBoxItem Content="{lex:Loc Key=ComboDisplayCombo}" />
+            <ComboBoxItem Content="{lex:Loc Key=ComboDisplayScoreClassic}" />
+            <ComboBoxItem Content="{lex:Loc Key=ComboDisplayAccClassic}" />
+            <ComboBoxItem Content="{lex:Loc Key=ComboDisplayAccDownClassic}" />
+            <ComboBoxItem Content="{lex:Loc Key=ComboDisplayAccDeluxe}" />
+            <ComboBoxItem Content="{lex:Loc Key=ComboDisplayAccDownDeluxe}" />
+            <ComboBoxItem Content="{lex:Loc Key=ComboDisplayScoreDeluxe}" />
+            <ComboBoxItem Content="{lex:Loc Key=ComboDisplayCScoreDedeluxe}" />
+            <ComboBoxItem Content="{lex:Loc Key=ComboDisplayCScoreDownDedeluxe}" />
+        </ComboBox>
 
         <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
             <CheckBox x:Name="AutoUpdate" VerticalAlignment="Center"/>
