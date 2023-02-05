@@ -326,6 +326,7 @@ namespace MajdataEdit
             float speed = GetPlaybackSpeed();
             Console.WriteLine(speed);
             speed -= 0.25f;
+            if (speed < 1e-6) return; // Interrupt if it's an epsilon or lower.
             PlbSpdLabel.Content = speed * 100 + "%";
             SetPlaybackSpeed(speed);
             PlbSpdAdjGrid.Visibility = Visibility.Visible;
@@ -491,15 +492,15 @@ namespace MajdataEdit
 #region Wave displayer
         private void WaveViewZoomIn_Click(object sender, RoutedEventArgs e)
         {
-            if (zoominPower <6)
+            if (zoominPower < 6)
                 zoominPower += 1;
             DrawWave();
             FumenContent.Focus();
         }
         private void WaveViewZoomOut_Click(object sender, RoutedEventArgs e)
         {
-            if(zoominPower>1)
-            zoominPower -= 1;
+            if (zoominPower > 1)
+                zoominPower -= 1;
             DrawWave();
             FumenContent.Focus();
         }
