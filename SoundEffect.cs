@@ -70,6 +70,7 @@ namespace MajdataEdit
         public int slideStream = -114514;
         public int touchStream = -114514;
         public int allperfectStream = -114514;
+        public int fanfareStream = -114514;
         public int clockStream = -114514;
 
         List<SoundEffectTiming> waitToBePlayed;
@@ -99,6 +100,7 @@ namespace MajdataEdit
             slideStream = Bass.BASS_StreamCreateFile(path + "slide.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             touchStream = Bass.BASS_StreamCreateFile(path + "touch.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             allperfectStream = Bass.BASS_StreamCreateFile(path + "all_perfect.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            fanfareStream = Bass.BASS_StreamCreateFile(path + "fanfare.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             clockStream = Bass.BASS_StreamCreateFile(path + "clock.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
         }
         private void SoundEffectUpdate()
@@ -158,6 +160,7 @@ namespace MajdataEdit
                     if (se.hasAllPerfect)
                     {
                         Bass.BASS_ChannelPlay(allperfectStream, true);
+                        Bass.BASS_ChannelPlay(fanfareStream, true);
                     }
                     if (se.hasClock)
                     {
@@ -455,6 +458,7 @@ namespace MajdataEdit
             int slideSample = Bass.BASS_SampleLoad(path + "slide.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
             int touchSample = Bass.BASS_SampleLoad(path + "touch.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
             int apSample = Bass.BASS_SampleLoad(path + "all_perfect.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            int fanfareSample = Bass.BASS_SampleLoad(path + "fanfare.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
             int clockSample = Bass.BASS_SampleLoad(path + "clock.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
 
             //读取各个文件的信息
@@ -470,6 +474,7 @@ namespace MajdataEdit
             var slideInfo = Bass.BASS_SampleGetInfo(slideSample);
             var touchInfo = Bass.BASS_SampleGetInfo(touchSample);
             var apInfo = Bass.BASS_SampleGetInfo(apSample);
+            var fanfareInfo = Bass.BASS_SampleGetInfo(fanfareSample);
             var clockInfo = Bass.BASS_SampleGetInfo(clockSample);
 
             if (bgmInfo.freq != answerInfo.freq)
@@ -494,6 +499,8 @@ namespace MajdataEdit
                 throw new Exception("bgm and touch do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != apInfo.freq)
                 throw new Exception("bgm and allperfect do not share the same sample rate. Please make them both 44100Hz");
+            if (fanfareInfo.length > 0 && bgmInfo.freq != fanfareInfo.freq)
+                throw new Exception("bgm and fanfare do not share the same sample rate. Please make them both 44100Hz");
             if (bgmInfo.freq != clockInfo.freq)
                 throw new Exception("bgm and clock do not share the same sample rate. Please make them both 44100Hz");
 
@@ -517,6 +524,7 @@ namespace MajdataEdit
             Int16[] slideRAW = new Int16[slideInfo.length / 2];
             Int16[] touchRAW = new Int16[touchInfo.length / 2];
             Int16[] apRAW = new Int16[apInfo.length / 2];
+            Int16[] fanfareRAW = new Int16[fanfareInfo.length / 2];
             Int16[] clockRAW = new Int16[clockInfo.length / 2];
             Bass.BASS_SampleGetData(answerSample, answerRAW);
             Bass.BASS_SampleGetData(judgeSample, judgeRAW);
@@ -529,6 +537,7 @@ namespace MajdataEdit
             Bass.BASS_SampleGetData(slideSample, slideRAW);
             Bass.BASS_SampleGetData(touchSample, touchRAW);
             Bass.BASS_SampleGetData(apSample, apRAW);
+            Bass.BASS_SampleGetData(fanfareSample, fanfareRAW);
             Bass.BASS_SampleGetData(clockSample, clockRAW);
 
             //创建一个 and BGM一样长的answer音轨
@@ -543,6 +552,7 @@ namespace MajdataEdit
             Int16[] slideTrackRAW = new Int16[sampleCount];
             Int16[] touchTrackRAW = new Int16[sampleCount];
             Int16[] apTrackRAW = new Int16[sampleCount];
+            Int16[] fanfareTrackRAW = new Int16[sampleCount];
             Int16[] clockTrackRAW = new Int16[sampleCount];
 
             //生成每个音效的track
@@ -627,6 +637,10 @@ namespace MajdataEdit
                     {
                         apTrackRAW[i] = apRAW[i - startindex];
                     }
+                    for (int i = startindex; i < fanfareRAW.Length + startindex; i++)
+                    {
+                        fanfareTrackRAW[i] = fanfareRAW[i - startindex];
+                    }
                 }
                 if (soundtiming.hasClock)
                 {
@@ -677,6 +691,7 @@ namespace MajdataEdit
                     + (long)(slideTrackRAW[i] * slideVol)
                     + (long)(touchTrackRAW[i] * touchVol)
                     + (long)(apTrackRAW[i] * bgmVol)
+                    + (long)(fanfareTrackRAW[i] * bgmVol)
                     + (long)(clockTrackRAW[i] * bgmVol);
                 if (value > Int16.MaxValue)
                     value = Int16.MaxValue;
