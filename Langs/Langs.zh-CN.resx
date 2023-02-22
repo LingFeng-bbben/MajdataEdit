@@ -392,4 +392,47 @@
   <data name="MirrorCcw45" xml:space="preserve">
     <value>45°逆时针旋转选择</value>
   </data>
+  <data name="AskRender" xml:space="preserve">
+    <value>即将开始渲染，将导出视频到谱面目录。
+请注意在渲染时不要改变Viewer窗口大小。
+现在按Viewer右上角&lt; &gt;可以设置渲染分辨率。
+请保证分辨率宽度为偶数。
+按确定开始渲染。</value>
+  </data>
+  <data name="ComboDisplay" xml:space="preserve">
+    <value>屏幕中心显示</value>
+  </data>
+  <data name="ExportVideo" xml:space="preserve">
+    <value>导出视频</value>
+  </data>
+  <data name="ComboDisplayAccClassic" xml:space="preserve">
+    <value>Achievement (+) (旧框)</value>
+  </data>
+  <data name="ComboDisplayAccDeluxe" xml:space="preserve">
+    <value>Achievement (+) (DX)</value>
+  </data>
+  <data name="ComboDisplayAccDownClassic" xml:space="preserve">
+    <value>Achievement (-) (旧框)</value>
+  </data>
+  <data name="ComboDisplayAccDownDeluxe" xml:space="preserve">
+    <value>Achievement (-) 1 (DX)</value>
+  </data>
+  <data name="ComboDisplayCombo" xml:space="preserve">
+    <value>Combo</value>
+  </data>
+  <data name="ComboDisplayCScoreDedeluxe" xml:space="preserve">
+    <value>Normalized Score (+)</value>
+  </data>
+  <data name="ComboDisplayCScoreDownDedeluxe" xml:space="preserve">
+    <value>Normalized Score (-)</value>
+  </data>
+  <data name="ComboDisplayNone" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="ComboDisplayScoreClassic" xml:space="preserve">
+    <value>Score (Classic)</value>
+  </data>
+  <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
+    <value>DX Score</value>
+  </data>
 </root>

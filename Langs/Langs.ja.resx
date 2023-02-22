@@ -423,4 +423,50 @@ Open Browser to download latest update of Majdata?</value>
   <data name="MirrorCcw45" xml:space="preserve">
     <value>45°回転（反時計回り）</value>
   </data>
+  <data name="AskRender" xml:space="preserve">
+    <value>譜面動画は譜面フォルダにエクスポートされます。
+レンダリング中にViewerのサイズを変更しないでください。
+ただし、[&lt;&gt;] ボタンを使用して解像度を変更できます。
+幅が偶数であることを確認してください。
+[OK] をクリックして生成を開始します。</value>
+  </data>
+  <data name="ComboDisplay" xml:space="preserve">
+    <value>COMBO表示</value>
+  </data>
+  <data name="ExportVideo" xml:space="preserve">
+    <value>譜面動画を生成</value>
+  </data>
+  <data name="ComboDisplayAccClassic" xml:space="preserve">
+    <value>達成率 (+)</value>
+  </data>
+  <data name="ComboDisplayAccDeluxe" xml:space="preserve">
+    <value>達成率 (+) (でらっくす)</value>
+  </data>
+  <data name="ComboDisplayAccDownClassic" xml:space="preserve">
+    <value>達成率 (-)</value>
+  </data>
+  <data name="ComboDisplayAccDownDeluxe" xml:space="preserve">
+    <value>達成率 (-) 1 (でらっくす)</value>
+    <comment>Acc down (1) starts from 100%. They should know already.</comment>
+  </data>
+  <data name="ComboDisplayCombo" xml:space="preserve">
+    <value>コンボ</value>
+  </data>
+  <data name="ComboDisplayCScoreDedeluxe" xml:space="preserve">
+    <value>101%強制スコア (+)</value>
+    <comment>Custom: Normal Score but with forced DX Scale.</comment>
+  </data>
+  <data name="ComboDisplayCScoreDownDedeluxe" xml:space="preserve">
+    <value>101%強制スコア (-)</value>
+    <comment>Custom: Normal Score but with forced DX Scale.</comment>
+  </data>
+  <data name="ComboDisplayNone" xml:space="preserve">
+    <value>なし</value>
+  </data>
+  <data name="ComboDisplayScoreClassic" xml:space="preserve">
+    <value>スコア</value>
+  </data>
+  <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
+    <value>でらっくす Score</value>
+  </data>
 </root>
