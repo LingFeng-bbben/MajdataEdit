@@ -64,7 +64,6 @@ namespace MajdataEdit
             currentTimeRefreshTimer.Start();
             soundEffectTimer.Elapsed += SoundEffectTimer_Elapsed;
             visualEffectRefreshTimer.Elapsed += VisualEffectRefreshTimer_Elapsed;
-            visualEffectRefreshTimer.Start();
             waveStopMonitorTimer.Elapsed += WaveStopMonitorTimer_Elapsed;
             playbackSpeedHideTimer.Elapsed += PlbHideTimer_Elapsed;
 
@@ -492,15 +491,15 @@ namespace MajdataEdit
 #region Wave displayer
         private void WaveViewZoomIn_Click(object sender, RoutedEventArgs e)
         {
-            if (zoominPower < 6)
-                zoominPower += 1;
+            if (deltatime > 1)
+                deltatime -= 1;
             DrawWave();
             FumenContent.Focus();
         }
         private void WaveViewZoomOut_Click(object sender, RoutedEventArgs e)
         {
-            if (zoominPower > 1)
-                zoominPower -= 1;
+            if (deltatime < 10)
+                deltatime += 1;
             DrawWave();
             FumenContent.Focus();
         }
@@ -510,7 +509,7 @@ namespace MajdataEdit
         }
         private void MusicWave_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //lastMousePointX = e.GetPosition(this).X;
+            lastMousePointX = e.GetPosition(this).X;
         }
         private void MusicWave_MouseMove(object sender, MouseEventArgs e)
         {
@@ -518,7 +517,7 @@ namespace MajdataEdit
             {
                 double delta = e.GetPosition(this).X - lastMousePointX;
                 lastMousePointX = e.GetPosition(this).X;
-                ScrollWave(delta*zoominPower*4d);
+                ScrollWave(-delta);
             }
             lastMousePointX = e.GetPosition(this).X;
         }
