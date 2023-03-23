@@ -431,19 +431,7 @@ namespace MajdataEdit
         void CreateEditorSetting()
         {
             editorSetting = new EditorSetting();
-            editorSetting.Language = "en-US";   // 在未初始化EditorSetting的时候 以较为通用的英文运行
             editorSetting.RenderMode = RenderOptions.ProcessRenderMode == RenderMode.SoftwareOnly ? 1 : 0;  // 使用命令行指定强制软件渲染时，同步修改配置值
-
-            editorSetting.DefaultSlideAccuracy = 0.2f; // 大家都要做能pass 200ms撞尾检测的好孩子喔
-            // 设置默认音量
-            editorSetting.Default_BGM_Level = 0.85f;
-            editorSetting.Default_Answer_Level = 0.95f;
-            editorSetting.Default_Judge_Level = 0.5f;
-            editorSetting.Default_Slide_Level = 0.35f;
-            editorSetting.Default_Break_Level = 0.55f;
-            editorSetting.Default_Ex_Level = 0.4f;
-            editorSetting.Default_Touch_Level = 0.5f;
-            editorSetting.Default_Hanabi_Level = 0.4f;
 
             File.WriteAllText(editorSettingFilename, JsonConvert.SerializeObject(editorSetting, Formatting.Indented));
 
@@ -456,7 +444,6 @@ namespace MajdataEdit
             if (!File.Exists(editorSettingFilename))
             {
                 CreateEditorSetting();
-                return;
             }
             var json = File.ReadAllText(editorSettingFilename);
             editorSetting = JsonConvert.DeserializeObject<EditorSetting>(json);
