@@ -459,7 +459,8 @@ namespace MajdataEdit
             }
             //Console.WriteLine("SelectionChanged");
             SimaiProcess.ClearNoteListPlayedState();
-            DrawCusor(time);
+            ghostCusorPositionTime = (float)time;
+            DrawWave();
         }
         private void FumenContent_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -505,7 +506,7 @@ namespace MajdataEdit
         }
         private void MusicWave_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            ScrollWave(e.Delta);
+            ScrollWave(-e.Delta);
         }
         private void MusicWave_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

@@ -60,6 +60,7 @@ namespace MajdataEdit
         double songLength = 0;
         float sampleTime = 0.02f;
         float deltatime = 8f;
+        float ghostCusorPositionTime = 0f;
         EditorControlMethod lastEditorState;
 
         double lastMousePointX; //Used for drag scroll
@@ -99,6 +100,7 @@ namespace MajdataEdit
         }
         void SeekTextFromTime()
         {
+            //Console.WriteLine("SeekText");
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             List<SimaiTimingPoint> timingList = new List<SimaiTimingPoint>();
             timingList.AddRange(SimaiProcess.timinglist);
@@ -126,7 +128,7 @@ namespace MajdataEdit
             SetBgmPosition(time);
             //Console.WriteLine("SelectionChanged");
             SimaiProcess.ClearNoteListPlayedState();
-            DrawCusor(time);
+            ghostCusorPositionTime = (float)time;
         }
         
         //*FIND AND REPLACE
@@ -508,7 +510,7 @@ namespace MajdataEdit
 
 
         //*UI DRAWING
-        Timer visualEffectRefreshTimer = new Timer(16);
+        Timer visualEffectRefreshTimer = new Timer(5);
         Timer currentTimeRefreshTimer = new Timer(100);
         public Timer chartChangeTimer = new Timer(1000);    // 谱面变更延迟解析]\
 
@@ -838,15 +840,25 @@ namespace MajdataEdit
                             graphics.DrawLine(pen, xSlide, y, xSlideRight, y);
                             pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
                         }
-
-
-
                     }
-
                 }
 
-
-
+                if ((playStartTime - currentTime) <= deltatime)
+                {
+                    //Draw play Start time
+                    pen = new System.Drawing.Pen(System.Drawing.Color.Red, 5);
+                    float x1 = (float)((playStartTime / step) - startindex) * linewidth;
+                    PointF[] tranglePoints = { new PointF(x1 - 2, 0), new PointF(x1 + 2, 0), new PointF(x1, 3.46f) };
+                    graphics.DrawPolygon(pen, tranglePoints);
+                }
+                if ((ghostCusorPositionTime - currentTime) <= deltatime)
+                {
+                    //Draw ghost cusor
+                    pen = new System.Drawing.Pen(System.Drawing.Color.Orange, 5);
+                    float x2 = (float)((ghostCusorPositionTime / step) - startindex) * linewidth;
+                    PointF[] tranglePoints2 = { new PointF(x2 - 2, 0), new PointF(x2 + 2, 0), new PointF(x2, 3.46f) };
+                    graphics.DrawPolygon(pen, tranglePoints2);
+                }
 
                 graphics.Flush();
                 graphics.Dispose();
@@ -857,42 +869,6 @@ namespace MajdataEdit
                 writableBitmap.Unlock();
             }));
             //isDrawing = false;
-        }
-        private async void DrawCusor(double ghostCusorPositionTime = 0)
-        {
-           /* var writableBitmap = new WriteableBitmap(waveLevels.Length * zoominPower, 74, 72, 72, PixelFormats.Pbgra32, null);
-            writableBitmap.Lock();
-            //the process starts
-            Bitmap backBitmap = new Bitmap(waveLevels.Length * zoominPower, 74, writableBitmap.BackBufferStride,
-                        System.Drawing.Imaging.PixelFormat.Format32bppArgb, writableBitmap.BackBuffer);
-            Graphics graphics = Graphics.FromImage(backBitmap);
-            System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.Green, zoominPower);
-
-            await Task.Run(() =>
-            {
-                try
-                {
-                    //Draw play Start time
-                    pen = new System.Drawing.Pen(System.Drawing.Color.Red, 5);
-                    float x1 = (float)(playStartTime / sampleTime) * zoominPower;
-                    PointF[] tranglePoints = { new PointF(x1 - 2, 0), new PointF(x1 + 2, 0), new PointF(x1, 3.46f) };
-                    graphics.DrawPolygon(pen, tranglePoints);
-
-                    //Draw ghost cusor
-                    pen = new System.Drawing.Pen(System.Drawing.Color.Orange, 5);
-                    float x2 = (float)(ghostCusorPositionTime / sampleTime) * zoominPower;
-                    PointF[] tranglePoints2 = { new PointF(x2 - 2, 0), new PointF(x2 + 2, 0), new PointF(x2, 3.46f) };
-                    graphics.DrawPolygon(pen, tranglePoints2);
-                }
-                catch { }
-            });
-            graphics.Flush();
-            graphics.Dispose();
-            backBitmap.Dispose();
-            MusicWaveCusor.Source = writableBitmap;
-            MusicWaveCusor.Width = waveLevels.Length * zoominPower;
-            writableBitmap.AddDirtyRect(new Int32Rect(0, 0, writableBitmap.PixelWidth, writableBitmap.PixelHeight));
-            writableBitmap.Unlock();*/
         }
         
         // This update less frequently. set the time text.
@@ -1036,9 +1012,8 @@ namespace MajdataEdit
                     });
                     break;
             }
-
+            ghostCusorPositionTime = (float)CusorTime;
             DrawWave();
-            DrawCusor(CusorTime); //then the wave could be draw
         }
         void TogglePause()
         {

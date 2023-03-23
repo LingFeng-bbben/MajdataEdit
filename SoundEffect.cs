@@ -170,7 +170,10 @@ namespace MajdataEdit
                     Dispatcher.Invoke(() =>
                     {
                         if ((bool)FollowPlayCheck.IsChecked)
+                        {
+                            ghostCusorPositionTime = (float)nearestTime;
                             SeekTextFromTime();
+                        }
                     });
                 }
 
