@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Timers;
 using Un4seen.Bass;
 using Newtonsoft.Json;
@@ -440,7 +441,19 @@ namespace MajdataEdit
         void renderSoundEffect(double delaySeconds)
         {
             //TODO: 改为异步并增加提示窗口
-            var path = Environment.CurrentDirectory + "/SFX/";
+            string path = Environment.CurrentDirectory + "/SFX";
+            string tempPath = GetViewerWorkingDirectory();
+            string converterPath;
+
+            List<string> pathEnv = new List<string>();
+            pathEnv.Add(tempPath);
+            pathEnv.AddRange(Environment.GetEnvironmentVariable("PATH").Split(Path.PathSeparator));
+            converterPath = pathEnv.Where((scanPath) => {
+                bool isExists = File.Exists(scanPath + "/ffmpeg.exe");
+                return isExists;
+            }).FirstOrDefault();
+
+            bool throwErrorOnMismatch = converterPath.Length == 0;
 
             //默认参数：16bit
             int bgmSample = Bass.BASS_SampleLoad(maidataDir + "/track.mp3", 0, 0, 1, BASSFlag.BASS_DEFAULT);
