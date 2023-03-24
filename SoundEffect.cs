@@ -50,6 +50,144 @@ namespace MajdataEdit
             }
         }
 
+        class SoundBank {
+            internal SoundBank(string Path)
+            {
+                this.FilePath = Path;
+
+                this.InitializeSampleData();
+            }
+
+            public bool Temp { get; private set; }
+            public string FilePath { get; private set; }
+            public int ID { get; private set; }
+            public BASS_SAMPLE Info { get; private set; }
+
+            public long RawSize { get; set; }
+            public Int16[] Raw { get; private set; }
+
+            public void Reassign(string FFMpegDirectory, string NewDirectory, string Filename, int NewFrequency)
+            {
+                if (FFMpegDirectory.Length == 0)
+                    return;
+
+                Func<string, string> NormalizePath = (path) => {
+                    return string.Join(Path.DirectorySeparatorChar.ToString(), path.Split('/'));
+                };
+                
+                Temp = true;
+                var OriginalPath = FilePath;
+                this.FilePath = NewDirectory + "/" + Filename;
+
+                string args = string.Format(
+                    "-loglevel 24 -y -i \"{0}\" -ac 2 -ar {2} \"{1}\"",
+                    NormalizePath(OriginalPath),
+                    NormalizePath(this.FilePath),
+                    NewFrequency
+                );
+                var startInfo = new ProcessStartInfo(FFMpegDirectory + "/ffmpeg.exe", args);
+                startInfo.UseShellExecute = false;
+                startInfo.RedirectStandardError = true;
+                var proc = Process.Start(startInfo);
+                proc.WaitForExit();
+                if (proc.ExitCode != 0)
+                    throw new Exception(proc.StandardError.ReadToEnd());
+
+                this.Free();
+                this.InitializeSampleData();
+            }
+
+            void InitializeSampleData()
+            {
+                this.ID = Bass.BASS_SampleLoad(FilePath, 0, 0, 1, BASSFlag.BASS_DEFAULT);
+                if(this.ID != 0)
+                    this.Info = Bass.BASS_SampleGetInfo(this.ID);
+
+                if (this.Info != null) {
+                    this.RawSize = this.Info.length / 2;
+                } else {
+                    this.RawSize = 0;
+                }
+            }
+
+            public void InitializeRawSample()
+            {
+                if (this.Info == null)
+                    return;
+
+                this.Raw = new Int16[this.RawSize];
+                Bass.BASS_SampleGetData(this.ID, this.Raw);
+            }
+
+            public void Free()
+            {
+                if (this.ID <= 0)
+                    return;
+
+                Bass.BASS_SampleFree(this.ID);
+            }
+
+            public int Frequency
+            {
+                get
+                {
+                    if (this.Info != null)
+                    {
+                        return this.Info.freq;
+                    }
+                    return -1;
+                }
+            }
+
+            public bool FrequencyCheck(SoundBank other)
+            {
+                return this.Frequency == other.Frequency && this.Frequency > 0;
+            }
+        }
+
+        enum SoundDataType
+        {
+            None,
+            Answer,
+            Judge, JudgeBreak, JudgeEX,
+            Break,
+            Hanabi,
+            TouchHold,
+            Slide, Touch,
+            AllPerfect, FullComboFanfare,
+            Clock
+        }
+
+        struct SoundDataRange
+        {
+            internal SoundDataRange(SoundDataType type, long from, long len)
+            {
+                this.Type = type;
+                this.From = from;
+                this.To = from + len;
+            }
+
+            public SoundDataType Type { get; private set; }
+            public long From { get; private set; }
+            public long To { get; private set; }
+            public long Length
+            {
+                get
+                {
+                    return To - From;
+                }
+                set
+                {
+                    To = From + value;
+                }
+            }
+
+            public bool In (long value)
+            {
+                return value >= From && value < To;
+            }
+        }
+
         Timer soundEffectTimer = new Timer(1);
         Timer waveStopMonitorTimer = new Timer(33);
 
@@ -456,217 +594,156 @@ namespace MajdataEdit
             bool throwErrorOnMismatch = converterPath.Length == 0;
 
             //默认参数：16bit
-            int bgmSample = Bass.BASS_SampleLoad(maidataDir + "/track.mp3", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            Func<string, string> getBasePath = (rawPath) => {
+                return rawPath.Split('/').Last();
+            };
+            SoundBank bgmBank = new SoundBank(maidataDir + "/track.mp3");
 
-            
+            Dictionary<string, SoundBank> comparableBanks = new Dictionary<string, SoundBank>();
 
-            int answerSample = Bass.BASS_SampleLoad(path + "answer.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
-            int judgeSample = Bass.BASS_SampleLoad(path + "judge.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
-            int judgeBreakSample = Bass.BASS_SampleLoad(path + "judge_break.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
-            int judgeExSample = Bass.BASS_SampleLoad(path + "judge_ex.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
-            int breakSample = Bass.BASS_SampleLoad(path + "break.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
-            int hanabiSample = Bass.BASS_SampleLoad(path + "hanabi.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
-            int holdRiserSample = Bass.BASS_SampleLoad(path + "touchHold_riser.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
-            int trackStartSample = Bass.BASS_SampleLoad(path + "track_start.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
-            int slideSample = Bass.BASS_SampleLoad(path + "slide.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
-            int touchSample = Bass.BASS_SampleLoad(path + "touch.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
-            int apSample = Bass.BASS_SampleLoad(path + "all_perfect.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
-            int fanfareSample = Bass.BASS_SampleLoad(path + "fanfare.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
-            int clockSample = Bass.BASS_SampleLoad(path + "clock.wav", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            SoundBank answerBank = new SoundBank(path + "/answer.wav");
+            SoundBank judgeBank = new SoundBank(path + "/judge.wav");
+            SoundBank judgeBreakBank = new SoundBank(path + "/judge_break.wav");
+            SoundBank judgeExBank = new SoundBank(path + "/judge_ex.wav");
+            SoundBank breakBank = new SoundBank(path + "/break.wav");
+            SoundBank hanabiBank = new SoundBank(path + "/hanabi.wav");
+            SoundBank holdRiserBank = new SoundBank(path + "/touchHold_riser.wav");
+            SoundBank trackStartBank = new SoundBank(path + "/track_start.wav");
+            SoundBank slideBank = new SoundBank(path + "/slide.wav");
+            SoundBank touchBank = new SoundBank(path + "/touch.wav");
+            SoundBank apBank = new SoundBank(path + "/all_perfect.wav");
+            SoundBank fanfareBank = new SoundBank(path + "/fanfare.wav");
+            SoundBank clockBank = new SoundBank(path + "/clock.wav");
 
-            //读取各个文件的信息
-            var bgmInfo = Bass.BASS_SampleGetInfo(bgmSample);
-            var answerInfo = Bass.BASS_SampleGetInfo(answerSample);
-            var judgeInfo = Bass.BASS_SampleGetInfo(judgeSample);
-            var judgeBreakInfo = Bass.BASS_SampleGetInfo(judgeBreakSample);
-            var judgeExInfo = Bass.BASS_SampleGetInfo(judgeExSample);
-            var breakInfo = Bass.BASS_SampleGetInfo(breakSample);
-            var hanabiInfo = Bass.BASS_SampleGetInfo(hanabiSample);
-            var holdRiserInfo = Bass.BASS_SampleGetInfo(holdRiserSample);
-            var trackStartInfo = Bass.BASS_SampleGetInfo(trackStartSample);
-            var slideInfo = Bass.BASS_SampleGetInfo(slideSample);
-            var touchInfo = Bass.BASS_SampleGetInfo(touchSample);
-            var apInfo = Bass.BASS_SampleGetInfo(apSample);
-            var fanfareInfo = Bass.BASS_SampleGetInfo(fanfareSample);
-            var clockInfo = Bass.BASS_SampleGetInfo(clockSample);
+            comparableBanks["Answer"] = answerBank;
+            comparableBanks["Judge"] = judgeBank;
+            comparableBanks["Judge Break"] = judgeBreakBank;
+            comparableBanks["Judge EX"] = judgeExBank;
+            comparableBanks["Break"] = breakBank;
+            comparableBanks["Hanabi"] = hanabiBank;
+            comparableBanks["Hold Riser"] = holdRiserBank;
+            comparableBanks["Track Start"] = trackStartBank;
+            comparableBanks["Slide"] = slideBank;
+            comparableBanks["Touch"] = touchBank;
+            comparableBanks["All Perfect"] = apBank;
+            comparableBanks["Fanfare"] = fanfareBank;
+            comparableBanks["Clock"] = clockBank;
 
-            if (bgmInfo.freq != answerInfo.freq)
-                throw new Exception("bgm and answer do not share the same sample rate. Please make them both 44100Hz");
-            if (bgmInfo.freq != judgeInfo.freq)
-                throw new Exception("bgm and judge do not share the same sample rate. Please make them both 44100Hz");
-            if (bgmInfo.freq != judgeBreakInfo.freq)
-                throw new Exception("bgm and judgeBreak do not share the same sample rate. Please make them both 44100Hz");
-            if (bgmInfo.freq != judgeExInfo.freq)
-                throw new Exception("bgm and judgeEx do not share the same sample rate. Please make them both 44100Hz");
-            if (bgmInfo.freq != breakInfo.freq)
-                throw new Exception("bgm and break do not share the same sample rate. Please make them both 44100Hz");
-            if (bgmInfo.freq != hanabiInfo.freq)
-                throw new Exception("bgm and hanabi do not share the same sample rate. Please make them both 44100Hz");
-            if (bgmInfo.freq != holdRiserInfo.freq)
-                throw new Exception("bgm and holdRiser do not share the same sample rate. Please make them both 44100Hz");
-            if (bgmInfo.freq != trackStartInfo.freq)
-                throw new Exception("bgm and trackStart do not share the same sample rate. Please make them both 44100Hz");
-            if (bgmInfo.freq != slideInfo.freq)
-                throw new Exception("bgm and slide do not share the same sample rate. Please make them both 44100Hz");
-            if (bgmInfo.freq != touchInfo.freq)
-                throw new Exception("bgm and touch do not share the same sample rate. Please make them both 44100Hz");
-            if (bgmInfo.freq != apInfo.freq)
-                throw new Exception("bgm and allperfect do not share the same sample rate. Please make them both 44100Hz");
-            if (fanfareInfo.length > 0 && bgmInfo.freq != fanfareInfo.freq)
-                throw new Exception("bgm and fanfare do not share the same sample rate. Please make them both 44100Hz");
-            if (bgmInfo.freq != clockInfo.freq)
-                throw new Exception("bgm and clock do not share the same sample rate. Please make them both 44100Hz");
+            foreach(var compPair in comparableBanks)
+            {
+                // Skip non existent file.
+                if (compPair.Value.Frequency < 0)
+                    continue;
 
-            var freq = bgmInfo.freq;
+                if (bgmBank.FrequencyCheck(compPair.Value))
+                    continue;
 
+                if (throwErrorOnMismatch)
+                    throw new Exception(
+                        string.Format("BGM and {0} do not have same sample rate. Convert the {0} from {1}Hz into {2}Hz!", compPair.Key, compPair.Value.Frequency, bgmBank.Frequency)
+                    );
+                else
+                {
+                    Console.WriteLine(string.Format(
+                        "Convert sample of {0} ({1}/{2})...",
+                        compPair.Key,
+                        compPair.Value.Info.length,
+                        compPair.Value.Frequency
+                    ));
+                    compPair.Value.Reassign(converterPath, tempPath, "t_" + getBasePath(compPair.Value.FilePath), bgmBank.Frequency);
+                }
+            }
+
+            var freq = bgmBank.Frequency;
 
             //读取原始采样数据
-            long sampleCount = (long)((songLength+ 5f) * freq * 4 );
+            long sampleCount = (long)((songLength + 5f) * freq * 4 );
+            bgmBank.RawSize = sampleCount;
             Console.WriteLine(sampleCount);
-            Int16[] bgmRAW = new Int16[sampleCount];
-            Bass.BASS_SampleGetData(bgmSample, bgmRAW);
+            bgmBank.InitializeRawSample();
 
-            Int16[] answerRAW = new Int16[answerInfo.length / 2];
-            Int16[] judgeRAW = new Int16[judgeInfo.length / 2];
-            Int16[] judgeBreakRAW = new Int16[judgeBreakInfo.length / 2];
-            Int16[] judgeExRAW = new Int16[judgeExInfo.length / 2];
-            Int16[] breakRAW = new Int16[breakInfo.length / 2];
-            Int16[] hanabiRAW = new Int16[hanabiInfo.length / 2];
-            Int16[] holdRiserRAW = new Int16[holdRiserInfo.length / 2];
-            Int16[] trackStartRAW = new Int16[trackStartInfo.length / 2];
-            Int16[] slideRAW = new Int16[slideInfo.length / 2];
-            Int16[] touchRAW = new Int16[touchInfo.length / 2];
-            Int16[] apRAW = new Int16[apInfo.length / 2];
-            Int16[] fanfareRAW = new Int16[fanfareInfo.length / 2];
-            Int16[] clockRAW = new Int16[clockInfo.length / 2];
-            Bass.BASS_SampleGetData(answerSample, answerRAW);
-            Bass.BASS_SampleGetData(judgeSample, judgeRAW);
-            Bass.BASS_SampleGetData(judgeBreakSample, judgeBreakRAW);
-            Bass.BASS_SampleGetData(judgeExSample, judgeExRAW);
-            Bass.BASS_SampleGetData(breakSample, breakRAW);
-            Bass.BASS_SampleGetData(hanabiSample, hanabiRAW);
-            Bass.BASS_SampleGetData(holdRiserSample, holdRiserRAW);
-            Bass.BASS_SampleGetData(trackStartSample, trackStartRAW);
-            Bass.BASS_SampleGetData(slideSample, slideRAW);
-            Bass.BASS_SampleGetData(touchSample, touchRAW);
-            Bass.BASS_SampleGetData(apSample, apRAW);
-            Bass.BASS_SampleGetData(fanfareSample, fanfareRAW);
-            Bass.BASS_SampleGetData(clockSample, clockRAW);
+            foreach (var compPair in comparableBanks)
+            {
+                // Skip non existent file.
+                if (compPair.Value.Frequency < 0)
+                    continue;
 
-            //创建一个 and BGM一样长的answer音轨
-            Int16[] answerTrackRAW = new Int16[sampleCount];
-            Int16[] judgeTrackRAW = new Int16[sampleCount];
-            Int16[] judgeBreakTrackRAW = new Int16[sampleCount];
-            Int16[] judgeExTrackRAW = new Int16[sampleCount];
-            Int16[] breakTrackRAW = new Int16[sampleCount];
-            Int16[] hanabiTrackRAW = new Int16[sampleCount];
-            Int16[] holdRiserTrackRAW = new Int16[sampleCount];
-            //Int16[] trackStartTrackRAW = new Int16[sampleCount];
-            Int16[] slideTrackRAW = new Int16[sampleCount];
-            Int16[] touchTrackRAW = new Int16[sampleCount];
-            Int16[] apTrackRAW = new Int16[sampleCount];
-            Int16[] fanfareTrackRAW = new Int16[sampleCount];
-            Int16[] clockTrackRAW = new Int16[sampleCount];
+                if (!bgmBank.FrequencyCheck(compPair.Value))
+                    continue;
+
+                Console.WriteLine(string.Format("Init sample for {0}...", compPair.Key));
+                compPair.Value.InitializeRawSample();
+            }
+
+            List<SoundDataRange> trackOps = new List<SoundDataRange>();
 
             //生成每个音效的track
-            foreach (var soundtiming in waitToBePlayed)
+            foreach (var soundTiming in waitToBePlayed)
             {
-                var startindex = (int)(soundtiming.time * freq) * 2; //乘2因为有两个channel
-                if (soundtiming.hasAnswer)
+                var startIndex = (int)(soundTiming.time * freq) * 2; //乘2因为有两个channel
+                if (soundTiming.hasAnswer)
                 {
-                    //这一步还会覆盖之前没有播完的answer
-                    for(int i = startindex; i < answerRAW.Length + startindex; i++)
+                    // Avoid stacking answer on exact timepoint.
+                    SoundDataRange lastAnswerOp = trackOps.FindLast((trackOp) => trackOp.Type == SoundDataType.Answer);
+                    if (lastAnswerOp.Type == SoundDataType.Answer)
                     {
-                        answerTrackRAW[i] = answerRAW[i - startindex];
+                        if (lastAnswerOp.From == startIndex) continue;
+                        lastAnswerOp.Length = startIndex - lastAnswerOp.From;
                     }
+                    trackOps.Add(new SoundDataRange(SoundDataType.Answer, startIndex, answerBank.RawSize));
                 }
-                if (soundtiming.hasJudge)
+                if (soundTiming.hasJudge)
                 {
-                    for (int i = startindex; i < judgeRAW.Length + startindex; i++)
-                    {
-                        judgeTrackRAW[i] = judgeRAW[i - startindex];
-                    }
+                    trackOps.Add(new SoundDataRange(SoundDataType.Judge, startIndex, judgeBank.RawSize));
                 }
-                if (soundtiming.hasJudgeBreak)
+                if (soundTiming.hasJudgeBreak)
                 {
-                    for (int i = startindex; i < judgeBreakRAW.Length + startindex; i++)
-                    {
-                        judgeBreakTrackRAW[i] = judgeBreakRAW[i - startindex];
-                    }
+                    trackOps.Add(new SoundDataRange(SoundDataType.JudgeBreak, startIndex, judgeBreakBank.RawSize));
                 }
-                if (soundtiming.hasJudgeEx)
+                if (soundTiming.hasJudgeEx)
                 {
-                    for (int i = startindex; i < judgeExRAW.Length + startindex; i++)
-                    {
-                        judgeExTrackRAW[i] = judgeExRAW[i - startindex];
-                    }
+                    trackOps.Add(new SoundDataRange(SoundDataType.JudgeEX, startIndex, judgeExBank.RawSize));
                 }
-                if (soundtiming.hasBreak)
+                if (soundTiming.hasBreak)
                 {
-                    for (int i = startindex; i < breakRAW.Length + startindex; i++)
-                    {
-                        breakTrackRAW[i] = breakRAW[i - startindex];
-                    }
+                    trackOps.Add(new SoundDataRange(SoundDataType.Break, startIndex, breakBank.RawSize));
                 }
-                if (soundtiming.hasHanabi)
+                if (soundTiming.hasHanabi)
                 {
-                    for (int i = startindex; i < hanabiRAW.Length + startindex; i++)
-                    {
-                        hanabiTrackRAW[i] = hanabiRAW[i - startindex];
-                    }
+                    trackOps.Add(new SoundDataRange(SoundDataType.Hanabi, startIndex, hanabiBank.RawSize));
                 }
-                if (soundtiming.hasTouchHold)
+                if (soundTiming.hasTouchHold)
                 {
-                    for (int i = startindex; i < holdRiserRAW.Length + startindex; i++)
-                    {
-                        holdRiserTrackRAW[i] = holdRiserRAW[i - startindex];
-                    }
+                    trackOps.Add(new SoundDataRange(SoundDataType.TouchHold, startIndex, holdRiserBank.RawSize));
                 }
-                if (soundtiming.hasTouchHoldEnd)
+                if (soundTiming.hasTouchHoldEnd)
                 {
                     //不覆盖整个track，只覆盖可能有的部分
-                    for (int i = startindex; i < holdRiserRAW.Length + startindex; i++)
-                    {
-                        holdRiserTrackRAW[i] = 0;
-                    }
+                    SoundDataRange lastTouchHoldOp = trackOps.FindLast((trackOp) => trackOp.Type == SoundDataType.TouchHold);
+                    lastTouchHoldOp.Length = Math.Min(lastTouchHoldOp.Length, startIndex - lastTouchHoldOp.From);
                 }
-                if (soundtiming.hasSlide)
+                if (soundTiming.hasSlide)
                 {
-                    for (int i = startindex; i < slideRAW.Length + startindex; i++)
-                    {
-                        slideTrackRAW[i] = slideRAW[i - startindex];
-                    }
+                    trackOps.Add(new SoundDataRange(SoundDataType.Slide, startIndex, slideBank.RawSize));
                 }
-                if (soundtiming.hasTouch)
+                if (soundTiming.hasTouch)
                 {
-                    for (int i = startindex; i < touchRAW.Length + startindex; i++)
-                    {
-                        touchTrackRAW[i] = touchRAW[i - startindex];
-                    }
+                    trackOps.Add(new SoundDataRange(SoundDataType.Touch, startIndex, touchBank.RawSize));
                 }
-                if (soundtiming.hasAllPerfect)
+                if (soundTiming.hasAllPerfect)
                 {
-                    for (int i = startindex; i < apRAW.Length + startindex; i++)
-                    {
-                        apTrackRAW[i] = apRAW[i - startindex];
-                    }
-                    for (int i = startindex; i < fanfareRAW.Length + startindex; i++)
-                    {
-                        fanfareTrackRAW[i] = fanfareRAW[i - startindex];
-                    }
+                    trackOps.Add(new SoundDataRange(SoundDataType.AllPerfect, startIndex, apBank.RawSize));
+                    trackOps.Add(new SoundDataRange(SoundDataType.FullComboFanfare, startIndex, fanfareBank.RawSize));
                 }
-                if (soundtiming.hasClock)
+                if (soundTiming.hasClock)
                 {
-                    for (int i = startindex; i < clockRAW.Length + startindex; i++)
-                    {
-                        clockTrackRAW[i] = clockRAW[i - startindex];
-                    }
+                    trackOps.Add(new SoundDataRange(SoundDataType.Clock, startIndex, clockBank.RawSize));
                 }
             }
             //获取原来实时播放时候的音量
             
-            float bgmVol = 1f, answerVol = 1f , judgeVol = 1f ,judgeExVol = 1f,
-                hanabiVol = 1f, touchVol = 1f, slideVol = 1f ,breakVol = 1f;
+            float bgmVol = 1f, answerVol = 1f, judgeVol = 1f, judgeExVol = 1f,
+                hanabiVol = 1f, touchVol = 1f, slideVol = 1f, breakVol = 1f;
             Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, ref bgmVol);
             Bass.BASS_ChannelGetAttribute(answerStream, BASSAttribute.BASS_ATTRIB_VOL, ref answerVol);
             Bass.BASS_ChannelGetAttribute(judgeStream, BASSAttribute.BASS_ATTRIB_VOL, ref judgeVol);
@@ -678,46 +755,98 @@ namespace MajdataEdit
 
             List<byte> filedata = new List<byte>();
             Int16[] delayEmpty = new Int16[(int)(delaySeconds * freq * 2)];
-            List<byte> filehead = CreateWaveFileHeader(bgmRAW.Length + delayEmpty.Length, 2, freq, 16).ToList();
+            List<byte> filehead = CreateWaveFileHeader(bgmBank.Raw.Length + delayEmpty.Length, 2, freq, 16).ToList();
 
             //if (trackStartRAW.Length > delayEmpty.Length)
             //    throw new Exception("track_start音效过长,请勿大于5秒");
 
             for(int i = 0; i < delayEmpty.Length; i++)
             {
-                if(i<trackStartRAW.Length)
-                    delayEmpty[i] = trackStartRAW[i];
+                if(i < trackStartBank.Raw.Length)
+                    delayEmpty[i] = trackStartBank.Raw[i];
                 filehead.AddRange(BitConverter.GetBytes(delayEmpty[i]));
             }
 
-            for (int i = 0; i < bgmRAW.Length; i++)
+            for (int i = 0; i < sampleCount; i++)
             {
-                //嗯加
-                var value = (long)(bgmRAW[i] * bgmVol) 
-                    + (long)(answerTrackRAW[i] * answerVol)
-                    + (long)(judgeTrackRAW[i] * judgeVol)
-                    + (long)(judgeBreakTrackRAW[i] * breakVol)
-                    + (long)(judgeExTrackRAW[i] * judgeExVol)
-                    + (long)(breakTrackRAW[i] * breakVol)
-                    + (long)(hanabiTrackRAW[i] * hanabiVol)
-                    + (long)(holdRiserTrackRAW[i] * hanabiVol)
-                    + (long)(slideTrackRAW[i] * slideVol)
-                    + (long)(touchTrackRAW[i] * touchVol)
-                    + (long)(apTrackRAW[i] * bgmVol)
-                    + (long)(fanfareTrackRAW[i] * bgmVol)
-                    + (long)(clockTrackRAW[i] * bgmVol);
+                // Apply BGM Data
+                float sampleValue = bgmBank.Raw[i] * bgmVol;
+                // Apply all track instruction on given sample index.
+                // This allows stacked/multiple concurrent of same samples.
+                // Known Issue: sample playback will have double speed on mono channel.
+                foreach(var trackOp in trackOps.FindAll((trackOp) => trackOp.In(i)))
+                {
+                    long offset = i - trackOp.From;
+                    switch (trackOp.Type)
+                    {
+                        case SoundDataType.Answer:
+                            if (answerBank.Frequency <= 0) continue;
+                            sampleValue += answerBank.Raw[offset] * answerVol;
+                            break;
+                        case SoundDataType.Judge:
+                            if (judgeBank.Frequency <= 0) continue;
+                            sampleValue += judgeBank.Raw[offset] * judgeVol;
+                            break;
+                        case SoundDataType.JudgeBreak:
+                            if (judgeBreakBank.Frequency <= 0) continue;
+                            sampleValue += judgeBreakBank.Raw[offset] * breakVol;
+                            break;
+                        case SoundDataType.JudgeEX:
+                            if (judgeExBank.Frequency <= 0) continue;
+                            sampleValue += judgeExBank.Raw[offset] * judgeExVol;
+                            break;
+                        case SoundDataType.Break:
+                            if (breakBank.Frequency <= 0) continue;
+                            sampleValue += breakBank.Raw[offset] * breakVol * 0.75f;
+                            break;
+                        case SoundDataType.Hanabi:
+                            if (hanabiBank.Frequency <= 0) continue;
+                            sampleValue += hanabiBank.Raw[offset] * hanabiVol;
+                            break;
+                        case SoundDataType.TouchHold:
+                            if (holdRiserBank.Frequency <= 0) continue;
+                            sampleValue += holdRiserBank.Raw[offset] * hanabiVol;
+                            break;
+                        case SoundDataType.Slide:
+                            if (slideBank.Frequency <= 0) continue;
+                            sampleValue += slideBank.Raw[offset] * slideVol;
+                            break;
+                        case SoundDataType.Touch:
+                            if (touchBank.Frequency <= 0) continue;
+                            sampleValue += touchBank.Raw[offset] * touchVol;
+                            break;
+                        case SoundDataType.AllPerfect:
+                            if (apBank.Frequency <= 0) continue;
+                            sampleValue += apBank.Raw[offset] * bgmVol;
+                            break;
+                        case SoundDataType.FullComboFanfare:
+                            if (fanfareBank.Frequency <= 0) continue;
+                            sampleValue += fanfareBank.Raw[offset] * bgmVol;
+                            break;
+                        case SoundDataType.Clock:
+                            if (clockBank.Frequency <= 0) continue;
+                            sampleValue += clockBank.Raw[offset] * bgmVol;
+                            break;
+                    }
+                }
+                long value = (long)sampleValue;
                 if (value > Int16.MaxValue)
                     value = Int16.MaxValue;
                 if (value < Int16.MinValue)
                     value = Int16.MinValue;
-                bgmRAW[i] = (Int16)value;
-                filedata.AddRange(BitConverter.GetBytes(bgmRAW[i]));
+                filedata.AddRange(BitConverter.GetBytes((Int16)value));
             }
             filehead.AddRange(filedata);
-            File.WriteAllBytes(maidataDir+"/out.wav", filehead.ToArray());
+            File.WriteAllBytes(maidataDir + "/out.wav", filehead.ToArray());
 
-            Bass.BASS_SampleFree(bgmSample);
-            Bass.BASS_SampleFree(answerSample);
+            bgmBank.Free();
+            comparableBanks.Values.ToList().ForEach((otherBank) => {
+                if (otherBank.Temp)
+                {
+                    File.Delete(otherBank.FilePath);
+                }
+                otherBank.Free();
+            });
         }
 
         /// <summary>
