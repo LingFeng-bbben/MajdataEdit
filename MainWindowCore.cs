@@ -1003,7 +1003,8 @@ namespace MajdataEdit
                         {
                             playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
                             SimaiProcess.ClearNoteListPlayedState();
-                            soundEffectTimer.Start();
+                            StartSELoop();
+                            //soundEffectTimer.Start();
                             waveStopMonitorTimer.Start();
                             visualEffectRefreshTimer.Start();
                             Bass.BASS_ChannelPlay(bgmStream, false);
@@ -1014,7 +1015,8 @@ namespace MajdataEdit
                     playStartTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
                     generateSoundEffectList(playStartTime, isOpIncluded);
                     SimaiProcess.ClearNoteListPlayedState();
-                    soundEffectTimer.Start();
+                    StartSELoop();
+                    //soundEffectTimer.Start();
                     waveStopMonitorTimer.Start();
                     visualEffectRefreshTimer.Start();
                     startAt = DateTime.Now;
@@ -1045,7 +1047,7 @@ namespace MajdataEdit
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
             Bass.BASS_ChannelStop(holdRiserStream);
-            soundEffectTimer.Stop();
+            //soundEffectTimer.Stop();
             waveStopMonitorTimer.Stop();
             visualEffectRefreshTimer.Stop();
             sendRequestPause();
@@ -1061,7 +1063,7 @@ namespace MajdataEdit
             PlayAndPauseButton.Content = "▶";
             Bass.BASS_ChannelStop(bgmStream);
             Bass.BASS_ChannelStop(holdRiserStream);
-            soundEffectTimer.Stop();
+            //soundEffectTimer.Stop();
             waveStopMonitorTimer.Stop();
             visualEffectRefreshTimer.Stop();
             sendRequestStop();
