@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using System.Text;
 using System.Linq;
 using System.IO;
+using System.Diagnostics;
 
 namespace MajdataEdit
 {
@@ -49,7 +50,7 @@ namespace MajdataEdit
             }
         }
 
-        Timer soundEffectTimer = new Timer(1);
+        Timer soundEffectTimer = new Timer(0.01);
         Timer waveStopMonitorTimer = new Timer(33);
 
         double playStartTime = 0d;
@@ -74,12 +75,18 @@ namespace MajdataEdit
         public int clockStream = -114514;
 
         List<SoundEffectTiming> waitToBePlayed;
-
+        private Stopwatch sw = new Stopwatch();
         //*SOUND EFFECT
         // This update very freqently to play sound effect.
         private void SoundEffectTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            sw.Stop();
+            Console.WriteLine(sw.Elapsed);
             SoundEffectUpdate();
+            
+            
+            sw.Reset();
+            sw.Start();
         }
         // This update "middle" frequently to monitor if the wave has to be stopped
         private void WaveStopMonitorTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -112,7 +119,7 @@ namespace MajdataEdit
                 if (waitToBePlayed.Count < 1) return;
                 var nearestTime = waitToBePlayed[0].time;
                 //Console.WriteLine(nearestTime);
-                if (Math.Abs(currentTime - nearestTime) < 0.055)
+                if (Math.Abs(currentTime - nearestTime) <= 0.0545)//dont touch this!!!!! this related to delay
                 {
                     SoundEffectTiming se = waitToBePlayed[0];
                     waitToBePlayed.RemoveAt(0);

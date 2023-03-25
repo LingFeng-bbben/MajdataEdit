@@ -50,15 +50,15 @@ namespace MajdataEdit
         const string majSettingFilename = "majSetting.json";
         const string editorSettingFilename = "EditorSetting.json";
 
-        float[] waveLevels;
+        //float[] wavedBs;
+        short[][] waveRaws = new short[3][];
 
-        bool isDrawing = false;
         bool isSaved = true;
         bool isLoading = false;
 
         int selectedDifficulty = -1;
         double songLength = 0;
-        float sampleTime = 0.02f;
+
         float deltatime = 8f;
         float ghostCusorPositionTime = 0f;
         EditorControlMethod lastEditorState;
@@ -301,16 +301,38 @@ namespace MajdataEdit
             try
             {
                 songLength = Bass.BASS_ChannelBytes2Seconds(bgmDecode, Bass.BASS_ChannelGetLength(bgmDecode, BASSMode.BASS_POS_BYTE));
-                int sampleNumber = (int)((songLength * 1000) / (sampleTime * 1000));
-                waveLevels = new float[sampleNumber];
+/*                int sampleNumber = (int)((songLength * 1000) / (0.02f * 1000));
+                wavedBs = new float[sampleNumber];
                 for (int i = 0; i < sampleNumber; i++)
                 {
-                    waveLevels[i] = Bass.BASS_ChannelGetLevels(bgmDecode, sampleTime, BASSLevel.BASS_LEVEL_MONO)[0];
-                }
+                    wavedBs[i] = Bass.BASS_ChannelGetLevels(bgmDecode, 0.02f, BASSLevel.BASS_LEVEL_MONO)[0];
+                }*/
                 Bass.BASS_StreamFree(bgmDecode);
+                int bgmSample = Bass.BASS_SampleLoad(maidataDir + "/track.mp3", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+                var bgmInfo = Bass.BASS_SampleGetInfo(bgmSample);
+                var freq = bgmInfo.freq;
+                long sampleCount = (long)((songLength) * freq *2);
+                Int16[] bgmRAW = new Int16[sampleCount];
+                Bass.BASS_SampleGetData(bgmSample, bgmRAW);
+                
+                waveRaws[0] = new short[sampleCount/10 +1];
+                for (int i = 0; i < sampleCount; i=i+10)
+                {
+                    waveRaws[0][i/10] = bgmRAW[i];
+                }
+                waveRaws[1] = new short[sampleCount / 50 + 1];
+                for (int i = 0; i < sampleCount; i = i + 50)
+                {
+                    waveRaws[1][i / 50] = bgmRAW[i];
+                }
+                waveRaws[2] = new short[sampleCount / 100 + 1];
+                for (int i = 0; i < sampleCount; i = i + 100)
+                {
+                    waveRaws[2][i / 100] = bgmRAW[i];
+                }
             }
-            catch {
-                MessageBox.Show("mp3解码失败。\nMP3 Decode fail.\n"+ Bass.BASS_ErrorGetCode());
+            catch (Exception e){
+                MessageBox.Show("mp3解码失败。\nMP3 Decode fail.\n"+e.Message+ Bass.BASS_ErrorGetCode());
                 Bass.BASS_StreamFree(bgmDecode);
                 Process.Start("https://github.com/LingFeng-bbben/MajdataEdit/issues/26");
             }
@@ -497,15 +519,21 @@ namespace MajdataEdit
 
 
         //*UI DRAWING
-        Timer visualEffectRefreshTimer = new Timer(5);
+        Timer visualEffectRefreshTimer = new Timer(0.1);
         Timer currentTimeRefreshTimer = new Timer(100);
         public Timer chartChangeTimer = new Timer(1000);    // 谱面变更延迟解析]\
 
         // This update very freqently to Draw FFT wave.
         private void VisualEffectRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            DrawFFT();
-            DrawWave();
+            try
+            {
+                DrawFFT();
+                DrawWave();
+            }catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
         // 谱面变更延迟解析
         private void ChartChangeTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -523,7 +551,7 @@ namespace MajdataEdit
         }
         private void DrawFFT()
         {
-            Dispatcher.Invoke(new Action(() =>
+            Dispatcher.InvokeAsync(new Action(() =>
             {
                 //Scroll WaveView
                 var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
@@ -568,15 +596,16 @@ namespace MajdataEdit
         }
         private void DrawWave()
         {
-            //if (isDrawing) return;
-            //isDrawing = true;
-            Dispatcher.Invoke(new Action(() =>
+            Dispatcher.InvokeAsync(new Action(() =>
             {
-                var width = (int)this.Width-2;
+
+                var width = (int)this.Width - 2;
                 var height = (int)MusicWave.Height;
 
                 var writableBitmap = new WriteableBitmap(width, height, 72, 72, PixelFormats.Pbgra32, null);
+                MusicWave.Source = writableBitmap;
                 writableBitmap.Lock();
+                
                 //the process starts
                 Bitmap backBitmap = new Bitmap(width, height, writableBitmap.BackBufferStride,
                             System.Drawing.Imaging.PixelFormat.Format32bppArgb, writableBitmap.BackBuffer);
@@ -584,26 +613,31 @@ namespace MajdataEdit
                 var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
 
                 var drawoffset = 0;
-
-
                 graphics.Clear(System.Drawing.Color.FromArgb(100, 0, 0, 0));
 
+                var resample = (int)deltatime-1;
+                if (resample > 1 && resample <= 3) resample = 1;
+                if (resample > 3) resample = 2;
+                short[] waveLevels = waveRaws[resample];
 
                 var step = (songLength / waveLevels.Length);
                 var startindex = (int)((currentTime - deltatime) / step);
                 var stopindex = (int)((currentTime + deltatime) / step);
                 var linewidth = ((float)backBitmap.Width / (float)(stopindex - startindex));
                 System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.Green, linewidth);
-
-                for (int i = startindex; i < stopindex; i++)
+                List <PointF> points = new List<PointF>();
+                for (int i = startindex; i < stopindex; i=i+1)
                 {
                     if (i < 0) i = 0;
                     if (i >= waveLevels.Length - 1) break;
 
-                    var lv = waveLevels[i] * 35;
                     var x = (i - startindex) * linewidth;
-                    graphics.DrawLine(pen, x, 37 + lv, x, 37 - lv);
+                    var y = waveLevels[i]/65535f* (height) + (height/2);
+                    
+                    points.Add(new PointF(x, y)); 
+                    
                 }
+                graphics.DrawLines(pen, points.ToArray());
 
                 //Draw Bpm lines
                 var lastbpm = -1f;
@@ -850,12 +884,11 @@ namespace MajdataEdit
                 graphics.Flush();
                 graphics.Dispose();
                 backBitmap.Dispose();
-                MusicWave.Source = writableBitmap;
+                
                 //MusicWave.Width = waveLevels.Length * zoominPower;
                 writableBitmap.AddDirtyRect(new Int32Rect(0, 0, writableBitmap.PixelWidth, writableBitmap.PixelHeight));
                 writableBitmap.Unlock();
             }));
-            //isDrawing = false;
         }
         
         // This update less frequently. set the time text.
@@ -878,8 +911,8 @@ namespace MajdataEdit
             var time = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             SetBgmPosition(time + delta);
             SimaiProcess.ClearNoteListPlayedState();
-            DrawWave();
             SeekTextFromTime();
+            Task.Run(()=>DrawWave());
         }
         public static string GetLocalizedString(string key, string resourceFileName = "Langs", bool addSpaceAfter = false)
         {
