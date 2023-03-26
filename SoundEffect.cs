@@ -193,7 +193,7 @@ namespace MajdataEdit
             }
         }
 
-        Timer soundEffectTimer = new Timer(1);
+
         Timer waveStopMonitorTimer = new Timer(33);
 
         double playStartTime = 0d;
@@ -218,18 +218,8 @@ namespace MajdataEdit
         public int clockStream = -114514;
 
         List<SoundEffectTiming> waitToBePlayed;
-        private Stopwatch sw = new Stopwatch();
-        //*SOUND EFFECT
-        // This update very freqently to play sound effect.
-        private void SoundEffectTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            
-            Console.WriteLine(sw.Elapsed);
-            SoundEffectUpdate();
-            
-            
-            
-        }
+        //private Stopwatch sw = new Stopwatch();
+
         // This update "middle" frequently to monitor if the wave has to be stopped
         private void WaveStopMonitorTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -265,11 +255,11 @@ namespace MajdataEdit
                 var lasttime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
                 while (isPlaying)
                 {
-                    sw.Reset();
-                    sw.Start();
+                    //sw.Reset();
+                    //sw.Start();
                     SoundEffectUpdate();
                     Thread.Sleep(1);
-                    sw.Stop();
+                    //sw.Stop();
                     //if(sw.Elapsed.TotalMilliseconds>1.5)
                     //    Console.WriteLine(sw.Elapsed);
                 }

@@ -64,7 +64,6 @@ namespace MajdataEdit
             chartChangeTimer.AutoReset = false;
             currentTimeRefreshTimer.Elapsed += CurrentTimeRefreshTimer_Elapsed;
             currentTimeRefreshTimer.Start();
-            soundEffectTimer.Elapsed += SoundEffectTimer_Elapsed;
             visualEffectRefreshTimer.Elapsed += VisualEffectRefreshTimer_Elapsed;
             waveStopMonitorTimer.Elapsed += WaveStopMonitorTimer_Elapsed;
             playbackSpeedHideTimer.Elapsed += PlbHideTimer_Elapsed;
