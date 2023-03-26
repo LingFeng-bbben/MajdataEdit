@@ -69,7 +69,7 @@ namespace MajdataEdit
         public bool AutoCheckUpdate = true;
         public int ChartRefreshDelay = 1000;
         public float DefaultSlideAccuracy = 0.2f;
-        public string Language = "zh-CN";
+        public string Language = "en-US";
         public string PlayPauseKey = "Ctrl+Shift+c";
         public string PlayStopKey = "Ctrl+Shift+x";
         public string SendViewerKey = "Ctrl+Shift+z";

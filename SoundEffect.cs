@@ -8,6 +8,11 @@ using System.Windows.Threading;
 using System.Text;
 using System.Linq;
 using System.IO;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Threading;
+using Timer = System.Timers.Timer;
+using System.Runtime.InteropServices;
 
 namespace MajdataEdit
 {
@@ -213,12 +218,17 @@ namespace MajdataEdit
         public int clockStream = -114514;
 
         List<SoundEffectTiming> waitToBePlayed;
-
+        private Stopwatch sw = new Stopwatch();
         //*SOUND EFFECT
         // This update very freqently to play sound effect.
         private void SoundEffectTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            
+            Console.WriteLine(sw.Elapsed);
             SoundEffectUpdate();
+            
+            
+            
         }
         // This update "middle" frequently to monitor if the wave has to be stopped
         private void WaveStopMonitorTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -242,6 +252,33 @@ namespace MajdataEdit
             fanfareStream = Bass.BASS_StreamCreateFile(path + "fanfare.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             clockStream = Bass.BASS_StreamCreateFile(path + "clock.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
         }
+        Task SEloopTask;
+        [DllImport("winmm")] 
+        static extern void timeBeginPeriod(int t); 
+        [DllImport("winmm")] 
+        static extern void timeEndPeriod(int t);
+        private void StartSELoop()
+        {
+            Thread thread = new Thread(() =>
+            {
+                timeBeginPeriod(1);
+                var lasttime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+                while (isPlaying)
+                {
+                    sw.Reset();
+                    sw.Start();
+                    SoundEffectUpdate();
+                    Thread.Sleep(1);
+                    sw.Stop();
+                    //if(sw.Elapsed.TotalMilliseconds>1.5)
+                    //    Console.WriteLine(sw.Elapsed);
+                }
+                timeEndPeriod(1);
+            });
+            thread.Priority = ThreadPriority.Highest;
+            thread.Start();
+
+        }
         private void SoundEffectUpdate()
         {
             try
@@ -250,8 +287,8 @@ namespace MajdataEdit
                 //var waitToBePlayed = SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime);
                 if (waitToBePlayed.Count < 1) return;
                 var nearestTime = waitToBePlayed[0].time;
-                //Console.WriteLine(nearestTime);
-                if (Math.Abs(currentTime - nearestTime) < 0.055)
+                //Console.WriteLine(nearestTime - currentTime);
+                if ((nearestTime - currentTime) <= 0.0545)//dont touch this!!!!! this related to delay
                 {
                     SoundEffectTiming se = waitToBePlayed[0];
                     waitToBePlayed.RemoveAt(0);
@@ -309,7 +346,10 @@ namespace MajdataEdit
                     Dispatcher.Invoke(() =>
                     {
                         if ((bool)FollowPlayCheck.IsChecked)
+                        {
+                            ghostCusorPositionTime = (float)nearestTime;
                             SeekTextFromTime();
+                        }
                     });
                 }
 
