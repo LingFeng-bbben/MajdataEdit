@@ -23,6 +23,7 @@ using System.Media;
 using System.ComponentModel;
 using DiscordRPC.Logging;
 using DiscordRPC;
+using System.Windows.Media.Media3D;
 
 namespace MajdataEdit
 {
@@ -54,6 +55,7 @@ namespace MajdataEdit
 
             var handle = (new WindowInteropHelper(this)).Handle;
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
+            InitWave();
 
             ReadSoundEffect();
             ReadEditorSetting();
@@ -64,7 +66,6 @@ namespace MajdataEdit
             currentTimeRefreshTimer.Start();
             soundEffectTimer.Elapsed += SoundEffectTimer_Elapsed;
             visualEffectRefreshTimer.Elapsed += VisualEffectRefreshTimer_Elapsed;
-            visualEffectRefreshTimer.Start();
             waveStopMonitorTimer.Elapsed += WaveStopMonitorTimer_Elapsed;
             playbackSpeedHideTimer.Elapsed += PlbHideTimer_Elapsed;
 
@@ -73,6 +74,7 @@ namespace MajdataEdit
                 CheckUpdate(onStart: true);
             }
         }
+
 
 
         //start the view and wait for boot, then set window pos
@@ -460,7 +462,8 @@ namespace MajdataEdit
             }
             //Console.WriteLine("SelectionChanged");
             SimaiProcess.ClearNoteListPlayedState();
-            DrawCusor(time);
+            ghostCusorPositionTime = (float)time;
+            if(!isPlaying)DrawWave();
         }
         private void FumenContent_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -492,25 +495,25 @@ namespace MajdataEdit
 #region Wave displayer
         private void WaveViewZoomIn_Click(object sender, RoutedEventArgs e)
         {
-            if (zoominPower < 6)
-                zoominPower += 1;
+            if (deltatime > 1)
+                deltatime -= 1;
             DrawWave();
             FumenContent.Focus();
         }
         private void WaveViewZoomOut_Click(object sender, RoutedEventArgs e)
         {
-            if (zoominPower > 1)
-                zoominPower -= 1;
+            if (deltatime < 10)
+                deltatime += 1;
             DrawWave();
             FumenContent.Focus();
         }
         private void MusicWave_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            ScrollWave(e.Delta);
+            ScrollWave(-e.Delta);
         }
         private void MusicWave_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //lastMousePointX = e.GetPosition(this).X;
+            lastMousePointX = e.GetPosition(this).X;
         }
         private void MusicWave_MouseMove(object sender, MouseEventArgs e)
         {
@@ -518,16 +521,24 @@ namespace MajdataEdit
             {
                 double delta = e.GetPosition(this).X - lastMousePointX;
                 lastMousePointX = e.GetPosition(this).X;
-                ScrollWave(delta*zoominPower*4d);
+                ScrollWave(-delta);
             }
             lastMousePointX = e.GetPosition(this).X;
         }
-#endregion
+
+        private void MusicWave_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            InitWave();
+            DrawWave();
+        }
+
+        #endregion
         private void FindClose_MouseDown(object sender, MouseButtonEventArgs e)
         {
             FindGrid.Visibility = Visibility.Collapsed;
             FumenContent.Focus();
         }
+
 
     }
 }
