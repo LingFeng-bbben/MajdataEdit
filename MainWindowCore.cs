@@ -613,6 +613,8 @@ namespace MajdataEdit
                 var width = (int)WaveBitmap.PixelWidth;
                 var height = (int)WaveBitmap.PixelHeight;
 
+                if (waveRaws[0] == null) return;
+
                 WaveBitmap.Lock();
                 
                 //the process starts
