@@ -23,6 +23,7 @@ using System.Media;
 using System.ComponentModel;
 using DiscordRPC.Logging;
 using DiscordRPC;
+using System.Windows.Media.Media3D;
 
 namespace MajdataEdit
 {
@@ -54,6 +55,7 @@ namespace MajdataEdit
 
             var handle = (new WindowInteropHelper(this)).Handle;
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_CPSPEAKERS, handle);
+            InitWave();
 
             ReadSoundEffect();
             ReadEditorSetting();
@@ -72,6 +74,7 @@ namespace MajdataEdit
                 CheckUpdate(onStart: true);
             }
         }
+
 
 
         //start the view and wait for boot, then set window pos
@@ -460,7 +463,7 @@ namespace MajdataEdit
             //Console.WriteLine("SelectionChanged");
             SimaiProcess.ClearNoteListPlayedState();
             ghostCusorPositionTime = (float)time;
-            DrawWave();
+            if(!isPlaying)DrawWave();
         }
         private void FumenContent_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -522,12 +525,20 @@ namespace MajdataEdit
             }
             lastMousePointX = e.GetPosition(this).X;
         }
-#endregion
+
+        private void MusicWave_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            InitWave();
+            DrawWave();
+        }
+
+        #endregion
         private void FindClose_MouseDown(object sender, MouseButtonEventArgs e)
         {
             FindGrid.Visibility = Visibility.Collapsed;
             FumenContent.Focus();
         }
+
 
     }
 }

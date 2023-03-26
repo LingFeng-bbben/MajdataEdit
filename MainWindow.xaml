@@ -24,7 +24,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Image x:Name="MusicWave" Height="74" VerticalAlignment="Bottom" MouseWheel="MusicWave_MouseWheel" PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove" Grid.ColumnSpan="2"/>
+        <Image x:Name="MusicWave" Height="74" VerticalAlignment="Bottom" MouseWheel="MusicWave_MouseWheel" PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove" Grid.ColumnSpan="2" SizeChanged="MusicWave_SizeChanged"/>
         <Line StrokeThickness="3" Y2="56" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15" Grid.Column="1" HorizontalAlignment="Left" Width="45"/>
 
         <Menu Height="19" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" Grid.ColumnSpan="2">

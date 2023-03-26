@@ -31,6 +31,7 @@ using System.Windows.Threading;
 using Semver;
 using DiscordRPC;
 using System.Xml.Linq;
+using System.Windows.Media.Media3D;
 
 
 namespace MajdataEdit
@@ -315,10 +316,10 @@ namespace MajdataEdit
                 Int16[] bgmRAW = new Int16[sampleCount];
                 Bass.BASS_SampleGetData(bgmSample, bgmRAW);
                 
-                waveRaws[0] = new short[sampleCount/10 +1];
-                for (int i = 0; i < sampleCount; i=i+10)
+                waveRaws[0] = new short[sampleCount/20 +1];
+                for (int i = 0; i < sampleCount; i=i+ 20)
                 {
-                    waveRaws[0][i/10] = bgmRAW[i];
+                    waveRaws[0][i/ 20] = bgmRAW[i];
                 }
                 waveRaws[1] = new short[sampleCount / 50 + 1];
                 for (int i = 0; i < sampleCount; i = i + 50)
@@ -519,7 +520,7 @@ namespace MajdataEdit
 
 
         //*UI DRAWING
-        Timer visualEffectRefreshTimer = new Timer(0.1);
+        Timer visualEffectRefreshTimer = new Timer(1);
         Timer currentTimeRefreshTimer = new Timer(100);
         public Timer chartChangeTimer = new Timer(1000);    // 谱面变更延迟解析]\
 
@@ -594,25 +595,32 @@ namespace MajdataEdit
                 writableBitmap.Unlock();
             }));
         }
+
+        WriteableBitmap WaveBitmap;
+
+        private void InitWave()
+        {
+            var width = (int)this.Width - 2;
+            var height = (int)MusicWave.Height;
+            WaveBitmap = new WriteableBitmap(width, height, 72, 72, PixelFormats.Pbgra32, null);
+            MusicWave.Source = WaveBitmap;
+        }
         private void DrawWave()
         {
             Dispatcher.InvokeAsync(new Action(() =>
             {
 
-                var width = (int)this.Width - 2;
-                var height = (int)MusicWave.Height;
+                var width = (int)WaveBitmap.PixelWidth;
+                var height = (int)WaveBitmap.PixelHeight;
 
-                var writableBitmap = new WriteableBitmap(width, height, 72, 72, PixelFormats.Pbgra32, null);
-                MusicWave.Source = writableBitmap;
-                writableBitmap.Lock();
+                WaveBitmap.Lock();
                 
                 //the process starts
-                Bitmap backBitmap = new Bitmap(width, height, writableBitmap.BackBufferStride,
-                            System.Drawing.Imaging.PixelFormat.Format32bppArgb, writableBitmap.BackBuffer);
+                Bitmap backBitmap = new Bitmap(width, height, WaveBitmap.BackBufferStride,
+                            System.Drawing.Imaging.PixelFormat.Format32bppArgb, WaveBitmap.BackBuffer);
                 Graphics graphics = Graphics.FromImage(backBitmap);
                 var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
 
-                var drawoffset = 0;
                 graphics.Clear(System.Drawing.Color.FromArgb(100, 0, 0, 0));
 
                 var resample = (int)deltatime-1;
@@ -886,8 +894,8 @@ namespace MajdataEdit
                 backBitmap.Dispose();
                 
                 //MusicWave.Width = waveLevels.Length * zoominPower;
-                writableBitmap.AddDirtyRect(new Int32Rect(0, 0, writableBitmap.PixelWidth, writableBitmap.PixelHeight));
-                writableBitmap.Unlock();
+                WaveBitmap.AddDirtyRect(new Int32Rect(0, 0, WaveBitmap.PixelWidth, WaveBitmap.PixelHeight));
+                WaveBitmap.Unlock();
             }));
         }
         
