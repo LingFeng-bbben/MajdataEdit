@@ -1230,6 +1230,33 @@ namespace MajdataEdit
             return false;
         }
 
+        string GetViewerWorkingDirectory()
+        {
+            string tempPath = "";
+            Process baseProc;
+            Process[] viewProcs;
+            viewProcs = Process.GetProcessesByName("MajdataView");
+            // Prioritize Majdata First
+            if (viewProcs.Length > 0)
+            {
+                baseProc = viewProcs.First();
+                string pwd;
+                pwd = baseProc.StartInfo.WorkingDirectory.TrimEnd('/');
+                if (pwd.Length == 0) pwd = ".";
+                tempPath = pwd + "/MajdataView_Data/StreamingAssets";
+            }
+            else
+            {
+                viewProcs = Process.GetProcessesByName("Unity");
+            }
+            if (viewProcs.Length <= 0)
+                throw new Exception("Unable to find MajdataView instance!");
+
+            return (tempPath.Length == 0) ?
+                Environment.CurrentDirectory + "/SFX" :
+                tempPath;
+        }
+
         void InternalSwitchWindow(bool moveToPlace = true)
         {
             var windowPtr = FindWindow(null, "MajdataView");
