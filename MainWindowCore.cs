@@ -60,7 +60,7 @@ namespace MajdataEdit
         int selectedDifficulty = -1;
         double songLength = 0;
 
-        float deltatime = 8f;
+        float deltatime = 4f;
         float ghostCusorPositionTime = 0f;
         EditorControlMethod lastEditorState;
 
