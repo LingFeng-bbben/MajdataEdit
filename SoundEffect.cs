@@ -129,6 +129,7 @@ namespace MajdataEdit
                 if (this.ID <= 0)
                     return;
 
+                this.Raw = null;
                 Bass.BASS_SampleFree(this.ID);
             }
 
@@ -897,6 +898,7 @@ namespace MajdataEdit
             filehead.AddRange(filedata);
             File.WriteAllBytes(maidataDir + "/out.wav", filehead.ToArray());
 
+            typeSamples.Clear();
             bgmBank.Free();
             comparableBanks.Values.ToList().ForEach((otherBank) => {
                 if (otherBank.Temp)
