@@ -1232,7 +1232,8 @@ namespace MajdataEdit
 
         string GetViewerWorkingDirectory()
         {
-            string tempPath = "";
+            return Environment.CurrentDirectory + "/MajdataView_Data/StreamingAssets";
+            /*string tempPath = "";
             Process baseProc;
             Process[] viewProcs;
             viewProcs = Process.GetProcessesByName("MajdataView");
@@ -1254,7 +1255,7 @@ namespace MajdataEdit
 
             return (tempPath.Length == 0) ?
                 Environment.CurrentDirectory + "/SFX" :
-                tempPath;
+                tempPath;*/
         }
 
         void InternalSwitchWindow(bool moveToPlace = true)

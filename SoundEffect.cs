@@ -688,7 +688,7 @@ namespace MajdataEdit
             var freq = bgmBank.Frequency;
 
             //读取原始采样数据
-            long sampleCount = (long)((songLength + 5f) * freq * 4 );
+            long sampleCount = (long)((songLength + 5f) * freq * 2 );
             bgmBank.RawSize = sampleCount;
             Console.WriteLine(sampleCount);
             bgmBank.InitializeRawSample();
@@ -832,7 +832,7 @@ namespace MajdataEdit
 
             List<byte> filedata = new List<byte>();
             Int16[] delayEmpty = new Int16[(int)(delaySeconds * freq * 2)];
-            List<byte> filehead = CreateWaveFileHeader(bgmBank.Raw.Length + delayEmpty.Length, 2, freq, 16).ToList();
+            List<byte> filehead = CreateWaveFileHeader(bgmBank.Raw.Length * 2 + delayEmpty.Length * 2, 2, freq, 16).ToList();
 
             //if (trackStartRAW.Length > delayEmpty.Length)
             //    throw new Exception("track_start音效过长,请勿大于5秒");
