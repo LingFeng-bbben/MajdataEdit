@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Timers;
 using Un4seen.Bass;
-using Newtonsoft.Json;
 using System.Windows.Threading;
 using System.Text;
 using System.Linq;
 using System.IO;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Threading;
 using Timer = System.Timers.Timer;
 using System.Runtime.InteropServices;
@@ -243,7 +240,6 @@ namespace MajdataEdit
             fanfareStream = Bass.BASS_StreamCreateFile(path + "fanfare.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             clockStream = Bass.BASS_StreamCreateFile(path + "clock.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
         }
-        Task SEloopTask;
         [DllImport("winmm")] 
         static extern void timeBeginPeriod(int t); 
         [DllImport("winmm")] 
@@ -747,7 +743,15 @@ namespace MajdataEdit
                 SoundBank sample = getSampleFromType(type);
                 if (sample.Frequency <= 0) return;
                 for (int t = 0; t < sample.RawSize; t++)
-                    typeSamples[type][time + t] += sample.Raw[t];
+                {
+                    Int32 value = typeSamples[type][time + t] + sample.Raw[t];
+                    if (value > Int16.MaxValue)
+                        value = Int16.MaxValue;
+                    if (value < Int16.MinValue)
+                        value = Int16.MinValue;
+                    typeSamples[type][time + t] = (short)value;
+
+                }
             };
 
             Action<int, int, SoundDataType> sampleWipe = (timeFrom, timeTo, type) =>
