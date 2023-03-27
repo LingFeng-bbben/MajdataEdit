@@ -38,7 +38,7 @@ namespace MajdataEdit
 {
     public partial class MainWindow : Window
     {
-        public static readonly string MAJDATA_VERSION_STRING = "v4.1.2-rc";
+        public static readonly string MAJDATA_VERSION_STRING = "v4.1.2-af";
         public static readonly SemVersion MAJDATA_VERSION = SemVersion.Parse(MAJDATA_VERSION_STRING, SemVersionStyles.Any);
         bool UpdateCheckLock = false;
 
@@ -1449,7 +1449,7 @@ namespace MajdataEdit
 
         public string GetWindowsTitleString()
         {
-            return "MajdataEdit(" + MAJDATA_VERSION_STRING + ")";
+            return "[V]@_]d4✟ə£d!+(\\/.¼¼¼¼)";
         }
 
         public string GetWindowsTitleString(string info)
