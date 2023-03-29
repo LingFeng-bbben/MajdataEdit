@@ -889,11 +889,12 @@ namespace MajdataEdit
             //获取原来实时播放时候的音量
             
             float bgmVol = 1f, answerVol = 1f, judgeVol = 1f, judgeExVol = 1f,
-                hanabiVol = 1f, touchVol = 1f, slideVol = 1f, breakVol = 1f;
+                hanabiVol = 1f, touchVol = 1f, slideVol = 1f, breakVol = 1f, breakSlideVol = 1f;
             Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, ref bgmVol);
             Bass.BASS_ChannelGetAttribute(answerStream, BASSAttribute.BASS_ATTRIB_VOL, ref answerVol);
             Bass.BASS_ChannelGetAttribute(judgeStream, BASSAttribute.BASS_ATTRIB_VOL, ref judgeVol);
             Bass.BASS_ChannelGetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, ref breakVol);
+            Bass.BASS_ChannelGetAttribute(breakSlideStream, BASSAttribute.BASS_ATTRIB_VOL, ref breakSlideVol);
             Bass.BASS_ChannelGetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, ref slideVol);
             Bass.BASS_ChannelGetAttribute(judgeExStream, BASSAttribute.BASS_ATTRIB_VOL, ref judgeExVol);
             Bass.BASS_ChannelGetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, ref touchVol);
@@ -939,6 +940,10 @@ namespace MajdataEdit
                             break;
                         case SoundDataType.Break:
                             sampleValue += track[i] * breakVol * 0.75f;
+                            break;
+                        case SoundDataType.BreakSlide:
+                        case SoundDataType.JudgeBreakSlide:
+                            sampleValue += track[i] * breakSlideVol;
                             break;
                         case SoundDataType.Hanabi:
                         case SoundDataType.TouchHold:
