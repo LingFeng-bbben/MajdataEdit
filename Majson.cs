@@ -58,6 +58,7 @@ namespace MajdataEdit
         public float Judge_Level = 0.7f;
         public float Slide_Level = 0.7f;
         public float Break_Level = 0.7f;
+        public float Break_Slide_Level = 0.7f;
         public float Ex_Level = 0.7f;
         public float Touch_Level = 0.7f;
         public float Hanabi_Level = 0.7f;
@@ -92,6 +93,7 @@ namespace MajdataEdit
         public float Default_Judge_Level = 0.7f;
         public float Default_Slide_Level = 0.7f;
         public float Default_Break_Level = 0.7f;
+        public float Default_Break_Slide_Level = 0.7f;
         public float Default_Ex_Level = 0.7f;
         public float Default_Touch_Level = 0.7f;
         public float Default_Hanabi_Level = 0.7f;

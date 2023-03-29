@@ -9,9 +9,9 @@
         lex:ResxLocalizationProvider.DefaultDictionary="Langs" 
         xmlns:local="clr-namespace:MajdataEdit"
         mc:Ignorable="d"
-        Title="SoundSetting" Height="381" Width="1024" Background="{DynamicResource WindowBackground}" MinHeight="290" MinWidth="646" ResizeMode="NoResize" Loaded="SoundSettingWindow_Loaded" Closing="SoundSettingWindow_Closing">
+        Title="SoundSetting" Height="381" Width="1149" Background="{DynamicResource WindowBackground}" MinHeight="290" MinWidth="646" ResizeMode="NoResize" Loaded="SoundSettingWindow_Loaded" Closing="SoundSettingWindow_Closing">
     <Grid>
-        <Grid HorizontalAlignment="Left" Margin="10,10,0,56" Width="120" Background="#FF272727">
+        <Grid HorizontalAlignment="Left" Margin="10,10,0,56" Width="120" Background="#FF272727" ToolTip="此选项会影响BGM、录制模式启动音效、节拍提示音和AP音效">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -21,7 +21,7 @@
             <Label Content="BGM" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
             <ScrollViewer HorizontalAlignment="Left" Height="100" Margin="110,15,-90,0" VerticalAlignment="Top" Width="100"/>
         </Grid>
-        <Grid HorizontalAlignment="Left" Margin="135,10,0,56" Width="120" Background="#FF272727">
+        <Grid HorizontalAlignment="Left" Margin="135,10,0,56" Width="120" Background="#FF272727" ToolTip="此选项会影响正解音">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -30,7 +30,7 @@
             <Slider x:Name="Answer_Slider" Margin="42,51,42,50" Orientation="Vertical" HorizontalAlignment="Center" TickPlacement="TopLeft" TickFrequency="0.05" IsSnapToTickEnabled="True" Maximum="1" Value="1" Opacity="0.7"/>
             <Label Content="Answer" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
         </Grid>
-        <Grid HorizontalAlignment="Left" Margin="260,10,0,56" Width="120" Background="#FF272727">
+        <Grid HorizontalAlignment="Left" Margin="260,10,0,56" Width="120" Background="#FF272727" ToolTip="此选项会影响Tap与Hold的判定音效">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -39,7 +39,7 @@
             <Slider x:Name="Judge_Slider" Margin="42,51,42,50" Orientation="Vertical" HorizontalAlignment="Center" TickPlacement="TopLeft" TickFrequency="0.05" IsSnapToTickEnabled="True" Maximum="1" Value="1" Opacity="0.7"/>
             <Label Content="Judge" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
         </Grid>
-        <Grid HorizontalAlignment="Left" Margin="385,10,0,56" Width="120" Background="#FF272727">
+        <Grid HorizontalAlignment="Left" Margin="385,10,0,56" Width="120" Background="#FF272727" ToolTip="此选项会影响Slide与Break-Slide的启动音效">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -48,7 +48,7 @@
             <Slider x:Name="Slide_Slider" Margin="42,51,42,50" Orientation="Vertical" HorizontalAlignment="Center" TickPlacement="TopLeft" TickFrequency="0.05" IsSnapToTickEnabled="True" Maximum="1" Value="1" Opacity="0.7"/>
             <Label Content="Slide" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
         </Grid>
-        <Grid HorizontalAlignment="Left" Margin="510,10,0,56" Width="120" Background="#FF272727">
+        <Grid HorizontalAlignment="Left" Margin="510,10,0,56" Width="120" Background="#FF272727" ToolTip="此选项会影响Break的判定音效与CP时的音效（欢呼声）">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -57,7 +57,16 @@
             <Slider x:Name="Break_Slider" Margin="42,51,42,50" Orientation="Vertical" HorizontalAlignment="Center" TickPlacement="TopLeft" TickFrequency="0.05" IsSnapToTickEnabled="True" Maximum="1" Value="1" Opacity="0.7"/>
             <Label Content="Break" Margin="30,21,32,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
         </Grid>
-        <Grid HorizontalAlignment="Left" Margin="635,10,0,56" Width="120" Background="#FF272727">
+        <Grid HorizontalAlignment="Left" Margin="635,10,0,56" Width="120" Background="#FF272727" ToolTip="此选项会影响Break-Slide完成时的判定音效与CP时的音效（欢呼声）">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="BreakSlide_Value"  Content="100%" Margin="23,240,23,2" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center" Width="74" HorizontalContentAlignment="Center"/>
+            <ProgressBar x:Name="BreakSlide_Level" HorizontalAlignment="Center" Margin="51,51,51,50" Width="18" Orientation="Vertical" Maximum="41" Foreground="#FFB06846" Opacity="0.69" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <Slider x:Name="BreakSlide_Slider" Margin="42,51,42,50" Orientation="Vertical" HorizontalAlignment="Center" TickPlacement="TopLeft" TickFrequency="0.05" IsSnapToTickEnabled="True" Maximum="1" Value="1" Opacity="0.7"/>
+            <Label Content="BreakSlide" Margin="0,21,0,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center"/>
+        </Grid>
+        <Grid HorizontalAlignment="Left" Margin="760,10,0,56" Width="120" Background="#FF272727" ToolTip="此选项会影响Ex-note的判定音效">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -66,7 +75,7 @@
             <Slider x:Name="EX_Slider" Margin="42,51,42,50" Orientation="Vertical" HorizontalAlignment="Center" TickPlacement="TopLeft" TickFrequency="0.05" IsSnapToTickEnabled="True" Maximum="1" Value="1" Opacity="0.7"/>
             <Label Content="EX" Margin="23,21,23,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center" Width="74" HorizontalContentAlignment="Center"/>
         </Grid>
-        <Grid HorizontalAlignment="Left" Margin="760,10,0,56" Width="120" Background="#FF272727">
+        <Grid HorizontalAlignment="Left" Margin="885,10,0,56" Width="120" Background="#FF272727" ToolTip="此选项会影响Touch的判定音效">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -75,7 +84,7 @@
             <Slider x:Name="Touch_Slider" Margin="42,51,42,50" Orientation="Vertical" HorizontalAlignment="Center" TickPlacement="TopLeft" TickFrequency="0.05" IsSnapToTickEnabled="True" Maximum="1" Value="1" Opacity="0.7"/>
             <Label Content="Touch" Margin="23,21,23,0" VerticalAlignment="Top" Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Center" Width="74" HorizontalContentAlignment="Center"/>
         </Grid>
-        <Grid HorizontalAlignment="Left" Margin="885,10,0,56" Width="120" Background="#FF272727">
+        <Grid HorizontalAlignment="Left" Margin="1010,10,0,56" Width="120" Background="#FF272727" ToolTip="此选项会影响烟花的音效与Touch-Hold按住音效">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>

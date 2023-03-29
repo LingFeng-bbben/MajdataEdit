@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Timers;
 using Un4seen.Bass;
-using Newtonsoft.Json;
 using System.Windows.Threading;
 using System.Text;
 using System.Linq;
 using System.IO;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Threading;
 using Timer = System.Timers.Timer;
 using System.Runtime.InteropServices;
@@ -32,12 +29,16 @@ namespace MajdataEdit
             public bool hasSlide = false;
             public bool hasAllPerfect = false;
             public bool hasClock = false;
+            public bool hasBreakSlideStart = false;
+            public bool hasBreakSlide = false;
+            public bool hasJudgeBreakSlide = false;
             public double time;
 
             public SoundEffectTiming(double _time, bool _hasAnswer = false, bool _hasJudge = false, bool _hasJudgeBreak = false,
                                      bool _hasBreak = false, bool _hasTouch = false, bool _hasHanabi = false,
                                      bool _hasJudgeEx = false, bool _hasTouchHold = false, bool _hasSlide = false,
-                                     bool _hasTouchHoldEnd = false, bool _hasAllPerfect = false, bool _hasClock = false)
+                                     bool _hasTouchHoldEnd = false, bool _hasAllPerfect = false, bool _hasClock = false,
+                                     bool _hasBreakSlideStart = false, bool _hasBreakSlide = false, bool _hasJudgeBreakSlide = false)
             {
                 time = _time;
                 hasAnswer = _hasAnswer;
@@ -52,6 +53,9 @@ namespace MajdataEdit
                 hasTouchHoldEnd = _hasTouchHoldEnd;
                 hasAllPerfect = _hasAllPerfect;
                 hasClock = _hasClock;
+                hasBreakSlideStart = _hasBreakSlideStart;
+                hasBreakSlide = _hasBreakSlide;
+                hasJudgeBreakSlide = _hasJudgeBreakSlide;
             }
         }
 
@@ -129,6 +133,7 @@ namespace MajdataEdit
                 if (this.ID <= 0)
                     return;
 
+                this.Raw = null;
                 Bass.BASS_SampleFree(this.ID);
             }
 
@@ -160,7 +165,8 @@ namespace MajdataEdit
             TouchHold,
             Slide, Touch,
             AllPerfect, FullComboFanfare,
-            Clock
+            Clock,
+            BreakSlideStart, BreakSlide, JudgeBreakSlide
         }
 
         struct SoundDataRange
@@ -216,6 +222,9 @@ namespace MajdataEdit
         public int allperfectStream = -114514;
         public int fanfareStream = -114514;
         public int clockStream = -114514;
+        public int breakSlideStartStream = -114514;     // break-slide启动音效
+        public int breakSlideStream = -114514;          // break-slide欢呼声（critical perfect音效）
+        public int judgeBreakSlideStream = -114514;     // break-slide判定音效
 
         List<SoundEffectTiming> waitToBePlayed;
         //private Stopwatch sw = new Stopwatch();
@@ -241,8 +250,10 @@ namespace MajdataEdit
             allperfectStream = Bass.BASS_StreamCreateFile(path + "all_perfect.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             fanfareStream = Bass.BASS_StreamCreateFile(path + "fanfare.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             clockStream = Bass.BASS_StreamCreateFile(path + "clock.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            breakSlideStartStream = Bass.BASS_StreamCreateFile(path + "break_slide_start.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            breakSlideStream = Bass.BASS_StreamCreateFile(path + "break_slide.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            judgeBreakSlideStream = Bass.BASS_StreamCreateFile(path + "judge_break_slide.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
         }
-        Task SEloopTask;
         [DllImport("winmm")] 
         static extern void timeBeginPeriod(int t); 
         [DllImport("winmm")] 
@@ -322,6 +333,18 @@ namespace MajdataEdit
                     if (se.hasSlide)
                     {
                         Bass.BASS_ChannelPlay(slideStream, true);
+                    }
+                    if (se.hasBreakSlideStart)
+                    {
+                        Bass.BASS_ChannelPlay(breakSlideStartStream, true);
+                    }
+                    if (se.hasBreakSlide)
+                    {
+                        Bass.BASS_ChannelPlay(breakSlideStream, true);
+                    }
+                    if (se.hasJudgeBreakSlide)
+                    {
+                        Bass.BASS_ChannelPlay(judgeBreakSlideStream, true);
                     }
                     if (se.hasAllPerfect)
                     {
@@ -516,11 +539,28 @@ namespace MajdataEdit
                                 var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
                                 if (nearIndex != -1)
                                 {
-                                    waitToBePlayed[nearIndex].hasSlide = true;
+                                    if (note.isSlideBreak)
+                                    {
+                                        // 如果是break slide的话 使用break slide的启动音效
+                                        waitToBePlayed[nearIndex].hasBreakSlideStart = true;
+                                    }
+                                    else
+                                    {
+                                        // 否则使用普通slide的启动音效
+                                        waitToBePlayed[nearIndex].hasSlide = true;
+                                    }
                                 }
                                 else
                                 {
-                                    SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasSlide: true);
+                                    SoundEffectTiming slide;
+                                    if (note.isSlideBreak)
+                                    {
+                                        slide = new SoundEffectTiming(targetTime, _hasBreakSlideStart: true);
+                                    }
+                                    else
+                                    {
+                                        slide = new SoundEffectTiming(targetTime, _hasSlide: true);
+                                    }
                                     waitToBePlayed.Add(slide);
                                 }
                                 // Slide尾巴 如果是Break Slide的话 就要添加一个Break音效
@@ -530,11 +570,12 @@ namespace MajdataEdit
                                     nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
                                     if (nearIndex != -1)
                                     {
-                                        waitToBePlayed[nearIndex].hasBreak = true;
+                                        waitToBePlayed[nearIndex].hasBreakSlide = true;
+                                        waitToBePlayed[nearIndex].hasJudgeBreakSlide = true;
                                     }
                                     else
                                     {
-                                        SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasBreak: true);
+                                        SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasBreakSlide: true, _hasJudgeBreakSlide: true);
                                         waitToBePlayed.Add(slide);
                                     }
                                 }
@@ -644,6 +685,9 @@ namespace MajdataEdit
             SoundBank apBank = new SoundBank(path + "/all_perfect.wav");
             SoundBank fanfareBank = new SoundBank(path + "/fanfare.wav");
             SoundBank clockBank = new SoundBank(path + "/clock.wav");
+            SoundBank breakSlideStartBank = new SoundBank(path + "/break_slide_start.wav");
+            SoundBank breakSlideBank = new SoundBank(path + "/break_slide.wav");
+            SoundBank judgeBreakSlideBank = new SoundBank(path + "/judge_break_slide.wav");
 
             comparableBanks["Answer"] = answerBank;
             comparableBanks["Judge"] = judgeBank;
@@ -658,8 +702,11 @@ namespace MajdataEdit
             comparableBanks["All Perfect"] = apBank;
             comparableBanks["Fanfare"] = fanfareBank;
             comparableBanks["Clock"] = clockBank;
+            comparableBanks["Break Slide Start"] = breakSlideStartBank;
+            comparableBanks["Break Slide"] = breakSlideBank;
+            comparableBanks["Judge Break Slide"] = judgeBreakSlideBank;
 
-            foreach(var compPair in comparableBanks)
+            foreach (var compPair in comparableBanks)
             {
                 // Skip non existent file.
                 if (compPair.Value.Frequency < 0)
@@ -687,7 +734,7 @@ namespace MajdataEdit
             var freq = bgmBank.Frequency;
 
             //读取原始采样数据
-            long sampleCount = (long)((songLength + 5f) * freq * 4 );
+            long sampleCount = (long)((songLength + 5f) * freq * 2 );
             bgmBank.RawSize = sampleCount;
             Console.WriteLine(sampleCount);
             bgmBank.InitializeRawSample();
@@ -706,6 +753,65 @@ namespace MajdataEdit
             }
 
             List<SoundDataRange> trackOps = new List<SoundDataRange>();
+            Dictionary<SoundDataType, Int16[]> typeSamples = new Dictionary<SoundDataType, Int16[]>();
+            foreach (SoundDataType sType in Enum.GetValues(SoundDataType.None.GetType()))
+            {
+                if (sType == 0) continue;
+                typeSamples[sType] = new Int16[sampleCount];
+            }
+
+            Func<SoundDataType, SoundBank> getSampleFromType = (type) =>
+            {
+                switch(type)
+                {
+                    case SoundDataType.Answer: return answerBank;
+                    case SoundDataType.Judge: return judgeBank;
+                    case SoundDataType.JudgeBreak: return judgeBreakBank;
+                    case SoundDataType.JudgeEX: return judgeExBank;
+                    case SoundDataType.Break: return breakBank;
+                    case SoundDataType.Hanabi: return hanabiBank;
+                    case SoundDataType.TouchHold: return holdRiserBank;
+                    case SoundDataType.Slide: return slideBank;
+                    case SoundDataType.Touch: return touchBank;
+                    case SoundDataType.AllPerfect: return apBank;
+                    case SoundDataType.FullComboFanfare: return fanfareBank;
+                    case SoundDataType.Clock: return clockBank;
+                    case SoundDataType.BreakSlideStart: return breakSlideStartBank;
+                    case SoundDataType.BreakSlide: return breakSlideBank;
+                    case SoundDataType.JudgeBreakSlide: return judgeBreakSlideBank;
+                }
+                return null;
+            };
+
+            Action<int, SoundDataType> sampleWrite = (time, type) =>
+            {
+                SoundBank sample = getSampleFromType(type);
+                if (sample.Frequency <= 0) return;
+                for (int t = 0; t < sample.RawSize; t++)
+                    typeSamples[type][time + t] = sample.Raw[t];
+            };
+
+            Action<int, SoundDataType> sampleAdd = (time, type) =>
+            {
+                SoundBank sample = getSampleFromType(type);
+                if (sample.Frequency <= 0) return;
+                for (int t = 0; t < sample.RawSize; t++)
+                {
+                    Int32 value = typeSamples[type][time + t] + sample.Raw[t];
+                    if (value > Int16.MaxValue)
+                        value = Int16.MaxValue;
+                    if (value < Int16.MinValue)
+                        value = Int16.MinValue;
+                    typeSamples[type][time + t] = (short)value;
+
+                }
+            };
+
+            Action<int, int, SoundDataType> sampleWipe = (timeFrom, timeTo, type) =>
+            {
+                for (int t = timeFrom; t < timeTo; t++)
+                    typeSamples[type][t] = 0;
+            };
 
             //生成每个音效的track
             foreach (var soundTiming in waitToBePlayed)
@@ -713,71 +819,82 @@ namespace MajdataEdit
                 var startIndex = (int)(soundTiming.time * freq) * 2; //乘2因为有两个channel
                 if (soundTiming.hasAnswer)
                 {
-                    // Avoid stacking answer on exact timepoint.
-                    SoundDataRange lastAnswerOp = trackOps.FindLast((trackOp) => trackOp.Type == SoundDataType.Answer);
-                    if (lastAnswerOp.Type == SoundDataType.Answer)
-                    {
-                        if (lastAnswerOp.From == startIndex) continue;
-                        lastAnswerOp.Length = startIndex - lastAnswerOp.From;
-                    }
-                    trackOps.Add(new SoundDataRange(SoundDataType.Answer, startIndex, answerBank.RawSize));
+                    sampleWrite(startIndex, SoundDataType.Answer);
                 }
                 if (soundTiming.hasJudge)
                 {
-                    trackOps.Add(new SoundDataRange(SoundDataType.Judge, startIndex, judgeBank.RawSize));
+                    sampleWrite(startIndex, SoundDataType.Judge);
                 }
                 if (soundTiming.hasJudgeBreak)
                 {
-                    trackOps.Add(new SoundDataRange(SoundDataType.JudgeBreak, startIndex, judgeBreakBank.RawSize));
+                    sampleWrite(startIndex, SoundDataType.JudgeBreak);
                 }
                 if (soundTiming.hasJudgeEx)
                 {
-                    trackOps.Add(new SoundDataRange(SoundDataType.JudgeEX, startIndex, judgeExBank.RawSize));
+                    sampleWrite(startIndex, SoundDataType.JudgeEX);
                 }
                 if (soundTiming.hasBreak)
                 {
-                    trackOps.Add(new SoundDataRange(SoundDataType.Break, startIndex, breakBank.RawSize));
+                    // Reach for the Stars.ogg
+                    sampleAdd(startIndex, SoundDataType.Break);
                 }
                 if (soundTiming.hasHanabi)
                 {
-                    trackOps.Add(new SoundDataRange(SoundDataType.Hanabi, startIndex, hanabiBank.RawSize));
+                    sampleWrite(startIndex, SoundDataType.Hanabi);
                 }
                 if (soundTiming.hasTouchHold)
                 {
+                    // no need to "CutNow" as HoldEnd did the work.
+                    sampleWrite(startIndex, SoundDataType.TouchHold);
                     trackOps.Add(new SoundDataRange(SoundDataType.TouchHold, startIndex, holdRiserBank.RawSize));
                 }
                 if (soundTiming.hasTouchHoldEnd)
                 {
                     //不覆盖整个track，只覆盖可能有的部分
                     SoundDataRange lastTouchHoldOp = trackOps.FindLast((trackOp) => trackOp.Type == SoundDataType.TouchHold);
-                    lastTouchHoldOp.Length = Math.Min(lastTouchHoldOp.Length, startIndex - lastTouchHoldOp.From);
+                    sampleWipe(startIndex, (int)lastTouchHoldOp.To, SoundDataType.TouchHold);
+                    continue;
                 }
                 if (soundTiming.hasSlide)
                 {
-                    trackOps.Add(new SoundDataRange(SoundDataType.Slide, startIndex, slideBank.RawSize));
+                    sampleWrite(startIndex, SoundDataType.Slide);
                 }
                 if (soundTiming.hasTouch)
                 {
-                    trackOps.Add(new SoundDataRange(SoundDataType.Touch, startIndex, touchBank.RawSize));
+                    sampleWrite(startIndex, SoundDataType.Touch);
+                }
+                if (soundTiming.hasBreakSlideStart)
+                {
+                    sampleWrite(startIndex, SoundDataType.BreakSlideStart);
+                }
+                if (soundTiming.hasBreakSlide)
+                {
+                    sampleWrite(startIndex, SoundDataType.BreakSlide);
+                }
+                if (soundTiming.hasJudgeBreakSlide)
+                {
+                    sampleWrite(startIndex, SoundDataType.JudgeBreakSlide);
                 }
                 if (soundTiming.hasAllPerfect)
                 {
-                    trackOps.Add(new SoundDataRange(SoundDataType.AllPerfect, startIndex, apBank.RawSize));
-                    trackOps.Add(new SoundDataRange(SoundDataType.FullComboFanfare, startIndex, fanfareBank.RawSize));
+                    sampleWrite(startIndex, SoundDataType.AllPerfect);
+                    sampleWrite(startIndex, SoundDataType.FullComboFanfare);
                 }
                 if (soundTiming.hasClock)
                 {
-                    trackOps.Add(new SoundDataRange(SoundDataType.Clock, startIndex, clockBank.RawSize));
+                    sampleWrite(startIndex, SoundDataType.Clock);
                 }
             }
+
             //获取原来实时播放时候的音量
             
             float bgmVol = 1f, answerVol = 1f, judgeVol = 1f, judgeExVol = 1f,
-                hanabiVol = 1f, touchVol = 1f, slideVol = 1f, breakVol = 1f;
+                hanabiVol = 1f, touchVol = 1f, slideVol = 1f, breakVol = 1f, breakSlideVol = 1f;
             Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, ref bgmVol);
             Bass.BASS_ChannelGetAttribute(answerStream, BASSAttribute.BASS_ATTRIB_VOL, ref answerVol);
             Bass.BASS_ChannelGetAttribute(judgeStream, BASSAttribute.BASS_ATTRIB_VOL, ref judgeVol);
             Bass.BASS_ChannelGetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, ref breakVol);
+            Bass.BASS_ChannelGetAttribute(breakSlideStream, BASSAttribute.BASS_ATTRIB_VOL, ref breakSlideVol);
             Bass.BASS_ChannelGetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, ref slideVol);
             Bass.BASS_ChannelGetAttribute(judgeExStream, BASSAttribute.BASS_ATTRIB_VOL, ref judgeExVol);
             Bass.BASS_ChannelGetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, ref touchVol);
@@ -785,7 +902,7 @@ namespace MajdataEdit
 
             List<byte> filedata = new List<byte>();
             Int16[] delayEmpty = new Int16[(int)(delaySeconds * freq * 2)];
-            List<byte> filehead = CreateWaveFileHeader(bgmBank.Raw.Length + delayEmpty.Length, 2, freq, 16).ToList();
+            List<byte> filehead = CreateWaveFileHeader(bgmBank.Raw.Length * 2 + delayEmpty.Length * 2, 2, freq, 16).ToList();
 
             //if (trackStartRAW.Length > delayEmpty.Length)
             //    throw new Exception("track_start音效过长,请勿大于5秒");
@@ -801,61 +918,48 @@ namespace MajdataEdit
             {
                 // Apply BGM Data
                 float sampleValue = bgmBank.Raw[i] * bgmVol;
-                // Apply all track instruction on given sample index.
-                // This allows stacked/multiple concurrent of same samples.
-                // Known Issue: sample playback will have double speed on mono channel.
-                foreach(var trackOp in trackOps.FindAll((trackOp) => trackOp.In(i)))
+                
+                foreach (var sampleTuple in typeSamples)
                 {
-                    long offset = i - trackOp.From;
-                    switch (trackOp.Type)
+                    SoundDataType type = sampleTuple.Key;
+                    Int16[] track = sampleTuple.Value;
+
+                    switch(type)
                     {
                         case SoundDataType.Answer:
-                            if (answerBank.Frequency <= 0) continue;
-                            sampleValue += answerBank.Raw[offset] * answerVol;
+                            sampleValue += track[i] * answerVol;
                             break;
                         case SoundDataType.Judge:
-                            if (judgeBank.Frequency <= 0) continue;
-                            sampleValue += judgeBank.Raw[offset] * judgeVol;
+                            sampleValue += track[i] * judgeVol;
                             break;
                         case SoundDataType.JudgeBreak:
-                            if (judgeBreakBank.Frequency <= 0) continue;
-                            sampleValue += judgeBreakBank.Raw[offset] * breakVol;
+                            sampleValue += track[i] * breakVol;
                             break;
                         case SoundDataType.JudgeEX:
-                            if (judgeExBank.Frequency <= 0) continue;
-                            sampleValue += judgeExBank.Raw[offset] * judgeExVol;
+                            sampleValue += track[i] * judgeExVol;
                             break;
                         case SoundDataType.Break:
-                            if (breakBank.Frequency <= 0) continue;
-                            sampleValue += breakBank.Raw[offset] * breakVol * 0.75f;
+                            sampleValue += track[i] * breakVol * 0.75f;
+                            break;
+                        case SoundDataType.BreakSlide:
+                        case SoundDataType.JudgeBreakSlide:
+                            sampleValue += track[i] * breakSlideVol;
                             break;
                         case SoundDataType.Hanabi:
-                            if (hanabiBank.Frequency <= 0) continue;
-                            sampleValue += hanabiBank.Raw[offset] * hanabiVol;
-                            break;
                         case SoundDataType.TouchHold:
-                            if (holdRiserBank.Frequency <= 0) continue;
-                            sampleValue += holdRiserBank.Raw[offset] * hanabiVol;
+                            sampleValue += track[i] * hanabiVol;
                             break;
                         case SoundDataType.Slide:
-                            if (slideBank.Frequency <= 0) continue;
-                            sampleValue += slideBank.Raw[offset] * slideVol;
+                        case SoundDataType.BreakSlideStart:
+                            sampleValue += track[i] * slideVol;
                             break;
                         case SoundDataType.Touch:
-                            if (touchBank.Frequency <= 0) continue;
-                            sampleValue += touchBank.Raw[offset] * touchVol;
+                            sampleValue += track[i] * touchVol;
                             break;
                         case SoundDataType.AllPerfect:
-                            if (apBank.Frequency <= 0) continue;
-                            sampleValue += apBank.Raw[offset] * bgmVol;
-                            break;
                         case SoundDataType.FullComboFanfare:
-                            if (fanfareBank.Frequency <= 0) continue;
-                            sampleValue += fanfareBank.Raw[offset] * bgmVol;
-                            break;
                         case SoundDataType.Clock:
-                            if (clockBank.Frequency <= 0) continue;
-                            sampleValue += clockBank.Raw[offset] * bgmVol;
+                            sampleValue += track[i] * bgmVol;
                             break;
                     }
                 }
@@ -869,6 +973,7 @@ namespace MajdataEdit
             filehead.AddRange(filedata);
             File.WriteAllBytes(maidataDir + "/out.wav", filehead.ToArray());
 
+            typeSamples.Clear();
             bgmBank.Free();
             comparableBanks.Values.ToList().ForEach((otherBank) => {
                 if (otherBank.Temp)

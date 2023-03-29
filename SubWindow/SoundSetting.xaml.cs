@@ -41,6 +41,7 @@ namespace MajdataEdit
             SliderValueBindingMap.Add(Answer_Slider, Answer_Value);
             SliderValueBindingMap.Add(Judge_Slider, Judge_Value);
             SliderValueBindingMap.Add(Break_Slider, Break_Value);
+            SliderValueBindingMap.Add(BreakSlide_Slider, BreakSlide_Value);
             SliderValueBindingMap.Add(Slide_Slider, Slide_Value);
             SliderValueBindingMap.Add(EX_Slider, EX_Value);
             SliderValueBindingMap.Add(Touch_Slider, Touch_Value);
@@ -50,7 +51,8 @@ namespace MajdataEdit
             SetSlider(Answer_Slider, MainWindow.answerStream);
             SetSlider(Judge_Slider, MainWindow.judgeStream);
             SetSlider(Break_Slider, MainWindow.breakStream, MainWindow.judgeBreakStream);
-            SetSlider(Slide_Slider, MainWindow.slideStream);
+            SetSlider(BreakSlide_Slider, MainWindow.breakSlideStream, MainWindow.judgeBreakSlideStream);
+            SetSlider(Slide_Slider, MainWindow.slideStream, MainWindow.breakSlideStartStream);
             SetSlider(EX_Slider, MainWindow.judgeExStream);
             SetSlider(Touch_Slider, MainWindow.touchStream);
             SetSlider(Hanabi_Slider, MainWindow.hanabiStream, MainWindow.holdRiserStream);
@@ -68,7 +70,8 @@ namespace MajdataEdit
                 UpdateProgressBar(Answer_Level, MainWindow.answerStream);
                 UpdateProgressBar(Judge_Level, MainWindow.judgeStream);
                 UpdateProgressBar(Break_Level, MainWindow.breakStream, MainWindow.judgeBreakStream);
-                UpdateProgressBar(Slide_Level, MainWindow.slideStream);
+                UpdateProgressBar(BreakSlide_Level, MainWindow.breakSlideStream, MainWindow.judgeBreakSlideStream);
+                UpdateProgressBar(Slide_Level, MainWindow.slideStream, MainWindow.breakSlideStartStream);
                 UpdateProgressBar(EX_Level, MainWindow.judgeExStream);
                 UpdateProgressBar(Touch_Level, MainWindow.touchStream);
                 UpdateProgressBar(Hanabi_Level, MainWindow.hanabiStream, MainWindow.holdRiserStream);
@@ -123,6 +126,7 @@ namespace MajdataEdit
             Bass.BASS_ChannelGetAttribute(MainWindow.answerStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Answer_Level);
             Bass.BASS_ChannelGetAttribute(MainWindow.judgeStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Judge_Level);
             Bass.BASS_ChannelGetAttribute(MainWindow.breakStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Break_Level);
+            Bass.BASS_ChannelGetAttribute(MainWindow.breakSlideStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Break_Slide_Level);
             Bass.BASS_ChannelGetAttribute(MainWindow.slideStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Slide_Level);
             Bass.BASS_ChannelGetAttribute(MainWindow.judgeExStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Ex_Level);
             Bass.BASS_ChannelGetAttribute(MainWindow.touchStream, BASSAttribute.BASS_ATTRIB_VOL, ref MainWindow.editorSetting.Default_Touch_Level);
@@ -137,6 +141,7 @@ namespace MajdataEdit
             Answer_Slider.Value = MainWindow.editorSetting.Default_Answer_Level;
             Judge_Slider.Value = MainWindow.editorSetting.Default_Judge_Level;
             Break_Slider.Value = MainWindow.editorSetting.Default_Break_Level;
+            BreakSlide_Slider.Value = MainWindow.editorSetting.Default_Break_Slide_Level;
             Slide_Slider.Value = MainWindow.editorSetting.Default_Slide_Level;
             EX_Slider.Value = MainWindow.editorSetting.Default_Ex_Level;
             Touch_Slider.Value = MainWindow.editorSetting.Default_Touch_Level;
