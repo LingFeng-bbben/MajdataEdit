@@ -29,12 +29,16 @@ namespace MajdataEdit
             public bool hasSlide = false;
             public bool hasAllPerfect = false;
             public bool hasClock = false;
+            public bool hasBreakSlideStart = false;
+            public bool hasBreakSlide = false;
+            public bool hasJudgeBreakSlide = false;
             public double time;
 
             public SoundEffectTiming(double _time, bool _hasAnswer = false, bool _hasJudge = false, bool _hasJudgeBreak = false,
                                      bool _hasBreak = false, bool _hasTouch = false, bool _hasHanabi = false,
                                      bool _hasJudgeEx = false, bool _hasTouchHold = false, bool _hasSlide = false,
-                                     bool _hasTouchHoldEnd = false, bool _hasAllPerfect = false, bool _hasClock = false)
+                                     bool _hasTouchHoldEnd = false, bool _hasAllPerfect = false, bool _hasClock = false,
+                                     bool _hasBreakSlideStart = false, bool _hasBreakSlide = false, bool _hasJudgeBreakSlide = false)
             {
                 time = _time;
                 hasAnswer = _hasAnswer;
@@ -49,6 +53,9 @@ namespace MajdataEdit
                 hasTouchHoldEnd = _hasTouchHoldEnd;
                 hasAllPerfect = _hasAllPerfect;
                 hasClock = _hasClock;
+                hasBreakSlideStart = _hasBreakSlideStart;
+                hasBreakSlide = _hasBreakSlide;
+                hasJudgeBreakSlide = _hasJudgeBreakSlide;
             }
         }
 
@@ -158,7 +165,8 @@ namespace MajdataEdit
             TouchHold,
             Slide, Touch,
             AllPerfect, FullComboFanfare,
-            Clock
+            Clock,
+            BreakSlideStart, BreakSlide, JudgeBreakSlide
         }
 
         struct SoundDataRange
@@ -214,6 +222,9 @@ namespace MajdataEdit
         public int allperfectStream = -114514;
         public int fanfareStream = -114514;
         public int clockStream = -114514;
+        public int breakSlideStartStream = -114514;     // break-slide启动音效
+        public int breakSlideStream = -114514;          // break-slide欢呼声（critical perfect音效）
+        public int judgeBreakSlideStream = -114514;     // break-slide判定音效
 
         List<SoundEffectTiming> waitToBePlayed;
         //private Stopwatch sw = new Stopwatch();
@@ -239,6 +250,9 @@ namespace MajdataEdit
             allperfectStream = Bass.BASS_StreamCreateFile(path + "all_perfect.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             fanfareStream = Bass.BASS_StreamCreateFile(path + "fanfare.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             clockStream = Bass.BASS_StreamCreateFile(path + "clock.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            breakSlideStartStream = Bass.BASS_StreamCreateFile(path + "break_slide_start.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            breakSlideStream = Bass.BASS_StreamCreateFile(path + "break_slide.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            judgeBreakSlideStream = Bass.BASS_StreamCreateFile(path + "judge_break_slide.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
         }
         [DllImport("winmm")] 
         static extern void timeBeginPeriod(int t); 
@@ -319,6 +333,18 @@ namespace MajdataEdit
                     if (se.hasSlide)
                     {
                         Bass.BASS_ChannelPlay(slideStream, true);
+                    }
+                    if (se.hasBreakSlideStart)
+                    {
+                        Bass.BASS_ChannelPlay(breakSlideStartStream, true);
+                    }
+                    if (se.hasBreakSlide)
+                    {
+                        Bass.BASS_ChannelPlay(breakSlideStream, true);
+                    }
+                    if (se.hasJudgeBreakSlide)
+                    {
+                        Bass.BASS_ChannelPlay(judgeBreakSlideStream, true);
                     }
                     if (se.hasAllPerfect)
                     {
@@ -513,11 +539,28 @@ namespace MajdataEdit
                                 var nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
                                 if (nearIndex != -1)
                                 {
-                                    waitToBePlayed[nearIndex].hasSlide = true;
+                                    if (note.isSlideBreak)
+                                    {
+                                        // 如果是break slide的话 使用break slide的启动音效
+                                        waitToBePlayed[nearIndex].hasBreakSlideStart = true;
+                                    }
+                                    else
+                                    {
+                                        // 否则使用普通slide的启动音效
+                                        waitToBePlayed[nearIndex].hasSlide = true;
+                                    }
                                 }
                                 else
                                 {
-                                    SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasSlide: true);
+                                    SoundEffectTiming slide;
+                                    if (note.isSlideBreak)
+                                    {
+                                        slide = new SoundEffectTiming(targetTime, _hasBreakSlideStart: true);
+                                    }
+                                    else
+                                    {
+                                        slide = new SoundEffectTiming(targetTime, _hasSlide: true);
+                                    }
                                     waitToBePlayed.Add(slide);
                                 }
                                 // Slide尾巴 如果是Break Slide的话 就要添加一个Break音效
@@ -527,11 +570,12 @@ namespace MajdataEdit
                                     nearIndex = waitToBePlayed.FindIndex(o => Math.Abs(o.time - targetTime) < 0.001f);
                                     if (nearIndex != -1)
                                     {
-                                        waitToBePlayed[nearIndex].hasBreak = true;
+                                        waitToBePlayed[nearIndex].hasBreakSlide = true;
+                                        waitToBePlayed[nearIndex].hasJudgeBreakSlide = true;
                                     }
                                     else
                                     {
-                                        SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasBreak: true);
+                                        SoundEffectTiming slide = new SoundEffectTiming(targetTime, _hasBreakSlide: true, _hasJudgeBreakSlide: true);
                                         waitToBePlayed.Add(slide);
                                     }
                                 }
@@ -641,6 +685,9 @@ namespace MajdataEdit
             SoundBank apBank = new SoundBank(path + "/all_perfect.wav");
             SoundBank fanfareBank = new SoundBank(path + "/fanfare.wav");
             SoundBank clockBank = new SoundBank(path + "/clock.wav");
+            SoundBank breakSlideStartBank = new SoundBank(path + "/break_slide_start.wav");
+            SoundBank breakSlideBank = new SoundBank(path + "/break_slide.wav");
+            SoundBank judgeBreakSlideBank = new SoundBank(path + "/judge_break_slide.wav");
 
             comparableBanks["Answer"] = answerBank;
             comparableBanks["Judge"] = judgeBank;
@@ -655,8 +702,11 @@ namespace MajdataEdit
             comparableBanks["All Perfect"] = apBank;
             comparableBanks["Fanfare"] = fanfareBank;
             comparableBanks["Clock"] = clockBank;
+            comparableBanks["Break Slide Start"] = breakSlideStartBank;
+            comparableBanks["Break Slide"] = breakSlideBank;
+            comparableBanks["Judge Break Slide"] = judgeBreakSlideBank;
 
-            foreach(var compPair in comparableBanks)
+            foreach (var compPair in comparableBanks)
             {
                 // Skip non existent file.
                 if (compPair.Value.Frequency < 0)
@@ -726,6 +776,9 @@ namespace MajdataEdit
                     case SoundDataType.AllPerfect: return apBank;
                     case SoundDataType.FullComboFanfare: return fanfareBank;
                     case SoundDataType.Clock: return clockBank;
+                    case SoundDataType.BreakSlideStart: return breakSlideStartBank;
+                    case SoundDataType.BreakSlide: return breakSlideBank;
+                    case SoundDataType.JudgeBreakSlide: return judgeBreakSlideBank;
                 }
                 return null;
             };
@@ -810,6 +863,18 @@ namespace MajdataEdit
                 {
                     sampleWrite(startIndex, SoundDataType.Touch);
                 }
+                if (soundTiming.hasBreakSlideStart)
+                {
+                    sampleWrite(startIndex, SoundDataType.BreakSlideStart);
+                }
+                if (soundTiming.hasBreakSlide)
+                {
+                    sampleWrite(startIndex, SoundDataType.BreakSlide);
+                }
+                if (soundTiming.hasJudgeBreakSlide)
+                {
+                    sampleWrite(startIndex, SoundDataType.JudgeBreakSlide);
+                }
                 if (soundTiming.hasAllPerfect)
                 {
                     sampleWrite(startIndex, SoundDataType.AllPerfect);
@@ -880,6 +945,7 @@ namespace MajdataEdit
                             sampleValue += track[i] * hanabiVol;
                             break;
                         case SoundDataType.Slide:
+                        case SoundDataType.BreakSlideStart:
                             sampleValue += track[i] * slideVol;
                             break;
                         case SoundDataType.Touch:
