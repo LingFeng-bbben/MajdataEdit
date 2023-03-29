@@ -33,7 +33,7 @@ namespace MajdataEdit
             public bool hasBreakSlide = false;
             public bool hasJudgeBreakSlide = false;
             public double time;
-
+            public int noteGroupIndex = -1;
             public SoundEffectTiming(double _time, bool _hasAnswer = false, bool _hasJudge = false, bool _hasJudgeBreak = false,
                                      bool _hasBreak = false, bool _hasTouch = false, bool _hasHanabi = false,
                                      bool _hasJudgeEx = false, bool _hasTouchHold = false, bool _hasSlide = false,
@@ -362,7 +362,7 @@ namespace MajdataEdit
                         if ((bool)FollowPlayCheck.IsChecked)
                         {
                             ghostCusorPositionTime = (float)nearestTime;
-                            SeekTextFromTime();
+                            SeekTextFromIndex(se.noteGroupIndex);
                         }
                     });
                 }
@@ -430,8 +430,9 @@ namespace MajdataEdit
                     }
                 }
             }
-            foreach (var noteGroup in SimaiProcess.notelist)
+            for (int i=0;i< SimaiProcess.notelist.Count;i++ )
             {
+                var noteGroup = SimaiProcess.notelist[i];
                 if (noteGroup.time < startTime) { continue; }
 
                 SoundEffectTiming stobj;
@@ -446,6 +447,8 @@ namespace MajdataEdit
                 {
                     stobj = new SoundEffectTiming(noteGroup.time);
                 }
+
+                stobj.noteGroupIndex = i;
 
                 var notes = noteGroup.getNotes();
                 foreach (SimaiNote note in notes)

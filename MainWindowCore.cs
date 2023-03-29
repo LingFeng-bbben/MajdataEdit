@@ -115,6 +115,14 @@ namespace MajdataEdit
             var pointer = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
             FumenContent.Selection.Select(pointer, pointer);
         }
+
+        void SeekTextFromIndex(int noteGroupIndex)
+        {
+            var theNote = SimaiProcess.notelist[noteGroupIndex];
+            var pointer = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
+            FumenContent.Selection.Select(pointer, pointer);
+        }
+
         public void ScrollToFumenContentSelection(int positionX, int positionY)
         {
             // 这玩意用于其他窗口来滚动Scroll 因为涉及到好多变量都是private的
