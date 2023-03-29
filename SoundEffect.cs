@@ -96,6 +96,7 @@ namespace MajdataEdit
                 );
                 var startInfo = new ProcessStartInfo(FFMpegDirectory + "/ffmpeg.exe", args);
                 startInfo.UseShellExecute = false;
+                startInfo.CreateNoWindow = true;
                 startInfo.RedirectStandardError = true;
                 var proc = Process.Start(startInfo);
                 proc.WaitForExit();
