@@ -435,4 +435,12 @@
   <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
     <value>DX Score</value>
   </data>
+  <data name="AprilFoolText1" xml:space="preserve">
+    <value>少年
+你想成为一名立派のmaimai谱师吗？
+</value>
+  </data>
+  <data name="AprilFoolText2" xml:space="preserve">
+    <value>想</value>
+  </data>
 </root>

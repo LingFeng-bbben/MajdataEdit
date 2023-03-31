@@ -46,7 +46,7 @@ namespace MajdataEdit
         {
             CheckAndStartView();
 
-            TheWindow.Title = GetWindowsTitleString();
+            //TheWindow.Title = GetWindowsTitleString(false);
 
             SetWindowGoldenPosition();
 
@@ -67,13 +67,256 @@ namespace MajdataEdit
             visualEffectRefreshTimer.Elapsed += VisualEffectRefreshTimer_Elapsed;
             waveStopMonitorTimer.Elapsed += WaveStopMonitorTimer_Elapsed;
             playbackSpeedHideTimer.Elapsed += PlbHideTimer_Elapsed;
+            apf_windowShake.Elapsed += ApfWindowShake_Elapsed;
 
-            if (editorSetting.AutoCheckUpdate)
+            #region 愚人节启动动画
+            if (!File.Exists("HAPPYAPRILFOOL"))
             {
-                CheckUpdate(onStart: true);
+                TheWindow.Title = GetWindowsTitleString(false);
+                CoverApf.Visibility = Visibility.Visible;
+                Cover.Visibility = Visibility.Collapsed;
             }
+            else
+            {
+                TheWindow.Title = GetWindowsTitleString(true);
+                GridBG.Background = new LinearGradientBrush(
+                    System.Windows.Media.Color.FromRgb(29, 0, 31), System.Windows.Media.Color.FromRgb(102, 0, 0),
+                    new System.Windows.Point(0.5, 0), new System.Windows.Point(0.5, 1)
+                );
+            }
+            #endregion
         }
 
+
+        #region 愚人节
+        private int apf_childPtr = 0;
+        private int apf_childCount = 0;
+        private string apf_textRaw;
+        private bool[] apf_textHasChanged;
+        private Random apf_random = new Random();
+        private string[] apf_randomChar = { "_", "@", "=", "#", "*", "&", "锟", "斤", "拷", "烫", "¼", "♥", "✟", "█", "㊛", "卍" };
+        private Timer apf_windowShake = new Timer(17);
+        private int apf_windowShakeLevel = 20;
+        private int apf_delay = 10;
+        private double apf_ScreenWidth;
+        private double apf_ScreenHeight;
+        private double apf_WindowWidth;
+        private double apf_WindowHeight;
+        private void ApfWindowShake_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                this.Left = (apf_ScreenWidth - apf_WindowWidth) / 2 + apf_random.Next(-apf_windowShakeLevel, apf_windowShakeLevel+1);
+                this.Top = (apf_ScreenHeight - apf_WindowHeight) / 2 + apf_random.Next(-apf_windowShakeLevel, apf_windowShakeLevel + 1);
+            });
+
+            apf_windowShakeLevel--;
+            if (apf_windowShakeLevel < 1)
+            {
+                apf_windowShakeLevel = 1;
+            }
+        }
+        private SolidColorBrush apf_getRandomColor()
+        {
+            return new SolidColorBrush(System.Windows.Media.Color.FromRgb((byte)apf_random.Next(256), (byte)apf_random.Next(256), (byte)apf_random.Next(256)));
+        }
+        private void AprilFoolButton_Click(object sender, RoutedEventArgs e)
+        {
+            var windowPtr = FindWindow(null, "MajdataView");
+            ShowWindow(windowPtr, 7);
+
+            apf_ScreenWidth = SystemParameters.PrimaryScreenWidth;
+            apf_ScreenHeight = SystemParameters.PrimaryScreenHeight;
+            apf_WindowWidth = this.Width;
+            apf_WindowHeight = this.Height;
+
+            PreventClick.Visibility = Visibility.Visible;
+
+            apf_childCount = ErrorButtonGourp.Children.Count;
+            apf_textRaw = ApfText.Text;
+            apf_textHasChanged = new bool[apf_textRaw.Length];
+            for (int i=0; i<apf_textRaw.Length; i++)
+            {
+                apf_textHasChanged[i] = false;
+            }
+
+            var t1 = Task.Run(async delegate
+            {
+                await Task.Delay(400);
+
+                Bass.BASS_ChannelPlay(youlovemeStream, true);
+
+                int delayV = 800;
+                for (int i=0; i<apf_childCount; i++)
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        this.showNextChildApf();
+                    });
+                    await Task.Delay(delayV);
+                    delayV = (int)(delayV / 1.5);
+                    if (delayV < 15)
+                    {
+                        delayV = 15;
+                    }
+                }
+
+
+                await Task.Delay(500);
+
+                Bass.BASS_ChannelStop(youlovemeStream);
+                Bass.BASS_ChannelPlay(iloveyouStream, true);
+                this.Dispatcher.Invoke(() =>
+                {
+                    CoverApf.Background = apf_getRandomColor();
+                    this.Left = 0;
+                    this.Top = (apf_ScreenHeight - apf_WindowHeight) / 2;
+                });
+
+                await Task.Delay(60000 / 185 - apf_delay);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    CoverApf.Background = apf_getRandomColor();
+                    this.Left = apf_ScreenWidth - apf_WindowWidth;
+                    this.Top = (apf_ScreenHeight - apf_WindowHeight) / 2;
+                });
+
+                await Task.Delay(60000 / 185 - apf_delay);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    CoverApf.Background = apf_getRandomColor();
+                    this.Left = 0;
+                    this.Top = 0;
+                });
+
+                await Task.Delay(30000 / 185 - apf_delay);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    CoverApf.Background = apf_getRandomColor();
+                    this.Left = apf_ScreenWidth - apf_WindowWidth;
+                    this.Top = apf_ScreenHeight - apf_WindowHeight;
+                });
+
+                await Task.Delay(30000 / 185 - apf_delay);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    CoverApf.Background = apf_getRandomColor();
+                    this.Left = 0;
+                    this.Top = apf_ScreenHeight - apf_WindowHeight;
+                });
+
+                await Task.Delay(30000 / 185 - apf_delay);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    CoverApf.Background = apf_getRandomColor();
+                    this.Left = apf_ScreenWidth - apf_WindowWidth;
+                    this.Top = 0;
+                });
+
+                await Task.Delay(30000 / 185 - apf_delay);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    CoverApf.Background = apf_getRandomColor();
+                    this.Left = (apf_ScreenWidth - apf_WindowWidth) * 0.425;
+                    this.Top = apf_ScreenHeight * 0.15;
+                });
+
+                await Task.Delay(30000 / 185 - apf_delay);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    CoverApf.Background = apf_getRandomColor();
+                    this.Left = (apf_ScreenWidth - apf_WindowWidth) * 0.575;
+                    this.Top = apf_ScreenHeight * 0.1;
+                });
+
+                await Task.Delay(60000 / 185 - apf_delay);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    CoverApf.Background = apf_getRandomColor();
+                    this.Left = (apf_ScreenWidth - apf_WindowWidth) * 0.425;
+                    this.Top = apf_ScreenHeight * 0.9 - apf_WindowHeight;
+                });
+
+                await Task.Delay(30000 / 185 - apf_delay);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    CoverApf.Background = apf_getRandomColor();
+                    this.Left = (apf_ScreenWidth - apf_WindowWidth) * 0.575;
+                    this.Top = apf_ScreenHeight * 0.85 - apf_WindowHeight;
+                });
+
+                await Task.Delay(60000 / 185 - apf_delay);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    CoverApf.Visibility = Visibility.Collapsed;
+                    this.Left = (apf_ScreenWidth - apf_WindowWidth)/2;
+                    this.Top = (apf_ScreenHeight - apf_WindowHeight)/2;
+                });
+
+                await Task.Delay(60000 / 185 - apf_delay);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.apf_windowShake.Start();
+                    GridBG.Background = new LinearGradientBrush(
+                        System.Windows.Media.Color.FromRgb(29, 0, 31), System.Windows.Media.Color.FromRgb(102, 0, 0),
+                        new System.Windows.Point(0.5, 0), new System.Windows.Point(0.5, 1)
+                    );
+                    this.Title = GetWindowsTitleString(true);
+                });
+
+                await Task.Delay(480000 / 185 - apf_delay);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.apf_windowShake.Stop();
+                    Cover.Visibility = Visibility.Visible;
+                    PreventClick.Visibility = Visibility.Collapsed;
+                    File.WriteAllText("HAPPYAPRILFOOL", "Happy April Fool!");
+                });
+
+                await Task.Delay(100);
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    ShowWindow(windowPtr, 1);
+                    SetWindowGoldenPosition();
+                });
+
+            });
+        }
+        private void showNextChildApf()
+        {
+            List<int> canChangeIndex = new List<int>();
+            for (int i=0; i<apf_textRaw.Length; i++)
+            {
+                if (!apf_textHasChanged[i] && apf_textRaw[i] != '\n' && apf_textRaw[i] != '\r') 
+                {
+                    canChangeIndex.Add(i);
+                }
+            }
+            if (canChangeIndex.Count != 0)
+            {
+                var targetIndex = canChangeIndex[apf_random.Next(canChangeIndex.Count)];
+                apf_textHasChanged[targetIndex] = true;
+                apf_textRaw = apf_textRaw.Substring(0, targetIndex) + apf_randomChar[apf_random.Next(apf_randomChar.Length)] + apf_textRaw.Substring(targetIndex + 1);
+
+                ApfText.Text = apf_textRaw;
+            }
+
+            ((System.Windows.Controls.Button)ErrorButtonGourp.Children[apf_childPtr++]).Visibility = Visibility.Visible;
+        }
+        #endregion
 
 
         //start the view and wait for boot, then set window pos
@@ -537,7 +780,5 @@ namespace MajdataEdit
             FindGrid.Visibility = Visibility.Collapsed;
             FumenContent.Focus();
         }
-
-
     }
 }

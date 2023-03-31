@@ -270,7 +270,6 @@ More info in the Results Window. Results are approximate.
   </data>
   <data name="MultNoteEnable" xml:space="preserve">
     <value>Excess Note Detection</value>
-    <comment>Maybe not the most accurate translation</comment>
     <comment>TL: This is the best name I could come up with, probably best to keep the underlying name the same</comment>
   </data>
   <data name="MultNoteError1" xml:space="preserve">
@@ -443,5 +442,13 @@ Click OK to start render.</value>
   </data>
   <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
     <value>DX Score</value>
+  </data>
+  <data name="AprilFoolText1" xml:space="preserve">
+    <value>Young Man
+Do you want to be a ELITE MAIMAI CHART DESIGNER?
+</value>
+  </data>
+  <data name="AprilFoolText2" xml:space="preserve">
+    <value>YES</value>
   </data>
 </root>

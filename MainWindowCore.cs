@@ -1455,9 +1455,16 @@ namespace MajdataEdit
             
         }
 
-        public string GetWindowsTitleString()
+        public string GetWindowsTitleString(bool apf = false)
         {
-            return "[V]@_]d4✟ə£d!+(\\/.¼¼¼¼)";
+            if (apf)
+            {
+                return "[V]@_]d4✟ə£d!+(\\/.¼¼¼¼)";
+            }
+            else
+            {
+                return "MajdataEdit(" + MAJDATA_VERSION_STRING + ")";
+            }
         }
 
         public string GetWindowsTitleString(string info)

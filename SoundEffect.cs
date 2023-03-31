@@ -225,6 +225,8 @@ namespace MajdataEdit
         public int breakSlideStartStream = -114514;     // break-slide启动音效
         public int breakSlideStream = -114514;          // break-slide欢呼声（critical perfect音效）
         public int judgeBreakSlideStream = -114514;     // break-slide判定音效
+        public int iloveyouStream = -520;
+        public int youlovemeStream = -520;
 
         List<SoundEffectTiming> waitToBePlayed;
         //private Stopwatch sw = new Stopwatch();
@@ -253,6 +255,10 @@ namespace MajdataEdit
             breakSlideStartStream = Bass.BASS_StreamCreateFile(path + "break_slide_start.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             breakSlideStream = Bass.BASS_StreamCreateFile(path + "break_slide.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
             judgeBreakSlideStream = Bass.BASS_StreamCreateFile(path + "judge_break_slide.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            iloveyouStream = Bass.BASS_StreamCreateFile(path + "iloveyou.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            youlovemeStream = Bass.BASS_StreamCreateFile(path + "youloveme.wav", 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
+            Bass.BASS_ChannelSetAttribute(iloveyouStream, BASSAttribute.BASS_ATTRIB_VOL, 1L);
+            Bass.BASS_ChannelSetAttribute(youlovemeStream, BASSAttribute.BASS_ATTRIB_VOL, 0.8f);
         }
         [DllImport("winmm")] 
         static extern void timeBeginPeriod(int t); 

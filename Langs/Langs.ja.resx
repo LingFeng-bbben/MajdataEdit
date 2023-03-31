@@ -469,4 +469,12 @@ Open Browser to download latest update of Majdata?</value>
   <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
     <value>でらっくす Score</value>
   </data>
+  <data name="AprilFoolText1" xml:space="preserve">
+    <value>少年
+君は立派のmaimai note designerになりたいですか？
+</value>
+  </data>
+  <data name="AprilFoolText2" xml:space="preserve">
+    <value>YES</value>
+  </data>
 </root>
