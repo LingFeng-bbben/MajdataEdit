@@ -1487,7 +1487,7 @@ namespace MajdataEdit
                 });
             }
             catch { }
-            return GetWindowsTitleString() + " - " + info;
+            return GetWindowsTitleString(true) + " - " + info;
         }
     }
 }
