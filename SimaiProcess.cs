@@ -125,7 +125,7 @@ namespace MajdataEdit
                     maidata.Add("&inote_" + (i+1) + "=" + fumens[i].Trim());
                 }
             }
-            File.WriteAllLines(filename, maidata.ToArray(),Encoding.UTF8);
+            File.WriteAllLines(filename, maidata.ToArray());
         }
         static private string GetValue(string varline)
         {
