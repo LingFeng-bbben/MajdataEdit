@@ -791,8 +791,10 @@ namespace MajdataEdit
             {
                 SoundBank sample = getSampleFromType(type);
                 if (sample.Frequency <= 0) return;
-                for (int t = 0; t < sample.RawSize; t++)
+                for (int t = 0; t < sample.RawSize && time + t < typeSamples[type].Length; t++)
+                {
                     typeSamples[type][time + t] = sample.Raw[t];
+                }
             };
 
             Action<int, SoundDataType> sampleAdd = (time, type) =>
@@ -813,7 +815,7 @@ namespace MajdataEdit
 
             Action<int, int, SoundDataType> sampleWipe = (timeFrom, timeTo, type) =>
             {
-                for (int t = timeFrom; t < timeTo; t++)
+                for (int t = timeFrom; t < timeTo && t< typeSamples[type].Length; t++)
                     typeSamples[type][t] = 0;
             };
 

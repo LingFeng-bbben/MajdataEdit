@@ -1005,7 +1005,7 @@ namespace MajdataEdit
                     }
                     catch(AggregateException e)
                     {
-                        MessageBox.Show(task.Exception.InnerException.Message + "\n" + e.Message);
+                        MessageBox.Show(task.Exception.InnerException.Message + "\n" + task.Exception.InnerException.StackTrace);
                         return;
                     }
                     if (!sendRequestRun(startAt, playMethod)) return;
