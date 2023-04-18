@@ -32,7 +32,7 @@ using Semver;
 using DiscordRPC;
 using System.Xml.Linq;
 using System.Windows.Media.Media3D;
-
+using MajdataEdit.AutoSaveModule;
 
 namespace MajdataEdit
 {
@@ -305,6 +305,7 @@ namespace MajdataEdit
             VolumnSetting.IsEnabled = true;
             MenuMuriCheck.IsEnabled = true;
             Menu_ExportRender.IsEnabled = true;
+            AutoSaveManager.Of().SetAutoSaveEnable(true);
             SetSavedState(true);
         }
         private void ReadWaveFromFile()
@@ -362,6 +363,7 @@ namespace MajdataEdit
                 isSaved = false;
                 LevelSelector.IsEnabled = false;
                 TheWindow.Title = GetWindowsTitleString(GetLocalizedString("Unsaved") + SimaiProcess.title);
+                AutoSaveManager.Of().SetFileChanged();
             }
         }
         /// <summary>

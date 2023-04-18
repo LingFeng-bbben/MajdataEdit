@@ -104,6 +104,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AutoSaveModule\AutoSaveIndex.cs" />
+    <Compile Include="AutoSaveModule\AutoSaveIndexManager.cs" />
+    <Compile Include="AutoSaveModule\AutoSaveExceptions.cs" />
+    <Compile Include="AutoSaveModule\AutoSaveManager.cs" />
+    <Compile Include="AutoSaveModule\GlobalAutoSave.cs" />
+    <Compile Include="AutoSaveModule\GlobalAutoSaveContext.cs" />
+    <Compile Include="AutoSaveModule\IAutoSave.cs" />
+    <Compile Include="AutoSaveModule\IAutoSaveContext.cs" />
+    <Compile Include="AutoSaveModule\IAutoSaveIndexManager.cs" />
+    <Compile Include="AutoSaveModule\LocalAutoSave.cs" />
+    <Compile Include="AutoSaveModule\LocalAutoSaveContext.cs" />
     <Compile Include="SoundEffect.cs" />
     <Compile Include="SubWindow\EditorSettingPanel.xaml.cs">
       <DependentUpon>EditorSettingPanel.xaml</DependentUpon>
