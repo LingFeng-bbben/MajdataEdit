@@ -270,7 +270,6 @@ More info in the Results Window. Results are approximate.
   </data>
   <data name="MultNoteEnable" xml:space="preserve">
     <value>Excess Note Detection</value>
-    <comment>Maybe not the most accurate translation</comment>
     <comment>TL: This is the best name I could come up with, probably best to keep the underlying name the same</comment>
   </data>
   <data name="MultNoteError1" xml:space="preserve">
@@ -443,5 +442,19 @@ Click OK to start render.</value>
   </data>
   <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
     <value>DX Score</value>
+  </data>
+  <data name="AutosaveRecoverWindowTitle" xml:space="preserve">
+    <value>Auto-save Recovery</value>
+  </data>
+  <data name="RecoverThis" xml:space="preserve">
+    <value>Recover</value>
+  </data>
+  <data name="RecoveryDoubleCheck" xml:space="preserve">
+    <value>Are you sure you want to recover this data (auto-saved at {0}) to "{1}"?
+（The previous "maidata.txt" will be renamed "maidata.before_ recovery.txt" after recovery）</value>
+    <comment>{0}=Auto-saved time，{1}=original maidata.txt path</comment>
+  </data>
+  <data name="AbnormalTerminationInformation" xml:space="preserve">
+    <value>It seems that Majdata was not closed properly last time. Do you want to open the auto-save recovery window?</value>
   </data>
 </root>
