@@ -43,7 +43,7 @@ namespace MajdataEdit.AutoSaveModule
         /// <summary>
         /// 自动保存计时Timer 默认每60秒检查一次
         /// </summary>
-        private Timer autoSaveTimer = new Timer(1000 * 10);
+        private Timer autoSaveTimer = new Timer(1000 * 60);
 
         /// <summary>
         /// 自上次保存后，是否产生了修改

@@ -454,4 +454,7 @@ Click OK to start render.</value>
 （The previous "maidata.txt" will be renamed "maidata.before_ recovery.txt" after recovery）</value>
     <comment>{0}=Auto-saved time，{1}=original maidata.txt path</comment>
   </data>
+  <data name="AbnormalTerminationInformation" xml:space="preserve">
+    <value>It seems that Majdata was not closed properly last time. Do you want to open the auto-save recovery window?</value>
+  </data>
 </root>

@@ -92,7 +92,18 @@ namespace MajdataEdit.AutoSaveModule
 
         public void RefreshIndex()
         {
-            // 从this.index.FileInfo的表头开始删除 直到Count小于等于maxAutoSaveCount
+            // 先扫描一遍，如果有文件已经被删了就先移除掉
+            for (int i = this.index.Count - 1; i >= 0; i--) 
+            {
+                AutoSaveIndex.FileInfo fileInfo = this.index.FilesInfo[i];
+                if (!File.Exists(fileInfo.FileName))
+                {
+                    this.index.FilesInfo.RemoveAt(i);
+                    this.index.Count--;
+                }
+            }
+
+            // 然后从this.index.FileInfo的表头开始删除 直到保证自动保存文件的数量符合maxAutoSaveCount的要求
             while (this.index.Count > this.maxAutoSaveCount)
             {
                 AutoSaveIndex.FileInfo fileInfo = this.index.FilesInfo[0];

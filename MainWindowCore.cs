@@ -249,6 +249,7 @@ namespace MajdataEdit
                 return;
             }
             maidataDir = path;
+            SafeTerminationDetector.Of().ChangePath(maidataDir);
             SetRawFumenText("");
             if (bgmStream != -1024)
             {

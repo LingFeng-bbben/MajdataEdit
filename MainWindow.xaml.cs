@@ -24,6 +24,7 @@ using System.ComponentModel;
 using DiscordRPC.Logging;
 using DiscordRPC;
 using System.Windows.Media.Media3D;
+using MajdataEdit.AutoSaveModule;
 
 namespace MajdataEdit
 {
@@ -72,6 +73,32 @@ namespace MajdataEdit
             {
                 CheckUpdate(onStart: true);
             }
+
+            #region 异常退出处理
+            if (!SafeTerminationDetector.Of().IsLastTerminationSafe())
+            {
+                // 若上次异常退出，则询问打开恢复窗口
+                MessageBoxResult result = MessageBox.Show(GetLocalizedString("AbnormalTerminationInformation"), GetLocalizedString("Attention"), MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    string lastEditPath = File.ReadAllText(SafeTerminationDetector.Of().RecordPath).Trim();
+                    if (lastEditPath.Length != 0)
+                    {
+                        // 尝试打开上次未正常关闭的谱面 然后再打开恢复页面
+                        try
+                        {
+                            initFromFile(lastEditPath);
+                        }
+                        catch (Exception error)
+                        {
+                            Console.WriteLine(error.StackTrace);
+                        }
+                    }
+                    Menu_AutosaveRecover_Click(new object(), new RoutedEventArgs());
+                }
+            }
+            SafeTerminationDetector.Of().RecordProgramStart();
+            #endregion
         }
 
 
@@ -127,6 +154,9 @@ namespace MajdataEdit
             Bass.BASS_StreamFree(hanabiStream);
             Bass.BASS_Stop();
             Bass.BASS_Free();
+
+            // 正常退出
+            SafeTerminationDetector.Of().RecordProgramStart();
         }
 
         //Window grid events

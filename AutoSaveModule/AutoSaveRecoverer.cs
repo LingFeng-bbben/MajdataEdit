@@ -95,10 +95,15 @@ namespace MajdataEdit.AutoSaveModule
 
             try
             {
+                // 删除之前的备份（若有）
+                if (File.Exists(backupMaidataPath))
+                {
+                    File.Delete(backupMaidataPath);
+                }
                 // 备份恢复前的maidata
                 File.Move(rawMaidataPath, backupMaidataPath);
                 // 将自动保存maidata恢复到原目录
-                File.Move(autosaveMaidataPath, rawMaidataPath);
+                File.Copy(autosaveMaidataPath, rawMaidataPath);
             }
             catch
             {

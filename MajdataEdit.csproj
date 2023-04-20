@@ -104,6 +104,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AutoSaveModule\SafeTerminationDetector.cs" />
     <Compile Include="AutoSaveModule\AutoSaveIndex.cs" />
     <Compile Include="AutoSaveModule\AutoSaveIndexManager.cs" />
     <Compile Include="AutoSaveModule\AutoSaveExceptions.cs" />
