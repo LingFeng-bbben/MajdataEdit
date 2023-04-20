@@ -23,13 +23,7 @@ namespace MajdataEdit.AutoSaveModule
         public GlobalAutoSave()
         {
             this.indexManager.ChangePath(this.saveContext.GetSavePath());
-            this.indexManager.SetMaxAutoSaveCount(30);
-        }
-
-        public GlobalAutoSave(int maxAutoSaveCount)
-        {
-            this.indexManager.ChangePath(this.saveContext.GetSavePath());
-            this.indexManager.SetMaxAutoSaveCount(maxAutoSaveCount);
+            this.indexManager.SetMaxAutoSaveCount(AutoSaveManager.GLOBAL_AUTOSAVE_MAX_COUNT);
         }
 
 

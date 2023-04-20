@@ -73,7 +73,8 @@ namespace MajdataEdit.AutoSaveModule
 
             AutoSaveIndex.FileInfo fileInfo = new AutoSaveIndex.FileInfo();
             fileInfo.FileName = path;
-            fileInfo.SavedTime = DateTimeOffset.Now.ToUnixTimeSeconds();
+            fileInfo.SavedTime = DateTimeOffset.Now.AddHours(8).ToUnixTimeSeconds();
+            fileInfo.RawPath = MainWindow.maidataDir;
             this.index.FilesInfo.Add(fileInfo);
 
             this.index.Count++;
@@ -107,6 +108,7 @@ namespace MajdataEdit.AutoSaveModule
         public void SetMaxAutoSaveCount(int maxAutoSaveCount)
         {
             this.maxAutoSaveCount = maxAutoSaveCount;
+            Console.WriteLine("maxAutoSaveCount:" + maxAutoSaveCount);
         }
 
 

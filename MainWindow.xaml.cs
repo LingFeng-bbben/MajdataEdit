@@ -286,11 +286,17 @@ namespace MajdataEdit
         {
             CheckUpdate();
         }
+        private void Menu_AutosaveRecover_Click(object sender, RoutedEventArgs e)
+        {
+            AutoSaveRecover asr = new AutoSaveRecover();
+            asr.Owner = this;
+            asr.ShowDialog();
+        }
 
 
-#endregion
+        #endregion
 
-#region 快捷键
+        #region 快捷键
         private void PlayAndPause_CanExecute(object sender, CanExecuteRoutedEventArgs e) //快捷键
         {
             TogglePlayAndStop();
@@ -537,7 +543,5 @@ namespace MajdataEdit
             FindGrid.Visibility = Visibility.Collapsed;
             FumenContent.Focus();
         }
-
-
     }
 }

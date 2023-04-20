@@ -14,7 +14,7 @@ namespace MajdataEdit.AutoSaveModule
     /// <summary>
     /// 自动保存索引 用于索引当前环境中自动保存的文件
     /// </summary>
-    class AutoSaveIndex
+    public class AutoSaveIndex
     {
         /// <summary>
         /// 已存在的自动保存文件数量
@@ -35,6 +35,10 @@ namespace MajdataEdit.AutoSaveModule
             /// 自动保存时间
             /// </summary>
             public long SavedTime;
+            /// <summary>
+            /// 原先的文件路径
+            /// </summary>
+            public string RawPath;
         }
     }
 }

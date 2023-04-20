@@ -469,4 +469,16 @@ Open Browser to download latest update of Majdata?</value>
   <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
     <value>でらっくす Score</value>
   </data>
+  <data name="AutosaveRecoverWindowTitle" xml:space="preserve">
+    <value>才一卜セ一ブ リカバリ`</value>
+    <comment>Maybe not the most accurate translation</comment>
+  </data>
+  <data name="RecoverThis" xml:space="preserve">
+    <value>リカバリ`</value>
+  </data>
+  <data name="RecoveryDoubleCheck" xml:space="preserve">
+    <value>Are you sure you want to recover this data (auto-saved at {0}) to "{1}"?
+（The previous "maidata.txt" will be renamed "maidata.before_ recovery.txt" after recovery）</value>
+    <comment>Translation required. {0}=Auto-saved time，{1}=original maidata.txt path</comment>
+  </data>
 </root>

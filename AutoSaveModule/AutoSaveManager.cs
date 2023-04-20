@@ -20,9 +20,20 @@ namespace MajdataEdit.AutoSaveModule
     public sealed class AutoSaveManager
     {
         #region Singleton
-        private static readonly AutoSaveManager _instance = new AutoSaveManager();
+        private static volatile AutoSaveManager _instance;
+        private static object syncLock = new object();
         public static AutoSaveManager Of()
         {
+            if (_instance == null)
+            {
+                lock (syncLock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new AutoSaveManager();
+                    }
+                }
+            }
             return _instance;
         }
         #endregion
@@ -32,13 +43,15 @@ namespace MajdataEdit.AutoSaveModule
         /// <summary>
         /// 自动保存计时Timer 默认每60秒检查一次
         /// </summary>
-        private Timer autoSaveTimer = new Timer(1000 * 60);
+        private Timer autoSaveTimer = new Timer(1000 * 10);
 
         /// <summary>
         /// 自上次保存后，是否产生了修改
         /// </summary>
         private bool isFileChanged = false;
 
+        public static readonly int LOCAL_AUTOSAVE_MAX_COUNT = 5;
+        public static readonly int GLOBAL_AUTOSAVE_MAX_COUNT = 30;
 
 
         /// <summary>

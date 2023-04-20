@@ -24,12 +24,7 @@ namespace MajdataEdit.AutoSaveModule
 
         public LocalAutoSave()
         {
-            this.indexManager.SetMaxAutoSaveCount(5);
-        }
-
-        public LocalAutoSave(int maxAutoSaveCount)
-        {
-            this.indexManager.SetMaxAutoSaveCount(maxAutoSaveCount);
+            this.indexManager.SetMaxAutoSaveCount(AutoSaveManager.LOCAL_AUTOSAVE_MAX_COUNT);
         }
 
 

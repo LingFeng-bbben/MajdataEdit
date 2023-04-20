@@ -1492,5 +1492,10 @@ namespace MajdataEdit
             catch { }
             return GetWindowsTitleString() + " - " + info;
         }
+
+        public void OpenFile(string path)
+        {
+            initFromFile(path);
+        }
     }
 }

@@ -435,4 +435,15 @@
   <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
     <value>DX Score</value>
   </data>
+  <data name="AutosaveRecoverWindowTitle" xml:space="preserve">
+    <value>自动保存恢复</value>
+  </data>
+  <data name="RecoverThis" xml:space="preserve">
+    <value>恢复</value>
+  </data>
+  <data name="RecoveryDoubleCheck" xml:space="preserve">
+    <value>确认要将此数据（自动保存于{0}）恢复至{1}吗？
+（恢复之前的maidata.txt会被更名为maidata.before_recovery.txt）</value>
+    <comment>{0}=自动保存时间，{1}=原maidata路径</comment>
+  </data>
 </root>
