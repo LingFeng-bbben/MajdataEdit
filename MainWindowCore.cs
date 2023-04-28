@@ -547,12 +547,12 @@ namespace MajdataEdit
         {
             try
             {
-                DrawFFT();
-                DrawWave();
+            DrawFFT();
+            DrawWave();
             }catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-            }
+        }
         }
         // 谱面变更延迟解析
         private void ChartChangeTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -623,15 +623,19 @@ namespace MajdataEdit
             WaveBitmap = new WriteableBitmap(width, height, 72, 72, PixelFormats.Pbgra32, null);
             MusicWave.Source = WaveBitmap;
         }
+        bool isDrawing = false;
         private void DrawWave()
         {
-            Dispatcher.InvokeAsync(new Action(() =>
-            {
+            if(isDrawing) { return; }
+            
 
+            Dispatcher.Invoke(new Action(() =>
+            {
+                isDrawing = true;
                 var width = (int)WaveBitmap.PixelWidth;
                 var height = (int)WaveBitmap.PixelHeight;
 
-                if (waveRaws[0] == null) return;
+                if (waveRaws[0] == null) { isDrawing = false; return; }
 
                 WaveBitmap.Lock();
                 
@@ -916,6 +920,7 @@ namespace MajdataEdit
                 //MusicWave.Width = waveLevels.Length * zoominPower;
                 WaveBitmap.AddDirtyRect(new Int32Rect(0, 0, WaveBitmap.PixelWidth, WaveBitmap.PixelHeight));
                 WaveBitmap.Unlock();
+                isDrawing = false;
             }));
         }
         
