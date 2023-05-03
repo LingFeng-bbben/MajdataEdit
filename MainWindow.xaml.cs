@@ -97,7 +97,7 @@ namespace MajdataEdit
                     Menu_AutosaveRecover_Click(new object(), new RoutedEventArgs());
                 }
             }
-            SafeTerminationDetector.Of().RecordProgramStart();
+            SafeTerminationDetector.Of().RecordProgramClose();
             #endregion
         }
 
@@ -156,7 +156,7 @@ namespace MajdataEdit
             Bass.BASS_Free();
 
             // 正常退出
-            SafeTerminationDetector.Of().RecordProgramStart();
+            SafeTerminationDetector.Of().RecordProgramClose();
         }
 
         //Window grid events
