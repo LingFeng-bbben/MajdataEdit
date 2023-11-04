@@ -118,9 +118,13 @@ namespace MajdataEdit
 
         void SeekTextFromIndex(int noteGroupIndex)
         {
-            var theNote = SimaiProcess.notelist[noteGroupIndex];
-            var pointer = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
-            FumenContent.Selection.Select(pointer, pointer);
+            if(SimaiProcess.notelist.Count > noteGroupIndex + 1 && noteGroupIndex >= 0)
+            {
+                var theNote = SimaiProcess.notelist[noteGroupIndex];
+                var pointer = FumenContent.Document.Blocks.ToList()[theNote.rawTextPositionY].ContentStart.GetPositionAtOffset(theNote.rawTextPositionX);
+                FumenContent.Selection.Select(pointer, pointer);
+            }
+            
         }
 
         public void ScrollToFumenContentSelection(int positionX, int positionY)

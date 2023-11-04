@@ -228,7 +228,8 @@ namespace MajdataEdit
                 {'<','>'},
                 {'>','<'}
             };
-            string[] noteStr = str.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            string[] noteStr = str.Split(new string[] { "," }, StringSplitOptions.None);
+            int arrayIndex = 0;
             foreach (var note in noteStr)
             {
                 bool isArg = false;
@@ -260,12 +261,14 @@ namespace MajdataEdit
                     }
                     else
                     {
-                        if(Mirror180.ContainsKey(a))
+                        if (Mirror180.ContainsKey(a))
                             handledStr += Mirror180[a];
                         else
-                            handledStr += a;                        
+                            handledStr += a;
                     }
                 }
+                if (arrayIndex++ < noteStr.Length - 1)
+                    handledStr += ",";
             }
 
             return handledStr;
