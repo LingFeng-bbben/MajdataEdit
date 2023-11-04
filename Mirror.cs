@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MajdataEdit
 {
@@ -38,102 +39,108 @@ namespace MajdataEdit
                 { '1','1' },
                 { '5','5' }
             };//Touch左右
-            string[] noteStr = str.Split(new string[]{","},StringSplitOptions.RemoveEmptyEntries);
-            
-            foreach(var note in noteStr)
+            string[] noteStr = str.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var note in noteStr)
             {
                 bool isArg = false;
                 bool isSpTouch = false;
                 foreach (var a in note)
                 {
                     var index = note.IndexOf(a);
-                    if (a.Equals(new char[] { '{','[','(' }))
+                    if ((new char[] { '{', '[', '(' }).Contains(a))
                     {
                         isArg = true;
                         handledStr += a;
                         continue;
                     }
-                    else if(a.Equals('<') && index < note.Length - 1 && note[index + 1].Equals('H'))
+                    else if (a.Equals('<') && index < note.Length - 1 && note[index + 1].Equals('H'))
                     {
                         isArg = true;
                         handledStr += a;
                         continue;
                     }
-                    else if (a.Equals(new char[] { '}', ']', ')','>' }))
+                    else if ((new char[] { '}', ']', ')', '>' }).Contains(a))
                     {
                         isArg = false;
                         handledStr += a;
                         continue;
-                    }               
-                    else if(isArg)
+                    }
+                    else if (isArg)
                     {
                         handledStr += a;
                         continue;
                     }
                     else
                     {
-                        if( a.Equals(new char[]{'E','D'})) //D区及E区Touch特殊处理
+                        if ((new char[] { 'E', 'D' }).Contains(a)) //D区及E区Touch特殊处理
                         {
                             isSpTouch = true;
                             handledStr += a;
                             continue;
                         }
-                        else if(isSpTouch)
+                        else if (isSpTouch)
                         {
                             handledStr += MirrorTouchLeftToRight[a];
                             isSpTouch = false;
                             continue;
                         }
-                        handledStr += MirrorLeftToRight[a];
+                        if(MirrorLeftToRight.ContainsKey(a))
+                            handledStr += MirrorLeftToRight[a];
+                        else
+                            handledStr += a;
+
+
+                        
                     }
                 }
             }
             return handledStr;
-            
 
 
-                //char[] a = str.ToCharArray();
-                //for (int i = 0; i < a.Length; i++)
-                //{
-                //    string s1 = a[i].ToString();
-                //    if (a[i] == '{' || a[i] == '[' || a[i] == '(')
-                //    {
-                //        s += s1;
 
-                //        while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
-                //        {
-                //            i += 1;
-                //            s += a[i];
-                //        }
-                //    }
-                //    else
-                //    {
-                //        if (MirrorLeftToRight.ContainsKey(s1))
-                //        {
-                //            s += MirrorLeftToRight[s1];
-                //        }
-                //        else if (a[i] == 'e' || a[i] == 'd' || a[i] == 'E' || a[i] == 'D')
-                //        {
-                //            s += a[i];
-                //            i += 1;
-                //            string st = a[i].ToString();
-                //            if (MirrorTouchLeftToRight.ContainsKey(st))
-                //            {
-                //                s += MirrorTouchLeftToRight[st];
-                //            }
-                //            else
-                //            {
-                //                s += a[i];
-                //            }
-                //        }
-                //        else
-                //        {
-                //            s += s1;
-                //        }
-                //    }
+            //char[] a = str.ToCharArray();
+            //for (int i = 0; i < a.Length; i++)
+            //{
+            //    string s1 = a[i].ToString();
+            //    if (a[i] == '{' || a[i] == '[' || a[i] == '(')
+            //    {
+            //        s += s1;
+
+            //        while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+            //        {
+            //            i += 1;
+            //            s += a[i];
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (MirrorLeftToRight.ContainsKey(s1))
+            //        {
+            //            s += MirrorLeftToRight[s1];
+            //        }
+            //        else if (a[i] == 'e' || a[i] == 'd' || a[i] == 'E' || a[i] == 'D')
+            //        {
+            //            s += a[i];
+            //            i += 1;
+            //            string st = a[i].ToString();
+            //            if (MirrorTouchLeftToRight.ContainsKey(st))
+            //            {
+            //                s += MirrorTouchLeftToRight[st];
+            //            }
+            //            else
+            //            {
+            //                s += a[i];
+            //            }
+            //        }
+            //        else
+            //        {
+            //            s += s1;
+            //        }
+            //    }
 
 
-                //}
+            //}
         }
         static public string NoteMirrorUpDown(string str)//上下翻转
         {
@@ -208,52 +215,91 @@ namespace MajdataEdit
         static public string NoteMirror180(string str)//翻转180°
         {
 
-            string s = "";
-            Dictionary<string, string> Mirror180 = new Dictionary<string, string>();
-            Mirror180.Add("5", "1");
-            Mirror180.Add("4", "8");
-            Mirror180.Add("3", "7");
-            Mirror180.Add("6", "2");
-            Mirror180.Add("2", "6");
-            Mirror180.Add("7", "3");
-            Mirror180.Add("1", "5");
-            Mirror180.Add("8", "4");
-            Mirror180.Add("<", ">");
-            Mirror180.Add(">", "<");
-            char[] a = str.ToCharArray();
-            for (int i = 0; i < a.Length; i++)
+            string handledStr = "";
+            Dictionary<char, char> Mirror180 = new Dictionary<char, char>()
             {
-                string s1 = a[i].ToString();
-                if (a[i] == '{' || a[i] == '[' || a[i] == '(')
+                {'5','1'},
+                {'4','8'},
+                {'3','7'},
+                {'6','2'},
+                {'2','6'},
+                {'7','3'},
+                {'1','5'},
+                {'8','4'},
+                {'<','>'},
+                {'>','<'}
+            };
+            string[] noteStr = str.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var note in noteStr)
+            {
+                bool isArg = false;
+                foreach (var a in note)
                 {
-                    s += s1;
-
-                    while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+                    var index = note.IndexOf(a);
+                    if ((new char[] { '{', '[', '(' }).Contains(a))
                     {
-                        i += 1;
-                        s += a[i];
-
-
+                        isArg = true;
+                        handledStr += a;
+                        continue;
                     }
-                }
-                else
-                {
-                    if (Mirror180.ContainsKey(s1))
+                    else if (a.Equals('<') && index < note.Length - 1 && note[index + 1].Equals('H'))
                     {
-                        s += Mirror180[s1];
+                        isArg = true;
+                        handledStr += a;
+                        continue;
                     }
-
+                    else if ((new char[] { '}', ']', ')', '>' }).Contains(a))
+                    {
+                        isArg = false;
+                        handledStr += a;
+                        continue;
+                    }
+                    else if (isArg)
+                    {
+                        handledStr += a;
+                        continue;
+                    }
                     else
                     {
-                        s += s1;
+                        if(Mirror180.ContainsKey(a))
+                            handledStr += Mirror180[a];
+                        else
+                            handledStr += a;                        
                     }
                 }
-
-
             }
-            return s;
+
+            return handledStr;
+            //char[] a = str.ToCharArray();
+            //for (int i = 0; i < a.Length; i++)
+            //{
+            //    string s1 = a[i].ToString();
+            //    if (a[i] == '{' || a[i] == '[' || a[i] == '(')
+            //    {
+            //        s += s1;
+            //        while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+            //        {
+            //            i += 1;
+            //            s += a[i];
+            //
+            //
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (Mirror180.ContainsKey(s1))
+            //        {
+            //            s += Mirror180[s1];
+            //        }
+            //
+            //        else
+            //        {
+            //            s += s1;
+            //        }
+            //    }
+            //}
         }
-        static public string NoteMirrorSpin45(string str)
+        static public string NoteMirrorSpin45(string str)//顺时针旋转45
         {
             string s = "";
             Dictionary<string, string> Mirror45 = new Dictionary<string, string>();
@@ -286,7 +332,7 @@ namespace MajdataEdit
                 {
                     if (Mirror45.ContainsKey(s1))
                     {
-                        if (i + 2 < a.Length && (a[i] == '2' || a[i] == '6')&& a[i+1] != '[')
+                        if (i + 2 < a.Length && (a[i] == '2' || a[i] == '6') && a[i + 1] != '[')
                         {
                             s += Mirror45[s1];
                             while (i + 1 < a.Length && a[i] != ',')
@@ -340,7 +386,7 @@ namespace MajdataEdit
             }
             return s;
         }
-        static public string NoteMirrorSpinCcw45(string str)
+        static public string NoteMirrorSpinCcw45(string str)//逆时针旋转45
         {
             // anti-clockwise
             string s = "";
