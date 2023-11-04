@@ -39,8 +39,8 @@ namespace MajdataEdit
                 { '1','1' },
                 { '5','5' }
             };//Touch左右
-            string[] noteStr = str.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-
+            string[] noteStr = str.Split(new string[] { "," }, StringSplitOptions.None);
+            int arrayIndex = 0;
             foreach (var note in noteStr)
             {
                 bool isArg = false;
@@ -89,11 +89,10 @@ namespace MajdataEdit
                             handledStr += MirrorLeftToRight[a];
                         else
                             handledStr += a;
-
-
-                        
                     }
                 }
+                if(arrayIndex++ < noteStr.Length -1)
+                    handledStr += ",";
             }
             return handledStr;
 
