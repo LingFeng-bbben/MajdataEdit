@@ -6,10 +6,10 @@ namespace MajdataEdit
     //小额负责的部分哟
     static class Mirror
     {
-        static public string NoteMirrorLeftRight(string str)
+        static public string NoteMirrorLeftRight(string str)//左右镜像
         {
 
-            string s = "";
+            string handledStr = "";
             Dictionary<string, string> MirrorLeftToRight = new Dictionary<string, string>()
             {
                 { "8","1" },
@@ -38,49 +38,86 @@ namespace MajdataEdit
                 { "1","1" },
                 { "5","5" }
             };//Touch左右
-            char[] a = str.ToCharArray();
-            for (int i = 0; i < a.Length; i++)
+            string[] noteStr = str.Split(new string[]{","},StringSplitOptions.RemoveEmptyEntries);
+            
+            foreach(var note in noteStr)
             {
-                string s1 = a[i].ToString();
-                if (a[i] == '{' || a[i] == '[' || a[i] == '(')
+                bool isArg = false;
+                foreach (var a in note)
                 {
-                    s += s1;
-
-                    while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+                    if (a.Equals(new char[] { '{','[','(' }))
                     {
-                        i += 1;
-                        s += a[i];
+                        isArg = true;
+                        handledStr += a;
+                        continue;
                     }
-                }
-                else
-                {
-                    if (MirrorLeftToRight.ContainsKey(s1))
+                    else if(isArg)
                     {
-                        s += MirrorLeftToRight[s1];
+                        handledStr += a;
+                        continue;
                     }
-                    else if (a[i] == 'e' || a[i] == 'd' || a[i] == 'E' || a[i] == 'D')
+                    else if (a.Equals(new char[] { '}', ']', ')' }))
                     {
-                        s += a[i];
-                        i += 1;
-                        string st = a[i].ToString();
-                        if (MirrorTouchLeftToRight.ContainsKey(st))
-                        {
-                            s += MirrorTouchLeftToRight[st];
-                        }
-                        else
-                        {
-                            s += a[i];
-                        }
+                        isArg = false;
+                        handledStr += a;
+                        continue;
                     }
                     else
                     {
-                        s += s1;
+                        if(a.Equals(new char[] { '<','>'}))
+                        {
+
+                        }
                     }
                 }
 
-
             }
-            return s;
+            
+
+
+                //char[] a = str.ToCharArray();
+                //for (int i = 0; i < a.Length; i++)
+                //{
+                //    string s1 = a[i].ToString();
+                //    if (a[i] == '{' || a[i] == '[' || a[i] == '(')
+                //    {
+                //        s += s1;
+
+                //        while (i + 1 < a.Length && a[i] != '}' && a[i] != ']' && a[i] != ')')
+                //        {
+                //            i += 1;
+                //            s += a[i];
+                //        }
+                //    }
+                //    else
+                //    {
+                //        if (MirrorLeftToRight.ContainsKey(s1))
+                //        {
+                //            s += MirrorLeftToRight[s1];
+                //        }
+                //        else if (a[i] == 'e' || a[i] == 'd' || a[i] == 'E' || a[i] == 'D')
+                //        {
+                //            s += a[i];
+                //            i += 1;
+                //            string st = a[i].ToString();
+                //            if (MirrorTouchLeftToRight.ContainsKey(st))
+                //            {
+                //                s += MirrorTouchLeftToRight[st];
+                //            }
+                //            else
+                //            {
+                //                s += a[i];
+                //            }
+                //        }
+                //        else
+                //        {
+                //            s += s1;
+                //        }
+                //    }
+
+
+                //}
+                return "";
         }
         static public string NoteMirrorUpDown(string str)
         {
