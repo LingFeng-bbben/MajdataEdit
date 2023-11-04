@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MajdataEdit
 {
@@ -13,30 +10,34 @@ namespace MajdataEdit
         {
 
             string s = "";
-            Dictionary<string, string> MirrorLeftToRight = new Dictionary<string, string>();//左右
-            MirrorLeftToRight.Add("8", "1");
-            MirrorLeftToRight.Add("1", "8");
-            MirrorLeftToRight.Add("2", "7");
-            MirrorLeftToRight.Add("7", "2");
-            MirrorLeftToRight.Add("3", "6");
-            MirrorLeftToRight.Add("6", "3");
-            MirrorLeftToRight.Add("4", "5");
-            MirrorLeftToRight.Add("5", "4");
-            MirrorLeftToRight.Add("q", "p");
-            MirrorLeftToRight.Add("p", "q");
-            MirrorLeftToRight.Add("<", ">");
-            MirrorLeftToRight.Add(">", "<");
-            MirrorLeftToRight.Add("z", "s");
-            MirrorLeftToRight.Add("s", "z");
-            Dictionary<string, string> MirrorTouchLeftToRight = new Dictionary<string, string>();//Touch左右
-            MirrorTouchLeftToRight.Add("8", "2");
-            MirrorTouchLeftToRight.Add("2", "8");
-            MirrorTouchLeftToRight.Add("3", "7");
-            MirrorTouchLeftToRight.Add("7", "3");
-            MirrorTouchLeftToRight.Add("4", "6");
-            MirrorTouchLeftToRight.Add("6", "4");
-            MirrorTouchLeftToRight.Add("1", "1");
-            MirrorTouchLeftToRight.Add("5", "5");
+            Dictionary<string, string> MirrorLeftToRight = new Dictionary<string, string>()
+            {
+                { "8","1" },
+                { "1","8" },
+                { "2","7" },
+                { "7","2" },
+                { "3","6" },
+                { "6","3" },
+                { "4","5" },
+                { "5","4" },
+                { "q","p" },
+                { "p","q" },
+                { "<",">" },
+                { ">","<" },
+                { "z","s" },
+                { "s","z" }
+            };//Note左右
+            Dictionary<string, string> MirrorTouchLeftToRight = new Dictionary<string, string>()
+            {
+                { "8","2" },
+                { "2","8" },
+                { "3","7" },
+                { "7","3" },
+                { "4","6" },
+                { "6","4" },
+                { "1","1" },
+                { "5","5" }
+            };//Touch左右
             char[] a = str.ToCharArray();
             for (int i = 0; i < a.Length; i++)
             {
@@ -49,8 +50,6 @@ namespace MajdataEdit
                     {
                         i += 1;
                         s += a[i];
-
-
                     }
                 }
                 else
