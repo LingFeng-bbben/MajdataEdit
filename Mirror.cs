@@ -6,72 +6,89 @@ namespace MajdataEdit
     //小额负责的部分哟
     static class Mirror
     {
-        static public string NoteMirrorLeftRight(string str)//左右镜像
+        static public string NoteMirrorLeftRight(string str) //左右镜像
         {
 
             string handledStr = "";
-            Dictionary<string, string> MirrorLeftToRight = new Dictionary<string, string>()
+            Dictionary<char, char> MirrorLeftToRight = new Dictionary<char, char>()
             {
-                { "8","1" },
-                { "1","8" },
-                { "2","7" },
-                { "7","2" },
-                { "3","6" },
-                { "6","3" },
-                { "4","5" },
-                { "5","4" },
-                { "q","p" },
-                { "p","q" },
-                { "<",">" },
-                { ">","<" },
-                { "z","s" },
-                { "s","z" }
+                { '8','1' },
+                { '1','8' },
+                { '2','7' },
+                { '7','2' },
+                { '3','6' },
+                { '6','3' },
+                { '4','5' },
+                { '5','4' },
+                { 'q','p' },
+                { 'p','q' },
+                { '<','>' },
+                { '>','<' },
+                { 'z','s' },
+                { 's','z' }
             };//Note左右
-            Dictionary<string, string> MirrorTouchLeftToRight = new Dictionary<string, string>()
+            Dictionary<char, char> MirrorTouchLeftToRight = new Dictionary<char, char>()
             {
-                { "8","2" },
-                { "2","8" },
-                { "3","7" },
-                { "7","3" },
-                { "4","6" },
-                { "6","4" },
-                { "1","1" },
-                { "5","5" }
+                { '8','2' },
+                { '2','8' },
+                { '3','7' },
+                { '7','3' },
+                { '4','6' },
+                { '6','4' },
+                { '1','1' },
+                { '5','5' }
             };//Touch左右
             string[] noteStr = str.Split(new string[]{","},StringSplitOptions.RemoveEmptyEntries);
             
             foreach(var note in noteStr)
             {
                 bool isArg = false;
+                bool isSpTouch = false;
                 foreach (var a in note)
                 {
+                    var index = note.IndexOf(a);
                     if (a.Equals(new char[] { '{','[','(' }))
                     {
                         isArg = true;
                         handledStr += a;
                         continue;
                     }
+                    else if(a.Equals('<') && index < note.Length - 1 && note[index + 1].Equals('H'))
+                    {
+                        isArg = true;
+                        handledStr += a;
+                        continue;
+                    }
+                    else if (a.Equals(new char[] { '}', ']', ')','>' }))
+                    {
+                        isArg = false;
+                        handledStr += a;
+                        continue;
+                    }               
                     else if(isArg)
                     {
                         handledStr += a;
                         continue;
                     }
-                    else if (a.Equals(new char[] { '}', ']', ')' }))
-                    {
-                        isArg = false;
-                        handledStr += a;
-                        continue;
-                    }
                     else
                     {
-                        if(a.Equals(new char[] { '<','>'}))
+                        if( a.Equals(new char[]{'E','D'})) //D区及E区Touch特殊处理
                         {
-
+                            isSpTouch = true;
+                            handledStr += a;
+                            continue;
                         }
+                        else if(isSpTouch)
+                        {
+                            handledStr += MirrorTouchLeftToRight[a];
+                            isSpTouch = false;
+                            continue;
+                        }
+                        handledStr += MirrorLeftToRight[a];
                     }
                 }
-
             }
+            return handledStr;
             
 
 
@@ -117,9 +134,8 @@ namespace MajdataEdit
 
 
                 //}
-                return "";
         }
-        static public string NoteMirrorUpDown(string str)
+        static public string NoteMirrorUpDown(string str)//上下翻转
         {
 
             string s = "";
