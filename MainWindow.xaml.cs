@@ -235,27 +235,27 @@ namespace MajdataEdit
 
         private void MirrorLeftRight_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var result = Mirror.NoteMirrorLeftRight(FumenContent.Selection.Text);
+            var result = Mirror.NoteMirrorHandle(FumenContent.Selection.Text,Mirror.HandleType.LRMirror);
             FumenContent.Selection.Text = result;
         }
         private void MirrorUpDown_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var result = Mirror.NoteMirrorUpDown(FumenContent.Selection.Text);
+            var result = Mirror.NoteMirrorHandle(FumenContent.Selection.Text, Mirror.HandleType.UDMirror);
             FumenContent.Selection.Text = result;
         }
         private void Mirror180_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var result = Mirror.NoteMirror180(FumenContent.Selection.Text);
+            var result = Mirror.NoteMirrorHandle(FumenContent.Selection.Text, Mirror.HandleType.HalfRotation);
             FumenContent.Selection.Text = result;
         }
         private void Mirror45_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var result = Mirror.NoteMirrorSpin45(FumenContent.Selection.Text);
+            var result = Mirror.NoteMirrorHandle(FumenContent.Selection.Text, Mirror.HandleType.Rotation45);
             FumenContent.Selection.Text = result;
         }
         private void MirrorCcw45_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var result = Mirror.NoteMirrorSpinCcw45(FumenContent.Selection.Text);
+            var result = Mirror.NoteMirrorHandle(FumenContent.Selection.Text, Mirror.HandleType.CcwRotation45);
             FumenContent.Selection.Text = result;
         }
         private void BPMtap_MenuItem_Click(object sender, RoutedEventArgs e)
