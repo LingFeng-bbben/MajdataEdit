@@ -266,13 +266,13 @@ public partial class MainWindow : Window
 
     private void MenuItem_SimaiWiki_Click(object sender, RoutedEventArgs e)
     {
-        Process.Start("https://w.atwiki.jp/simai/pages/25.html");
+        Process.Start(new ProcessStartInfo() { FileName = "https://w.atwiki.jp/simai/pages/25.html", UseShellExecute = true });
         //maidata.txtの譜面書式
     }
 
     private void MenuItem_GitHub_Click(object sender, RoutedEventArgs e)
     {
-        Process.Start("https://github.com/LingFeng-bbben/MajdataView");
+        Process.Start(new ProcessStartInfo() { FileName = "https://github.com/LingFeng-bbben/MajdataView", UseShellExecute = true });
     }
 
     private void MenuItem_SoundSetting_Click(object sender, RoutedEventArgs e)
