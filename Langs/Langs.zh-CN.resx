@@ -1,294 +1,300 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
+    <!-- 
+      Microsoft ResX Schema 
+      
+      Version 2.0
+      
+      The primary goals of this format is to allow a simple XML format 
+      that is mostly human readable. The generation and parsing of the 
+      various data types are done through the TypeConverter classes 
+      associated with the data types.
+      
+      Example:
+      
+      ... ado.net/XML headers & schema ...
+      <resheader name="resmimetype">text/microsoft-resx</resheader>
+      <resheader name="version">2.0</resheader>
+      <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+      <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+      <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+      <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+      <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+          <value>[base64 mime encoded serialized .NET Framework object]</value>
+      </data>
+      <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+          <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+          <comment>This is a comment</comment>
+      </data>
+                  
+      There are any number of "resheader" rows that contain simple 
+      name/value pairs.
+      
+      Each data row contains a name, and value. The row also contains a 
+      type or mimetype. Type corresponds to a .NET class that support 
+      text/value conversion through the TypeConverter architecture. 
+      Classes that don't support this are serialized and stored with the 
+      mimetype set.
+      
+      The mimetype is used for serialized objects, and tells the 
+      ResXResourceReader how to depersist the object. This is currently not 
+      extensible. For a given mimetype the value must be set accordingly:
+      
+      Note - application/x-microsoft.net.object.binary.base64 is the format 
+      that the ResXResourceWriter will generate, however the reader can 
+      read any of the formats listed below.
+      
+      mimetype: application/x-microsoft.net.object.binary.base64
+      value   : The object must be serialized with 
+              : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+              : and then encoded with base64 encoding.
+      
+      mimetype: application/x-microsoft.net.object.soap.base64
+      value   : The object must be serialized with 
+              : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+              : and then encoded with base64 encoding.
+  
+      mimetype: application/x-microsoft.net.object.bytearray.base64
+      value   : The object must be serialized into a byte array 
+              : using a System.ComponentModel.TypeConverter
+              : and then encoded with base64 encoding.
+      -->
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+        <xsd:element name="root" msdata:IsDataSet="true">
             <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string"/>
+                            <xsd:attribute name="type" type="xsd:string"/>
+                            <xsd:attribute name="mimetype" type="xsd:string"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string"/>
+                            <xsd:attribute name="name" type="xsd:string"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
             </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="AskCloseView" xml:space="preserve">
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="AskCloseView" xml:space="preserve">
     <value>要关闭View吗？</value>
   </data>
-  <data name="AskSave" xml:space="preserve">
+    <data name="AskSave" xml:space="preserve">
     <value>未保存，要保存吗？</value>
   </data>
-  <data name="Attention" xml:space="preserve">
+    <data name="Attention" xml:space="preserve">
     <value>注意</value>
   </data>
-  <data name="BPMtap" xml:space="preserve">
+    <data name="BPMtap" xml:space="preserve">
     <value>BPM Tap</value>
   </data>
-  <data name="Brightness" xml:space="preserve">
+    <data name="Brightness" xml:space="preserve">
     <value>背景亮度</value>
   </data>
-  <data name="Difficulty" xml:space="preserve">
+    <data name="Difficulty" xml:space="preserve">
     <value>难度</value>
   </data>
-  <data name="Edit" xml:space="preserve">
+    <data name="Edit" xml:space="preserve">
     <value>编辑</value>
   </data>
-  <data name="Error" xml:space="preserve">
+    <data name="Error" xml:space="preserve">
     <value>错误</value>
   </data>
-  <data name="FIles" xml:space="preserve">
+    <data name="FIles" xml:space="preserve">
     <value>文件</value>
   </data>
-  <data name="Github" xml:space="preserve">
+    <data name="Github" xml:space="preserve">
     <value>GitHub</value>
   </data>
-  <data name="MaidataExist" xml:space="preserve">
+    <data name="MaidataExist" xml:space="preserve">
     <value>maidata.txt已存在</value>
   </data>
-  <data name="MapInfo" xml:space="preserve">
+    <data name="MapInfo" xml:space="preserve">
     <value>谱面信息</value>
   </data>
-  <data name="MapMuriDetc" xml:space="preserve">
+    <data name="MapMuriDetc" xml:space="preserve">
     <value>谱面无理检测</value>
   </data>
-  <data name="Mirror180" xml:space="preserve">
+    <data name="Mirror180" xml:space="preserve">
     <value>180°翻转选择</value>
   </data>
-  <data name="Mirror45" xml:space="preserve">
+    <data name="Mirror45" xml:space="preserve">
     <value>45°顺时针旋转选择</value>
   </data>
-  <data name="MirrorLR" xml:space="preserve">
+    <data name="MirrorLR" xml:space="preserve">
     <value>左右翻转选择</value>
   </data>
-  <data name="MirrorUD" xml:space="preserve">
+    <data name="MirrorUD" xml:space="preserve">
     <value>上下翻转选择</value>
   </data>
-  <data name="New" xml:space="preserve">
+    <data name="New" xml:space="preserve">
     <value>新建</value>
   </data>
-  <data name="NoMaidata_txt" xml:space="preserve">
+    <data name="NoMaidata_txt" xml:space="preserve">
     <value>未找到maidata.txt</value>
   </data>
-  <data name="NoTrack" xml:space="preserve">
+    <data name="NoTrack" xml:space="preserve">
     <value>请存入track.mp3 / track.ogg</value>
   </data>
-  <data name="Offset" xml:space="preserve">
+    <data name="Offset" xml:space="preserve">
     <value>偏移</value>
   </data>
-  <data name="Open" xml:space="preserve">
+    <data name="Open" xml:space="preserve">
     <value>打开</value>
   </data>
-  <data name="PlayBackSpeed" xml:space="preserve">
+    <data name="PlayBackSpeed" xml:space="preserve">
     <value>播放速度</value>
   </data>
-  <data name="PortClear" xml:space="preserve">
+    <data name="PortClear" xml:space="preserve">
     <value>请确保你打开了MajdataView且端口（8013）畅通</value>
   </data>
-  <data name="RecMode" xml:space="preserve">
+    <data name="RecMode" xml:space="preserve">
     <value>录制模式</value>
   </data>
-  <data name="Save" xml:space="preserve">
+    <data name="Save" xml:space="preserve">
     <value>保存</value>
   </data>
-  <data name="SaveAs" xml:space="preserve">
+    <data name="SaveAs" xml:space="preserve">
     <value>另存为</value>
   </data>
-  <data name="SetArtist" xml:space="preserve">
+    <data name="SetArtist" xml:space="preserve">
     <value>请设置艺术家</value>
   </data>
-  <data name="SetDes" xml:space="preserve">
+    <data name="SetDes" xml:space="preserve">
     <value>请设置做谱人</value>
   </data>
-  <data name="Setting" xml:space="preserve">
+    <data name="Setting" xml:space="preserve">
     <value>设置</value>
   </data>
-  <data name="SetTitle" xml:space="preserve">
+    <data name="SetTitle" xml:space="preserve">
     <value>请设置标题</value>
   </data>
-  <data name="SimaiWiki" xml:space="preserve">
+    <data name="SimaiWiki" xml:space="preserve">
     <value>SimaiWiki</value>
   </data>
-  <data name="SoftRender" xml:space="preserve">
+    <data name="SoftRender" xml:space="preserve">
     <value>正在以软件渲染模式运行</value>
   </data>
-  <data name="Speed" xml:space="preserve">
+    <data name="Speed" xml:space="preserve">
     <value>速度</value>
   </data>
-  <data name="TextFollow" xml:space="preserve">
+    <data name="TextFollow" xml:space="preserve">
     <value>文本跟随</value>
   </data>
-  <data name="Tools" xml:space="preserve">
+    <data name="Tools" xml:space="preserve">
     <value>工具</value>
   </data>
-  <data name="Unsaved" xml:space="preserve">
+    <data name="Unsaved" xml:space="preserve">
     <value>(未保存)</value>
   </data>
-  <data name="Volume" xml:space="preserve">
+    <data name="Volume" xml:space="preserve">
     <value>音量</value>
   </data>
-  <data name="Warn44100Hz" xml:space="preserve">
-    <value>可能不支持非44100Hz的mp3文件</value>
+    <data name="Warn44100Hz" xml:space="preserve">
+    <value>可能不支持非44100Hz的文件</value>
   </data>
-  <data name="Warning" xml:space="preserve">
+    <data name="Warning" xml:space="preserve">
     <value>警告</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
+    <data name="Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
-  <data name="EditorLanguage" xml:space="preserve">
+    <data name="EditorLanguage" xml:space="preserve">
     <value>语言</value>
   </data>
-  <data name="EditorSetting" xml:space="preserve">
+    <data name="EditorSetting" xml:space="preserve">
     <value>编辑器设置</value>
   </data>
-  <data name="NoEditorSetting" xml:space="preserve">
+    <data name="NoEditorSetting" xml:space="preserve">
     <value>请完成编辑器初始设置</value>
   </data>
-  <data name="CheckDone1" xml:space="preserve">
+    <data name="CheckDone1" xml:space="preserve">
     <value>检测完毕, 共发现{0}个多押无理，{1}个撞尾无理。您可在 检测结果 窗口中查看
 请注意：谱面无理检测提供的意见并不一定准确，结果仅供参考。</value>
   </data>
-  <data name="CheckDone2" xml:space="preserve">
+    <data name="CheckDone2" xml:space="preserve">
     <value>检测完毕, 共发现{0}个撞尾无理。您可在 检测结果 窗口中查看
 请注意：谱面无理检测提供的意见并不一定准确，结果仅供参考。</value>
   </data>
-  <data name="DetResult" xml:space="preserve">
+    <data name="DetResult" xml:space="preserve">
     <value>检测结果</value>
   </data>
-  <data name="GotoLineTooltip" xml:space="preserve">
+    <data name="GotoLineTooltip" xml:space="preserve">
     <value>双击可转到对应错误行</value>
   </data>
-  <data name="Info" xml:space="preserve">
+    <data name="Info" xml:space="preserve">
     <value>提示</value>
   </data>
-  <data name="MultNoteEnable" xml:space="preserve">
+    <data name="MultNoteEnable" xml:space="preserve">
     <value>开启多押检测</value>
   </data>
-  <data name="MultNoteError1" xml:space="preserve">
+    <data name="MultNoteError1" xml:space="preserve">
     <value>[多押无理] </value>
   </data>
-  <data name="MultNoteError2" xml:space="preserve">
+    <data name="MultNoteError2" xml:space="preserve">
     <value>可能形成了{0}押</value>
   </data>
-  <data name="MultNoteTooltip" xml:space="preserve">
+    <data name="MultNoteTooltip" xml:space="preserve">
     <value>检测三押或三押以上的多押无理
 如果您的谱面允许多押存在 如协力宴谱 您可以禁用这个选项</value>
   </data>
-  <data name="SlideAccInputError" xml:space="preserve">
+    <data name="SlideAccInputError" xml:space="preserve">
     <value>Slide撞尾检测精度必须是个数字! 请检查您输入是否有误, 如误输入了空格.</value>
   </data>
-  <data name="SlideAccuracy" xml:space="preserve">
+    <data name="SlideAccuracy" xml:space="preserve">
     <value>Slide撞尾检测精度:</value>
   </data>
-  <data name="SlideError" xml:space="preserve">
+    <data name="SlideError" xml:space="preserve">
     <value>[撞尾无理] "{0}"({1}L,{2}C)可能会撞上"{3}"({4}L,{5}C) 二者间隔{6}ms</value>
   </data>
-  <data name="SlideTooltip" xml:space="preserve">
+    <data name="SlideTooltip" xml:space="preserve">
     <value>撞尾无理：当slide经过tap（A区）时，这个tap可能会被误触发
 检查撞尾无理的精度，单位是秒。
 建议您不要设置低于0.15的值，因为0.15秒是GOOD判定的区间，
@@ -296,157 +302,157 @@
 您可以设置略高于0.15的值，如0.2，此时容易蹭尾的配置也会被
 检测出来</value>
   </data>
-  <data name="StartCheck" xml:space="preserve">
+    <data name="StartCheck" xml:space="preserve">
     <value>开始检测</value>
   </data>
-  <data name="SyntaxError" xml:space="preserve">
+    <data name="SyntaxError" xml:space="preserve">
     <value>[语法错误] "{0}"({1}L,{2}C)解析失败，可能存在语法错误</value>
   </data>
-  <data name="WhatsThis" xml:space="preserve">
+    <data name="WhatsThis" xml:space="preserve">
     <value>这是什么</value>
   </data>
-  <data name="SoftRenderError" xml:space="preserve">
+    <data name="SoftRenderError" xml:space="preserve">
     <value>渲染进程错误！
 请尝试通过强制软件渲染使用本软件
 （通过双击文件夹中的 "强制软件渲染.bat"启动本程序）</value>
   </data>
-  <data name="RecordModeDiscrp" xml:space="preserve">
+    <data name="RecordModeDiscrp" xml:space="preserve">
     <value>从头开始播放，并带有动画</value>
   </data>
-  <data name="FindAndReplace" xml:space="preserve">
+    <data name="FindAndReplace" xml:space="preserve">
     <value>查找与替换</value>
   </data>
-  <data name="FindNext" xml:space="preserve">
+    <data name="FindNext" xml:space="preserve">
     <value>查找下一个</value>
   </data>
-  <data name="ReplaceNext" xml:space="preserve">
+    <data name="ReplaceNext" xml:space="preserve">
     <value>替换下一个</value>
   </data>
-  <data name="IsOverridePicture" xml:space="preserve">
+    <data name="IsOverridePicture" xml:space="preserve">
     <value>mp3中有封面。要一并载入（并替换当前）封面吗？</value>
   </data>
-  <data name="LoadFromFile" xml:space="preserve">
+    <data name="LoadFromFile" xml:space="preserve">
     <value>从其他mp3中读取</value>
   </data>
-  <data name="LoadFromTrack" xml:space="preserve">
+    <data name="LoadFromTrack" xml:space="preserve">
     <value>从track.mp3 / track.ogg 中读取</value>
   </data>
-  <data name="RemapViewer" xml:space="preserve">
+    <data name="RemapViewer" xml:space="preserve">
     <value>重新对准编辑器窗口</value>
   </data>
-  <data name="OverwriteModeTooltip" xml:space="preserve">
+    <data name="OverwriteModeTooltip" xml:space="preserve">
     <value>覆盖模式下，输入的文字将替换光标后的内容。
 按Insert键回到标准模式。</value>
   </data>
-  <data name="OverwriteMode" xml:space="preserve">
+    <data name="OverwriteMode" xml:space="preserve">
     <value>覆盖模式</value>
   </data>
-  <data name="TouchSpeed" xml:space="preserve">
+    <data name="TouchSpeed" xml:space="preserve">
     <value>Touch速度</value>
   </data>
-  <data name="SpeedSettingTooltip" xml:space="preserve">
+    <data name="SpeedSettingTooltip" xml:space="preserve">
     <value>请在 设置-&gt;编辑器设置 中调整</value>
   </data>
-  <data name="RenderMode" xml:space="preserve">
+    <data name="RenderMode" xml:space="preserve">
     <value>渲染模式</value>
   </data>
-  <data name="RenderModeHW" xml:space="preserve">
+    <data name="RenderModeHW" xml:space="preserve">
     <value>硬件渲染</value>
   </data>
-  <data name="RenderModeSW" xml:space="preserve">
+    <data name="RenderModeSW" xml:space="preserve">
     <value>软件渲染</value>
   </data>
-  <data name="SetDefaultVolume" xml:space="preserve">
+    <data name="SetDefaultVolume" xml:space="preserve">
     <value>将当前音量设为默认</value>
   </data>
-  <data name="SetVolumeDefaultSuccess" xml:space="preserve">
+    <data name="SetVolumeDefaultSuccess" xml:space="preserve">
     <value>设置成功，之后新建的新谱面将会沿用目前的音量设置</value>
   </data>
-  <data name="CheckUpdate" xml:space="preserve">
+    <data name="CheckUpdate" xml:space="preserve">
     <value>检查更新</value>
   </data>
-  <data name="AutoUpdateCheckTip" xml:space="preserve">
+    <data name="AutoUpdateCheckTip" xml:space="preserve">
     <value>(你可以在编辑器设置中禁用自动检查更新功能)</value>
   </data>
-  <data name="NewVersionDetected" xml:space="preserve">
+    <data name="NewVersionDetected" xml:space="preserve">
     <value>检查到新版本 {0}
 (当前版本为 {1})
 
 是否前往下载？</value>
   </data>
-  <data name="NoNewVersion" xml:space="preserve">
+    <data name="NoNewVersion" xml:space="preserve">
     <value>您已经是最新版本了，无需更新</value>
   </data>
-  <data name="RequestFail" xml:space="preserve">
+    <data name="RequestFail" xml:space="preserve">
     <value>网络请求失败，请检查网络后重试</value>
   </data>
-  <data name="ChartRefreshDelay" xml:space="preserve">
+    <data name="ChartRefreshDelay" xml:space="preserve">
     <value>谱面刷新延迟(毫秒)</value>
   </data>
-  <data name="AutoCheckUpdate" xml:space="preserve">
+    <data name="AutoCheckUpdate" xml:space="preserve">
     <value>自动检查更新(启动时)</value>
   </data>
-  <data name="SetToDefaultVolume" xml:space="preserve">
+    <data name="SetToDefaultVolume" xml:space="preserve">
     <value>重置音量到默认值</value>
   </data>
-  <data name="MirrorCcw45" xml:space="preserve">
+    <data name="MirrorCcw45" xml:space="preserve">
     <value>45°逆时针旋转选择</value>
   </data>
-  <data name="AskRender" xml:space="preserve">
+    <data name="AskRender" xml:space="preserve">
     <value>即将开始渲染，将导出视频到谱面目录。
 请注意在渲染时不要改变Viewer窗口大小。
 现在按Viewer右上角&lt; &gt;可以设置渲染分辨率。
 请保证分辨率宽度为偶数。
 按确定开始渲染。</value>
   </data>
-  <data name="ComboDisplay" xml:space="preserve">
+    <data name="ComboDisplay" xml:space="preserve">
     <value>屏幕中心显示</value>
   </data>
-  <data name="ExportVideo" xml:space="preserve">
+    <data name="ExportVideo" xml:space="preserve">
     <value>导出视频</value>
   </data>
-  <data name="ComboDisplayAccClassic" xml:space="preserve">
+    <data name="ComboDisplayAccClassic" xml:space="preserve">
     <value>Achievement (+) (旧框)</value>
   </data>
-  <data name="ComboDisplayAccDeluxe" xml:space="preserve">
+    <data name="ComboDisplayAccDeluxe" xml:space="preserve">
     <value>Achievement (+) (DX)</value>
   </data>
-  <data name="ComboDisplayAccDownClassic" xml:space="preserve">
+    <data name="ComboDisplayAccDownClassic" xml:space="preserve">
     <value>Achievement (-) (旧框)</value>
   </data>
-  <data name="ComboDisplayAccDownDeluxe" xml:space="preserve">
+    <data name="ComboDisplayAccDownDeluxe" xml:space="preserve">
     <value>Achievement (-) 1 (DX)</value>
   </data>
-  <data name="ComboDisplayCombo" xml:space="preserve">
+    <data name="ComboDisplayCombo" xml:space="preserve">
     <value>Combo</value>
   </data>
-  <data name="ComboDisplayCScoreDedeluxe" xml:space="preserve">
+    <data name="ComboDisplayCScoreDedeluxe" xml:space="preserve">
     <value>Normalized Score (+)</value>
   </data>
-  <data name="ComboDisplayCScoreDownDedeluxe" xml:space="preserve">
+    <data name="ComboDisplayCScoreDownDedeluxe" xml:space="preserve">
     <value>Normalized Score (-)</value>
   </data>
-  <data name="ComboDisplayNone" xml:space="preserve">
+    <data name="ComboDisplayNone" xml:space="preserve">
     <value>无</value>
   </data>
-  <data name="ComboDisplayScoreClassic" xml:space="preserve">
+    <data name="ComboDisplayScoreClassic" xml:space="preserve">
     <value>Score (Classic)</value>
   </data>
-  <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
+    <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
     <value>DX Score</value>
   </data>
-  <data name="AutosaveRecoverWindowTitle" xml:space="preserve">
+    <data name="AutosaveRecoverWindowTitle" xml:space="preserve">
     <value>自动保存恢复</value>
   </data>
-  <data name="RecoverThis" xml:space="preserve">
+    <data name="RecoverThis" xml:space="preserve">
     <value>恢复</value>
   </data>
-  <data name="AbnormalTerminationInformation" xml:space="preserve">
+    <data name="AbnormalTerminationInformation" xml:space="preserve">
     <value>检测到上次Majdata未正常关闭，是否要打开自动保存恢复窗口？</value>
   </data>
-  <data name="RecoveryDoubleCheck" xml:space="preserve">
+    <data name="RecoveryDoubleCheck" xml:space="preserve">
     <value>确认要将此数据（自动保存于{0}）恢复至{1}吗？
 （恢复之前的maidata.txt会被更名为maidata.before_recovery.txt）</value>
-    <comment>{0}=自动保存时间，{1}=原maidata路径</comment>
+        <comment>{0}=自动保存时间，{1}=原maidata路径</comment>
   </data>
 </root>

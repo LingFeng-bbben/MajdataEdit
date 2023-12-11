@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:lex="http://wpflocalizeextension.codeplex.com"
-        xmlns:local="clr-namespace:MajdataEdit"
         lex:LocalizeDictionary.DesignCulture="zh-CN"
         lex:ResxLocalizationProvider.DefaultAssembly="MajdataEdit"
         lex:ResxLocalizationProvider.DefaultDictionary="Langs"
@@ -97,7 +96,7 @@
                Content="{lex:Loc Key=Speed}" />
         <TextBox x:Name="ViewerSpeed"
                  Grid.Row="4" Grid.Column="1"
-                 Text="7.0"
+                 Text="7.5"
                  MouseWheel="ViewerSpeed_MouseWheel" />
 
         <Label Grid.Row="5" Grid.Column="0"
@@ -110,7 +109,7 @@
         <Label Grid.Row="6" Grid.Column="0"
                Content="{lex:Loc Key=ComboDisplay}" />
         <ComboBox x:Name="ComboDisplay"
-					  Grid.Row="6" Grid.Column="1">
+                  Grid.Row="6" Grid.Column="1">
             <ComboBoxItem Content="{lex:Loc Key=ComboDisplayNone}" />
             <ComboBoxItem Content="{lex:Loc Key=ComboDisplayCombo}" />
             <ComboBoxItem Content="{lex:Loc Key=ComboDisplayScoreClassic}" />
@@ -124,9 +123,9 @@
         </ComboBox>
 
         <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <CheckBox x:Name="AutoUpdate" VerticalAlignment="Center"/>
-            <Label Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
-               Content="{lex:Loc Key=AutoCheckUpdate}" />
+            <CheckBox x:Name="AutoUpdate" VerticalAlignment="Center" />
+            <Label
+                Content="{lex:Loc Key=AutoCheckUpdate}" />
         </StackPanel>
 
 

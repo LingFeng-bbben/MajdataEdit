@@ -3,22 +3,15 @@
   See LICENSE in the project root for license information.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace MajdataEdit.AutoSaveModule;
 
-namespace MajdataEdit.AutoSaveModule
+/// <summary>
+///     全局自动保存上下文
+/// </summary>
+public class GlobalAutoSaveContext : IAutoSaveContext
 {
-    /// <summary>
-    /// 全局自动保存上下文
-    /// </summary>
-    public class GlobalAutoSaveContext : IAutoSaveContext
+    public string GetSavePath()
     {
-        public string GetSavePath()
-        {
-            return Environment.CurrentDirectory + "/.autosave";
-        }
+        return Environment.CurrentDirectory + "/.autosave";
     }
 }

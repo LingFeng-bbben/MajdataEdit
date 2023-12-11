@@ -1,460 +1,466 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
+    <!-- 
+      Microsoft ResX Schema 
+      
+      Version 2.0
+      
+      The primary goals of this format is to allow a simple XML format 
+      that is mostly human readable. The generation and parsing of the 
+      various data types are done through the TypeConverter classes 
+      associated with the data types.
+      
+      Example:
+      
+      ... ado.net/XML headers & schema ...
+      <resheader name="resmimetype">text/microsoft-resx</resheader>
+      <resheader name="version">2.0</resheader>
+      <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+      <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+      <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+      <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+      <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+          <value>[base64 mime encoded serialized .NET Framework object]</value>
+      </data>
+      <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+          <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+          <comment>This is a comment</comment>
+      </data>
+                  
+      There are any number of "resheader" rows that contain simple 
+      name/value pairs.
+      
+      Each data row contains a name, and value. The row also contains a 
+      type or mimetype. Type corresponds to a .NET class that support 
+      text/value conversion through the TypeConverter architecture. 
+      Classes that don't support this are serialized and stored with the 
+      mimetype set.
+      
+      The mimetype is used for serialized objects, and tells the 
+      ResXResourceReader how to depersist the object. This is currently not 
+      extensible. For a given mimetype the value must be set accordingly:
+      
+      Note - application/x-microsoft.net.object.binary.base64 is the format 
+      that the ResXResourceWriter will generate, however the reader can 
+      read any of the formats listed below.
+      
+      mimetype: application/x-microsoft.net.object.binary.base64
+      value   : The object must be serialized with 
+              : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+              : and then encoded with base64 encoding.
+      
+      mimetype: application/x-microsoft.net.object.soap.base64
+      value   : The object must be serialized with 
+              : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+              : and then encoded with base64 encoding.
+  
+      mimetype: application/x-microsoft.net.object.bytearray.base64
+      value   : The object must be serialized into a byte array 
+              : using a System.ComponentModel.TypeConverter
+              : and then encoded with base64 encoding.
+      -->
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+        <xsd:element name="root" msdata:IsDataSet="true">
             <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string"/>
+                            <xsd:attribute name="type" type="xsd:string"/>
+                            <xsd:attribute name="mimetype" type="xsd:string"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string"/>
+                            <xsd:attribute name="name" type="xsd:string"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
             </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="AskCloseView" xml:space="preserve">
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="AskCloseView" xml:space="preserve">
     <value>Close Viewer?</value>
   </data>
-  <data name="AskSave" xml:space="preserve">
+    <data name="AskSave" xml:space="preserve">
     <value>Changes not saved. Save now?</value>
   </data>
-  <data name="Attention" xml:space="preserve">
+    <data name="Attention" xml:space="preserve">
     <value>Attention</value>
   </data>
-  <data name="BPMtap" xml:space="preserve">
+    <data name="BPMtap" xml:space="preserve">
     <value>BPM Tap</value>
   </data>
-  <data name="Brightness" xml:space="preserve">
+    <data name="Brightness" xml:space="preserve">
     <value>Bright</value>
   </data>
-  <data name="Difficulty" xml:space="preserve">
+    <data name="Difficulty" xml:space="preserve">
     <value>Level</value>
   </data>
-  <data name="Edit" xml:space="preserve">
+    <data name="Edit" xml:space="preserve">
     <value>Edit</value>
   </data>
-  <data name="Error" xml:space="preserve">
+    <data name="Error" xml:space="preserve">
     <value>Error</value>
   </data>
-  <data name="FIles" xml:space="preserve">
+    <data name="FIles" xml:space="preserve">
     <value>File</value>
   </data>
-  <data name="Github" xml:space="preserve">
+    <data name="Github" xml:space="preserve">
     <value>GitHub</value>
   </data>
-  <data name="MaidataExist" xml:space="preserve">
+    <data name="MaidataExist" xml:space="preserve">
     <value>maidata.txt already exists.</value>
   </data>
-  <data name="MapInfo" xml:space="preserve">
+    <data name="MapInfo" xml:space="preserve">
     <value>Map info</value>
   </data>
-  <data name="MapMuriDetc" xml:space="preserve">
+    <data name="MapMuriDetc" xml:space="preserve">
     <value>Map Impossible Notes Detection</value>
   </data>
-  <data name="Mirror180" xml:space="preserve">
+    <data name="Mirror180" xml:space="preserve">
     <value>180° Mirror Selection</value>
   </data>
-  <data name="Mirror45" xml:space="preserve">
+    <data name="Mirror45" xml:space="preserve">
     <value>45° Rotate Selection</value>
   </data>
-  <data name="MirrorLR" xml:space="preserve">
+    <data name="MirrorLR" xml:space="preserve">
     <value>Mirror L-R Selection</value>
   </data>
-  <data name="MirrorUD" xml:space="preserve">
+    <data name="MirrorUD" xml:space="preserve">
     <value>Mirror U-D Selection</value>
   </data>
-  <data name="New" xml:space="preserve">
+    <data name="New" xml:space="preserve">
     <value>New</value>
   </data>
-  <data name="NoMaidata_txt" xml:space="preserve">
+    <data name="NoMaidata_txt" xml:space="preserve">
     <value>maidata.txt not found.</value>
   </data>
-  <data name="NoTrack" xml:space="preserve">
+    <data name="NoTrack" xml:space="preserve">
     <value>track.mp3 / track.ogg not found.</value>
   </data>
-  <data name="Offset" xml:space="preserve">
+    <data name="Offset" xml:space="preserve">
     <value>Music Offset</value>
   </data>
-  <data name="Open" xml:space="preserve">
+    <data name="Open" xml:space="preserve">
     <value>Open</value>
   </data>
-  <data name="PlayBackSpeed" xml:space="preserve">
+    <data name="PlayBackSpeed" xml:space="preserve">
     <value>PlayBackSpeed</value>
   </data>
-  <data name="PortClear" xml:space="preserve">
+    <data name="PortClear" xml:space="preserve">
     <value>Please make sure MajdataView is open and port 8013 is available</value>
   </data>
-  <data name="RecMode" xml:space="preserve">
+    <data name="RecMode" xml:space="preserve">
     <value>Record mode</value>
   </data>
-  <data name="Save" xml:space="preserve">
+    <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="SaveAs" xml:space="preserve">
+    <data name="SaveAs" xml:space="preserve">
     <value>Save As</value>
   </data>
-  <data name="SetArtist" xml:space="preserve">
+    <data name="SetArtist" xml:space="preserve">
     <value>SetArtist</value>
   </data>
-  <data name="SetDes" xml:space="preserve">
+    <data name="SetDes" xml:space="preserve">
     <value>SetDesigner</value>
   </data>
-  <data name="Setting" xml:space="preserve">
+    <data name="Setting" xml:space="preserve">
     <value>Setting</value>
   </data>
-  <data name="SetTitle" xml:space="preserve">
+    <data name="SetTitle" xml:space="preserve">
     <value>SetTitle</value>
   </data>
-  <data name="SimaiWiki" xml:space="preserve">
+    <data name="SimaiWiki" xml:space="preserve">
     <value>SimaiWiki</value>
   </data>
-  <data name="SoftRender" xml:space="preserve">
+    <data name="SoftRender" xml:space="preserve">
     <value>Launching with software rendering.</value>
   </data>
-  <data name="Speed" xml:space="preserve">
+    <data name="Speed" xml:space="preserve">
     <value>Speed</value>
   </data>
-  <data name="TextFollow" xml:space="preserve">
+    <data name="TextFollow" xml:space="preserve">
     <value>TextFollow</value>
   </data>
-  <data name="Tools" xml:space="preserve">
+    <data name="Tools" xml:space="preserve">
     <value>Tools</value>
   </data>
-  <data name="Unsaved" xml:space="preserve">
+    <data name="Unsaved" xml:space="preserve">
     <value>(Unsaved)</value>
   </data>
-  <data name="Volume" xml:space="preserve">
+    <data name="Volume" xml:space="preserve">
     <value>Volume</value>
   </data>
-  <data name="Warn44100Hz" xml:space="preserve">
-    <value>MP3 sampling frequencies outside of 44100Hz are unsupported.</value>
+    <data name="Warn44100Hz" xml:space="preserve">
+    <value>Sampling frequencies outside of 44100Hz are unsupported.</value>
   </data>
-  <data name="Warning" xml:space="preserve">
+    <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
+    <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
-  <data name="EditorLanguage" xml:space="preserve">
+    <data name="EditorLanguage" xml:space="preserve">
     <value>Language</value>
   </data>
-  <data name="EditorSetting" xml:space="preserve">
+    <data name="EditorSetting" xml:space="preserve">
     <value>Editor Settings</value>
   </data>
-  <data name="NoEditorSetting" xml:space="preserve">
+    <data name="NoEditorSetting" xml:space="preserve">
     <value>Please complete the initial setup of the editor.</value>
   </data>
-  <data name="CheckDone1" xml:space="preserve">
+    <data name="CheckDone1" xml:space="preserve">
     <value>Check Finished: {0} Excess Note Warning; {1} Slide-Tap Collision.
 More info in the Results Window. Results are approximate.
     </value>
   </data>
-  <data name="CheckDone2" xml:space="preserve">
+    <data name="CheckDone2" xml:space="preserve">
     <value>Check Finished, {0} Slide-Tap Collision.
 More info in the Results Window. Results are approximate.
     </value>
   </data>
-  <data name="DetResult" xml:space="preserve">
+    <data name="DetResult" xml:space="preserve">
     <value>Result</value>
   </data>
-  <data name="GotoLineTooltip" xml:space="preserve">
+    <data name="GotoLineTooltip" xml:space="preserve">
     <value>Double-click to jump to the error.</value>
   </data>
-  <data name="Info" xml:space="preserve">
+    <data name="Info" xml:space="preserve">
     <value>Info</value>
   </data>
-  <data name="MultNoteEnable" xml:space="preserve">
+    <data name="MultNoteEnable" xml:space="preserve">
     <value>Excess Note Detection</value>
-    <comment>TL: This is the best name I could come up with, probably best to keep the underlying name the same</comment>
+        <comment>TL: This is the best name I could come up with, probably best to keep the underlying name the same</comment>
   </data>
-  <data name="MultNoteError1" xml:space="preserve">
+    <data name="MultNoteError1" xml:space="preserve">
     <value>[ExcessNoteWarning] </value>
   </data>
-  <data name="MultNoteError2" xml:space="preserve">
+    <data name="MultNoteError2" xml:space="preserve">
     <value> Found {0} occurrences of Excess Notes.</value>
-    <comment>Maybe not the most accurate translation</comment>
+        <comment>Maybe not the most accurate translation</comment>
   </data>
-  <data name="MultNoteTooltip" xml:space="preserve">
+    <data name="MultNoteTooltip" xml:space="preserve">
     <value>Warns when too many notes appear simultaneously (3 or more)
 Recommended to keep this option enabled if you are not making UTAGE (gimmick) maps.</value>
   </data>
-  <data name="SlideAccInputError" xml:space="preserve">
+    <data name="SlideAccInputError" xml:space="preserve">
     <value>Slide Detection Accuracy must be a number; trim all whitespace.</value>
   </data>
-  <data name="SlideAccuracy" xml:space="preserve">
+    <data name="SlideAccuracy" xml:space="preserve">
     <value>Slide-Tap Detection Acc:</value>
-    <comment>Maybe not the most accurate translation. Acc means accuracy. See more in "SlideTooltip"</comment>
+        <comment>Maybe not the most accurate translation. Acc means accuracy. See more in "SlideTooltip"</comment>
   </data>
-  <data name="SlideError" xml:space="preserve">
+    <data name="SlideError" xml:space="preserve">
     <value>[SlideTapError] "{0}"({1}L,{2}C) may obstructs "{3}"({4}L,{5}C). Interval:{6}ms</value>
-    <comment>Maybe not the most accurate translation</comment>
+        <comment>Maybe not the most accurate translation</comment>
   </data>
-  <data name="SlideTooltip" xml:space="preserve">
+    <data name="SlideTooltip" xml:space="preserve">
     <value>The accuracy of detection on Slide-Tap Collision (in seconds)
 Slide-Tap Collision: when a SLIDE enters a TAP's "A Area", it can trigger the TAP too early.
 Recommended to stay above 0.2 for the best detection.
 Values lower than 0.15 will cause the detection to miss.
     </value>
-    <comment>TL: I'm not sure what an "A Area is"...</comment>
+        <comment>TL: I'm not sure what an "A Area is"...</comment>
   </data>
-  <data name="StartCheck" xml:space="preserve">
+    <data name="StartCheck" xml:space="preserve">
     <value>Begin Error Checking</value>
   </data>
-  <data name="SyntaxError" xml:space="preserve">
+    <data name="SyntaxError" xml:space="preserve">
     <value>[SyntaxError] at "{0}"({1}L,{2}C)</value>
   </data>
-  <data name="WhatsThis" xml:space="preserve">
+    <data name="WhatsThis" xml:space="preserve">
     <value>What's This?</value>
   </data>
-  <data name="SoftRenderError" xml:space="preserve">
+    <data name="SoftRenderError" xml:space="preserve">
     <value>Render Thread Failure！
 Try run "强制软件渲染.bat", this might solve the problem (good luck).</value>
   </data>
-  <data name="RecordModeDiscrp" xml:space="preserve">
+    <data name="RecordModeDiscrp" xml:space="preserve">
     <value>Renders the chart in MajViewer</value>
   </data>
-  <data name="FindAndReplace" xml:space="preserve">
+    <data name="FindAndReplace" xml:space="preserve">
     <value>Find and Replace</value>
   </data>
-  <data name="FindNext" xml:space="preserve">
+    <data name="FindNext" xml:space="preserve">
     <value>Find Next</value>
   </data>
-  <data name="ReplaceNext" xml:space="preserve">
+    <data name="ReplaceNext" xml:space="preserve">
     <value>Replace Next</value>
   </data>
-  <data name="IsOverridePicture" xml:space="preserve">
+    <data name="IsOverridePicture" xml:space="preserve">
     <value>MP3 has a cover picture already, do you want to use it?</value>
   </data>
-  <data name="LoadFromFile" xml:space="preserve">
+    <data name="LoadFromFile" xml:space="preserve">
     <value>Load from MP3 file</value>
   </data>
-  <data name="LoadFromTrack" xml:space="preserve">
+    <data name="LoadFromTrack" xml:space="preserve">
     <value>Load from chart metadata</value>
   </data>
-  <data name="RemapViewer" xml:space="preserve">
+    <data name="RemapViewer" xml:space="preserve">
     <value>Re-align viewer</value>
   </data>
-  <data name="OverwriteModeTooltip" xml:space="preserve">
+    <data name="OverwriteModeTooltip" xml:space="preserve">
     <value>Overwrite mode replaces text as you type.
 Insert key to switch back to normal mode.</value>
   </data>
-  <data name="OverwriteMode" xml:space="preserve">
+    <data name="OverwriteMode" xml:space="preserve">
     <value>Overwrite mode</value>
   </data>
-  <data name="TouchSpeed" xml:space="preserve">
+    <data name="TouchSpeed" xml:space="preserve">
     <value>Touch Speed</value>
   </data>
-  <data name="SpeedSettingTooltip" xml:space="preserve">
+    <data name="SpeedSettingTooltip" xml:space="preserve">
     <value>For advanced settings, go to "Setting-&gt;Editor Setting".</value>
   </data>
-  <data name="RenderMode" xml:space="preserve">
+    <data name="RenderMode" xml:space="preserve">
     <value>Rendering Mode</value>
   </data>
-  <data name="RenderModeHW" xml:space="preserve">
+    <data name="RenderModeHW" xml:space="preserve">
     <value>Hardware</value>
   </data>
-  <data name="RenderModeSW" xml:space="preserve">
+    <data name="RenderModeSW" xml:space="preserve">
     <value>Software</value>
   </data>
-  <data name="SetDefaultVolume" xml:space="preserve">
+    <data name="SetDefaultVolume" xml:space="preserve">
     <value>Use volumes as Default</value>
   </data>
-  <data name="SetVolumeDefaultSuccess" xml:space="preserve">
+    <data name="SetVolumeDefaultSuccess" xml:space="preserve">
     <value>Default set</value>
   </data>
-  <data name="CheckUpdate" xml:space="preserve">
+    <data name="CheckUpdate" xml:space="preserve">
     <value>Check for Updates</value>
   </data>
-  <data name="AutoUpdateCheckTip" xml:space="preserve">
+    <data name="AutoUpdateCheckTip" xml:space="preserve">
     <value>You can disable AutoCheckUpdate in "Setting-&gt;Editor Setting"</value>
   </data>
-  <data name="NewVersionDetected" xml:space="preserve">
+    <data name="NewVersionDetected" xml:space="preserve">
     <value>New Version detected: {0}
 (Current Version: {1})
 
 Do you want to download the latest update of Majdata?</value>
   </data>
-  <data name="NoNewVersion" xml:space="preserve">
+    <data name="NoNewVersion" xml:space="preserve">
     <value>You are already at the latest version</value>
   </data>
-  <data name="RequestFail" xml:space="preserve">
+    <data name="RequestFail" xml:space="preserve">
     <value>Failed to fetch data, please check your internet connection.</value>
   </data>
-  <data name="ChartRefreshDelay" xml:space="preserve">
+    <data name="ChartRefreshDelay" xml:space="preserve">
     <value>Chart Refresh Interval (ms)</value>
   </data>
-  <data name="AutoCheckUpdate" xml:space="preserve">
+    <data name="AutoCheckUpdate" xml:space="preserve">
     <value>Auto Check Update on Startup</value>
   </data>
-  <data name="SetToDefaultVolume" xml:space="preserve">
+    <data name="SetToDefaultVolume" xml:space="preserve">
     <value>Set Volume as Default Setting</value>
   </data>
-  <data name="MirrorCcw45" xml:space="preserve">
+    <data name="MirrorCcw45" xml:space="preserve">
     <value>45° (CCW) Rotate Selection</value>
   </data>
-  <data name="AskRender" xml:space="preserve">
+    <data name="AskRender" xml:space="preserve">
     <value>The video will be exported to the chart folder.
 DO NOT CHANGE THE VIEWER WINDOW SIZE DURING THE RENDER.
 But you can change the resolution now using the "&lt;&gt;" button.
 Please make sure that the width is even number.
 Click OK to start render.</value>
   </data>
-  <data name="ComboDisplay" xml:space="preserve">
+    <data name="ComboDisplay" xml:space="preserve">
     <value>Display at Center</value>
   </data>
-  <data name="ExportVideo" xml:space="preserve">
+    <data name="ExportVideo" xml:space="preserve">
     <value>Export Video</value>
   </data>
-  <data name="ComboDisplayAccClassic" xml:space="preserve">
+    <data name="ComboDisplayAccClassic" xml:space="preserve">
     <value>Achievement (+) (Classic)</value>
   </data>
-  <data name="ComboDisplayAccDeluxe" xml:space="preserve">
+    <data name="ComboDisplayAccDeluxe" xml:space="preserve">
     <value>Achievement (+) (Deluxe)</value>
   </data>
-  <data name="ComboDisplayAccDownClassic" xml:space="preserve">
+    <data name="ComboDisplayAccDownClassic" xml:space="preserve">
     <value>Achievement (-) (Classic)</value>
   </data>
-  <data name="ComboDisplayAccDownDeluxe" xml:space="preserve">
+    <data name="ComboDisplayAccDownDeluxe" xml:space="preserve">
     <value>Achievement (-) 1 (Deluxe)</value>
-    <comment>Acc down (1) starts from 100%. They should know already.</comment>
+        <comment>Acc down (1) starts from 100%. They should know already.</comment>
   </data>
-  <data name="ComboDisplayCombo" xml:space="preserve">
+    <data name="ComboDisplayCombo" xml:space="preserve">
     <value>Combo</value>
   </data>
-  <data name="ComboDisplayCScoreDedeluxe" xml:space="preserve">
+    <data name="ComboDisplayCScoreDedeluxe" xml:space="preserve">
     <value>Normalized Score (+)</value>
-    <comment>Custom: Normal Score but with forced DX Scale.</comment>
+        <comment>Custom: Normal Score but with forced DX Scale.</comment>
   </data>
-  <data name="ComboDisplayCScoreDownDedeluxe" xml:space="preserve">
+    <data name="ComboDisplayCScoreDownDedeluxe" xml:space="preserve">
     <value>Normalized Score (-)</value>
-    <comment>Custom: Normal Score but with forced DX Scale.</comment>
+        <comment>Custom: Normal Score but with forced DX Scale.</comment>
   </data>
-  <data name="ComboDisplayNone" xml:space="preserve">
+    <data name="ComboDisplayNone" xml:space="preserve">
     <value>None</value>
   </data>
-  <data name="ComboDisplayScoreClassic" xml:space="preserve">
+    <data name="ComboDisplayScoreClassic" xml:space="preserve">
     <value>Score (Classic)</value>
   </data>
-  <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
+    <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
     <value>DX Score</value>
   </data>
-  <data name="AutosaveRecoverWindowTitle" xml:space="preserve">
+    <data name="AutosaveRecoverWindowTitle" xml:space="preserve">
     <value>Auto-save Recovery</value>
   </data>
-  <data name="RecoverThis" xml:space="preserve">
+    <data name="RecoverThis" xml:space="preserve">
     <value>Recover</value>
   </data>
-  <data name="RecoveryDoubleCheck" xml:space="preserve">
+    <data name="RecoveryDoubleCheck" xml:space="preserve">
     <value>Are you sure you want to recover this data (auto-saved at {0}) to "{1}"?
 （The previous "maidata.txt" will be renamed "maidata.before_ recovery.txt" after recovery）</value>
-    <comment>{0}=Auto-saved time，{1}=original maidata.txt path</comment>
+        <comment>{0}=Auto-saved time，{1}=original maidata.txt path</comment>
   </data>
-  <data name="AbnormalTerminationInformation" xml:space="preserve">
+    <data name="AbnormalTerminationInformation" xml:space="preserve">
     <value>It seems that Majdata was not closed properly last time. Do you want to open the auto-save recovery window?</value>
   </data>
 </root>

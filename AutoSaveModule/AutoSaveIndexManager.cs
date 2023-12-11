@@ -3,207 +3,189 @@
   See LICENSE in the project root for license information.
 */
 
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
-namespace MajdataEdit.AutoSaveModule
+namespace MajdataEdit.AutoSaveModule;
+
+internal class AutoSaveIndexManager : IAutoSaveIndexManager
 {
-    class AutoSaveIndexManager : IAutoSaveIndexManager
+    private string curPath;
+    private AutoSaveIndex index;
+    private bool isReady;
+    private int maxAutoSaveCount;
+
+    public AutoSaveIndexManager()
     {
-        bool isReady = false;
-        string curPath;
-        int maxAutoSaveCount;
-        AutoSaveIndex index;
+        maxAutoSaveCount = 5;
+    }
 
-        public AutoSaveIndexManager()
+    public AutoSaveIndexManager(int maxAutoSaveCount)
+    {
+        this.maxAutoSaveCount = maxAutoSaveCount;
+    }
+
+    public void ChangePath(string path)
+    {
+        if (path != curPath)
         {
-            this.maxAutoSaveCount = 5;
+            // 只有当新目录和之前设置的目录不同时，才会触发index文件读写
+            curPath = path;
+            LoadOrCreateIndexFile();
         }
 
-        public AutoSaveIndexManager(int maxAutoSaveCount)
-        {
-            this.maxAutoSaveCount = maxAutoSaveCount;
-        }
+        isReady = true;
+    }
 
-        public void ChangePath(string path)
+    public int GetFileCount()
+    {
+        if (!IsReady()) throw new AutoSaveIndexNotReadyException("AutoSaveIndexManager is not ready yet.");
+
+        return index.Count;
+    }
+
+    public List<AutoSaveIndex.FileInfo> GetFileInfos()
+    {
+        if (!IsReady()) throw new AutoSaveIndexNotReadyException("AutoSaveIndexManager is not ready yet.");
+
+        return index.FilesInfo;
+    }
+
+    public int GetMaxAutoSaveCount()
+    {
+        return maxAutoSaveCount;
+    }
+
+    public string GetNewAutoSaveFileName()
+    {
+        var path = curPath + "/autosave." + GetCurrentTimeString() + ".txt";
+
+        var fileInfo = new AutoSaveIndex.FileInfo();
+        fileInfo.FileName = path;
+        fileInfo.SavedTime = DateTimeOffset.Now.AddHours(8).ToUnixTimeSeconds();
+        fileInfo.RawPath = MainWindow.maidataDir;
+        index.FilesInfo.Add(fileInfo);
+
+        index.Count++;
+
+        // 将变更存储到index文件中
+        UpdateIndexFile();
+
+        return path;
+    }
+
+    public bool IsReady()
+    {
+        return isReady;
+    }
+
+    public void RefreshIndex()
+    {
+        // 先扫描一遍，如果有文件已经被删了就先移除掉
+        for (var i = index.Count - 1; i >= 0; i--)
         {
-            if (path != this.curPath)
+            var fileInfo = index.FilesInfo[i];
+            if (!File.Exists(fileInfo.FileName))
             {
-                // 只有当新目录和之前设置的目录不同时，才会触发index文件读写
-                this.curPath = path;
-                this.LoadOrCreateIndexFile();
-            }
-
-            this.isReady = true;
-        }
-
-        public int GetFileCount()
-        {
-            if (!this.IsReady())
-            {
-                throw new AutoSaveIndexNotReadyException("AutoSaveIndexManager is not ready yet.");
-            }
-
-            return this.index.Count;
-        }
-
-        public List<AutoSaveIndex.FileInfo> GetFileInfos()
-        {
-            if (!this.IsReady())
-            {
-                throw new AutoSaveIndexNotReadyException("AutoSaveIndexManager is not ready yet.");
-            }
-
-            return this.index.FilesInfo;
-        }
-
-        public int GetMaxAutoSaveCount()
-        {
-            return this.maxAutoSaveCount;
-        }
-
-        public string GetNewAutoSaveFileName()
-        {
-            string path = this.curPath + "/autosave." + this.GetCurrentTimeString() + ".txt";
-
-            AutoSaveIndex.FileInfo fileInfo = new AutoSaveIndex.FileInfo();
-            fileInfo.FileName = path;
-            fileInfo.SavedTime = DateTimeOffset.Now.AddHours(8).ToUnixTimeSeconds();
-            fileInfo.RawPath = MainWindow.maidataDir;
-            this.index.FilesInfo.Add(fileInfo);
-
-            this.index.Count++;
-
-            // 将变更存储到index文件中
-            this.UpdateIndexFile();
-
-            return path;
-        }
-
-        public bool IsReady()
-        {
-            return this.isReady;
-        }
-
-        public void RefreshIndex()
-        {
-            // 先扫描一遍，如果有文件已经被删了就先移除掉
-            for (int i = this.index.Count - 1; i >= 0; i--) 
-            {
-                AutoSaveIndex.FileInfo fileInfo = this.index.FilesInfo[i];
-                if (!File.Exists(fileInfo.FileName))
-                {
-                    this.index.FilesInfo.RemoveAt(i);
-                    this.index.Count--;
-                }
-            }
-
-            // 然后从this.index.FileInfo的表头开始删除 直到保证自动保存文件的数量符合maxAutoSaveCount的要求
-            while (this.index.Count > this.maxAutoSaveCount)
-            {
-                AutoSaveIndex.FileInfo fileInfo = this.index.FilesInfo[0];
-                File.Delete(fileInfo.FileName);
-                this.index.FilesInfo.RemoveAt(0);
-                this.index.Count--;
-            }
-
-            // 将变更存储到index文件中
-            this.UpdateIndexFile();
-        }
-
-        public void SetMaxAutoSaveCount(int maxAutoSaveCount)
-        {
-            this.maxAutoSaveCount = maxAutoSaveCount;
-            Console.WriteLine("maxAutoSaveCount:" + maxAutoSaveCount);
-        }
-
-
-
-        private void LoadOrCreateIndexFile()
-        {
-            this.CreateDirectoryIfNotExists(this.curPath);
-            this.KeepDirectoryHidden(this.curPath);
-
-            string indexFilePath = this.curPath + "/.index.json";
-            if (!File.Exists(indexFilePath))
-            {
-                this.index = new AutoSaveIndex();
-                this.UpdateIndexFile();
-            }
-            else
-            {
-                this.LoadIndexFromFile();
+                index.FilesInfo.RemoveAt(i);
+                index.Count--;
             }
         }
 
-
-        /// <summary>
-        /// 若文件夹不存在则创建
-        /// </summary>
-        /// <param name="dirPath"></param>
-        private void CreateDirectoryIfNotExists(string dirPath)
+        // 然后从this.index.FileInfo的表头开始删除 直到保证自动保存文件的数量符合maxAutoSaveCount的要求
+        while (index.Count > maxAutoSaveCount)
         {
-            if (!Directory.Exists(dirPath))
-            {
-                Directory.CreateDirectory(dirPath);
-            }
+            var fileInfo = index.FilesInfo[0];
+            File.Delete(fileInfo.FileName);
+            index.FilesInfo.RemoveAt(0);
+            index.Count--;
         }
 
-        /// <summary>
-        /// 保证文件夹处于隐藏状态
-        /// </summary>
-        /// <param name="dirPath"></param>
-        private void KeepDirectoryHidden(string dirPath)
+        // 将变更存储到index文件中
+        UpdateIndexFile();
+    }
+
+    public void SetMaxAutoSaveCount(int maxAutoSaveCount)
+    {
+        this.maxAutoSaveCount = maxAutoSaveCount;
+        Console.WriteLine("maxAutoSaveCount:" + maxAutoSaveCount);
+    }
+
+
+    private void LoadOrCreateIndexFile()
+    {
+        CreateDirectoryIfNotExists(curPath);
+        KeepDirectoryHidden(curPath);
+
+        var indexFilePath = curPath + "/.index.json";
+        if (!File.Exists(indexFilePath))
         {
-            DirectoryInfo dirInfo = new DirectoryInfo(dirPath);
-
-            if ((dirInfo.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden)
-            {
-                dirInfo.Attributes = FileAttributes.Hidden;
-            }
+            index = new AutoSaveIndex();
+            UpdateIndexFile();
         }
-
-        /// <summary>
-        /// 将saveIndex存储到index文件中
-        /// </summary>
-        private void UpdateIndexFile()
+        else
         {
-            string indexPath = this.curPath + "/.index.json";
-
-            string jsonText = JsonConvert.SerializeObject(this.index);
-            File.WriteAllText(indexPath, jsonText);
+            LoadIndexFromFile();
         }
+    }
 
-        /// <summary>
-        /// 从index文件读取saveIndex
-        /// </summary>
-        private void LoadIndexFromFile()
-        {
-            string indexPath = this.curPath + "/.index.json";
 
-            string jsonText = File.ReadAllText(indexPath);
-            this.index = JsonConvert.DeserializeObject<AutoSaveIndex>(jsonText);
-        }
+    /// <summary>
+    ///     若文件夹不存在则创建
+    /// </summary>
+    /// <param name="dirPath"></param>
+    private void CreateDirectoryIfNotExists(string dirPath)
+    {
+        if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+    }
 
-        /// <summary>
-        /// 获取当前时间字符串
-        /// </summary>
-        /// <returns></returns>
-        private string GetCurrentTimeString()
-        {
-            DateTime now = DateTime.Now;
+    /// <summary>
+    ///     保证文件夹处于隐藏状态
+    /// </summary>
+    /// <param name="dirPath"></param>
+    private void KeepDirectoryHidden(string dirPath)
+    {
+        var dirInfo = new DirectoryInfo(dirPath);
 
-            return now.Year.ToString() + "-" +
-                   now.Month.ToString() + "-" +
-                   now.Day.ToString() + "_" +
-                   now.Hour.ToString() + "-" +
-                   now.Minute.ToString() + "-" +
-                   now.Second.ToString();
-        }
+        if ((dirInfo.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden)
+            dirInfo.Attributes = FileAttributes.Hidden;
+    }
+
+    /// <summary>
+    ///     将saveIndex存储到index文件中
+    /// </summary>
+    private void UpdateIndexFile()
+    {
+        var indexPath = curPath + "/.index.json";
+
+        var jsonText = JsonConvert.SerializeObject(index);
+        File.WriteAllText(indexPath, jsonText);
+    }
+
+    /// <summary>
+    ///     从index文件读取saveIndex
+    /// </summary>
+    private void LoadIndexFromFile()
+    {
+        var indexPath = curPath + "/.index.json";
+
+        var jsonText = File.ReadAllText(indexPath);
+        index = JsonConvert.DeserializeObject<AutoSaveIndex>(jsonText);
+    }
+
+    /// <summary>
+    ///     获取当前时间字符串
+    /// </summary>
+    /// <returns></returns>
+    private string GetCurrentTimeString()
+    {
+        var now = DateTime.Now;
+
+        return now.Year + "-" +
+               now.Month + "-" +
+               now.Day + "_" +
+               now.Hour + "-" +
+               now.Minute + "-" +
+               now.Second;
     }
 }

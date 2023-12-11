@@ -1,275 +1,249 @@
-﻿using MajdataEdit.AutoSaveModule;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using MajdataEdit.AutoSaveModule;
 
-namespace MajdataEdit
+namespace MajdataEdit;
+
+/// <summary>
+///     AutoSaveRecover.xaml 的交互逻辑
+/// </summary>
+public partial class AutoSaveRecover : Window
 {
-    /// <summary>
-    /// AutoSaveRecover.xaml 的交互逻辑
-    /// </summary>
-    public partial class AutoSaveRecover : Window
+    private readonly IAutoSaveRecoverer Recoverer = new AutoSaveRecoverer();
+    private readonly List<Tuple<AutoSaveIndex.FileInfo, FumenInfos>> RecoverList = new();
+    private int currentSelectedIndex = -1;
+    private int currentSelectedLevel = -1;
+
+    public AutoSaveRecover()
     {
-        private IAutoSaveRecoverer Recoverer = new AutoSaveRecoverer();
-        private List<Tuple<AutoSaveIndex.FileInfo, FumenInfos>> RecoverList = new List<Tuple<AutoSaveIndex.FileInfo, FumenInfos>>();
-        private int currentSelectedIndex = -1;
-        private int currentSelectedLevel = -1;
+        InitializeComponent();
+        InitializeAutosaveList();
+    }
 
-        public AutoSaveRecover()
+    private void InitializeAutosaveList()
+    {
+        var fileInfos = Recoverer.GetLocalAutoSaves();
+
+        var i = 0;
+
+        foreach (var fileInfo in fileInfos)
         {
-            InitializeComponent();
-            InitializeAutosaveList();
+            AddNewItem(fileInfo, i, false);
+            i++;
         }
 
-        private void InitializeAutosaveList()
+        fileInfos = Recoverer.GetGlobalAutoSaves();
+
+        foreach (var fileInfo in fileInfos)
         {
-            List<AutoSaveIndex.FileInfo> fileInfos = Recoverer.GetLocalAutoSaves();
+            AddNewItem(fileInfo, i, true);
+            i++;
+        }
+    }
 
-            int i = 0;
-
-            foreach (AutoSaveIndex.FileInfo fileInfo in fileInfos)
-            {
-                AddNewItem(fileInfo, i, false);
-                i++;
-            }
-
-            fileInfos = Recoverer.GetGlobalAutoSaves();
-
-            foreach (AutoSaveIndex.FileInfo fileInfo in fileInfos)
-            {
-                AddNewItem(fileInfo, i, true);
-                i++;
-            }
+    /// <summary>
+    ///     添加一个条目
+    /// </summary>
+    /// <param name="fileInfo"></param>
+    /// <param name="i"></param>
+    /// <param name="isGlobal"></param>
+    private void AddNewItem(AutoSaveIndex.FileInfo fileInfo, int i, bool isGlobal)
+    {
+        if (!File.Exists(fileInfo.FileName))
+        {
+            Console.WriteLine(fileInfo.FileName + "  is not exists! skip");
+            return;
         }
 
-        /// <summary>
-        /// 添加一个条目
-        /// </summary>
-        /// <param name="fileInfo"></param>
-        /// <param name="i"></param>
-        /// <param name="isGlobal"></param>
-        private void AddNewItem(AutoSaveIndex.FileInfo fileInfo, int i, bool isGlobal)
+        var fumenInfo = Recoverer.GetFumenInfos(fileInfo.FileName);
+        RecoverList.Add(new Tuple<AutoSaveIndex.FileInfo, FumenInfos>(fileInfo, fumenInfo));
+
+
+        var item = new ListBoxItem
         {
-            if (!File.Exists(fileInfo.FileName))
+            Name = "item" + i,
+            Content = GetItemDisplayText(fileInfo, fumenInfo, isGlobal),
+            ToolTip = GetItemDisplayText(fileInfo, fumenInfo, isGlobal)
+        };
+        item.AddHandler(ListBoxItem.SelectedEvent, new RoutedEventHandler(ListBoxItem_Selected));
+        Autosave_Listbox.Items.Add(item);
+    }
+
+    public void ListBoxItem_Selected(object sender, RoutedEventArgs e)
+    {
+        var item = (ListBoxItem)sender;
+        currentSelectedIndex = int.Parse(item.Name.Substring(4));
+
+        var currentRecoverItem = RecoverList[currentSelectedIndex];
+
+        Lb_Path.Content = currentRecoverItem.Item1.RawPath.Replace('/', '\\');
+        Lb_Title.Content = currentRecoverItem.Item2.Title;
+        Lb_Artist.Content = currentRecoverItem.Item2.Artist;
+        Lb_Designer.Content = currentRecoverItem.Item2.Designer;
+
+        Button[] fumenButton = { Btn_Easy, Btn_Basic, Btn_Advance, Btn_Expert, Btn_Master, Btn_ReMaster, Btn_Original };
+
+
+        for (var i = 0; i < 7; i++)
+        {
+            var fumenText = currentRecoverItem.Item2.Fumens[i];
+            if (fumenText == null)
             {
-                Console.WriteLine(fileInfo.FileName + "  is not exists! skip");
-                return;
+                fumenButton[i].IsEnabled = false;
             }
-
-            FumenInfos fumenInfo = Recoverer.GetFumenInfos(fileInfo.FileName);
-            RecoverList.Add(new Tuple<AutoSaveIndex.FileInfo, FumenInfos>(fileInfo, fumenInfo));
-
-
-            ListBoxItem item = new ListBoxItem
+            else
             {
-                Name = "item" + i.ToString(),
-                Content = GetItemDisplayText(fileInfo, fumenInfo, isGlobal),
-                ToolTip = GetItemDisplayText(fileInfo, fumenInfo, isGlobal)
-            };
-            item.AddHandler(ListBoxItem.SelectedEvent, new RoutedEventHandler(ListBoxItem_Selected));
-            this.Autosave_Listbox.Items.Add(item);
-        }
+                fumenText = fumenText.Trim();
 
-        public void ListBoxItem_Selected(object sender, RoutedEventArgs e)
-        {
-            ListBoxItem item = (ListBoxItem)sender;
-            this.currentSelectedIndex = int.Parse(item.Name.Substring(4));
-
-            Tuple<AutoSaveIndex.FileInfo, FumenInfos> currentRecoverItem = this.RecoverList[this.currentSelectedIndex];
-
-            Lb_Path.Content = currentRecoverItem.Item1.RawPath.Replace('/', '\\');
-            Lb_Title.Content = currentRecoverItem.Item2.Title;
-            Lb_Artist.Content = currentRecoverItem.Item2.Artist;
-            Lb_Designer.Content = currentRecoverItem.Item2.Designer;
-
-            Button[] fumenButton = new Button[]{ Btn_Easy, Btn_Basic, Btn_Advance, Btn_Expert, Btn_Master, Btn_ReMaster, Btn_Original };
-
-
-            for (int i = 0; i < 7; i++)
-            {
-                string fumenText = currentRecoverItem.Item2.Fumens[i];
-                if (fumenText == null)
-                {
+                if (fumenText.Length == 0)
                     fumenButton[i].IsEnabled = false;
-                }
                 else
+                    fumenButton[i].IsEnabled = true;
+            }
+        }
+
+        // 先检查之前选中的难度有没有谱面
+        if (currentSelectedLevel != -1 && fumenButton[currentSelectedLevel].IsEnabled)
+        {
+            var content = RecoverList[currentSelectedIndex].Item2.Fumens[currentSelectedLevel];
+            SetRtbFumenContent(content);
+        }
+        else
+        {
+            // 否则 按照Mas, ReMas, Exp, Adv, Bas, Eas, Ori的顺序尝试选中一个谱面
+            int[] authSeq = { 4, 5, 3, 2, 1, 0, 6 };
+            foreach (var i in authSeq)
+                if (fumenButton[i].IsEnabled)
                 {
-                    fumenText = fumenText.Trim();
-
-                    if (fumenText.Length == 0)
-                    {
-                        fumenButton[i].IsEnabled = false;
-                    }
-                    else
-                    {
-                        fumenButton[i].IsEnabled = true;
-                    }
+                    currentSelectedLevel = i;
+                    var content = RecoverList[currentSelectedIndex].Item2.Fumens[currentSelectedLevel];
+                    SetRtbFumenContent(content);
+                    break;
                 }
-            }
-
-            // 先检查之前选中的难度有没有谱面
-            if (this.currentSelectedLevel != -1 && fumenButton[this.currentSelectedLevel].IsEnabled)
-            {
-                string content = this.RecoverList[this.currentSelectedIndex].Item2.Fumens[this.currentSelectedLevel];
-                SetRtbFumenContent(content);
-            }
-            else
-            {
-                // 否则 按照Mas, ReMas, Exp, Adv, Bas, Eas, Ori的顺序尝试选中一个谱面
-                int[] authSeq = { 4, 5, 3, 2, 1, 0, 6 };
-                foreach (int i in authSeq)
-                {
-                    if (fumenButton[i].IsEnabled)
-                    {
-                        this.currentSelectedLevel = i;
-                        string content = this.RecoverList[this.currentSelectedIndex].Item2.Fumens[this.currentSelectedLevel];
-                        SetRtbFumenContent(content);
-                        break;
-                    }
-                }
-            }
         }
+    }
 
-        private string GetItemDisplayText(AutoSaveIndex.FileInfo fileInfo, FumenInfos fumenInfo, bool isGlobal)
+    private string GetItemDisplayText(AutoSaveIndex.FileInfo fileInfo, FumenInfos fumenInfo, bool isGlobal)
+    {
+        var result = fumenInfo.Title + " ";
+
+        if (isGlobal)
+            result += "(global)";
+        else
+            result += "(local)";
+
+        result += " - ";
+
+        result += FormatUnixTime(fileInfo.SavedTime);
+
+        return result;
+    }
+
+    private string FormatUnixTime(long unixTime)
+    {
+        var dateTime = DateTimeOffset.FromUnixTimeSeconds(unixTime);
+
+        return dateTime.Hour + ":" +
+               dateTime.Minute + ":" +
+               dateTime.Second + " " +
+               dateTime.Year + "/" +
+               dateTime.Month + "/" +
+               dateTime.Day;
+    }
+
+    private void SetRtbFumenContent(string content)
+    {
+        Rtb_Fumen.Document.Blocks.Clear();
+
+        if (content == null) return;
+
+        var lines = content.Split('\n');
+        foreach (var line in lines)
         {
-            string result = fumenInfo.Title + " ";
-
-            if (isGlobal)
-            {
-                result += "(global)";
-            }
-            else
-            {
-                result += "(local)";
-            }
-
-            result += " - ";
-
-            result += FormatUnixTime(fileInfo.SavedTime);
-
-            return result;
+            var paragraph = new Paragraph();
+            paragraph.Inlines.Add(line);
+            Rtb_Fumen.Document.Blocks.Add(paragraph);
         }
+    }
 
-        private string FormatUnixTime(long unixTime)
-        {
-            DateTimeOffset dateTime = DateTimeOffset.FromUnixTimeSeconds(unixTime);
+    private void Btn_Easy_Click(object sender, RoutedEventArgs e)
+    {
+        currentSelectedLevel = 0;
 
-            return dateTime.Hour.ToString() + ":" +
-                   dateTime.Minute.ToString() + ":" +
-                   dateTime.Second.ToString() + " " +
-                   dateTime.Year.ToString() + "/" +
-                   dateTime.Month.ToString() + "/" +
-                   dateTime.Day.ToString();
-        }
+        var content = RecoverList[currentSelectedIndex].Item2.Fumens[currentSelectedLevel];
+        SetRtbFumenContent(content);
+    }
 
-        private void SetRtbFumenContent(string content)
-        {
-            Rtb_Fumen.Document.Blocks.Clear();
+    private void Btn_Basic_Click(object sender, RoutedEventArgs e)
+    {
+        currentSelectedLevel = 1;
 
-            if (content == null)
-            {
-                return;
-            }
+        var content = RecoverList[currentSelectedIndex].Item2.Fumens[currentSelectedLevel];
+        SetRtbFumenContent(content);
+    }
 
-            string[] lines = content.Split('\n');
-            foreach (var line in lines)
-            {
-                Paragraph paragraph = new Paragraph();
-                paragraph.Inlines.Add(line);
-                Rtb_Fumen.Document.Blocks.Add(paragraph);
-            }
-        }
+    private void Btn_Advance_Click(object sender, RoutedEventArgs e)
+    {
+        currentSelectedLevel = 2;
 
-        private void Btn_Easy_Click(object sender, RoutedEventArgs e)
-        {
-            this.currentSelectedLevel = 0;
+        var content = RecoverList[currentSelectedIndex].Item2.Fumens[currentSelectedLevel];
+        SetRtbFumenContent(content);
+    }
 
-            string content = this.RecoverList[this.currentSelectedIndex].Item2.Fumens[this.currentSelectedLevel];
-            SetRtbFumenContent(content);
-        }
+    private void Btn_Expert_Click(object sender, RoutedEventArgs e)
+    {
+        currentSelectedLevel = 3;
 
-        private void Btn_Basic_Click(object sender, RoutedEventArgs e)
-        {
-            this.currentSelectedLevel = 1;
+        var content = RecoverList[currentSelectedIndex].Item2.Fumens[currentSelectedLevel];
+        SetRtbFumenContent(content);
+    }
 
-            string content = this.RecoverList[this.currentSelectedIndex].Item2.Fumens[this.currentSelectedLevel];
-            SetRtbFumenContent(content);
-        }
+    private void Btn_Master_Click(object sender, RoutedEventArgs e)
+    {
+        currentSelectedLevel = 4;
 
-        private void Btn_Advance_Click(object sender, RoutedEventArgs e)
-        {
-            this.currentSelectedLevel = 2;
+        var content = RecoverList[currentSelectedIndex].Item2.Fumens[currentSelectedLevel];
+        SetRtbFumenContent(content);
+    }
 
-            string content = this.RecoverList[this.currentSelectedIndex].Item2.Fumens[this.currentSelectedLevel];
-            SetRtbFumenContent(content);
-        }
+    private void Btn_ReMaster_Click(object sender, RoutedEventArgs e)
+    {
+        currentSelectedLevel = 5;
 
-        private void Btn_Expert_Click(object sender, RoutedEventArgs e)
-        {
-            this.currentSelectedLevel = 3;
+        var content = RecoverList[currentSelectedIndex].Item2.Fumens[currentSelectedLevel];
+        SetRtbFumenContent(content);
+    }
 
-            string content = this.RecoverList[this.currentSelectedIndex].Item2.Fumens[this.currentSelectedLevel];
-            SetRtbFumenContent(content);
-        }
+    private void Btn_Original_Click(object sender, RoutedEventArgs e)
+    {
+        currentSelectedLevel = 6;
 
-        private void Btn_Master_Click(object sender, RoutedEventArgs e)
-        {
-            this.currentSelectedLevel = 4;
+        var content = RecoverList[currentSelectedIndex].Item2.Fumens[currentSelectedLevel];
+        SetRtbFumenContent(content);
+    }
 
-            string content = this.RecoverList[this.currentSelectedIndex].Item2.Fumens[this.currentSelectedLevel];
-            SetRtbFumenContent(content);
-        }
+    private void Btn_Recover_Click(object sender, RoutedEventArgs e)
+    {
+        var currentItem = RecoverList[currentSelectedIndex];
 
-        private void Btn_ReMaster_Click(object sender, RoutedEventArgs e)
-        {
-            this.currentSelectedLevel = 5;
+        var result = MessageBox.Show(
+            string.Format(MainWindow.GetLocalizedString("RecoveryDoubleCheck"),
+                FormatUnixTime(currentItem.Item1.SavedTime), currentItem.Item1.RawPath),
+            MainWindow.GetLocalizedString("Attention"),
+            MessageBoxButton.YesNo
+        );
 
-            string content = this.RecoverList[this.currentSelectedIndex].Item2.Fumens[this.currentSelectedLevel];
-            SetRtbFumenContent(content);
-        }
+        if (result == MessageBoxResult.No) return;
 
-        private void Btn_Original_Click(object sender, RoutedEventArgs e)
-        {
-            this.currentSelectedLevel = 6;
+        Recoverer.RecoverFile(currentItem.Item1);
+        ((MainWindow)Owner).OpenFile(currentItem.Item1.RawPath);
+        Close();
+    }
 
-            string content = this.RecoverList[this.currentSelectedIndex].Item2.Fumens[this.currentSelectedLevel];
-            SetRtbFumenContent(content);
-        }
-
-        private void Btn_Recover_Click(object sender, RoutedEventArgs e)
-        {
-            Tuple<AutoSaveIndex.FileInfo, FumenInfos> currentItem = this.RecoverList[this.currentSelectedIndex];
-
-            MessageBoxResult result = MessageBox.Show(
-                String.Format(MainWindow.GetLocalizedString("RecoveryDoubleCheck"), FormatUnixTime(currentItem.Item1.SavedTime), currentItem.Item1.RawPath),
-                MainWindow.GetLocalizedString("Attention"),
-                MessageBoxButton.YesNo
-            );
-
-            if (result == MessageBoxResult.No)
-            {
-                return;
-            }
-
-            this.Recoverer.RecoverFile(currentItem.Item1);
-            ((MainWindow)this.Owner).OpenFile(currentItem.Item1.RawPath);
-            this.Close();
-        }
-
-        private void Btn_Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
+    private void Btn_Cancel_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
     }
 }
