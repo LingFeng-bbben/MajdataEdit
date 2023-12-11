@@ -174,8 +174,8 @@
   <data name="NoMaidata_txt" xml:space="preserve">
     <value>maidata.txtが存在することを確認してください</value>
   </data>
-  <data name="NoTrack_mp3" xml:space="preserve">
-    <value>track.mp3が存在することを確認してください</value>
+  <data name="NoTrack" xml:space="preserve">
+    <value>track.mp3 / track.ogg が存在することを確認してください</value>
   </data>
   <data name="Offset" xml:space="preserve">
     <value>ｵﾌｾｯﾄ</value>
@@ -347,7 +347,7 @@ Please run the MajdatEdit by "强制软件渲染.bat" in the folder. This may so
     <value>他のmp3から読み込む</value>
   </data>
   <data name="LoadFromTrack" xml:space="preserve">
-    <value>track.mp3から読み込む</value>
+    <value>track.mp3 / track.ogg から読み込む</value>
   </data>
   <data name="RemapViewer" xml:space="preserve">
     <value>Viewerを揃える</value>

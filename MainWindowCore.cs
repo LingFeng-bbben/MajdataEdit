@@ -244,7 +244,7 @@ namespace MajdataEdit
             var dataPath = path + "/maidata.txt";
             if (!File.Exists(audioPath))
             {
-                MessageBox.Show(GetLocalizedString("NoTrack_mp3"), GetLocalizedString("Error"));
+                MessageBox.Show(GetLocalizedString("NoTrack"), GetLocalizedString("Error"));
                 return;
             }
             if (!File.Exists(dataPath))

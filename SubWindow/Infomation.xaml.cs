@@ -71,7 +71,21 @@ namespace MajdataEdit
 
         void ReadMetadata(string path)
         {
-            var file = TagLib.File.Create(path);
+            var formattedPath = path;
+
+            if (!path.EndsWith(".ogg") && !path.EndsWith(".mp3"))
+            {
+                var ext = ".mp3"
+
+                if (File.Exists(path + ".ogg"))
+                {
+                    ext = ".ogg";
+                }
+
+                formattedPath += ext;
+            }
+
+            var file = TagLib.File.Create(formattedPath);
             TitleTextbox.Text = file.Tag.Title;
             ArtistTextbox.Text = file.Tag.JoinedPerformers;
             if (file.Tag.Pictures.Length > 0)
@@ -99,13 +113,13 @@ namespace MajdataEdit
 
         private void ReadTrackButton_Click(object sender, RoutedEventArgs e)
         {
-            ReadMetadata(MainWindow.maidataDir + "/track.mp3");
+            ReadMetadata(MainWindow.maidataDir + "/track");
         }
 
         private void ReadFileButton_Click(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "*.mp3|*.mp3";
+            openFileDialog.Filter = "*.mp3|*.mp3|*.ogg|*.ogg";
             if ((bool)openFileDialog.ShowDialog())
             {
                 ReadMetadata(openFileDialog.FileName);

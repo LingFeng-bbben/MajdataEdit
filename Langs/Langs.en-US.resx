@@ -174,8 +174,8 @@
   <data name="NoMaidata_txt" xml:space="preserve">
     <value>maidata.txt not found.</value>
   </data>
-  <data name="NoTrack_mp3" xml:space="preserve">
-    <value>track.mp3 not found.</value>
+  <data name="NoTrack" xml:space="preserve">
+    <value>track.mp3 / track.ogg not found.</value>
   </data>
   <data name="Offset" xml:space="preserve">
     <value>Music Offset</value>

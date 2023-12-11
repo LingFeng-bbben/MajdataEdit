@@ -174,8 +174,8 @@
   <data name="NoMaidata_txt" xml:space="preserve">
     <value>未找到maidata.txt</value>
   </data>
-  <data name="NoTrack_mp3" xml:space="preserve">
-    <value>请存入track.mp3</value>
+  <data name="NoTrack" xml:space="preserve">
+    <value>请存入track.mp3 / track.ogg</value>
   </data>
   <data name="Offset" xml:space="preserve">
     <value>偏移</value>
@@ -329,7 +329,7 @@
     <value>从其他mp3中读取</value>
   </data>
   <data name="LoadFromTrack" xml:space="preserve">
-    <value>从track.mp3中读取</value>
+    <value>从track.mp3 / track.ogg 中读取</value>
   </data>
   <data name="RemapViewer" xml:space="preserve">
     <value>重新对准编辑器窗口</value>
