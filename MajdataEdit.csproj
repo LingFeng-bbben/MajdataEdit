@@ -47,6 +47,10 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <TargetPath>bass_fx.dll</TargetPath>
       </ContentWithTargetPath>
+      <ContentWithTargetPath Include="slide_time.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <TargetPath>slide_time.json</TargetPath>
+      </ContentWithTargetPath>
     </ItemGroup>
     <ItemGroup>
       <None Include="Properties\Settings.settings">
