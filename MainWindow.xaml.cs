@@ -183,7 +183,7 @@ public partial class MainWindow : Window
                 return;
         var openFileDialog = new OpenFileDialog
         {
-            Filter = "track.mp3 / track.ogg|track.mp3|track.ogg"
+            Filter = "track.mp3, track.ogg|track.mp3;track.ogg"
         };
         if ((bool)openFileDialog.ShowDialog()!)
         {
