@@ -10,8 +10,8 @@ namespace MajdataEdit.AutoSaveModule;
 
 internal class AutoSaveIndexManager : IAutoSaveIndexManager
 {
-    private string curPath;
-    private AutoSaveIndex index;
+    private string? curPath;
+    private AutoSaveIndex? index;
     private bool isReady;
     private int maxAutoSaveCount;
 
@@ -41,14 +41,14 @@ internal class AutoSaveIndexManager : IAutoSaveIndexManager
     {
         if (!IsReady()) throw new AutoSaveIndexNotReadyException("AutoSaveIndexManager is not ready yet.");
 
-        return index.Count;
+        return index!.Count;
     }
 
     public List<AutoSaveIndex.FileInfo> GetFileInfos()
     {
         if (!IsReady()) throw new AutoSaveIndexNotReadyException("AutoSaveIndexManager is not ready yet.");
 
-        return index.FilesInfo;
+        return index!.FilesInfo;
     }
 
     public int GetMaxAutoSaveCount()
@@ -60,11 +60,13 @@ internal class AutoSaveIndexManager : IAutoSaveIndexManager
     {
         var path = curPath + "/autosave." + GetCurrentTimeString() + ".txt";
 
-        var fileInfo = new AutoSaveIndex.FileInfo();
-        fileInfo.FileName = path;
-        fileInfo.SavedTime = DateTimeOffset.Now.AddHours(8).ToUnixTimeSeconds();
-        fileInfo.RawPath = MainWindow.maidataDir;
-        index.FilesInfo.Add(fileInfo);
+        var fileInfo = new AutoSaveIndex.FileInfo
+        {
+            FileName = path,
+            SavedTime = DateTimeOffset.Now.AddHours(8).ToUnixTimeSeconds(),
+            RawPath = MainWindow.maidataDir
+        };
+        index!.FilesInfo.Add(fileInfo);
 
         index.Count++;
 
@@ -82,7 +84,7 @@ internal class AutoSaveIndexManager : IAutoSaveIndexManager
     public void RefreshIndex()
     {
         // 先扫描一遍，如果有文件已经被删了就先移除掉
-        for (var i = index.Count - 1; i >= 0; i--)
+        for (var i = index!.Count - 1; i >= 0; i--)
         {
             var fileInfo = index.FilesInfo[i];
             if (!File.Exists(fileInfo.FileName))
@@ -96,7 +98,7 @@ internal class AutoSaveIndexManager : IAutoSaveIndexManager
         while (index.Count > maxAutoSaveCount)
         {
             var fileInfo = index.FilesInfo[0];
-            File.Delete(fileInfo.FileName);
+            File.Delete(fileInfo.FileName!);
             index.FilesInfo.RemoveAt(0);
             index.Count--;
         }
@@ -114,8 +116,8 @@ internal class AutoSaveIndexManager : IAutoSaveIndexManager
 
     private void LoadOrCreateIndexFile()
     {
-        CreateDirectoryIfNotExists(curPath);
-        KeepDirectoryHidden(curPath);
+        CreateDirectoryIfNotExists(curPath!);
+        KeepDirectoryHidden(curPath!);
 
         var indexFilePath = curPath + "/.index.json";
         if (!File.Exists(indexFilePath))

@@ -17,7 +17,7 @@ internal class EditRequestjson
     public float backgroundCover;
     public EditorComboIndicator comboStatusType;
     public EditorControlMethod control;
-    public string jsonPath;
+    public string? jsonPath;
     public float noteSpeed;
     public long startAt;
     public float startTime;

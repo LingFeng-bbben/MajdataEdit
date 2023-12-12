@@ -6,10 +6,10 @@ namespace MajdataEdit;
 
 internal static class SimaiProcess
 {
-    public static string title;
-    public static string artist;
-    public static string designer;
-    public static string other_commands;
+    public static string? title;
+    public static string? artist;
+    public static string? designer;
+    public static string? other_commands;
     public static float first;
     public static string[] fumens = new string[7];
     public static string[] levels = new string[7];
@@ -101,12 +101,14 @@ internal static class SimaiProcess
     /// <param name="filename">file path of maidata.txt</param>
     public static void SaveData(string filename)
     {
-        var maidata = new List<string>();
-        maidata.Add("&title=" + title);
-        maidata.Add("&artist=" + artist);
-        maidata.Add("&first=" + first);
-        maidata.Add("&des=" + designer);
-        maidata.Add(other_commands);
+        var maidata = new List<string>
+        {
+            "&title=" + title,
+            "&artist=" + artist,
+            "&first=" + first,
+            "&des=" + designer,
+            other_commands!
+        };
         for (var i = 0; i < levels.Length; i++)
             if (levels[i] != null && levels[i] != "")
                 maidata.Add("&lv_" + (i + 1) + "=" + levels[i].Trim());
@@ -658,7 +660,7 @@ internal class SimaiNote
     public bool isSlideBreak;
     public bool isSlideNoHead;
 
-    public string noteContent; //used for star explain
+    public string? noteContent; //used for star explain
     public SimaiNoteType noteType;
 
     public double slideStartTime;

@@ -76,7 +76,7 @@ public sealed class AutoSaveManager
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void autoSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
+    private void autoSaveTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         // 若文件未改动，则跳过此次自动保存
         if (!isFileChanged) return;
@@ -98,7 +98,7 @@ public sealed class AutoSaveManager
 
     #region Singleton
 
-    private static volatile AutoSaveManager _instance;
+    private static volatile AutoSaveManager? _instance;
     private static readonly object syncLock = new();
 
     public static AutoSaveManager Of()

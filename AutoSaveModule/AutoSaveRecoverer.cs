@@ -94,7 +94,7 @@ public class AutoSaveRecoverer : IAutoSaveRecoverer
             // 备份恢复前的maidata
             File.Move(rawMaidataPath, backupMaidataPath);
             // 将自动保存maidata恢复到原目录
-            File.Copy(autosaveMaidataPath, rawMaidataPath);
+            File.Copy(autosaveMaidataPath!, rawMaidataPath);
         }
         catch
         {

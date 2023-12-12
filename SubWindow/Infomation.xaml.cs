@@ -107,17 +107,21 @@ public partial class Infomation : Window
 
     private void ReadFileButton_Click(object sender, RoutedEventArgs e)
     {
-        var openFileDialog = new OpenFileDialog();
-        openFileDialog.Filter = "*.mp3|*.mp3|*.ogg|*.ogg";
-        if ((bool)openFileDialog.ShowDialog()) ReadMetadata(openFileDialog.FileName);
+        var openFileDialog = new OpenFileDialog
+        {
+            Filter = "*.mp3|*.mp3|*.ogg|*.ogg"
+        };
+        if ((bool)openFileDialog.ShowDialog()!) ReadMetadata(openFileDialog.FileName);
     }
 
     private void SaltImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
-        var openFileDialog = new OpenFileDialog();
-        openFileDialog.InitialDirectory = "";
-        openFileDialog.Filter = "图片|*.png;*.jpg";
-        if ((bool)openFileDialog.ShowDialog())
+        var openFileDialog = new OpenFileDialog
+        {
+            InitialDirectory = "",
+            Filter = "图片|*.png;*.jpg"
+        };
+        if ((bool)openFileDialog.ShowDialog()!)
         {
             var data = File.ReadAllBytes(openFileDialog.FileName);
             var info = new FileInfo(openFileDialog.FileName);

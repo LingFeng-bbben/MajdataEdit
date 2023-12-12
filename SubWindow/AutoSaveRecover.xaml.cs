@@ -78,7 +78,7 @@ public partial class AutoSaveRecover : Window
 
         var currentRecoverItem = RecoverList[currentSelectedIndex];
 
-        Lb_Path.Content = currentRecoverItem.Item1.RawPath.Replace('/', '\\');
+        Lb_Path.Content = currentRecoverItem.Item1.RawPath!.Replace('/', '\\');
         Lb_Title.Content = currentRecoverItem.Item2.Title;
         Lb_Artist.Content = currentRecoverItem.Item2.Artist;
         Lb_Designer.Content = currentRecoverItem.Item2.Designer;
@@ -238,7 +238,7 @@ public partial class AutoSaveRecover : Window
         if (result == MessageBoxResult.No) return;
 
         Recoverer.RecoverFile(currentItem.Item1);
-        ((MainWindow)Owner).OpenFile(currentItem.Item1.RawPath);
+        ((MainWindow)Owner).OpenFile(currentItem.Item1.RawPath!);
         Close();
     }
 

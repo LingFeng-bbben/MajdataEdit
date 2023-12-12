@@ -50,7 +50,7 @@ public partial class MainWindow : Window
     public DiscordRpcClient DCRPCclient = new("1068882546932326481");
 
     private float deltatime = 4f;
-    public EditorSetting editorSetting;
+    public EditorSetting? editorSetting;
 
     private bool fumenOverwriteMode; //谱面文本覆盖模式
     private float ghostCusorPositionTime;
@@ -60,7 +60,7 @@ public partial class MainWindow : Window
 
     private bool isSaved = true;
     private EditorControlMethod lastEditorState;
-    private TextSelection lastFindPosition;
+    private TextSelection? lastFindPosition;
 
     private double lastMousePointX; //Used for drag scroll
 
@@ -74,13 +74,13 @@ public partial class MainWindow : Window
     //*UI DRAWING
     private readonly Timer visualEffectRefreshTimer = new(1);
 
-    private WriteableBitmap WaveBitmap;
+    private WriteableBitmap? WaveBitmap;
 
     //*TEXTBOX CONTROL
     private string GetRawFumenText()
     {
-        var text = "";
-        text = new TextRange(FumenContent.Document.ContentStart, FumenContent.Document.ContentEnd).Text;
+        var text = new TextRange(FumenContent.Document.ContentStart, FumenContent.Document.ContentEnd).Text!;
+
         text = text.Replace("\r", "");
         // 亲爱的bbben在这里对text进行了Trim 引发了行位置不正确的BUG 谨此纪念（
         return text;
@@ -151,7 +151,7 @@ public partial class MainWindow : Window
         FumenContent.Selection.Select(pointer, pointer);
         Focus();
 
-        if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked)
+        if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked!)
             return;
         var time = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
         SetBgmPosition(time);
@@ -161,12 +161,12 @@ public partial class MainWindow : Window
     }
 
     //*FIND AND REPLACE
-    private void Find_icon_MouseDown(object sender, MouseButtonEventArgs e)
+    private void Find_icon_MouseDown(object? sender, MouseButtonEventArgs e)
     {
         FindAndScroll();
     }
 
-    private void Replace_icon_MouseDown(object sender, MouseButtonEventArgs e)
+    private void Replace_icon_MouseDown(object? sender, MouseButtonEventArgs e)
     {
         if (!isReplaceConformed)
         {
@@ -185,9 +185,9 @@ public partial class MainWindow : Window
         }
     }
 
-    public TextRange GetTextRangeFromPosition(TextPointer position, string input)
+    public TextRange? GetTextRangeFromPosition(TextPointer position, string input)
     {
-        TextRange textRange = null;
+        TextRange? textRange = null;
 
         while (position != null)
         {
@@ -245,7 +245,7 @@ public partial class MainWindow : Window
         if (soundSetting != null) soundSetting.Close();
         if (editorSetting == null) ReadEditorSetting();
 
-        var useOgg = File.Exists(path + "track.ogg");
+        var useOgg = File.Exists(path + "/track.ogg");
 
         var audioPath = path + "/track" + (useOgg ? ".ogg" : ".mp3");
         var dataPath = path + "/maidata.txt";
@@ -275,28 +275,28 @@ public partial class MainWindow : Window
         bgmStream = BassFx.BASS_FX_TempoCreate(decodeStream, BASSFlag.BASS_FX_FREESOURCE);
         //Bass.BASS_StreamCreateFile(audioPath, 0L, 0L, BASSFlag.BASS_SAMPLE_FLOAT);
 
-        Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_BGM_Level);
-        Bass.BASS_ChannelSetAttribute(trackStartStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_BGM_Level);
-        Bass.BASS_ChannelSetAttribute(allperfectStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_BGM_Level);
-        Bass.BASS_ChannelSetAttribute(fanfareStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_BGM_Level);
-        Bass.BASS_ChannelSetAttribute(clockStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_BGM_Level);
-        Bass.BASS_ChannelSetAttribute(answerStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Answer_Level);
-        Bass.BASS_ChannelSetAttribute(judgeStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Judge_Level);
+        Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting!.Default_BGM_Level);
+        Bass.BASS_ChannelSetAttribute(trackStartStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting!.Default_BGM_Level);
+        Bass.BASS_ChannelSetAttribute(allperfectStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting!.Default_BGM_Level);
+        Bass.BASS_ChannelSetAttribute(fanfareStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting!.Default_BGM_Level);
+        Bass.BASS_ChannelSetAttribute(clockStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting!.Default_BGM_Level);
+        Bass.BASS_ChannelSetAttribute(answerStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting!.Default_Answer_Level);
+        Bass.BASS_ChannelSetAttribute(judgeStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting!.Default_Judge_Level);
         Bass.BASS_ChannelSetAttribute(judgeBreakStream, BASSAttribute.BASS_ATTRIB_VOL,
-            editorSetting.Default_Break_Level);
+            editorSetting!.Default_Break_Level);
         Bass.BASS_ChannelSetAttribute(judgeBreakSlideStream, BASSAttribute.BASS_ATTRIB_VOL,
-            editorSetting.Default_Break_Slide_Level);
-        Bass.BASS_ChannelSetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Slide_Level);
+            editorSetting!.Default_Break_Slide_Level);
+        Bass.BASS_ChannelSetAttribute(slideStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting!.Default_Slide_Level);
         Bass.BASS_ChannelSetAttribute(breakSlideStartStream, BASSAttribute.BASS_ATTRIB_VOL,
-            editorSetting.Default_Slide_Level);
-        Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Break_Level);
+            editorSetting!.Default_Slide_Level);
+        Bass.BASS_ChannelSetAttribute(breakStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting!.Default_Break_Level);
         Bass.BASS_ChannelSetAttribute(breakSlideStream, BASSAttribute.BASS_ATTRIB_VOL,
-            editorSetting.Default_Break_Slide_Level);
-        Bass.BASS_ChannelSetAttribute(judgeExStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Ex_Level);
-        Bass.BASS_ChannelSetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Touch_Level);
-        Bass.BASS_ChannelSetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting.Default_Hanabi_Level);
+            editorSetting!.Default_Break_Slide_Level);
+        Bass.BASS_ChannelSetAttribute(judgeExStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting!.Default_Ex_Level);
+        Bass.BASS_ChannelSetAttribute(touchStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting!.Default_Touch_Level);
+        Bass.BASS_ChannelSetAttribute(hanabiStream, BASSAttribute.BASS_ATTRIB_VOL, editorSetting!.Default_Hanabi_Level);
         Bass.BASS_ChannelSetAttribute(holdRiserStream, BASSAttribute.BASS_ATTRIB_VOL,
-            editorSetting.Default_Hanabi_Level);
+            editorSetting!.Default_Hanabi_Level);
         var info = Bass.BASS_ChannelGetInfo(bgmStream);
         if (info.freq != 44100) MessageBox.Show(GetLocalizedString("Warn44100Hz"), GetLocalizedString("Attention"));
         ReadWaveFromFile();
@@ -326,7 +326,8 @@ public partial class MainWindow : Window
 
     private void ReadWaveFromFile()
     {
-        var bgmDecode = Bass.BASS_StreamCreateFile(maidataDir + "/track.mp3", 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
+        var useOgg = File.Exists(maidataDir + "/track.ogg");
+        var bgmDecode = Bass.BASS_StreamCreateFile(maidataDir + "/track" + (useOgg ? ".ogg" : ".mp3"), 0L, 0L, BASSFlag.BASS_STREAM_DECODE);
         try
         {
             songLength = Bass.BASS_ChannelBytes2Seconds(bgmDecode,
@@ -338,7 +339,7 @@ public partial class MainWindow : Window
                     wavedBs[i] = Bass.BASS_ChannelGetLevels(bgmDecode, 0.02f, BASSLevel.BASS_LEVEL_MONO)[0];
                 }*/
             Bass.BASS_StreamFree(bgmDecode);
-            var bgmSample = Bass.BASS_SampleLoad(maidataDir + "/track.mp3", 0, 0, 1, BASSFlag.BASS_DEFAULT);
+            var bgmSample = Bass.BASS_SampleLoad(maidataDir + "/track" + (useOgg ? ".ogg" : ".mp3"), 0, 0, 1, BASSFlag.BASS_DEFAULT);
             var bgmInfo = Bass.BASS_SampleGetInfo(bgmSample);
             var freq = bgmInfo.freq;
             var sampleCount = (long)(songLength * freq * 2);
@@ -354,7 +355,7 @@ public partial class MainWindow : Window
         }
         catch (Exception e)
         {
-            MessageBox.Show("mp3解码失败。\nMP3 Decode fail.\n" + e.Message + Bass.BASS_ErrorGetCode());
+            MessageBox.Show("mp3/ogg解码失败。\nMP3/OGG Decode fail.\n" + e.Message + Bass.BASS_ErrorGetCode());
             Bass.BASS_StreamFree(bgmDecode);
             Process.Start("https://github.com/LingFeng-bbben/MajdataEdit/issues/26");
         }
@@ -366,13 +367,13 @@ public partial class MainWindow : Window
         {
             isSaved = true;
             LevelSelector.IsEnabled = true;
-            TheWindow.Title = GetWindowsTitleString(SimaiProcess.title);
+            TheWindow.Title = GetWindowsTitleString(SimaiProcess.title!);
         }
         else
         {
             isSaved = false;
             LevelSelector.IsEnabled = false;
-            TheWindow.Title = GetWindowsTitleString(GetLocalizedString("Unsaved") + SimaiProcess.title);
+            TheWindow.Title = GetWindowsTitleString(GetLocalizedString("Unsaved") + SimaiProcess.title!);
             AutoSaveManager.Of().SetFileChanged();
         }
     }
@@ -402,10 +403,12 @@ public partial class MainWindow : Window
         SimaiProcess.first = float.Parse(OffsetTextBox.Text);
         if (maidataDir == "")
         {
-            var saveDialog = new SaveFileDialog();
-            saveDialog.Filter = "maidata.txt|maidata.txt";
-            saveDialog.OverwritePrompt = true;
-            if ((bool)saveDialog.ShowDialog()) maidataDir = new FileInfo(saveDialog.FileName).DirectoryName;
+            var saveDialog = new SaveFileDialog
+            {
+                Filter = "maidata.txt|maidata.txt",
+                OverwritePrompt = true
+            };
+            if ((bool)saveDialog.ShowDialog()!) maidataDir = new FileInfo(saveDialog.FileName).DirectoryName!;
         }
 
         SimaiProcess.SaveData(maidataDir + "/maidata.bak.txt");
@@ -420,9 +423,11 @@ public partial class MainWindow : Window
     private void SaveSetting()
     {
         if (maidataDir == "") return;
-        var setting = new MajSetting();
-        setting.lastEditDiff = selectedDifficulty;
-        setting.lastEditTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
+        var setting = new MajSetting
+        {
+            lastEditDiff = selectedDifficulty,
+            lastEditTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream))
+        };
         Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.BGM_Level);
         Bass.BASS_ChannelGetAttribute(answerStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Answer_Level);
         Bass.BASS_ChannelGetAttribute(judgeStream, BASSAttribute.BASS_ATTRIB_VOL, ref setting.Judge_Level);
@@ -441,7 +446,7 @@ public partial class MainWindow : Window
         var path = maidataDir + "/" + majSettingFilename;
         if (!File.Exists(path)) return;
         var setting = JsonConvert.DeserializeObject<MajSetting>(File.ReadAllText(path));
-        LevelSelector.SelectedIndex = setting.lastEditDiff;
+        LevelSelector.SelectedIndex = setting!.lastEditDiff;
         selectedDifficulty = setting.lastEditDiff;
         SetBgmPosition(setting.lastEditTime);
         Bass.BASS_ChannelSetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_VOL, setting.BGM_Level);
@@ -479,14 +484,18 @@ public partial class MainWindow : Window
 
     private void CreateEditorSetting()
     {
-        editorSetting = new EditorSetting();
-        editorSetting.RenderMode =
-            RenderOptions.ProcessRenderMode == RenderMode.SoftwareOnly ? 1 : 0; // 使用命令行指定强制软件渲染时，同步修改配置值
+        editorSetting = new EditorSetting
+        {
+            RenderMode =
+            RenderOptions.ProcessRenderMode == RenderMode.SoftwareOnly ? 1 : 0 // 使用命令行指定强制软件渲染时，同步修改配置值
+        };
 
         File.WriteAllText(editorSettingFilename, JsonConvert.SerializeObject(editorSetting, Formatting.Indented));
 
-        var esp = new EditorSettingPanel(true);
-        esp.Owner = this;
+        var esp = new EditorSettingPanel(true)
+        {
+            Owner = this
+        };
         esp.ShowDialog();
     }
 
@@ -494,7 +503,7 @@ public partial class MainWindow : Window
     {
         if (!File.Exists(editorSettingFilename)) CreateEditorSetting();
         var json = File.ReadAllText(editorSettingFilename);
-        editorSetting = JsonConvert.DeserializeObject<EditorSetting>(json);
+        editorSetting = JsonConvert.DeserializeObject<EditorSetting>(json)!;
 
         if (RenderOptions.ProcessRenderMode != RenderMode.SoftwareOnly)
             //如果没有通过命令行预先指定渲染模式，则使用设置项的渲染模式
@@ -535,13 +544,13 @@ public partial class MainWindow : Window
 
     private void AddGesture(string keyGusture, string command)
     {
-        var gesture = (KeyGesture)new KeyGestureConverter().ConvertFromString(keyGusture);
+        var gesture = (InputGesture) new KeyGestureConverter().ConvertFromString(keyGusture)!;
         var inputBinding = new InputBinding((ICommand)FumenContent.Resources[command], gesture);
         FumenContent.InputBindings.Add(inputBinding);
     }
 
     // This update very freqently to Draw FFT wave.
-    private void VisualEffectRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
+    private void VisualEffectRefreshTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         try
         {
@@ -555,7 +564,7 @@ public partial class MainWindow : Window
     }
 
     // 谱面变更延迟解析
-    private void ChartChangeTimer_Elapsed(object sender, ElapsedEventArgs e)
+    private void ChartChangeTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         Console.WriteLine("TextChanged");
         Dispatcher.Invoke(
@@ -622,7 +631,7 @@ public partial class MainWindow : Window
     private void DrawWave()
     {
         if (isDrawing) return;
-
+        if (WaveBitmap == null) return;
 
         Dispatcher.Invoke(() =>
         {
@@ -892,7 +901,7 @@ public partial class MainWindow : Window
     }
 
     // This update less frequently. set the time text.
-    private void CurrentTimeRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
+    private void CurrentTimeRefreshTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         UpdateTimeDisplay();
     }
@@ -919,18 +928,18 @@ public partial class MainWindow : Window
 
     public static string GetLocalizedString(string key, string resourceFileName = "Langs", bool addSpaceAfter = false)
     {
-        var localizedString = string.Empty;
 
         // Build up the fully-qualified name of the key
+
         var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
         var fullKey = assemblyName + ":" + resourceFileName + ":" + key;
         var locExtension = new LocExtension(fullKey);
-        locExtension.ResolveLocalizedValue(out localizedString);
+        locExtension.ResolveLocalizedValue(out string? localizedString);
 
         // Add a space to the end, if requested
         if (addSpaceAfter) localizedString += " ";
 
-        return localizedString;
+        return localizedString ?? key;
     }
 
     private void TogglePlay(PlayMethod playMethod = PlayMethod.Normal)
@@ -970,9 +979,9 @@ public partial class MainWindow : Window
                     task.Start();
                     task.Wait();
                 }
-                catch (AggregateException e)
+                catch (AggregateException)
                 {
-                    MessageBox.Show(task.Exception.InnerException.Message + "\n" +
+                    MessageBox.Show(task.Exception!.InnerException!.Message + "\n" +
                                     task.Exception.InnerException.StackTrace);
                     return;
                 }
@@ -1106,8 +1115,10 @@ public partial class MainWindow : Window
     //*VIEW COMMUNICATION
     private bool sendRequestStop()
     {
-        var requestStop = new EditRequestjson();
-        requestStop.control = EditorControlMethod.Stop;
+        var requestStop = new EditRequestjson
+        {
+            control = EditorControlMethod.Stop
+        };
         var json = JsonConvert.SerializeObject(requestStop);
         var response = WebControl.RequestPOST("http://localhost:8013/", json);
         if (response == "ERROR")
@@ -1122,8 +1133,10 @@ public partial class MainWindow : Window
 
     private bool sendRequestPause()
     {
-        var requestStop = new EditRequestjson();
-        requestStop.control = EditorControlMethod.Pause;
+        var requestStop = new EditRequestjson
+        {
+            control = EditorControlMethod.Pause
+        };
         var json = JsonConvert.SerializeObject(requestStop);
         var response = WebControl.RequestPOST("http://localhost:8013/", json);
         if (response == "ERROR")
@@ -1138,11 +1151,13 @@ public partial class MainWindow : Window
 
     private bool sendRequestContinue(DateTime StartAt)
     {
-        var request = new EditRequestjson();
-        request.control = EditorControlMethod.Continue;
-        request.startAt = StartAt.Ticks;
-        request.startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-        request.audioSpeed = GetPlaybackSpeed();
+        var request = new EditRequestjson
+        {
+            control = EditorControlMethod.Continue,
+            startAt = StartAt.Ticks,
+            startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream)),
+            audioSpeed = GetPlaybackSpeed()
+        };
         var json = JsonConvert.SerializeObject(request);
         var response = WebControl.RequestPOST("http://localhost:8013/", json);
         if (response == "ERROR")
@@ -1164,10 +1179,10 @@ public partial class MainWindow : Window
             jsonStruct.timingList.Add(note);
         }
 
-        jsonStruct.title = SimaiProcess.title;
-        jsonStruct.artist = SimaiProcess.artist;
+        jsonStruct.title = SimaiProcess.title!;
+        jsonStruct.artist = SimaiProcess.artist!;
         jsonStruct.level = SimaiProcess.levels[selectedDifficulty];
-        jsonStruct.designer = SimaiProcess.designer;
+        jsonStruct.designer = SimaiProcess.designer!;
         jsonStruct.difficulty = SimaiProcess.GetDifficultyText(selectedDifficulty);
         jsonStruct.diffNum = selectedDifficulty;
 
@@ -1191,10 +1206,10 @@ public partial class MainWindow : Window
                 (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             // request.playSpeed = float.Parse(ViewerSpeed.Text);
             // 将maimaiDX速度换算为View中的单位速度 MajSpeed = 107.25 / (71.4184491 * (MaiSpeed + 0.9975) ^ -0.985558604)
-            request.noteSpeed = editorSetting.playSpeed;
-            request.touchSpeed = editorSetting.touchSpeed;
-            request.backgroundCover = editorSetting.backgroundCover;
-            request.comboStatusType = editorSetting.comboStatusType;
+            request.noteSpeed = editorSetting!.playSpeed;
+            request.touchSpeed = editorSetting!.touchSpeed;
+            request.backgroundCover = editorSetting!.backgroundCover;
+            request.comboStatusType = editorSetting!.comboStatusType;
             request.audioSpeed = GetPlaybackSpeed();
         });
 
@@ -1227,8 +1242,10 @@ public partial class MainWindow : Window
         if (Process.GetProcessesByName("MajdataView").Length == 0 && Process.GetProcessesByName("Unity").Length == 0)
         {
             var viewProcess = Process.Start("MajdataView.exe");
-            var setWindowPosTimer = new Timer(2000);
-            setWindowPosTimer.AutoReset = false;
+            var setWindowPosTimer = new Timer(2000)
+            {
+                AutoReset = false
+            };
             setWindowPosTimer.Elapsed += SetWindowPosTimer_Elapsed;
             setWindowPosTimer.Start();
             return true;
@@ -1288,8 +1305,8 @@ public partial class MainWindow : Window
         }
 
         //Console.WriteLine(dpiX+" "+dpiY);
-        dpiX = dpiX / 96d;
-        dpiY = dpiY / 96d;
+        dpiX /= 96d;
+        dpiY /= 96d;
 
         var Height = this.Height * dpiY;
         var Left = this.Left * dpiX;
@@ -1319,12 +1336,12 @@ public partial class MainWindow : Window
         // fetch TextEditor from FumenContent
         var textEditorProperty =
             typeof(TextBox).GetProperty("TextEditor", BindingFlags.NonPublic | BindingFlags.Instance);
-        var textEditor = textEditorProperty.GetValue(FumenContent, null);
+        var textEditor = textEditorProperty!.GetValue(FumenContent, null);
 
         // set _OvertypeMode on the TextEditor
-        var overtypeModeProperty = textEditor.GetType()
-            .GetProperty("_OvertypeMode", BindingFlags.NonPublic | BindingFlags.Instance);
-        overtypeModeProperty.SetValue(textEditor, fumenOverwriteMode, null);
+        var overtypeModeProperty = textEditor!.GetType()
+            .GetProperty("_OvertypeMode", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        overtypeModeProperty!.SetValue(textEditor, fumenOverwriteMode, null);
 
         //修改提示弹窗可见性
         OverrideModeTipsPopup.Visibility = fumenOverwriteMode ? Visibility.Visible : Visibility.Collapsed;
@@ -1363,9 +1380,9 @@ public partial class MainWindow : Window
                     // 从4.0开始，结束于6.4
                     // 在原版本号基础上增加 0. 主版本前缀，并增加 -alpha 后缀
                     var startPos = versionString.IndexOfAny("0123456789".ToArray());
-                    versionString = "0." + versionString.Substring(startPos);
+                    versionString = "0." + versionString[startPos..];
                     if (versionString.Count(c => { return c == '.'; }) > 2)
-                        versionString = versionString.Substring(0, versionString.LastIndexOf('.'));
+                        versionString = versionString[..versionString.LastIndexOf('.')];
                     versionString += "-alpha";
                     result = SemVersion.Parse(versionString, SemVersionStyles.Any);
                 }
@@ -1375,9 +1392,9 @@ public partial class MainWindow : Window
                     // 从1.0开始，结束于3.1。后续的语义化版本号继承该版本号进度，从4.0开始
                     // 增加 -beta 后缀
                     var startPos = versionString.IndexOfAny("0123456789".ToArray());
-                    versionString = versionString.Substring(startPos);
+                    versionString = versionString[startPos..];
                     if (versionString.Contains(' '))
-                        versionString = versionString.Substring(0, versionString.IndexOf(' '));
+                        versionString = versionString[..versionString.IndexOf(' ')];
                     versionString += "-beta";
                     result = SemVersion.Parse(versionString, SemVersionStyles.Any);
                 }
@@ -1395,9 +1412,9 @@ public partial class MainWindow : Window
         {
             UpdateCheckLock = false;
 
-            var resJson = JsonConvert.DeserializeObject<JObject>(response);
-            var latestVersionString = resJson["tag_name"].ToString();
-            var releaseUrl = resJson["html_url"].ToString();
+            var resJson = JsonConvert.DeserializeObject<JObject>(response)!;
+            var latestVersionString = resJson["tag_name"]!.ToString();
+            var releaseUrl = resJson["html_url"]!.ToString();
 
             var latestVersion = oldVersionCompatible(latestVersionString);
 
@@ -1448,7 +1465,7 @@ public partial class MainWindow : Window
 
     public string GetWindowsTitleString()
     {
-        return "MajdataEdit(" + MAJDATA_VERSION_STRING + ")";
+        return $"MajdataEdit ({MAJDATA_VERSION_STRING})";
     }
 
     public string GetWindowsTitleString(string info)
@@ -1457,7 +1474,7 @@ public partial class MainWindow : Window
         {
             var details = "Editing: " + SimaiProcess.title;
             if (details.Length > 50)
-                details = details.Substring(0, 50);
+                details = details[..50];
             DCRPCclient.SetPresence(new RichPresence
             {
                 Details = details,

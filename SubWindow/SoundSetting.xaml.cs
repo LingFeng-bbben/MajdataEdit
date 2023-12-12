@@ -19,9 +19,9 @@ public partial class SoundSetting : Window
 
     public SoundSetting()
     {
-        MainWindow = Application.Current.Windows
+        MainWindow = (Application.Current.Windows
             .Cast<Window>()
-            .FirstOrDefault(window => window is MainWindow) as MainWindow;
+            .FirstOrDefault(window => window is MainWindow) as MainWindow)!;
 
         InitializeComponent();
     }
@@ -54,7 +54,7 @@ public partial class SoundSetting : Window
         UpdateLevelTimer.Start();
     }
 
-    private void UpdateLevelTimer_Elapsed(object sender, ElapsedEventArgs e)
+    private void UpdateLevelTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         Dispatcher.Invoke(() =>
         {
@@ -117,37 +117,37 @@ public partial class SoundSetting : Window
     private void BtnSetDefault_Click(object sender, RoutedEventArgs e)
     {
         Bass.BASS_ChannelGetAttribute(MainWindow.bgmStream, BASSAttribute.BASS_ATTRIB_VOL,
-            ref MainWindow.editorSetting.Default_BGM_Level);
+            ref MainWindow.editorSetting!.Default_BGM_Level);
         Bass.BASS_ChannelGetAttribute(MainWindow.answerStream, BASSAttribute.BASS_ATTRIB_VOL,
-            ref MainWindow.editorSetting.Default_Answer_Level);
+            ref MainWindow.editorSetting!.Default_Answer_Level);
         Bass.BASS_ChannelGetAttribute(MainWindow.judgeStream, BASSAttribute.BASS_ATTRIB_VOL,
-            ref MainWindow.editorSetting.Default_Judge_Level);
+            ref MainWindow.editorSetting!.Default_Judge_Level);
         Bass.BASS_ChannelGetAttribute(MainWindow.breakStream, BASSAttribute.BASS_ATTRIB_VOL,
-            ref MainWindow.editorSetting.Default_Break_Level);
+            ref MainWindow.editorSetting!.Default_Break_Level);
         Bass.BASS_ChannelGetAttribute(MainWindow.breakSlideStream, BASSAttribute.BASS_ATTRIB_VOL,
-            ref MainWindow.editorSetting.Default_Break_Slide_Level);
+            ref MainWindow.editorSetting!.Default_Break_Slide_Level);
         Bass.BASS_ChannelGetAttribute(MainWindow.slideStream, BASSAttribute.BASS_ATTRIB_VOL,
-            ref MainWindow.editorSetting.Default_Slide_Level);
+            ref MainWindow.editorSetting!.Default_Slide_Level);
         Bass.BASS_ChannelGetAttribute(MainWindow.judgeExStream, BASSAttribute.BASS_ATTRIB_VOL,
-            ref MainWindow.editorSetting.Default_Ex_Level);
+            ref MainWindow.editorSetting!.Default_Ex_Level);
         Bass.BASS_ChannelGetAttribute(MainWindow.touchStream, BASSAttribute.BASS_ATTRIB_VOL,
-            ref MainWindow.editorSetting.Default_Touch_Level);
+            ref MainWindow.editorSetting!.Default_Touch_Level);
         Bass.BASS_ChannelGetAttribute(MainWindow.hanabiStream, BASSAttribute.BASS_ATTRIB_VOL,
-            ref MainWindow.editorSetting.Default_Hanabi_Level);
+            ref MainWindow.editorSetting!.Default_Hanabi_Level);
         MainWindow.SaveEditorSetting();
         MessageBox.Show(MainWindow.GetLocalizedString("SetVolumeDefaultSuccess"));
     }
 
     private void BtnSetToDefault_Click(object sender, RoutedEventArgs e)
     {
-        BGM_Slider.Value = MainWindow.editorSetting.Default_BGM_Level;
-        Answer_Slider.Value = MainWindow.editorSetting.Default_Answer_Level;
-        Judge_Slider.Value = MainWindow.editorSetting.Default_Judge_Level;
-        Break_Slider.Value = MainWindow.editorSetting.Default_Break_Level;
-        BreakSlide_Slider.Value = MainWindow.editorSetting.Default_Break_Slide_Level;
-        Slide_Slider.Value = MainWindow.editorSetting.Default_Slide_Level;
-        EX_Slider.Value = MainWindow.editorSetting.Default_Ex_Level;
-        Touch_Slider.Value = MainWindow.editorSetting.Default_Touch_Level;
-        Hanabi_Slider.Value = MainWindow.editorSetting.Default_Hanabi_Level;
+        BGM_Slider.Value = MainWindow.editorSetting!.Default_BGM_Level;
+        Answer_Slider.Value = MainWindow.editorSetting!.Default_Answer_Level;
+        Judge_Slider.Value = MainWindow.editorSetting!.Default_Judge_Level;
+        Break_Slider.Value = MainWindow.editorSetting!.Default_Break_Level;
+        BreakSlide_Slider.Value = MainWindow.editorSetting!.Default_Break_Slide_Level;
+        Slide_Slider.Value = MainWindow.editorSetting!.Default_Slide_Level;
+        EX_Slider.Value = MainWindow.editorSetting!.Default_Ex_Level;
+        Touch_Slider.Value = MainWindow.editorSetting!.Default_Touch_Level;
+        Hanabi_Slider.Value = MainWindow.editorSetting!.Default_Hanabi_Level;
     }
 }

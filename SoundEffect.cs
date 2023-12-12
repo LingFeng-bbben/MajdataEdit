@@ -36,11 +36,11 @@ public partial class MainWindow
     public int touchStream = -114514;
     public int trackStartStream = -114514;
 
-    private List<SoundEffectTiming> waitToBePlayed;
+    private List<SoundEffectTiming>? waitToBePlayed;
     //private Stopwatch sw = new Stopwatch();
 
     // This update "middle" frequently to monitor if the wave has to be stopped
-    private void WaveStopMonitorTimer_Elapsed(object sender, ElapsedEventArgs e)
+    private void WaveStopMonitorTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         WaveStopMonitorUpdate();
     }
@@ -92,8 +92,10 @@ public partial class MainWindow
             }
 
             timeEndPeriod(1);
-        });
-        thread.Priority = ThreadPriority.Highest;
+        })
+        {
+            Priority = ThreadPriority.Highest
+        };
         thread.Start();
     }
 
@@ -103,7 +105,7 @@ public partial class MainWindow
         {
             var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             //var waitToBePlayed = SimaiProcess.notelist.FindAll(o => o.havePlayed == false && o.time > currentTime);
-            if (waitToBePlayed.Count < 1) return;
+            if (waitToBePlayed!.Count < 1) return;
             var nearestTime = waitToBePlayed[0].time;
             //Console.WriteLine(nearestTime - currentTime);
             if (nearestTime - currentTime <= 0.0545) //dont touch this!!!!! this related to delay
@@ -135,7 +137,7 @@ public partial class MainWindow
                 //
                 Dispatcher.Invoke(() =>
                 {
-                    if ((bool)FollowPlayCheck.IsChecked)
+                    if ((bool)FollowPlayCheck.IsChecked!)
                     {
                         ghostCusorPositionTime = (float)nearestTime;
                         SeekTextFromIndex(se.noteGroupIndex);
@@ -178,7 +180,7 @@ public partial class MainWindow
         waitToBePlayed = new List<SoundEffectTiming>();
         if (isOpIncluded)
         {
-            var cmds = SimaiProcess.other_commands.Split('\n');
+            var cmds = SimaiProcess.other_commands!.Split('\n');
             foreach (var cmdl in cmds)
                 if (cmdl.Length > 12 && cmdl.Substring(1, 11) == "clock_count")
                     try
@@ -382,19 +384,20 @@ public partial class MainWindow
         var tempPath = GetViewerWorkingDirectory();
         string converterPath;
 
-        var pathEnv = new List<string>();
-        pathEnv.Add(tempPath);
-        pathEnv.AddRange(Environment.GetEnvironmentVariable("PATH").Split(Path.PathSeparator));
-        converterPath = pathEnv.Where(scanPath =>
+        var pathEnv = new List<string>
         {
-            var isExists = File.Exists(scanPath + "/ffmpeg.exe");
-            return isExists;
-        }).FirstOrDefault();
+            tempPath
+        };
+        pathEnv.AddRange(Environment.GetEnvironmentVariable("PATH")!.Split(Path.PathSeparator));
+        converterPath = pathEnv.FirstOrDefault(scanPath =>
+        {
+            return File.Exists(scanPath + "/ffmpeg.exe");
+        })!;
 
         var throwErrorOnMismatch = converterPath.Length == 0;
 
         //默认参数：16bit
-        Func<string, string> getBasePath = rawPath => { return rawPath.Split('/').Last(); };
+        string getBasePath(string rawPath) { return rawPath.Split('/').Last(); }
 
         var useOgg = File.Exists(maidataDir + "/track.ogg");
 
@@ -451,7 +454,7 @@ public partial class MainWindow
                         compPair.Key, compPair.Value.Frequency, bgmBank.Frequency)
                 );
 
-            Console.WriteLine("Convert sample of {0} ({1}/{2})...", compPair.Key, compPair.Value.Info.length,
+            Console.WriteLine("Convert sample of {0} ({1}/{2})...", compPair.Key, compPair.Value.Info!.length,
                 compPair.Value.Frequency);
             compPair.Value.Reassign(converterPath, tempPath, "t_" + getBasePath(compPair.Value.FilePath),
                 bgmBank.Frequency);
@@ -486,41 +489,44 @@ public partial class MainWindow
             typeSamples[sType] = new short[sampleCount];
         }
 
-        Func<SoundDataType, SoundBank> getSampleFromType = type =>
+        SoundBank? getSampleFromType(SoundDataType type)
         {
-            switch (type)
+            return type switch
             {
-                case SoundDataType.Answer: return answerBank;
-                case SoundDataType.Judge: return judgeBank;
-                case SoundDataType.JudgeBreak: return judgeBreakBank;
-                case SoundDataType.JudgeEX: return judgeExBank;
-                case SoundDataType.Break: return breakBank;
-                case SoundDataType.Hanabi: return hanabiBank;
-                case SoundDataType.TouchHold: return holdRiserBank;
-                case SoundDataType.Slide: return slideBank;
-                case SoundDataType.Touch: return touchBank;
-                case SoundDataType.AllPerfect: return apBank;
-                case SoundDataType.FullComboFanfare: return fanfareBank;
-                case SoundDataType.Clock: return clockBank;
-                case SoundDataType.BreakSlideStart: return breakSlideStartBank;
-                case SoundDataType.BreakSlide: return breakSlideBank;
-                case SoundDataType.JudgeBreakSlide: return judgeBreakSlideBank;
-            }
+                SoundDataType.Answer => answerBank,
+                SoundDataType.Judge => judgeBank,
+                SoundDataType.JudgeBreak => judgeBreakBank,
+                SoundDataType.JudgeEX => judgeExBank,
+                SoundDataType.Break => breakBank,
+                SoundDataType.Hanabi => hanabiBank,
+                SoundDataType.TouchHold => holdRiserBank,
+                SoundDataType.Slide => slideBank,
+                SoundDataType.Touch => touchBank,
+                SoundDataType.AllPerfect => apBank,
+                SoundDataType.FullComboFanfare => fanfareBank,
+                SoundDataType.Clock => clockBank,
+                SoundDataType.BreakSlideStart => breakSlideStartBank,
+                SoundDataType.BreakSlide => breakSlideBank,
+                SoundDataType.JudgeBreakSlide => judgeBreakSlideBank,
+                _ => null,
+            };
+        }
 
-            return null;
-        };
-
-        Action<int, SoundDataType> sampleWrite = (time, type) =>
+        void sampleWrite(int time, SoundDataType type)
         {
             var sample = getSampleFromType(type);
+            if (sample == null) return;
+            if (sample.Raw == null) return;
             if (sample.Frequency <= 0) return;
             for (var t = 0; t < sample.RawSize && time + t < typeSamples[type].Length; t++)
                 typeSamples[type][time + t] = sample.Raw[t];
-        };
+        }
 
-        Action<int, SoundDataType> sampleAdd = (time, type) =>
+        void sampleAdd(int time, SoundDataType type)
         {
             var sample = getSampleFromType(type);
+            if (sample == null) return;
+            if (sample.Raw == null) return;
             if (sample.Frequency <= 0) return;
             for (var t = 0; t < sample.RawSize; t++)
             {
@@ -531,16 +537,16 @@ public partial class MainWindow
                     value = short.MinValue;
                 typeSamples[type][time + t] = (short)value;
             }
-        };
+        }
 
-        Action<int, int, SoundDataType> sampleWipe = (timeFrom, timeTo, type) =>
+        void sampleWipe(int timeFrom, int timeTo, SoundDataType type)
         {
             for (var t = timeFrom; t < timeTo && t < typeSamples[type].Length; t++)
                 typeSamples[type][t] = 0;
-        };
+        }
 
         //生成每个音效的track
-        foreach (var soundTiming in waitToBePlayed)
+        foreach (var soundTiming in waitToBePlayed!)
         {
             var startIndex = (int)(soundTiming.time * freq) * 2; //乘2因为有两个channel
             if (soundTiming.hasAnswer) sampleWrite(startIndex, SoundDataType.Answer);
@@ -603,14 +609,14 @@ public partial class MainWindow
 
         var filedata = new List<byte>();
         var delayEmpty = new short[(int)(delaySeconds * freq * 2)];
-        var filehead = CreateWaveFileHeader(bgmBank.Raw.Length * 2 + delayEmpty.Length * 2, 2, freq, 16).ToList();
+        var filehead = CreateWaveFileHeader(bgmBank.Raw!.Length * 2 + delayEmpty.Length * 2, 2, freq, 16).ToList();
 
         //if (trackStartRAW.Length > delayEmpty.Length)
         //    throw new Exception("track_start音效过长,请勿大于5秒");
 
         for (var i = 0; i < delayEmpty.Length; i++)
         {
-            if (i < trackStartBank.Raw.Length)
+            if (i < trackStartBank.Raw!.Length)
                 delayEmpty[i] = trackStartBank.Raw[i];
             filehead.AddRange(BitConverter.GetBytes(delayEmpty[i]));
         }
@@ -814,10 +820,10 @@ public partial class MainWindow
         public bool Temp { get; private set; }
         public string FilePath { get; private set; }
         public int ID { get; private set; }
-        public BASS_SAMPLE Info { get; private set; }
+        public BASS_SAMPLE? Info { get; private set; }
 
         public long RawSize { get; set; }
-        public short[] Raw { get; private set; }
+        public short[]? Raw { get; private set; }
 
         public int Frequency
         {
@@ -848,11 +854,13 @@ public partial class MainWindow
                 NormalizePath(FilePath),
                 NewFrequency
             );
-            var startInfo = new ProcessStartInfo(FFMpegDirectory + "/ffmpeg.exe", args);
-            startInfo.UseShellExecute = false;
-            startInfo.CreateNoWindow = true;
-            startInfo.RedirectStandardError = true;
-            var proc = Process.Start(startInfo);
+            var startInfo = new ProcessStartInfo(FFMpegDirectory + "/ffmpeg.exe", args)
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardError = true
+            };
+            var proc = Process.Start(startInfo)!;
             proc.WaitForExit();
             if (proc.ExitCode != 0)
                 throw new Exception(proc.StandardError.ReadToEnd());

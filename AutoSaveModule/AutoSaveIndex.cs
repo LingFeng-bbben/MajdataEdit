@@ -25,12 +25,12 @@ public class AutoSaveIndex
         /// <summary>
         ///     自动保存文件名
         /// </summary>
-        public string FileName;
+        public string? FileName;
 
         /// <summary>
         ///     原先的文件路径
         /// </summary>
-        public string RawPath;
+        public string? RawPath;
 
         /// <summary>
         ///     自动保存时间

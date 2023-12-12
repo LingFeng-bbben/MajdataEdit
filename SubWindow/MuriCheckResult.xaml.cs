@@ -31,7 +31,7 @@ public partial class MuriCheckResult : Window
     public void ListBoxItem_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
         var item = (ListBoxItem)sender;
-        var index = int.Parse(item.Name.Substring(2));
+        var index = int.Parse(item.Name[2..]);
         var errorInfo = errorPosition[index];
 
         ((MainWindow)Owner).ScrollToFumenContentSelection(errorInfo.positionX, errorInfo.positionY);

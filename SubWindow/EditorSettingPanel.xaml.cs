@@ -30,7 +30,7 @@ public partial class EditorSettingPanel : Window
     {
         var window = (MainWindow)Owner;
 
-        var curLang = window.editorSetting.Language;
+        var curLang = window.editorSetting!.Language;
         var boxIndex = -1;
         for (var i = 0; i < langList.Length; i++)
             if (curLang == langList[i])
@@ -97,17 +97,17 @@ public partial class EditorSettingPanel : Window
     private void Save_Button_Click(object sender, RoutedEventArgs e)
     {
         var window = (MainWindow)Owner;
-        window.editorSetting.Language = langList[LanguageComboBox.SelectedIndex];
-        window.editorSetting.RenderMode = RenderModeComboBox.SelectedIndex;
-        window.editorSetting.backgroundCover = float.Parse(ViewerCover.Text);
-        window.editorSetting.playSpeed = float.Parse(ViewerSpeed.Text);
-        window.editorSetting.touchSpeed = float.Parse(ViewerTouchSpeed.Text);
-        window.editorSetting.ChartRefreshDelay = int.Parse(ChartRefreshDelay.Text);
-        window.editorSetting.AutoCheckUpdate = (bool)AutoUpdate.IsChecked;
-        // window.editorSetting.isComboEnabled = (bool)ComboDisplay.IsChecked;
-        window.editorSetting.comboStatusType = (EditorComboIndicator)Enum.GetValues(
-            window.editorSetting.comboStatusType.GetType()
-        ).GetValue(ComboDisplay.SelectedIndex);
+        window.editorSetting!.Language = langList[LanguageComboBox.SelectedIndex];
+        window.editorSetting!.RenderMode = RenderModeComboBox.SelectedIndex;
+        window.editorSetting!.backgroundCover = float.Parse(ViewerCover.Text);
+        window.editorSetting!.playSpeed = float.Parse(ViewerSpeed.Text);
+        window.editorSetting!.touchSpeed = float.Parse(ViewerTouchSpeed.Text);
+        window.editorSetting!.ChartRefreshDelay = int.Parse(ChartRefreshDelay.Text);
+        window.editorSetting!.AutoCheckUpdate = (bool) AutoUpdate.IsChecked!;
+        // window.editorSetting.isComboEnabled = (bool) ComboDisplay.IsChecked!;
+        window.editorSetting!.comboStatusType = (EditorComboIndicator)Enum.GetValues(
+            window.editorSetting!.comboStatusType.GetType()
+        ).GetValue(ComboDisplay.SelectedIndex)!;
         window.SaveEditorSetting();
 
         window.ViewerCover.Content = window.editorSetting.backgroundCover.ToString();
@@ -139,7 +139,7 @@ public partial class EditorSettingPanel : Window
             }
             else
             {
-                LocalizeDictionary.Instance.Culture = new CultureInfo(((MainWindow)Owner).editorSetting.Language);
+                LocalizeDictionary.Instance.Culture = new CultureInfo(((MainWindow)Owner).editorSetting!.Language);
             }
         }
         else

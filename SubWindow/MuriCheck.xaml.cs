@@ -72,8 +72,8 @@ internal class MaimaiOperationSlide
 
 public partial class MuriCheck : Window
 {
-    private MuriCheckResult mcr;
-    public JObject SLIDE_TIME; // 无理检测用的SLIDE_TIME数据
+    private MuriCheckResult? mcr;
+    public JObject? SLIDE_TIME; // 无理检测用的SLIDE_TIME数据
 
     public MuriCheck()
     {
@@ -82,11 +82,9 @@ public partial class MuriCheck : Window
 
     private void ReadMuriCheckSlideTime()
     {
-        using (var r = new StreamReader("./slide_time.json"))
-        {
-            var json = r.ReadToEnd();
-            SLIDE_TIME = JsonConvert.DeserializeObject<JObject>(json);
-        }
+        using var r = new StreamReader("./slide_time.json");
+        var json = r.ReadToEnd();
+        SLIDE_TIME = JsonConvert.DeserializeObject<JObject>(json)!;
     }
 
     private int notePos(int pos, bool relative)
@@ -123,9 +121,11 @@ public partial class MuriCheck : Window
         if (mcr != null)
         {
             mcr.errorPosition.Add(new ErrorInfo(posX, posY));
-            var resultRow = new ListBoxItem();
-            resultRow.Content = content;
-            resultRow.Name = "rr" + mcr.CheckResult_Listbox.Items.Count;
+            var resultRow = new ListBoxItem
+            {
+                Content = content,
+                Name = "rr" + mcr.CheckResult_Listbox.Items.Count
+            };
             resultRow.AddHandler(PreviewMouseDoubleClickEvent,
                 new MouseButtonEventHandler(mcr.ListBoxItem_PreviewMouseDoubleClick));
             mcr.CheckResult_Listbox.Items.Add(resultRow);
@@ -158,7 +158,7 @@ public partial class MuriCheck : Window
                         note.startPosition,
                         note.startPosition,
                         0,
-                        note.noteContent,
+                        note.noteContent!,
                         positionX,
                         positionY
                     ));
@@ -171,14 +171,14 @@ public partial class MuriCheck : Window
                         note.startPosition,
                         note.startPosition,
                         1,
-                        note.noteContent,
+                        note.noteContent!,
                         positionX,
                         positionY
                     ));
                     int endPosition;
                     try
                     {
-                        var temp = Regex.Match(note.noteContent, prog);
+                        var temp = Regex.Match(note.noteContent!, prog);
                         endPosition = int.Parse(
                             temp.Groups[3].Value.Substring(temp.Groups[3].Value.Length - 1, 1)
                         );
@@ -200,7 +200,7 @@ public partial class MuriCheck : Window
                         note.startPosition,
                         endPosition,
                         3,
-                        note.noteContent,
+                        note.noteContent!,
                         positionX,
                         positionY
                     ));
@@ -213,7 +213,7 @@ public partial class MuriCheck : Window
                         note.startPosition,
                         note.startPosition,
                         2,
-                        note.noteContent,
+                        note.noteContent!,
                         positionX,
                         positionY
                     ));
@@ -307,7 +307,7 @@ public partial class MuriCheck : Window
                         baseTime,
                         note.startPosition,
                         0,
-                        note.noteContent,
+                        note.noteContent!,
                         positionX,
                         positionY
                     ));
@@ -319,7 +319,7 @@ public partial class MuriCheck : Window
                         baseTime,
                         note.startPosition,
                         0,
-                        note.noteContent,
+                        note.noteContent!,
                         positionX,
                         positionY
                     ));
@@ -329,7 +329,7 @@ public partial class MuriCheck : Window
 
                     try
                     {
-                        var temp = Regex.Match(note.noteContent, prog);
+                        var temp = Regex.Match(note.noteContent!, prog);
                         sStart = temp.Groups[1].Value;
                         sType = temp.Groups[2].Value;
                         sEnd = temp.Groups[3].Value;
@@ -387,16 +387,16 @@ public partial class MuriCheck : Window
                     JToken sTimeInfo;
                     try
                     {
-                        sTimeInfo = SLIDE_TIME[sType][sEnd];
-                        foreach (var each in sTimeInfo)
+                        sTimeInfo = SLIDE_TIME![sType]![sEnd]!;
+                        foreach (var each in sTimeInfo!)
                         {
-                            var timeRatio = each["time"].ToObject<double>();
-                            var passArea = each["area"].ToObject<int>();
+                            var timeRatio = each["time"]!.ToObject<double>();
+                            var passArea = each["area"]!.ToObject<int>();
                             opSequence.Add(new MaimaiOperationSlide(
                                 timeRatio * note.slideTime + note.slideStartTime,
                                 notePos(passArea + int.Parse(sStart), false),
                                 1,
-                                note.noteContent,
+                                note.noteContent!,
                                 positionX,
                                 positionY
                             ));
@@ -505,7 +505,7 @@ public partial class MuriCheck : Window
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        SlideAccuracy_TextBox.Text = ((MainWindow)Owner).editorSetting.DefaultSlideAccuracy.ToString();
+        SlideAccuracy_TextBox.Text = ((MainWindow)Owner).editorSetting!.DefaultSlideAccuracy.ToString();
     }
 
     private void Window_Initialized(object sender, EventArgs e)

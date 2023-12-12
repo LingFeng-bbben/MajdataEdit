@@ -58,7 +58,7 @@ public partial class MainWindow : Window
         waveStopMonitorTimer.Elapsed += WaveStopMonitorTimer_Elapsed;
         playbackSpeedHideTimer.Elapsed += PlbHideTimer_Elapsed;
 
-        if (editorSetting.AutoCheckUpdate) CheckUpdate(true);
+        if (editorSetting!.AutoCheckUpdate) CheckUpdate(true);
 
         #region 异常退出处理
 
@@ -92,16 +92,16 @@ public partial class MainWindow : Window
 
 
     //start the view and wait for boot, then set window pos
-    private void SetWindowPosTimer_Elapsed(object sender, ElapsedEventArgs e)
+    private void SetWindowPosTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
-        var setWindowPosTimer = (Timer)sender;
+        var setWindowPosTimer = (Timer)sender!;
         Dispatcher.Invoke(() => { InternalSwitchWindow(); });
         setWindowPosTimer.Stop();
         setWindowPosTimer.Dispose();
     }
 
     //Window events
-    private void Window_Closing(object sender, CancelEventArgs e)
+    private void Window_Closing(object? sender, CancelEventArgs e)
     {
         if (!isSaved)
             if (!AskSave())
@@ -163,7 +163,7 @@ public partial class MainWindow : Window
                         if (!AskSave())
                             return;
                     var fileInfo = new FileInfo(path);
-                    initFromFile(fileInfo.DirectoryName);
+                    initFromFile(fileInfo.DirectoryName!);
                 }
             }
     }
@@ -181,13 +181,15 @@ public partial class MainWindow : Window
         if (!isSaved)
             if (!AskSave())
                 return;
-        var openFileDialog = new OpenFileDialog();
-        openFileDialog.Filter = "track.mp3|track.mp3|track.ogg|track.ogg";
-        if ((bool)openFileDialog.ShowDialog())
+        var openFileDialog = new OpenFileDialog
+        {
+            Filter = "track.mp3 / track.ogg|track.mp3|track.ogg"
+        };
+        if ((bool)openFileDialog.ShowDialog()!)
         {
             var fileInfo = new FileInfo(openFileDialog.FileName);
-            CreateNewFumen(fileInfo.DirectoryName);
-            initFromFile(fileInfo.DirectoryName);
+            CreateNewFumen(fileInfo.DirectoryName!);
+            initFromFile(fileInfo.DirectoryName!);
         }
     }
 
@@ -196,12 +198,14 @@ public partial class MainWindow : Window
         if (!isSaved)
             if (!AskSave())
                 return;
-        var openFileDialog = new OpenFileDialog();
-        openFileDialog.Filter = "maidata.txt|maidata.txt";
-        if ((bool)openFileDialog.ShowDialog())
+        var openFileDialog = new OpenFileDialog
+        {
+            Filter = "maidata.txt|maidata.txt"
+        };
+        if ((bool)openFileDialog.ShowDialog()!)
         {
             var fileInfo = new FileInfo(openFileDialog.FileName);
-            initFromFile(fileInfo.DirectoryName);
+            initFromFile(fileInfo.DirectoryName!);
         }
     }
 
@@ -220,89 +224,95 @@ public partial class MainWindow : Window
         TogglePlayAndPause(PlayMethod.Record);
     }
 
-    private void MirrorLeftRight_MenuItem_Click(object sender, RoutedEventArgs e)
+    private void MirrorLeftRight_MenuItem_Click(object? sender, RoutedEventArgs e)
     {
         var result = Mirror.NoteMirrorHandle(FumenContent.Selection.Text, Mirror.HandleType.LRMirror);
         FumenContent.Selection.Text = result;
     }
 
-    private void MirrorUpDown_MenuItem_Click(object sender, RoutedEventArgs e)
+    private void MirrorUpDown_MenuItem_Click(object? sender, RoutedEventArgs e)
     {
         var result = Mirror.NoteMirrorHandle(FumenContent.Selection.Text, Mirror.HandleType.UDMirror);
         FumenContent.Selection.Text = result;
     }
 
-    private void Mirror180_MenuItem_Click(object sender, RoutedEventArgs e)
+    private void Mirror180_MenuItem_Click(object? sender, RoutedEventArgs e)
     {
         var result = Mirror.NoteMirrorHandle(FumenContent.Selection.Text, Mirror.HandleType.HalfRotation);
         FumenContent.Selection.Text = result;
     }
 
-    private void Mirror45_MenuItem_Click(object sender, RoutedEventArgs e)
+    private void Mirror45_MenuItem_Click(object? sender, RoutedEventArgs e)
     {
         var result = Mirror.NoteMirrorHandle(FumenContent.Selection.Text, Mirror.HandleType.Rotation45);
         FumenContent.Selection.Text = result;
     }
 
-    private void MirrorCcw45_MenuItem_Click(object sender, RoutedEventArgs e)
+    private void MirrorCcw45_MenuItem_Click(object? sender, RoutedEventArgs e)
     {
         var result = Mirror.NoteMirrorHandle(FumenContent.Selection.Text, Mirror.HandleType.CcwRotation45);
         FumenContent.Selection.Text = result;
     }
 
-    private void BPMtap_MenuItem_Click(object sender, RoutedEventArgs e)
+    private void BPMtap_MenuItem_Click(object? sender, RoutedEventArgs e)
     {
         var tap = new BPMtap();
         tap.Owner = this;
         tap.Show();
     }
 
-    private void MenuItem_InfomationEdit_Click(object sender, RoutedEventArgs e)
+    private void MenuItem_InfomationEdit_Click(object? sender, RoutedEventArgs e)
     {
         var infoWindow = new Infomation();
         infoWindow.ShowDialog();
-        TheWindow.Title = GetWindowsTitleString(SimaiProcess.title);
+        TheWindow.Title = GetWindowsTitleString(SimaiProcess.title!);
     }
 
-    private void MenuItem_SimaiWiki_Click(object sender, RoutedEventArgs e)
+    private void MenuItem_SimaiWiki_Click(object? sender, RoutedEventArgs e)
     {
         Process.Start(new ProcessStartInfo() { FileName = "https://w.atwiki.jp/simai/pages/25.html", UseShellExecute = true });
         //maidata.txtの譜面書式
     }
 
-    private void MenuItem_GitHub_Click(object sender, RoutedEventArgs e)
+    private void MenuItem_GitHub_Click(object? sender, RoutedEventArgs e)
     {
         Process.Start(new ProcessStartInfo() { FileName = "https://github.com/LingFeng-bbben/MajdataView", UseShellExecute = true });
     }
 
-    private void MenuItem_SoundSetting_Click(object sender, RoutedEventArgs e)
+    private void MenuItem_SoundSetting_Click(object? sender, RoutedEventArgs e)
     {
-        soundSetting = new SoundSetting();
-        soundSetting.Owner = this;
+        soundSetting = new SoundSetting
+        {
+            Owner = this
+        };
         soundSetting.ShowDialog();
     }
 
-    private void MuriCheck_Click_1(object sender, RoutedEventArgs e)
+    private void MuriCheck_Click_1(object? sender, RoutedEventArgs e)
     {
-        var muriCheck = new MuriCheck();
-        muriCheck.Owner = this;
+        var muriCheck = new MuriCheck
+        {
+            Owner = this
+        };
         muriCheck.Show();
     }
 
-    private void MenuItem_EditorSetting_Click(object sender, RoutedEventArgs e)
+    private void MenuItem_EditorSetting_Click(object? sender, RoutedEventArgs e)
     {
-        var esp = new EditorSettingPanel();
-        esp.Owner = this;
+        var esp = new EditorSettingPanel
+        {
+            Owner = this
+        };
         esp.ShowDialog();
     }
 
-    private void Menu_ResetViewWindow(object sender, RoutedEventArgs e)
+    private void Menu_ResetViewWindow(object? sender, RoutedEventArgs e)
     {
         if (CheckAndStartView()) return;
         InternalSwitchWindow();
     }
 
-    private void MenuFind_Click(object sender, RoutedEventArgs e)
+    private void MenuFind_Click(object? sender, RoutedEventArgs e)
     {
         if (FindGrid.Visibility == Visibility.Collapsed)
         {
@@ -315,15 +325,17 @@ public partial class MainWindow : Window
         }
     }
 
-    private void CheckUpdate_Click(object sender, RoutedEventArgs e)
+    private void CheckUpdate_Click(object? sender, RoutedEventArgs e)
     {
         CheckUpdate();
     }
 
-    private void Menu_AutosaveRecover_Click(object sender, RoutedEventArgs e)
+    private void Menu_AutosaveRecover_Click(object? sender, RoutedEventArgs e)
     {
-        var asr = new AutoSaveRecover();
-        asr.Owner = this;
+        var asr = new AutoSaveRecover
+        {
+            Owner = this
+        };
         asr.ShowDialog();
     }
 
@@ -331,28 +343,28 @@ public partial class MainWindow : Window
 
     #region 快捷键
 
-    private void PlayAndPause_CanExecute(object sender, CanExecuteRoutedEventArgs e) //快捷键
+    private void PlayAndPause_CanExecute(object? sender, CanExecuteRoutedEventArgs e) //快捷键
     {
         TogglePlayAndStop();
     }
 
-    private void StopPlaying_CanExecute(object sender, CanExecuteRoutedEventArgs e) //快捷键
+    private void StopPlaying_CanExecute(object? sender, CanExecuteRoutedEventArgs e) //快捷键
     {
         TogglePlayAndPause();
     }
 
-    private void SaveFile_Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+    private void SaveFile_Command_CanExecute(object? sender, CanExecuteRoutedEventArgs e)
     {
         SaveFumen(true);
         SystemSounds.Beep.Play();
     }
 
-    private void SendToView_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+    private void SendToView_CanExecute(object? sender, CanExecuteRoutedEventArgs e)
     {
         TogglePlayAndStop(PlayMethod.Op);
     }
 
-    private void IncreasePlaybackSpeed_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+    private void IncreasePlaybackSpeed_CanExecute(object? sender, CanExecuteRoutedEventArgs e)
     {
         if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING) return;
         var speed = GetPlaybackSpeed();
@@ -365,7 +377,7 @@ public partial class MainWindow : Window
         playbackSpeedHideTimer.Start();
     }
 
-    private void DecreasePlaybackSpeed_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+    private void DecreasePlaybackSpeed_CanExecute(object? sender, CanExecuteRoutedEventArgs e)
     {
         if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING) return;
         var speed = GetPlaybackSpeed();
@@ -381,13 +393,13 @@ public partial class MainWindow : Window
 
     private readonly Timer playbackSpeedHideTimer = new(1000);
 
-    private void PlbHideTimer_Elapsed(object sender, ElapsedEventArgs e)
+    private void PlbHideTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         Dispatcher.Invoke(() => { PlbSpdAdjGrid.Visibility = Visibility.Collapsed; });
-        ((Timer)sender).Stop();
+        ((Timer)sender!).Stop();
     }
 
-    private void FindCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+    private void FindCommand_CanExecute(object? sender, CanExecuteRoutedEventArgs e)
     {
         if (FindGrid.Visibility == Visibility.Collapsed)
         {
@@ -400,7 +412,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void MirrorLRCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+    private void MirrorLRCommand_CanExecute(object? sender, CanExecuteRoutedEventArgs e)
     {
         MirrorLeftRight_MenuItem_Click(sender, null);
     }
@@ -506,7 +518,7 @@ public partial class MainWindow : Window
         NoteNowText.Content = "" + (
             new TextRange(FumenContent.Document.ContentStart, FumenContent.CaretPosition).Text.Replace("\r", "")
                 .Count(o => o == '\n') + 1) + " 行";
-        if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked)
+        if (Bass.BASS_ChannelIsActive(bgmStream) == BASSActive.BASS_ACTIVE_PLAYING && (bool)FollowPlayCheck.IsChecked!)
             return;
         //TODO:这个应该换成用fumen text position来在已经serialized的timinglist里面找。。 然后直接去掉这个double的返回和position的入参。。。
         var time = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition());
