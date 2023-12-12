@@ -3,10 +3,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -39,7 +37,7 @@ public partial class MainWindow : Window
 {
     private const string majSettingFilename = "majSetting.json";
     private const string editorSettingFilename = "EditorSetting.json";
-    public static readonly string MAJDATA_VERSION_STRING = "v4.2.1";
+    public static readonly string MAJDATA_VERSION_STRING = $"v{Assembly.GetExecutingAssembly().GetName().Version!.ToString(3)}";
     public static readonly SemVersion MAJDATA_VERSION = SemVersion.Parse(MAJDATA_VERSION_STRING, SemVersionStyles.Any);
 
     public static string maidataDir = "";
@@ -1393,18 +1391,10 @@ public partial class MainWindow : Window
             return result;
         }
 
-        void requestHandler(object sender, DownloadDataCompletedEventArgs e)
+        void requestHandler(string response)
         {
             UpdateCheckLock = false;
 
-            if (e.Error != null)
-            {
-                // 网络请求失败
-                if (!onStart) MessageBox.Show(GetLocalizedString("RequestFail"), GetLocalizedString("CheckUpdate"));
-                return;
-            }
-
-            var response = Encoding.UTF8.GetString(e.Result);
             var resJson = JsonConvert.DeserializeObject<JObject>(response);
             var latestVersionString = resJson["tag_name"].ToString();
             var releaseUrl = resJson["html_url"].ToString();
@@ -1445,8 +1435,15 @@ public partial class MainWindow : Window
         #endregion
 
         // 检查是否需要更新软件
-        WebControl.RequestGETAsync("http://api.github.com/repos/LingFeng-bbben/MajdataView/releases/latest",
-            requestHandler);
+
+        try
+        {
+            requestHandler(
+                WebControl.RequestGETAsync("http://api.github.com/repos/LingFeng-bbben/MajdataView/releases/latest"));
+        } catch {
+            // 网络请求失败
+            if (!onStart) MessageBox.Show(GetLocalizedString("RequestFail"), GetLocalizedString("CheckUpdate"));
+        }
     }
 
     public string GetWindowsTitleString()

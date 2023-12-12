@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.IO;
+using System.Net.Http;
+using System.Reflection;
 using System.Text;
 
 namespace MajdataEdit;
@@ -9,11 +11,17 @@ internal static class WebControl
     {
         try
         {
-            var wc = new WebClient();
-            var bufsend = Encoding.UTF8.GetBytes(data);
-            var buf = wc.UploadData(url, "POST", bufsend);
-            var text = Encoding.UTF8.GetString(buf);
-            return text;
+            using var client = new HttpClient();
+
+            var webRequest = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(data, Encoding.UTF8)
+            };
+
+            var response = client.Send(webRequest);
+            using var reader = new StreamReader(response.Content.ReadAsStream());
+
+            return reader.ReadToEnd();
         }
         catch
         {
@@ -21,13 +29,16 @@ internal static class WebControl
         }
     }
 
-    public static void RequestGETAsync(string url, DownloadDataCompletedEventHandler handler)
+    public static string RequestGETAsync(string url)
     {
-        var wc = new WebClient();
-        wc.Headers.Clear();
-        wc.Headers.Add("user-agent",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36");
-        wc.DownloadDataCompleted += handler;
-        wc.DownloadDataAsync(new Uri(url));
+        var executingAssembly = Assembly.GetExecutingAssembly();
+        
+        using var httpClient = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.Headers.Add("User-Agent", $"{executingAssembly.GetName().Name!} / {executingAssembly.GetName().Version!.ToString(3)}");
+        var response = httpClient.Send(request);
+        using var reader = new StreamReader(response.Content.ReadAsStream());
+
+        return reader.ReadToEnd();
     }
 }
