@@ -109,7 +109,7 @@ public partial class Infomation : Window
     {
         var openFileDialog = new OpenFileDialog
         {
-            Filter = "*.mp3|*.mp3|*.ogg|*.ogg"
+            Filter = "*.mp3/*.ogg|*.mp3|*.ogg"
         };
         if ((bool)openFileDialog.ShowDialog()!) ReadMetadata(openFileDialog.FileName);
     }
