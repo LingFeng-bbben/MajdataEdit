@@ -522,23 +522,6 @@ public partial class MainWindow
                 typeSamples[type][time + t] = sample.Raw[t];
         }
 
-        void sampleAdd(int time, SoundDataType type)
-        {
-            var sample = getSampleFromType(type);
-            if (sample == null) return;
-            if (sample.Raw == null) return;
-            if (sample.Frequency <= 0) return;
-            for (var t = 0; t < sample.RawSize; t++)
-            {
-                var value = typeSamples[type][time + t] + sample.Raw[t];
-                if (value > short.MaxValue)
-                    value = short.MaxValue;
-                if (value < short.MinValue)
-                    value = short.MinValue;
-                typeSamples[type][time + t] = (short)value;
-            }
-        }
-
         void sampleWipe(int timeFrom, int timeTo, SoundDataType type)
         {
             for (var t = timeFrom; t < timeTo && t < typeSamples[type].Length; t++)
@@ -555,7 +538,7 @@ public partial class MainWindow
             if (soundTiming.hasJudgeEx) sampleWrite(startIndex, SoundDataType.JudgeEX);
             if (soundTiming.hasBreak)
                 // Reach for the Stars.ogg
-                sampleAdd(startIndex, SoundDataType.Break);
+                sampleWrite(startIndex, SoundDataType.Break);
             if (soundTiming.hasHanabi) sampleWrite(startIndex, SoundDataType.Hanabi);
             if (soundTiming.hasTouchHold)
             {
