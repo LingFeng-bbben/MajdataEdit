@@ -797,6 +797,8 @@ namespace MajdataEdit
                 }
             };
 
+            // Can I delete this?
+            /*
             Action<int, SoundDataType> sampleAdd = (time, type) =>
             {
                 SoundBank sample = getSampleFromType(type);
@@ -812,6 +814,7 @@ namespace MajdataEdit
 
                 }
             };
+            */
 
             Action<int, int, SoundDataType> sampleWipe = (timeFrom, timeTo, type) =>
             {
@@ -842,7 +845,8 @@ namespace MajdataEdit
                 if (soundTiming.hasBreak)
                 {
                     // Reach for the Stars.ogg
-                    sampleAdd(startIndex, SoundDataType.Break);
+                    // Please... SFX for Break won't overlap each other. This code makes Break's SFX sounds like s--t.
+                    sampleWrite(startIndex, SoundDataType.Break);
                 }
                 if (soundTiming.hasHanabi)
                 {
