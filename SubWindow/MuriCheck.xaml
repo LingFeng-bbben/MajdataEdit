@@ -4,13 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:lex="http://wpflocalizeextension.codeplex.com"
-        xmlns:local="clr-namespace:MajdataEdit"
         lex:LocalizeDictionary.DesignCulture="zh-CN"
         lex:ResxLocalizationProvider.DefaultAssembly="MajdataEdit"
-        lex:ResxLocalizationProvider.DefaultDictionary="Langs" 
+        lex:ResxLocalizationProvider.DefaultDictionary="Langs"
         mc:Ignorable="d"
         Background="{DynamicResource WindowBackground}"
-        Title="{lex:Loc Key=MapMuriDetc}" Height="150" Width="338.806" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner" Initialized="Window_Initialized">
+        Title="{lex:Loc Key=MapMuriDetc}" Height="150" Width="338.806" ResizeMode="NoResize" Loaded="Window_Loaded"
+        WindowStartupLocation="CenterOwner" Initialized="Window_Initialized">
     <Window.Resources>
 
     </Window.Resources>
@@ -18,53 +18,51 @@
 
     <Grid Margin="8,5,8,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="100*" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="100*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="100*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
             <CheckBox x:Name="MultNote_Checkbox" Margin="0,5,0,0"
-               IsChecked="True"
-               FontWeight="Bold" FontSize="13"
-               Foreground="{DynamicResource ButtonForeground}"
-               Content="{lex:Loc Key=MultNoteEnable}"></CheckBox>
+                      IsChecked="True"
+                      FontWeight="Bold" FontSize="13"
+                      Foreground="{DynamicResource ButtonForeground}"
+                      Content="{lex:Loc Key=MultNoteEnable}" />
             <Label Foreground="{DynamicResource HelperForeground}" Margin="3,3,0,0">
                 <Label.ToolTip>
                     <ToolTip>
                         <StackPanel>
-                            <TextBlock Text="{lex:Loc Key=MultNoteTooltip}"></TextBlock>
+                            <TextBlock Text="{lex:Loc Key=MultNoteTooltip}" />
                         </StackPanel>
                     </ToolTip>
                 </Label.ToolTip>
-                <TextBlock TextDecorations="Underline" FontSize="10" Text="{lex:Loc Key=WhatsThis}"></TextBlock>
+                <TextBlock TextDecorations="Underline" FontSize="10" Text="{lex:Loc Key=WhatsThis}" />
             </Label>
         </StackPanel>
 
         <Label Grid.Row="1" Grid.Column="0"
                Foreground="{DynamicResource ButtonForeground}"
-               Content="{lex:Loc Key=SlideAccuracy}">
-            
-        </Label>
+               Content="{lex:Loc Key=SlideAccuracy}" />
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-            <TextBox x:Name="SlideAccuracy_TextBox" Text="0.2" 
-                     Width="70" Height="18" HorizontalAlignment="Left"  VerticalAlignment="Top"
+            <TextBox x:Name="SlideAccuracy_TextBox" Text="0.2"
+                     Width="70" Height="18" HorizontalAlignment="Left" VerticalAlignment="Top"
                      FontSize="12" Margin="5,5,0,0" />
             <Label Foreground="{DynamicResource HelperForeground}" Margin="3,3,0,0">
                 <Label.ToolTip>
                     <ToolTip>
                         <StackPanel>
-                            <TextBlock Text="{lex:Loc Key=SlideTooltip}"></TextBlock>
+                            <TextBlock Text="{lex:Loc Key=SlideTooltip}" />
                         </StackPanel>
                     </ToolTip>
                 </Label.ToolTip>
-                <TextBlock TextDecorations="Underline" FontSize="10" Text="{lex:Loc Key=WhatsThis}"></TextBlock>
+                <TextBlock TextDecorations="Underline" FontSize="10" Text="{lex:Loc Key=WhatsThis}" />
             </Label>
         </StackPanel>
         <Button x:Name="StartCheck_Button" Content="{lex:Loc Key=StartCheck}" Click="StartCheck_Button_Click"

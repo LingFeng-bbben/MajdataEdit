@@ -3,23 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MajdataEdit"
         mc:Ignorable="d"
-        Title="BPM tap" Height="184.314" Width="142.975" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True">
+        Title="BPM tap" Height="184.314" Width="142.975" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        Topmost="True">
     <Window.Resources>
-        
+
     </Window.Resources>
 
 
     <Grid Background="{DynamicResource WindowBackground}">
-        <Button x:Name="Tap_Button" Content="Tap" Height="100" 
-                Margin="19,10,19,0" VerticalAlignment="Top" 
-                FontSize="18" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}" ClickMode="Press" 
-                Template="{DynamicResource DarkButton}" Click="Tap_Button_Click"/>
-        <Button x:Name="Reset_Button" Content="Reset" Height="18" 
-                Margin="19,115,19,0" VerticalAlignment="Top" 
-                FontSize="11" Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
-                Template="{DynamicResource DarkButton}" Click="Reset_Button_Click"/>
+        <Button x:Name="Tap_Button" Content="Tap" Height="100"
+                Margin="19,10,19,0" VerticalAlignment="Top"
+                FontSize="18" Background="{DynamicResource ButtonsBackground}"
+                Foreground="{DynamicResource ButtonForeground}" ClickMode="Press"
+                Template="{DynamicResource DarkButton}" Click="Tap_Button_Click" />
+        <Button x:Name="Reset_Button" Content="Reset" Height="18"
+                Margin="19,115,19,0" VerticalAlignment="Top"
+                FontSize="11" Background="{DynamicResource ButtonsBackground}"
+                Foreground="{DynamicResource ButtonForeground}"
+                Template="{DynamicResource DarkButton}" Click="Reset_Button_Click" />
 
 
     </Grid>

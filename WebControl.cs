@@ -1,34 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.IO;
+using System.Net.Http;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using System.Net;
 
-namespace MajdataEdit
+namespace MajdataEdit;
+
+internal static class WebControl
 {
-    static class WebControl
+    public static string RequestPOST(string url, string data = "")
     {
-        public static string RequestPOST(string url, string data = "")
+        try
         {
-            try
-            {
-                WebClient wc = new WebClient();
-                byte[] bufsend = Encoding.UTF8.GetBytes(data);
-                byte[] buf = wc.UploadData(url, "POST", bufsend);
-                string text = Encoding.UTF8.GetString(buf);
-                return text;
-            }
-            catch { return "ERROR"; }
-        }
+            using var client = new HttpClient();
 
-        public static void RequestGETAsync(string url, DownloadDataCompletedEventHandler handler)
-        {
-            WebClient wc = new WebClient();
-            wc.Headers.Clear();
-            wc.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36");
-            wc.DownloadDataCompleted += handler;
-            wc.DownloadDataAsync(new Uri(url));
+            var webRequest = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(data, Encoding.UTF8)
+            };
+
+            var response = client.Send(webRequest);
+            using var reader = new StreamReader(response.Content.ReadAsStream());
+
+            return reader.ReadToEnd();
         }
+        catch
+        {
+            return "ERROR";
+        }
+    }
+
+    public static string RequestGETAsync(string url)
+    {
+        var executingAssembly = Assembly.GetExecutingAssembly();
+        
+        using var httpClient = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.Headers.Add("User-Agent", $"{executingAssembly.GetName().Name!} / {executingAssembly.GetName().Version!.ToString(3)}");
+        var response = httpClient.Send(request);
+        using var reader = new StreamReader(response.Content.ReadAsStream());
+
+        return reader.ReadToEnd();
     }
 }

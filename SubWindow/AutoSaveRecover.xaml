@@ -4,74 +4,91 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:lex="http://wpflocalizeextension.codeplex.com"
-        xmlns:local="clr-namespace:MajdataEdit"
         lex:LocalizeDictionary.DesignCulture="zh-CN"
         lex:ResxLocalizationProvider.DefaultAssembly="MajdataEdit"
-        lex:ResxLocalizationProvider.DefaultDictionary="Langs" 
+        lex:ResxLocalizationProvider.DefaultDictionary="Langs"
         mc:Ignorable="d"
         Background="{DynamicResource WindowBackground}"
-        Title="{lex:Loc Key=AutosaveRecoverWindowTitle}" Height="450" Width="600" ResizeMode="NoResize" WindowStartupLocation="Manual"
+        Title="{lex:Loc Key=AutosaveRecoverWindowTitle}" Height="450" Width="600" ResizeMode="NoResize"
+        WindowStartupLocation="Manual"
         Topmost="True">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
 
         <ListBox x:Name="Autosave_Listbox" Grid.Row="0" Grid.Column="0"
                  Foreground="{DynamicResource ButtonForeground}"
                  Background="{DynamicResource ButtonsBackground}"
-                 FontSize="12">
-        </ListBox>
+                 FontSize="12" />
 
         <Grid Grid.Row="0" Grid.Column="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="70"/>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="70" />
+                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="22"/>
-                <RowDefinition Height="22"/>
-                <RowDefinition Height="22"/>
-                <RowDefinition Height="22"/>
-                <RowDefinition Height="44"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="35"/>
+                <RowDefinition Height="22" />
+                <RowDefinition Height="22" />
+                <RowDefinition Height="22" />
+                <RowDefinition Height="22" />
+                <RowDefinition Height="44" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="35" />
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" Content="Path" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" />
-            <Label Grid.Row="1" Grid.Column="0" Content="Title" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" />
-            <Label Grid.Row="2" Grid.Column="0" Content="Artist" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" />
-            <Label Grid.Row="3" Grid.Column="0" Content="Designer" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" />
+            <Label Grid.Row="0" Grid.Column="0" Content="Path" HorizontalAlignment="Left" VerticalAlignment="Top"
+                   Foreground="White" />
+            <Label Grid.Row="1" Grid.Column="0" Content="Title" HorizontalAlignment="Left" VerticalAlignment="Top"
+                   Foreground="White" />
+            <Label Grid.Row="2" Grid.Column="0" Content="Artist" HorizontalAlignment="Left" VerticalAlignment="Top"
+                   Foreground="White" />
+            <Label Grid.Row="3" Grid.Column="0" Content="Designer" HorizontalAlignment="Left" VerticalAlignment="Top"
+                   Foreground="White" />
 
-            <Label Grid.Row="0" Grid.Column="1" x:Name="Lb_Path" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" />
-            <Label Grid.Row="1" Grid.Column="1" x:Name="Lb_Title" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" />
-            <Label Grid.Row="2" Grid.Column="1" x:Name="Lb_Artist" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" />
-            <Label Grid.Row="3" Grid.Column="1" x:Name="Lb_Designer" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" />
-            <WrapPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button x:Name="Btn_Easy" Click="Btn_Easy_Click" Content="Easy" Margin="0,2,3,0" Padding="3,1,3,1" IsEnabled="False"></Button>
-                <Button x:Name="Btn_Basic" Click="Btn_Basic_Click" Content="Basic" Margin="0,2,3,0" Padding="3,1,3,1" IsEnabled="False"></Button>
-                <Button x:Name="Btn_Advance" Click="Btn_Advance_Click" Content="Advance" Margin="0,2,3,0" Padding="3,1,3,1" IsEnabled="False"></Button>
-                <Button x:Name="Btn_Expert" Click="Btn_Expert_Click" Content="Expert" Margin="0,2,3,0" Padding="3,1,3,1" IsEnabled="False"></Button>
-                <Button x:Name="Btn_Master" Click="Btn_Master_Click" Content="Master" Margin="0,2,3,0" Padding="3,1,3,1" IsEnabled="False"></Button>
-                <Button x:Name="Btn_ReMaster" Click="Btn_ReMaster_Click" Content="Re:Master" Margin="0,2,3,0" Padding="3,1,3,1" IsEnabled="False"></Button>
-                <Button x:Name="Btn_Original" Click="Btn_Original_Click" Content="Original" Margin="0,2,3,0" Padding="3,1,3,1" IsEnabled="False"></Button>
+            <Label Grid.Row="0" Grid.Column="1" x:Name="Lb_Path" HorizontalAlignment="Left" VerticalAlignment="Top"
+                   Foreground="White" />
+            <Label Grid.Row="1" Grid.Column="1" x:Name="Lb_Title" HorizontalAlignment="Left" VerticalAlignment="Top"
+                   Foreground="White" />
+            <Label Grid.Row="2" Grid.Column="1" x:Name="Lb_Artist" HorizontalAlignment="Left" VerticalAlignment="Top"
+                   Foreground="White" />
+            <Label Grid.Row="3" Grid.Column="1" x:Name="Lb_Designer" HorizontalAlignment="Left" VerticalAlignment="Top"
+                   Foreground="White" />
+            <WrapPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
+                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button x:Name="Btn_Easy" Click="Btn_Easy_Click" Content="Easy" Margin="0,2,3,0" Padding="3,1,3,1"
+                        IsEnabled="False" />
+                <Button x:Name="Btn_Basic" Click="Btn_Basic_Click" Content="Basic" Margin="0,2,3,0" Padding="3,1,3,1"
+                        IsEnabled="False" />
+                <Button x:Name="Btn_Advance" Click="Btn_Advance_Click" Content="Advance" Margin="0,2,3,0"
+                        Padding="3,1,3,1" IsEnabled="False" />
+                <Button x:Name="Btn_Expert" Click="Btn_Expert_Click" Content="Expert" Margin="0,2,3,0"
+                        Padding="3,1,3,1" IsEnabled="False" />
+                <Button x:Name="Btn_Master" Click="Btn_Master_Click" Content="Master" Margin="0,2,3,0"
+                        Padding="3,1,3,1" IsEnabled="False" />
+                <Button x:Name="Btn_ReMaster" Click="Btn_ReMaster_Click" Content="Re:Master" Margin="0,2,3,0"
+                        Padding="3,1,3,1" IsEnabled="False" />
+                <Button x:Name="Btn_Original" Click="Btn_Original_Click" Content="Original" Margin="0,2,3,0"
+                        Padding="3,1,3,1" IsEnabled="False" />
             </WrapPanel>
 
             <RichTextBox x:Name="Rtb_Fumen" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
                          Padding="0,5" FontFamily="Consolas"
                          IsReadOnly="True" AutoWordSelection="False"
-                         HorizontalScrollBarVisibility="Disabled"  VerticalScrollBarVisibility="Visible">
-            </RichTextBox>
+                         HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" />
 
-            <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Content="{lex:Loc Key=RecoverThis}" Click="Btn_Recover_Click" Margin="0,0,5,0" FontSize="15" Padding="4"></Button>
-                <Button Content="{lex:Loc Key=Cancel}" Click="Btn_Cancel_Click" Margin="5,0,0,0" FontSize="15" Padding="4"></Button>
+            <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
+                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Content="{lex:Loc Key=RecoverThis}" Click="Btn_Recover_Click" Margin="0,0,5,0" FontSize="15"
+                        Padding="4" />
+                <Button Content="{lex:Loc Key=Cancel}" Click="Btn_Cancel_Click" Margin="5,0,0,0" FontSize="15"
+                        Padding="4" />
             </StackPanel>
         </Grid>
     </Grid>

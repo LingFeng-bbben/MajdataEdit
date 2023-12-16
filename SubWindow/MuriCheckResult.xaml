@@ -1,35 +1,32 @@
 ﻿<Window x:Class="MajdataEdit.MuriCheckResult"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:lex="http://wpflocalizeextension.codeplex.com"
-    xmlns:local="clr-namespace:MajdataEdit"
-    lex:LocalizeDictionary.DesignCulture="ja"
-    lex:ResxLocalizationProvider.DefaultAssembly="MajdataEdit"
-    lex:ResxLocalizationProvider.DefaultDictionary="Langs" 
-    mc:Ignorable="d"
-    Background="{DynamicResource WindowBackground}"
-    Title="{lex:Loc Key=DetResult}" Height="350" Width="500" ResizeMode="NoResize" WindowStartupLocation="Manual">
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lex="http://wpflocalizeextension.codeplex.com"
+        lex:LocalizeDictionary.DesignCulture="ja"
+        lex:ResxLocalizationProvider.DefaultAssembly="MajdataEdit"
+        lex:ResxLocalizationProvider.DefaultDictionary="Langs"
+        mc:Ignorable="d"
+        Background="{DynamicResource WindowBackground}"
+        Title="{lex:Loc Key=DetResult}" Height="350" Width="500" ResizeMode="NoResize" WindowStartupLocation="Manual">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="100*" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="100*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="100*" />
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0"
                FontSize="13" FontWeight="Bold"
                Foreground="{DynamicResource ButtonForeground}"
-               Content="{lex:Loc Key=GotoLineTooltip}">
-        </Label>
+               Content="{lex:Loc Key=GotoLineTooltip}" />
         <ListBox x:Name="CheckResult_Listbox" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
                  Foreground="{DynamicResource ButtonForeground}"
                  Background="{DynamicResource ButtonsBackground}"
-                 FontSize="12">
-        </ListBox>
+                 FontSize="12" />
     </Grid>
 </Window>
