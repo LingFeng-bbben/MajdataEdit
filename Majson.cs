@@ -22,6 +22,7 @@ internal class EditRequestjson
     public long startAt;
     public float startTime;
     public float touchSpeed;
+    public bool smoothSlideAnime;
 }
 
 public enum EditorComboIndicator
@@ -104,4 +105,5 @@ public class EditorSetting
     public string SaveKey = "Ctrl+s";
     public string SendViewerKey = "Ctrl+Shift+z";
     public float touchSpeed = 7.5f;
+    public bool SmoothSlideAnime = false;
 }

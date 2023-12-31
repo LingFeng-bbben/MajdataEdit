@@ -52,6 +52,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -125,12 +126,28 @@
         <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
             <CheckBox x:Name="AutoUpdate" VerticalAlignment="Center" />
             <Label
-                Content="{lex:Loc Key=AutoCheckUpdate}" />
+        Content="{lex:Loc Key=AutoCheckUpdate}" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <CheckBox x:Name="SmoothSlideAnime" VerticalAlignment="Center" />
+            <Label
+        Content="{lex:Loc Key=EnableSmoothSlideAnime}" />
+            <Label Foreground="{DynamicResource HelperForeground}" Margin="3,0,0,0">
+                <Label.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{lex:Loc Key=SmoothSlideAnimeTooltip}" />
+                        </StackPanel>
+                    </ToolTip>
+                </Label.ToolTip>
+                <TextBlock TextDecorations="Underline" FontSize="12" Text="{lex:Loc Key=WhatsThis}" />
+            </Label>
         </StackPanel>
 
 
         <StackPanel Orientation="Horizontal"
-                    Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                    Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
             <Button x:Name="Save_Button" Content="{lex:Loc Key=Save}"
                     Width="70" Height="28" Margin="0,5,10,5"
                     Foreground="{DynamicResource ButtonForeground}"

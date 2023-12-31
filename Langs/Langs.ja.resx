@@ -1,313 +1,307 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-    <!-- 
-      Microsoft ResX Schema 
-      
-      Version 2.0
-      
-      The primary goals of this format is to allow a simple XML format 
-      that is mostly human readable. The generation and parsing of the 
-      various data types are done through the TypeConverter classes 
-      associated with the data types.
-      
-      Example:
-      
-      ... ado.net/XML headers & schema ...
-      <resheader name="resmimetype">text/microsoft-resx</resheader>
-      <resheader name="version">2.0</resheader>
-      <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-      <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-      <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-      <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-      <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-          <value>[base64 mime encoded serialized .NET Framework object]</value>
-      </data>
-      <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-          <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-          <comment>This is a comment</comment>
-      </data>
-                  
-      There are any number of "resheader" rows that contain simple 
-      name/value pairs.
-      
-      Each data row contains a name, and value. The row also contains a 
-      type or mimetype. Type corresponds to a .NET class that support 
-      text/value conversion through the TypeConverter architecture. 
-      Classes that don't support this are serialized and stored with the 
-      mimetype set.
-      
-      The mimetype is used for serialized objects, and tells the 
-      ResXResourceReader how to depersist the object. This is currently not 
-      extensible. For a given mimetype the value must be set accordingly:
-      
-      Note - application/x-microsoft.net.object.binary.base64 is the format 
-      that the ResXResourceWriter will generate, however the reader can 
-      read any of the formats listed below.
-      
-      mimetype: application/x-microsoft.net.object.binary.base64
-      value   : The object must be serialized with 
-              : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-              : and then encoded with base64 encoding.
-      
-      mimetype: application/x-microsoft.net.object.soap.base64
-      value   : The object must be serialized with 
-              : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-              : and then encoded with base64 encoding.
-  
-      mimetype: application/x-microsoft.net.object.bytearray.base64
-      value   : The object must be serialized into a byte array 
-              : using a System.ComponentModel.TypeConverter
-              : and then encoded with base64 encoding.
-      -->
-    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
-                id="root"
-                xmlns="">
-        <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-        <xsd:element name="root" msdata:IsDataSet="true">
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
             <xsd:complexType>
-                <xsd:choice maxOccurs="unbounded">
-                    <xsd:element name="metadata">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
-                            </xsd:sequence>
-                            <xsd:attribute name="name" use="required" type="xsd:string"/>
-                            <xsd:attribute name="type" type="xsd:string"/>
-                            <xsd:attribute name="mimetype" type="xsd:string"/>
-                            <xsd:attribute ref="xml:space"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="assembly">
-                        <xsd:complexType>
-                            <xsd:attribute name="alias" type="xsd:string"/>
-                            <xsd:attribute name="name" type="xsd:string"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="data">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
-                            </xsd:sequence>
-                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-                            <xsd:attribute ref="xml:space"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="resheader">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                            </xsd:sequence>
-                            <xsd:attribute name="name" type="xsd:string" use="required"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                </xsd:choice>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
-        </xsd:element>
-    </xsd:schema>
-    <resheader name="resmimetype">
-        <value>text/microsoft-resx</value>
-    </resheader>
-    <resheader name="version">
-        <value>2.0</value>
-    </resheader>
-    <resheader name="reader">
-        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
-            PublicKeyToken=b77a5c561934e089
-        </value>
-    </resheader>
-    <resheader name="writer">
-        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
-            PublicKeyToken=b77a5c561934e089
-        </value>
-    </resheader>
-    <data name="AskCloseView" xml:space="preserve">
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AskCloseView" xml:space="preserve">
     <value>Viewを閉しますか？</value>
   </data>
-    <data name="AskSave" xml:space="preserve">
+  <data name="AskSave" xml:space="preserve">
     <value>保存されていませんが、保存しますか？</value>
   </data>
-    <data name="Attention" xml:space="preserve">
+  <data name="Attention" xml:space="preserve">
     <value>注意</value>
   </data>
-    <data name="BPMtap" xml:space="preserve">
+  <data name="BPMtap" xml:space="preserve">
     <value>BPM Tap</value>
   </data>
-    <data name="Brightness" xml:space="preserve">
+  <data name="Brightness" xml:space="preserve">
     <value>明るさ</value>
   </data>
-    <data name="Difficulty" xml:space="preserve">
+  <data name="Difficulty" xml:space="preserve">
     <value>レベル</value>
   </data>
-    <data name="Edit" xml:space="preserve">
+  <data name="Edit" xml:space="preserve">
     <value>編集</value>
   </data>
-    <data name="Error" xml:space="preserve">
+  <data name="Error" xml:space="preserve">
     <value>エラー</value>
   </data>
-    <data name="FIles" xml:space="preserve">
+  <data name="FIles" xml:space="preserve">
     <value>ファイル</value>
   </data>
-    <data name="Github" xml:space="preserve">
+  <data name="Github" xml:space="preserve">
     <value>GitHub</value>
   </data>
-    <data name="MaidataExist" xml:space="preserve">
+  <data name="MaidataExist" xml:space="preserve">
     <value>maidata.txtがすでに存在しています</value>
   </data>
-    <data name="MapInfo" xml:space="preserve">
+  <data name="MapInfo" xml:space="preserve">
     <value>譜面情報</value>
   </data>
-    <data name="MapMuriDetc" xml:space="preserve">
+  <data name="MapMuriDetc" xml:space="preserve">
     <value>無理押しチェッカー</value>
   </data>
-    <data name="Mirror180" xml:space="preserve">
+  <data name="Mirror180" xml:space="preserve">
     <value>180°反転</value>
   </data>
-    <data name="Mirror45" xml:space="preserve">
+  <data name="Mirror45" xml:space="preserve">
     <value>45°回転（時計回り）</value>
   </data>
-    <data name="MirrorLR" xml:space="preserve">
+  <data name="MirrorLR" xml:space="preserve">
     <value>水平方向に反転</value>
   </data>
-    <data name="MirrorUD" xml:space="preserve">
+  <data name="MirrorUD" xml:space="preserve">
     <value>垂直方向に反転</value>
   </data>
-    <data name="New" xml:space="preserve">
+  <data name="New" xml:space="preserve">
     <value>新規作成</value>
   </data>
-    <data name="NoMaidata_txt" xml:space="preserve">
+  <data name="NoMaidata_txt" xml:space="preserve">
     <value>maidata.txtが存在することを確認してください</value>
   </data>
-    <data name="NoTrack" xml:space="preserve">
+  <data name="NoTrack" xml:space="preserve">
     <value>track.mp3 / track.ogg が存在することを確認してください</value>
   </data>
-    <data name="Offset" xml:space="preserve">
+  <data name="Offset" xml:space="preserve">
     <value>ｵﾌｾｯﾄ</value>
   </data>
-    <data name="Open" xml:space="preserve">
+  <data name="Open" xml:space="preserve">
     <value>開く</value>
   </data>
-    <data name="PlayBackSpeed" xml:space="preserve">
+  <data name="PlayBackSpeed" xml:space="preserve">
     <value>再生速度</value>
   </data>
-    <data name="PortClear" xml:space="preserve">
+  <data name="PortClear" xml:space="preserve">
     <value>MajdataViewが開いていて、ポート（8013）が開いていることを確認してください。</value>
   </data>
-    <data name="RecMode" xml:space="preserve">
+  <data name="RecMode" xml:space="preserve">
     <value>録画モード</value>
   </data>
-    <data name="Save" xml:space="preserve">
+  <data name="Save" xml:space="preserve">
     <value>上書き保存</value>
   </data>
-    <data name="SaveAs" xml:space="preserve">
+  <data name="SaveAs" xml:space="preserve">
     <value>名前を付けて保存</value>
   </data>
-    <data name="SetArtist" xml:space="preserve">
+  <data name="SetArtist" xml:space="preserve">
     <value>Artistを設定</value>
   </data>
-    <data name="SetDes" xml:space="preserve">
+  <data name="SetDes" xml:space="preserve">
     <value>note designerを設定</value>
   </data>
-    <data name="Setting" xml:space="preserve">
+  <data name="Setting" xml:space="preserve">
     <value>設定</value>
   </data>
-    <data name="SetTitle" xml:space="preserve">
+  <data name="SetTitle" xml:space="preserve">
     <value>タイトルを設定</value>
   </data>
-    <data name="SimaiWiki" xml:space="preserve">
+  <data name="SimaiWiki" xml:space="preserve">
     <value>SimaiWiki</value>
   </data>
-    <data name="SoftRender" xml:space="preserve">
+  <data name="SoftRender" xml:space="preserve">
     <value>ソフトウェア・レンダリング・モードで動作</value>
   </data>
-    <data name="Speed" xml:space="preserve">
+  <data name="Speed" xml:space="preserve">
     <value>速度</value>
-        <comment>May be スピード？</comment>
+    <comment>May be スピード？</comment>
   </data>
-    <data name="TextFollow" xml:space="preserve">
+  <data name="TextFollow" xml:space="preserve">
     <value>譜面フォロー</value>
   </data>
-    <data name="Tools" xml:space="preserve">
+  <data name="Tools" xml:space="preserve">
     <value>ツール</value>
   </data>
-    <data name="Unsaved" xml:space="preserve">
+  <data name="Unsaved" xml:space="preserve">
     <value>(保存されていません)</value>
   </data>
-    <data name="Volume" xml:space="preserve">
+  <data name="Volume" xml:space="preserve">
     <value>音量</value>
   </data>
-    <data name="Warn44100Hz" xml:space="preserve">
+  <data name="Warn44100Hz" xml:space="preserve">
     <value>44100Hz以外のファイルには対応していない場合があります</value>
   </data>
-    <data name="Warning" xml:space="preserve">
+  <data name="Warning" xml:space="preserve">
     <value>警告</value>
   </data>
-    <data name="Cancel" xml:space="preserve">
+  <data name="Cancel" xml:space="preserve">
     <value>キャンセル</value>
   </data>
-    <data name="EditorLanguage" xml:space="preserve">
+  <data name="EditorLanguage" xml:space="preserve">
     <value>言語</value>
   </data>
-    <data name="NoEditorSetting" xml:space="preserve">
+  <data name="NoEditorSetting" xml:space="preserve">
     <value>エディタの初期設定を完了してください</value>
   </data>
-    <data name="EditorSetting" xml:space="preserve">
+  <data name="EditorSetting" xml:space="preserve">
     <value>エディタの設定</value>
   </data>
-    <data name="CheckDone1" xml:space="preserve">
+  <data name="CheckDone1" xml:space="preserve">
     <value>Check Finished, {0} Multi-Notes Error，{1} Slide-Tap Error. You can get more information in the Result Window.
 PS: The results is not 100% accurate.</value>
-        <comment>Translation required. {0} is the number of Multi-Notes Errors. {1} is the number of Slide-Tap Error</comment>
+    <comment>Translation required. {0} is the number of Multi-Notes Errors. {1} is the number of Slide-Tap Error</comment>
   </data>
-    <data name="CheckDone2" xml:space="preserve">
+  <data name="CheckDone2" xml:space="preserve">
     <value>Check Finished, {0} Slide-Tap Error. You can get more information in the Result Window.
 PS: The results is not 100% accurate.</value>
-        <comment>Translation required. {0} means the number of Slide-Tap Error(a slide accidently trigger a tap note)</comment>
+    <comment>Translation required. {0} means the number of Slide-Tap Error(a slide accidently trigger a tap note)</comment>
   </data>
-    <data name="DetResult" xml:space="preserve">
+  <data name="DetResult" xml:space="preserve">
     <value>結果</value>
-        <comment>Maybe not the most accurate translation</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
-    <data name="GotoLineTooltip" xml:space="preserve">
+  <data name="GotoLineTooltip" xml:space="preserve">
     <value>ダブルクリックしてエラー行にジャンプできます</value>
-        <comment>Maybe not the most accurate translation</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
-    <data name="Info" xml:space="preserve">
+  <data name="Info" xml:space="preserve">
     <value>メッセージ</value>
-        <comment>Maybe not the most accurate translation</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
-    <data name="MultNoteEnable" xml:space="preserve">
+  <data name="MultNoteEnable" xml:space="preserve">
     <value>Multi-Notes Detection</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="MultNoteError1" xml:space="preserve">
+  <data name="MultNoteError1" xml:space="preserve">
     <value>[MultiNotesError]</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="MultNoteError2" xml:space="preserve">
+  <data name="MultNoteError2" xml:space="preserve">
     <value>may be appear in the same time.({0} Notes)</value>
-        <comment>Translation required. {0} means how many Note appear in the same time(so-called Multi-Notes Error, which is not allowed).</comment>
+    <comment>Translation required. {0} means how many Note appear in the same time(so-called Multi-Notes Error, which is not allowed).</comment>
   </data>
-    <data name="MultNoteTooltip" xml:space="preserve">
+  <data name="MultNoteTooltip" xml:space="preserve">
     <value>It will warn you if there is more than 3 notes appear in the same time.
 If your map allow this situation, e.g. UTAGE map, you can disable this option.</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="SlideAccInputError" xml:space="preserve">
+  <data name="SlideAccInputError" xml:space="preserve">
     <value>Slide Detection Accuracy must be a number! Please check your input and delete unnecessary charactors like space.</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="SlideAccuracy" xml:space="preserve">
+  <data name="SlideAccuracy" xml:space="preserve">
     <value>Slide-Tap Detection Acc:</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="SlideError" xml:space="preserve">
+  <data name="SlideError" xml:space="preserve">
     <value>[SlideTapError] "{0}"({1}L,{2}C) may obstructs "{3}"({4}L,{5}C). Interval:{6}ms</value>
-        <comment>Translation required. {0} and {3} is the simai-language text which has SlideTapError. {6} is the time gap between two note. {1}, {2}, {4} and {5} means Line and Column which may not needed to be translate.</comment>
+    <comment>Translation required. {0} and {3} is the simai-language text which has SlideTapError. {6} is the time gap between two note. {1}, {2}, {4} and {5} means Line and Column which may not needed to be translate.</comment>
   </data>
-    <data name="SlideTooltip" xml:space="preserve">
+  <data name="SlideTooltip" xml:space="preserve">
     <value>Slide-Tap Error: when a SLIDE pass a TAP in "A Area", it may 
 trigger this TAP unexpected.
 The accuracy of detection on Slide-Tap Error. Unit: second.
@@ -315,180 +309,188 @@ Please DO NOT enter a value less than 0.15, or some of
 Impossible Notes will not be found out.
 If you wanna an excellent map, you can set the accuracy to
 0.2 or higher.</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="StartCheck" xml:space="preserve">
+  <data name="StartCheck" xml:space="preserve">
     <value>検査</value>
-        <comment>Maybe not the most accurate translation</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
-    <data name="SyntaxError" xml:space="preserve">
+  <data name="SyntaxError" xml:space="preserve">
     <value>[SyntaxError] "{0}"({1}L,{2}C) fail to analyze，may be a syntax error here.</value>
-        <comment>Translation required. {0} is the simai-language text which has Syntax Error. {1} and {2} is Line and Column index(which may not needed to be translate)</comment>
+    <comment>Translation required. {0} is the simai-language text which has Syntax Error. {1} and {2} is Line and Column index(which may not needed to be translate)</comment>
   </data>
-    <data name="WhatsThis" xml:space="preserve">
+  <data name="WhatsThis" xml:space="preserve">
     <value>なにこれ</value>
-        <comment>Maybe not the most accurate translation</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
-    <data name="SoftRenderError" xml:space="preserve">
+  <data name="SoftRenderError" xml:space="preserve">
     <value>Render Thread Failure！
 Please run the MajdatEdit by "强制软件渲染.bat" in the folder. This may solve the problem.</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="RecordModeDiscrp" xml:space="preserve">
+  <data name="RecordModeDiscrp" xml:space="preserve">
     <value>はちめからプレイ（info/AP付）</value>
   </data>
-    <data name="FindAndReplace" xml:space="preserve">
+  <data name="FindAndReplace" xml:space="preserve">
     <value>検索と置換</value>
   </data>
-    <data name="FindNext" xml:space="preserve">
+  <data name="FindNext" xml:space="preserve">
     <value>次を検索</value>
   </data>
-    <data name="ReplaceNext" xml:space="preserve">
+  <data name="ReplaceNext" xml:space="preserve">
     <value>次を置換</value>
   </data>
-    <data name="IsOverridePicture" xml:space="preserve">
+  <data name="IsOverridePicture" xml:space="preserve">
     <value>MP3ファイルに画像がいます。利用しますか？</value>
   </data>
-    <data name="LoadFromFile" xml:space="preserve">
+  <data name="LoadFromFile" xml:space="preserve">
     <value>他のmp3から読み込む</value>
   </data>
-    <data name="LoadFromTrack" xml:space="preserve">
+  <data name="LoadFromTrack" xml:space="preserve">
     <value>track.mp3 / track.ogg から読み込む</value>
   </data>
-    <data name="RemapViewer" xml:space="preserve">
+  <data name="RemapViewer" xml:space="preserve">
     <value>Viewerを揃える</value>
   </data>
-    <data name="OverwriteModeTooltip" xml:space="preserve">
+  <data name="OverwriteModeTooltip" xml:space="preserve">
     <value>Overwrite mode allows you to replace text as you type.
 Press the Insert key to switch back to normal mode.</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="OverwriteMode" xml:space="preserve">
+  <data name="OverwriteMode" xml:space="preserve">
     <value>Overwrite Mode</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="TouchSpeed" xml:space="preserve">
+  <data name="TouchSpeed" xml:space="preserve">
     <value>タッチ速度</value>
   </data>
-    <data name="SpeedSettingTooltip" xml:space="preserve">
+  <data name="SpeedSettingTooltip" xml:space="preserve">
     <value>To change these settings, go to "Setting-&gt;Editor Setting".</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="RenderMode" xml:space="preserve">
+  <data name="RenderMode" xml:space="preserve">
     <value>レンダリング モード</value>
   </data>
-    <data name="RenderModeHW" xml:space="preserve">
+  <data name="RenderModeHW" xml:space="preserve">
     <value>ハードウェア</value>
   </data>
-    <data name="RenderModeSW" xml:space="preserve">
+  <data name="RenderModeSW" xml:space="preserve">
     <value>ソフトウェア</value>
   </data>
-    <data name="SetDefaultVolume" xml:space="preserve">
+  <data name="SetDefaultVolume" xml:space="preserve">
     <value>現在の音量をデフォルトに設定</value>
-        <comment>Maybe not the most accurate translation</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
-    <data name="SetVolumeDefaultSuccess" xml:space="preserve">
+  <data name="SetVolumeDefaultSuccess" xml:space="preserve">
     <value>Success! Your new chart will use these volume setting as default.</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="CheckUpdate" xml:space="preserve">
+  <data name="CheckUpdate" xml:space="preserve">
     <value>CheckUpdate</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="AutoUpdateCheckTip" xml:space="preserve">
+  <data name="AutoUpdateCheckTip" xml:space="preserve">
     <value>(You can disabled AutoCheckUpdate in Editor Setting Panel)</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="NewVersionDetected" xml:space="preserve">
+  <data name="NewVersionDetected" xml:space="preserve">
     <value>New version detected: {0}
 (your current version: {1})
 
 Open Browser to download latest update of Majdata?</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="NoNewVersion" xml:space="preserve">
+  <data name="NoNewVersion" xml:space="preserve">
     <value>Your Majdata doesn't need to update.</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="RequestFail" xml:space="preserve">
+  <data name="RequestFail" xml:space="preserve">
     <value>Internet request fail, please check your internet connection.</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="ChartRefreshDelay" xml:space="preserve">
+  <data name="ChartRefreshDelay" xml:space="preserve">
     <value>Chart Refresh Delay(ms)</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="AutoCheckUpdate" xml:space="preserve">
+  <data name="AutoCheckUpdate" xml:space="preserve">
     <value>Auto Check Update (when start)</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="SetToDefaultVolume" xml:space="preserve">
+  <data name="SetToDefaultVolume" xml:space="preserve">
     <value>Set Volume as Default Setting</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
   </data>
-    <data name="MirrorCcw45" xml:space="preserve">
+  <data name="MirrorCcw45" xml:space="preserve">
     <value>45°回転（反時計回り）</value>
   </data>
-    <data name="AskRender" xml:space="preserve">
+  <data name="AskRender" xml:space="preserve">
     <value>譜面動画は譜面フォルダにエクスポートされます。
 レンダリング中にViewerのサイズを変更しないでください。
 ただし、[&lt;&gt;] ボタンを使用して解像度を変更できます。
 幅が偶数であることを確認してください。
 [OK] をクリックして生成を開始します。</value>
   </data>
-    <data name="ComboDisplay" xml:space="preserve">
+  <data name="ComboDisplay" xml:space="preserve">
     <value>COMBO表示</value>
   </data>
-    <data name="ExportVideo" xml:space="preserve">
+  <data name="ExportVideo" xml:space="preserve">
     <value>譜面動画を生成</value>
   </data>
-    <data name="ComboDisplayAccClassic" xml:space="preserve">
+  <data name="ComboDisplayAccClassic" xml:space="preserve">
     <value>達成率 (+)</value>
   </data>
-    <data name="ComboDisplayAccDeluxe" xml:space="preserve">
+  <data name="ComboDisplayAccDeluxe" xml:space="preserve">
     <value>達成率 (+) (でらっくす)</value>
   </data>
-    <data name="ComboDisplayAccDownClassic" xml:space="preserve">
+  <data name="ComboDisplayAccDownClassic" xml:space="preserve">
     <value>達成率 (-)</value>
   </data>
-    <data name="ComboDisplayAccDownDeluxe" xml:space="preserve">
+  <data name="ComboDisplayAccDownDeluxe" xml:space="preserve">
     <value>達成率 (-) 1 (でらっくす)</value>
-        <comment>Acc down (1) starts from 100%. They should know already.</comment>
+    <comment>Acc down (1) starts from 100%. They should know already.</comment>
   </data>
-    <data name="ComboDisplayCombo" xml:space="preserve">
+  <data name="ComboDisplayCombo" xml:space="preserve">
     <value>コンボ</value>
   </data>
-    <data name="ComboDisplayCScoreDedeluxe" xml:space="preserve">
+  <data name="ComboDisplayCScoreDedeluxe" xml:space="preserve">
     <value>101%強制スコア (+)</value>
-        <comment>Custom: Normal Score but with forced DX Scale.</comment>
+    <comment>Custom: Normal Score but with forced DX Scale.</comment>
   </data>
-    <data name="ComboDisplayCScoreDownDedeluxe" xml:space="preserve">
+  <data name="ComboDisplayCScoreDownDedeluxe" xml:space="preserve">
     <value>101%強制スコア (-)</value>
-        <comment>Custom: Normal Score but with forced DX Scale.</comment>
+    <comment>Custom: Normal Score but with forced DX Scale.</comment>
   </data>
-    <data name="ComboDisplayNone" xml:space="preserve">
+  <data name="ComboDisplayNone" xml:space="preserve">
     <value>なし</value>
   </data>
-    <data name="ComboDisplayScoreClassic" xml:space="preserve">
+  <data name="ComboDisplayScoreClassic" xml:space="preserve">
     <value>スコア</value>
   </data>
-    <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
+  <data name="ComboDisplayScoreDeluxe" xml:space="preserve">
     <value>でらっくす Score</value>
   </data>
-    <data name="AutosaveRecoverWindowTitle" xml:space="preserve">
+  <data name="AutosaveRecoverWindowTitle" xml:space="preserve">
     <value>才一卜セ一ブ リカバリ`</value>
-        <comment>Maybe not the most accurate translation</comment>
+    <comment>Maybe not the most accurate translation</comment>
   </data>
-    <data name="RecoverThis" xml:space="preserve">
+  <data name="RecoverThis" xml:space="preserve">
     <value>リカバリ`</value>
   </data>
-    <data name="RecoveryDoubleCheck" xml:space="preserve">
+  <data name="RecoveryDoubleCheck" xml:space="preserve">
     <value>Are you sure you want to recover this data (auto-saved at {0}) to "{1}"?
 （The previous "maidata.txt" will be renamed "maidata.before_ recovery.txt" after recovery）</value>
-        <comment>Translation required. {0}=Auto-saved time，{1}=original maidata.txt path</comment>
+    <comment>Translation required. {0}=Auto-saved time，{1}=original maidata.txt path</comment>
   </data>
-    <data name="AbnormalTerminationInformation" xml:space="preserve">
+  <data name="AbnormalTerminationInformation" xml:space="preserve">
     <value>It seems that Majdata was not closed properly last time. Do you want to open the auto-save recovery window?</value>
-        <comment>Translation required</comment>
+    <comment>Translation required</comment>
+  </data>
+  <data name="EnableSmoothSlideAnime" xml:space="preserve">
+    <value>Smooth slide animation</value>
+    <comment>Translation required</comment>
+  </data>
+  <data name="SmoothSlideAnimeTooltip" xml:space="preserve">
+    <value>When enabled, the Slide Track will disappear with the star instead of one judgment area after another.</value>
+    <comment>Translation required</comment>
   </data>
 </root>
