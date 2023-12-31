@@ -16,13 +16,18 @@
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="radio42.Bass.Net.core" Version="2.4.17.5"/>
-        <PackageReference Include="DiscordRichPresence" Version="1.2.1.24"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="Semver" Version="2.3.0"/>
-        <PackageReference Include="TagLibSharp" Version="2.3.0"/>
-        <PackageReference Include="WPFLocalizeExtension" Version="3.10.0"/>
-        <PackageReference Include="XAMLMarkupExtensions" Version="2.1.3"/>
+      <None Remove="Image\bg_dummy.jpg" />
+      <None Remove="Image\outline_find_replace_white_24dp.png" />
+      <None Remove="Image\outline_search_white_24dp.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="radio42.Bass.Net.core" Version="2.4.17.5" />
+        <PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Semver" Version="2.3.0" />
+        <PackageReference Include="TagLibSharp" Version="2.3.0" />
+        <PackageReference Include="WPFLocalizeExtension" Version="3.10.0" />
+        <PackageReference Include="XAMLMarkupExtensions" Version="2.1.3" />
     </ItemGroup>
     <ItemGroup>
         <ContentWithTargetPath Include="bass.dll">
@@ -47,5 +52,10 @@
             <Generator>SettingsSingleFileGenerator</Generator>
             <LastGenOutput>Settings.Designer.cs</LastGenOutput>
         </None>
+    </ItemGroup>
+    <ItemGroup>
+      <Resource Include="Image\bg_dummy.jpg" />
+      <Resource Include="Image\outline_find_replace_white_24dp.png" />
+      <Resource Include="Image\outline_search_white_24dp.png" />
     </ItemGroup>
 </Project>
