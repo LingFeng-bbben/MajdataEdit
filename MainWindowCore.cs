@@ -1211,6 +1211,7 @@ public partial class MainWindow : Window
             request.backgroundCover = editorSetting!.backgroundCover;
             request.comboStatusType = editorSetting!.comboStatusType;
             request.audioSpeed = GetPlaybackSpeed();
+            request.smoothSlideAnime = editorSetting!.SmoothSlideAnime;
         });
 
         json = JsonConvert.SerializeObject(request);
