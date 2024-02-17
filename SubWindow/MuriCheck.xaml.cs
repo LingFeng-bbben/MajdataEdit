@@ -482,6 +482,7 @@ public partial class MuriCheck : Window
         else
         {
             multNoteError = -114514; // This is a MAGIC NUMBER, Do not touch ;)
+                                     // This is really a MAGIC NUMBER, Do not touch Xp
         }
 
         var slideError = slideDetect(slideCheckAccuracy);
