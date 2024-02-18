@@ -9,8 +9,24 @@ namespace MajdataEdit.SyntaxModule
 {
     internal static class SyntaxCheck
     {
-        static List<SimaiTimingPoint> noteList;
-        //static 
+        static List<SimaiTimingPoint> NoteList;
+        static readonly string[] SlideTypeList = { "qq", "pp", "q", "p", "w", "z", "s", "V", "v", "<", ">", "^", "-" };
+        static readonly char[] SensorList = { 'A','B','C','D','E'};
+        enum DirectionType
+        {
+            /// <summary>
+            /// 顺时针
+            /// </summary>
+            Clockwise,
+            /// <summary>
+            /// 同一直线
+            /// </summary>
+            Opposite,
+            /// <summary>
+            /// 逆时针
+            /// </summary>
+            Anticlockwise
+        }
         static void Scan(string noteStr)
         {
             int line = 0;
@@ -18,11 +34,423 @@ namespace MajdataEdit.SyntaxModule
         }
         static void Scan()
         {
-            noteList = SimaiProcess.notelist;
+            NoteList = SimaiProcess.notelist;
 
+            foreach (var note in NoteList)
+            {
+                var raw = note.notesContent;
+                var notes = raw.Split("/");
+
+                foreach (var _note in notes)
+                    NoteSyntaxCheck(_note);
+            }
 
         }
+        /// <summary>
+        /// 检查Note语句的Body部分是否正确(譬如是否存在重复的"["或"]")，并返回"["与"]"的索引位置
+        /// </summary>
+        /// <param name="bodyStr"></param>
+        /// <returns></returns>
+        static int[]? BodySyntaxCheck(string bodyStr,bool isSlide = false)
+        {
+            List<int> bodyIndex = new();
+            int bodyHeadCount = 0;
+            int bodyTailCount = 0;
 
+            for(int index = 0;index < bodyStr.Length;index++)
+            {
+                char c = bodyStr[index];
+                if(c == '[')
+                {
+                    bodyHeadCount++;
+                    bodyIndex.Add(index);
+                }
+                else if(c == ']')
+                {
+                    bodyTailCount++;
+                    bodyIndex.Add(index);
+                }
+            }
+
+            //正常情况下"["与"]"的数量应该相等
+            //当非Slide的Note语句结尾不是"]"时，判断为语法错误
+            //Slide是特例，结尾为b表示Break Slide
+            if (bodyHeadCount != bodyTailCount)
+                return null;
+            else if (!isSlide && (bodyHeadCount != 1 || bodyTailCount != 1))
+                return null;
+            else if (!isSlide && (bodyIndex.Last() != bodyStr.Length - 1))
+                return null;
+
+            return bodyIndex.ToArray();
+
+        }
+        /// <summary>
+        /// 检查Note语句合法性，不检查BPM，拍号与变速语句
+        /// </summary>
+        /// <param name="noteStr"></param>
+        static void NoteSyntaxCheck(string noteStr)
+        {
+            if (IsTap(noteStr))
+                return;
+            else if (IsHold(noteStr))
+            {
+
+            }
+            else if (IsSlide(noteStr))
+            {
+
+            } 
+            else if (IsTouch(noteStr))
+            {
+
+            }
+
+        }
+        /// <summary>
+        /// 检查Hold参数的合法性
+        /// </summary>
+        /// <param name="holdStr"></param>
+        /// <returns></returns>
+        static bool HoldSyntaxCheck(string holdStr)
+        {
+            //特殊：2h之类的短Hold，前面已经检查过一次，无需再次检查
+            if (holdStr.Length == 2)
+                return true;
+
+            int[]? bodyIndex = BodySyntaxCheck(holdStr);
+            if (bodyIndex is null)//body部分错误
+                return false;
+
+            int startIndex = bodyIndex[0];
+            int endIndex = bodyIndex[1];
+            string body = holdStr[(startIndex + 1)..(endIndex - 1)];
+            if (body.Length < 2)//最短Hold参数: #2 (表示时值为2秒)
+                return false;
+
+            if (body.Contains("#"))
+            {
+                if (body[0] == '#')
+                    return double.TryParse(body[1..(body.Length - 1)], out double i);
+                else
+                {
+                    var splitBody = body.Split("#");
+                    if (splitBody.Length != 2)//正确格式: 150#4:1
+                        return false;
+                    else
+                        return RatioSyntaxCheck(splitBody[1]) && double.TryParse(splitBody[0], out double i);
+                }
+            }
+            else
+                return RatioSyntaxCheck(body);
+        }
+        /// <summary>
+        /// 检查Slide路径与参数的合法性
+        /// </summary>
+        /// <param name="slideStr"></param>
+        /// <returns></returns>
+        static bool SlideSyntaxCheck(string slideStr)
+        {
+            if (slideStr.Length < 3)
+                return false;
+            if (slideStr[1] is ('b' or 'x') && slideStr[2] is ('b' or 'x'))
+                slideStr = slideStr.Remove(1,2);
+            else if(slideStr[1] is ('b' or 'x'))
+                slideStr = slideStr.Remove(1, 1);
+            
+            int starPoint = int.Parse(slideStr[0..0]);//星星头键位
+
+            char[] typeList = string.Concat(SlideTypeList.Skip(2).ToArray()).ToCharArray();
+            int slideCount = 0;
+
+            foreach(var _slideStr in slideStr.Split("*"))//同头Slide处理
+            {
+                //传过去的参数应当为 1-7-5[8:1] 或 -7-5[8:1]
+                int[]? bodyIndex = BodySyntaxCheck(_slideStr, true);
+                if (bodyIndex is null)//body部分错误
+                    return false;                
+
+                int? startPoint = null;
+                int? endPoint = null;
+                int? flexionPoint = null;
+                string slideType = "";
+
+                //组合Slide多参数
+                //e.g. 1-7[8:1]-5[8:1]
+                //不得不说，这种写法多少有点xx
+                int subSlideCount = 0;
+
+                //这个循环用于检查Slide路径合法性
+                for (int i = 0; i < _slideStr.Length;)
+                {
+                    //获取Slide路径的起始点
+                    if (slideCount != 0 && i == 0)
+                        startPoint = starPoint;
+                    else
+                    {
+                        if (IsInteger(_slideStr[i..i]))
+                            startPoint = int.Parse(_slideStr[i..i]);
+                        else
+                            return false;
+                    }
+                    i++;
+
+                    //获取Slide类型
+                    if (typeList.Contains(_slideStr[i]))
+                    {
+                        slideType = _slideStr[i..i];
+                        if (typeList.Contains(_slideStr[i + 1]))//用于检查"pp"与"qq"
+                        {
+                            slideType += _slideStr[i + 1];
+                            i += 2;
+                        }
+                        else
+                            i++;
+                    }
+                    else
+                        return false;
+
+                    //获取"V"类型Slide的拐点
+                    if (slideType == "V")
+                    {
+                        if (IsInteger(_slideStr[i..i]))
+                            flexionPoint = int.Parse(_slideStr[i..i]);
+                        else
+                            return false;
+                        i++;
+                    }
+                    //获取Slide路径终点
+                    if (IsInteger(_slideStr[i..i]))
+                        endPoint = int.Parse(_slideStr[i..i]);
+                    else
+                        return false;
+
+                    //Slide路径检查，检查Slide路径是否合法
+                    //1-7这类将不会通过检查
+                    if (!SlidePathCheck(slideType, (int)startPoint, (int)endPoint, flexionPoint))
+                        return false;
+
+                    //检查下一字符是否为"["
+                    //同时避免越界
+                    if ((i + 1 < _slideStr.Length) && _slideStr[i + 1] == '[')
+                    {
+                        var headIndex = Array.IndexOf<int>(bodyIndex, ++i);
+                        //未找到头部索引
+                        if (headIndex == -1)
+                            return false;
+
+                        //将当前位置设置为"]"的后一位
+                        i = bodyIndex[headIndex + 1] + 1;
+                    }
+                    subSlideCount++;
+                }
+
+                //1-4-6[4:1]-1[4:1]这种写法是不允许的
+                //要么1-4-6-1[4:1]
+                //或者1-4[4:1]-6[4:1]-1[4:1]
+                if (subSlideCount != bodyIndex.Length / 2 && bodyIndex.Length != 2)
+                    return false;
+
+                //参数检查
+                for(int i = 0; i < bodyIndex.Length;)
+                {
+                    int bodyStartIndex = bodyIndex[i];
+                    int bodyEndIndex = bodyIndex[++i];
+                    string body = _slideStr[(bodyStartIndex + 1)..(bodyEndIndex - 1)];
+                    int paramType = 0;
+
+                    //匹配参数模式
+                    for (int j = 0; j < body.Length; j++)
+                        if (body[j] == '#')
+                            paramType++;
+                    if (paramType > 3)
+                        return false;
+
+                    try
+                    {
+                        switch (paramType)
+                        {
+                            case 0:
+                                if (!RatioSyntaxCheck(body))
+                                    return false;
+                                break;
+                            case 1:
+                            case 2:
+                                var param = body.Split("#");
+                                var bpmStr = param[0];
+                                var length = paramType == 2 ? param[2] : param[1];
+
+                                if (!IsNum(bpmStr))
+                                    return false;
+                                if (!IsNum(length) && !RatioSyntaxCheck(length))
+                                    return false;
+                                break;
+                            case 3:
+                                param = body.Split("#");
+                                var startLength = param[0];
+                                bpmStr = param[2];
+                                length = param[3];
+
+                                if (!IsNum(startLength))
+                                    return false;
+                                if (!IsNum(bpmStr))
+                                    return false;
+                                if (!RatioSyntaxCheck(length))
+                                    return false;
+                                break;
+                        }
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+
+                }
+                slideCount++;
+            }
+            return true;
+
+        }
+        /// <summary>
+        /// Slide路径检查
+        /// </summary>
+        /// <param name="slideType"></param>
+        /// <param name="startPoint"></param>
+        /// <param name="endPoint"></param>
+        /// <param name="flexionPoint"></param>
+        /// <returns></returns>
+        static bool SlidePathCheck(string slideType,int startPoint,int endPoint,int? flexionPoint = null)
+        {
+            if (!PointCheck(startPoint) || !PointCheck(endPoint))
+                return false;
+
+            switch(slideType)
+            {
+                case "^":
+                case "v":
+                    if (GetPointInterval(startPoint, endPoint) is (0 or 4))
+                        return false;
+                    return true;
+                case "-":
+                    if (startPoint == endPoint)
+                        return false;
+                    else if (GetPointInterval(startPoint, endPoint, (DirectionType)PointCompare(startPoint, endPoint)!) < 3)
+                        return false;
+                    return true;
+                case "V":
+                    if (GetPointInterval(startPoint, (int)flexionPoint!, (DirectionType)PointCompare(startPoint, (int)flexionPoint!)!) != 2)
+                        return false;
+                    else if (GetPointInterval((int)flexionPoint!, endPoint, (DirectionType)PointCompare((int)flexionPoint!, endPoint)!) < 3)
+                        return false;
+                    return true;
+                case "s":
+                case "z":
+                case "w":
+                    if (startPoint == endPoint)
+                        return false;
+                    else if ((DirectionType)PointCompare(startPoint, endPoint)! != DirectionType.Opposite)
+                        return false;
+                    return true;
+            }
+            return true;
+        }
+        /// <summary>
+        /// 获取键位的序号，用于判断键位的相对位置
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        static int? GetPointIndex(int point)
+        {
+            //这里使用过#8，#4的直线作为中轴线，以#8为起始点
+            //采用目标键位与起始点的夹角作为键位序号
+            //e.g. #1的键位序号为45，#8键位序号为0
+            //一般来说，除了#8，A键位序号 - B键位序号 > 0则说明B键位位于A键位的左边(逆时针方向)，反之亦然
+
+            if (!PointCheck(point))
+                return null;
+            switch(point)
+            {
+                case 8:
+                    return 0;
+                default:
+                    return point * 45;
+            }
+        }
+        /// <summary>
+        /// 获取键与键之间存在多少空格
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="targetPoint"></param>
+        /// <returns></returns>
+        static int GetPointInterval(int point,int targetPoint, DirectionType direction = DirectionType.Clockwise)
+        {
+            int a = (int)GetPointIndex(point)!;
+            int b = (int)GetPointIndex(targetPoint)!;
+            int result = Math.Abs(a - b);
+
+            if (result == 0)
+                return 0;
+            if (direction == DirectionType.Clockwise)
+                return result / 45;
+            else
+                return 8 - (result / 45);
+
+        }
+        /// <summary>
+        /// 比较键位的相对位置
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="targetPoint"></param>
+        /// <returns></returns>
+        static DirectionType? PointCompare(int point,int targetPoint)
+        {
+            if (!PointCheck(point) || !PointCheck(targetPoint))
+                return null;
+            if(point == targetPoint) return null;
+
+            int a = (int)GetPointIndex(point)!;
+            int b = (int)GetPointIndex(targetPoint)!;
+            int result = a - b;
+
+            if (Math.Abs(result) == 180)
+                return DirectionType.Opposite;
+            else if (result < -180 || (result > 0 && result < 180))
+                return DirectionType.Anticlockwise;
+            else
+                return DirectionType.Clockwise;
+        }
+        /// <summary>
+        /// 检查比例时值的合法性
+        /// </summary>
+        /// <param name="ratioStr"></param>
+        /// <returns></returns>
+        static bool RatioSyntaxCheck(string ratioStr)
+        {
+            var s = ratioStr.Split(":");
+
+            if (s.Length != 2)
+                return false;
+
+            return int.TryParse(s[0], out int i) && int.TryParse(s[1], out i);
+        }
+        /// <summary>
+        /// 判断是否为Note
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        static SimaiNoteType? IsNote(string s)
+        {
+            if (IsTap(s))
+                return SimaiNoteType.Tap;
+            else if (IsHold(s))
+                return SimaiNoteType.Hold;
+            else if (IsSlide(s))
+                return SimaiNoteType.Slide;
+            else if (IsTouch(s))
+                return SimaiNoteType.Touch;
+            else
+                return null;
+        }
         /// <summary>
         /// 判断是否为Tap
         /// </summary>
@@ -30,17 +458,29 @@ namespace MajdataEdit.SyntaxModule
         /// <returns></returns>
         static bool IsTap(string s)
         {
-            if (s.Length == 1)
-                return int.TryParse(s, out int i) && KeyIndexCheck(i);
-            else if(s.Length == 2)
+            int index;
+
+            if (!int.TryParse(s[0..0], out index))//总是检查第1位
+                return false;
+            if (!PointCheck(index))//错误键位直接返回
+                return false;
+
+            if(s.Length == 2)// e.g. 28 , 2b , 2x
             {
                 if (s[1] is 'b' or 'x')
-                    return int.TryParse(s[0..0], out int i) && KeyIndexCheck(i);
+                    return true;
                 else
-                    return int.TryParse(s, out int i) && (KeyIndexCheck(i % 10) && KeyIndexCheck(i / 10));
+                    return int.TryParse(s, out int i) && (PointCheck(i % 10) && PointCheck(i / 10));
+            }
+            else if (s.Length == 3)// e.g. 2bx
+            {
+                var isBreak = s[1] is 'b' || s[2] is 'b';
+                var isHanabi = s[1] is 'x' || s[2] is 'x';
+
+                return isBreak && isHanabi;
             }
 
-            return false;
+            return false;//其他情况即非法
         }
         /// <summary>
         /// 判断是否为Hold，不检查Hold参数
@@ -49,56 +489,63 @@ namespace MajdataEdit.SyntaxModule
         /// <returns></returns>
         static bool IsHold(string s)
         {
-            if (s.Length >= 2)
-            {
-                var isValidity = int.TryParse(s[0..0], out int i) ? KeyIndexCheck(i) : false ;
+            int index = 0;
+            string header = s.Split("[")[0];
+            bool isTouch = header[0] == 'C';
 
-                if (s[1] == 'h')
-                    return isValidity;
-                else if(s[2] is 'x' or 'b' && s[1] is 'h')
-                    return isValidity;
-                else if (s[0..1] == "Ch")
-                    return true;
-            }           
+            if (!isTouch && !int.TryParse(s[0..0], out index))//总是检查第1位
+                return false;
+            if (!isTouch && !PointCheck(index))//错误键位直接返回
+                return false;
+
+            if (header is "Ch" or "C1h")//TouchHold特例
+                return true;
+            else if (header[1] != 'h')//第2位不是"h"直接返回
+                return false;
+
+            if (header.Length == 2)// e.g. 2h
+                return true;
+            else if (header.Length == 3)// e.g. 2hb,2hx
+                return s[2] is 'b' or 'x';
+            else if (header.Length == 4)// e.g. 2hbx,2hxb
+            {
+                var isBreak = s[2] is 'b' || s[3] is 'b';
+                var isHanabi = s[2] is 'x' || s[3] is 'x';
+
+                return isBreak && isHanabi;
+            }
 
             return false;
         }
         /// <summary>
-        /// 判断是否为Slide，不检查Slide参数
+        /// 判断是否为Slide，不检查Slide参数，只检查头部
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
         static bool IsSlide(string s)
         {
-            if(s.Length >= 3)
+            int index;
+            var types = SlideTypeList.Skip(2).ToArray();
+            string header = s.Split(string.Concat(types).ToCharArray())[0];            
+
+            if (!int.TryParse(s[0..0], out index))//总是检查第1位
+                return false;
+            if (!PointCheck(index))//错误键位直接返回
+                return false;
+
+            if (header.Length == 1)// e.g. 1-8处理后header为1
+                return true;
+            else if (header.Length == 2 && header[1] is 'b' or 'x')// e.g. 1x,1b
+                return true;
+            else if (header.Length == 3)// e.g. 1bx,1xb
             {
-                var isBreakStar = s[1] is 'b';
-                var isHanabiStar = s[1] is 'x';
-                string cStr;
+                var isBreak = s[1] is 'b' || s[2] is 'b';
+                var isHanabi = s[1] is 'x' || s[2] is 'x';
 
-                if (isBreakStar || isHanabiStar)
-                    cStr = int.TryParse(s[3..3], out int i) ? s[2..2] : s[2..3];
-                else
-                    cStr = int.TryParse(s[2..2], out int i) ? s[1..1] : s[1..2];
-
-                switch (cStr)
-                {
-                    case "qq":
-                    case "pp":
-                    case "q":
-                    case "p":
-                    case "w":
-                    case "z":
-                    case "s":
-                    case "V":
-                    case "v":
-                    case "<":
-                    case ">":
-                    case "^":
-                    case "-":
-                        return true;
-                }
+                return isBreak && isHanabi;
             }
+
+            //出现其他长度一般是Slide种类错误
             return false;
         }
         /// <summary>
@@ -108,35 +555,34 @@ namespace MajdataEdit.SyntaxModule
         /// <returns></returns>
         static bool IsTouch(string s)
         {
-            try
-            {
-                if (s.Length == 2)
-                {
-                    var isValidity = int.TryParse(s[1..1], out int i) ? KeyIndexCheck(i) : false;
-                    switch (s[0])
-                    {
-                        case 'A':
-                        case 'B':
-                        case 'C':
-                        case 'D':
-                        case 'E':
-                            return isValidity;
-                    }
-                }
+            char sensor = s[0];
 
+            if (s.Length is not (1 or 2 or 3))//Touch长度只能是1,2或3 ; e.g. C,B1,B1f
                 return false;
-            }
-            catch
-            {
+
+            if (s.Length == 1)
+                return s[0] == 'C';
+            else if (!SensorList.Contains(sensor))
                 return false;
-            }
+            else if (s.Length == 3)
+                return s[2] == 'f';
+            else
+                return int.TryParse(s[1..1], out int i) && PointCheck(i);
         }
+        /// <summary>
+        /// 判断string是否为数字
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        static bool IsNum(string s) => IsInteger(s) || IsFloat(s);
+        static bool IsInteger(string s) => int.TryParse(s, out int i);
+        static bool IsFloat(string s) => double.TryParse(s, out double i);
         /// <summary>
         /// 用于判断键位是否合法
         /// </summary>
         /// <param name="k"></param>
         /// <returns></returns>
-        static bool KeyIndexCheck(int k) => k >= 1 && k <= 8;
+        static bool PointCheck(int k) => k >= 1 && k <= 8;
 
     }
 }
