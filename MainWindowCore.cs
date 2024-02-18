@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using DiscordRPC;
 using MajdataEdit.AutoSaveModule;
 using Microsoft.Win32;
@@ -320,10 +321,18 @@ public partial class MainWindow : Window
         VolumnSetting.IsEnabled = true;
         MenuMuriCheck.IsEnabled = true;
         Menu_ExportRender.IsEnabled = true;
+        SyntaxCheckButton.IsEnabled = true;
         AutoSaveManager.Of().SetAutoSaveEnable(true);
         SetSavedState(true);
+        SyntaxCheck();
     }
 
+    async void SyntaxCheck()
+    {
+        await SyntaxModule.SyntaxChecker.ScanAsync(GetRawFumenText());
+        SetErrCount(SyntaxModule.SyntaxChecker.ErrorList.Count);
+    }
+    void SetErrCount(int eCount) => Dispatcher.Invoke(() => ErrCount.Content = $"{eCount}");
     private void ReadWaveFromFile()
     {
         var useOgg = File.Exists(maidataDir + "/track.ogg");
@@ -567,6 +576,7 @@ public partial class MainWindow : Window
     private void ChartChangeTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         Console.WriteLine("TextChanged");
+        SyntaxCheck();
         Dispatcher.Invoke(
             delegate
             {

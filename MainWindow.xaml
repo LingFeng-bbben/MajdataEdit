@@ -9,10 +9,15 @@
     lex:ResxLocalizationProvider.DefaultDictionary="Langs"
     x:Name="TheWindow" x:Class="MajdataEdit.MainWindow"
     mc:Ignorable="d"
-    Title="MajdataEdit" Height="502" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="517"
+    Title="MajdataEdit" Height="589" Width="720.5" Loaded="Window_Loaded" Closing="Window_Closing" MinHeight="517"
     WindowStartupLocation="CenterScreen">
 
     <Grid Margin="0" DragEnter="Grid_DragEnter" AllowDrop="True" Drop="Grid_Drop">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0*"/>
+            <RowDefinition Height="501*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="#FF526675" />
@@ -20,18 +25,29 @@
             </LinearGradientBrush>
         </Grid.Background>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="358*"/>
+            <ColumnDefinition Width="360*" />
         </Grid.ColumnDefinitions>
+
+        <Label x:Name="ErrCount" Grid.Column="1" Content="0" 
+            Foreground="White" 
+            HorizontalAlignment="Left" HorizontalContentAlignment="Center"
+            Margin="6,236,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="86" PreviewMouseDoubleClick="SyntaxCheckButton_Click"/>
+
+        <Label x:Name="ErrCount_Label" Grid.Column="1" Content="Error(s)" 
+               Foreground="White" 
+               HorizontalAlignment="Left" HorizontalContentAlignment="Center"
+               Margin="6,211,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="86" PreviewMouseDoubleClick="SyntaxCheckButton_Click"/>
 
         <Image x:Name="MusicWave" Height="74" VerticalAlignment="Bottom" MouseWheel="MusicWave_MouseWheel"
                PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove"
-               Grid.ColumnSpan="2" SizeChanged="MusicWave_SizeChanged" />
-        <Line StrokeThickness="3" Y2="56" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15" Grid.Column="1"
-              HorizontalAlignment="Left" Width="45" />
+               Grid.ColumnSpan="3" SizeChanged="MusicWave_SizeChanged" Grid.RowSpan="2" Grid.Row="1" />
+        <Line StrokeThickness="3" Y2="56" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15"
+              HorizontalAlignment="Left" Width="45" Grid.ColumnSpan="2" Margin="357,0,0,0" Grid.RowSpan="2" Grid.Row="1" Grid.Column="1" />
 
         <Menu Height="19" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}"
-              Foreground="{DynamicResource ButtonForeground}" Grid.ColumnSpan="2">
+              Foreground="{DynamicResource ButtonForeground}" Grid.ColumnSpan="3" Grid.RowSpan="2">
             <MenuItem Header="{lex:Loc Files}" Foreground="{DynamicResource ButtonForeground}"
                       Template="{DynamicResource DarkMenuItem}">
                 <MenuItem x:Name="Menu_New" Header="{lex:Loc New}" Click="Menu_New_Click" />
@@ -72,6 +88,8 @@
                 <MenuItem Header="{lex:Loc BPMtap}" Click="BPMtap_MenuItem_Click" />
                 <MenuItem x:Name="MenuMuriCheck" Header="{lex:Loc MapMuriDetc}" Click="MuriCheck_Click_1"
                           IsEnabled="False" />
+                <MenuItem x:Name="SyntaxCheckButton" Header="{lex:Loc SyntaxDisplay}" Click="SyntaxCheckButton_Click"
+                          IsEnabled="False" />
             </MenuItem>
             <MenuItem Header="{lex:Loc SimaiWiki}" Click="MenuItem_SimaiWiki_Click"
                       Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
@@ -80,8 +98,8 @@
             <MenuItem Header="{lex:Loc CheckUpdate}" Click="CheckUpdate_Click"
                       Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
         </Menu>
-        <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,14,92" Width="255" Height="255"
-               VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
+        <Image x:Name="FFTImage" HorizontalAlignment="Right" Margin="0,0,14,91" Width="254" Height="255"
+               VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" Grid.Column="2" Grid.Row="1">
             <Image.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform />
@@ -92,19 +110,19 @@
             </Image.RenderTransform>
         </Image>
         <CheckBox x:Name="FollowPlayCheck" Content="{lex:Loc TextFollow}" HorizontalAlignment="Left" Height="21"
-                  Margin="9,0,0,129" VerticalAlignment="Bottom" Width="87"
+                  Margin="6,0,0,128" VerticalAlignment="Bottom" Width="87"
                   Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Right"
                   Click="FollowPlayCheck_Click" Background="{DynamicResource ButtonsBackground}"
-                  Template="{DynamicResource DarkCheck}" />
+                  Template="{DynamicResource DarkCheck}" Grid.Row="1" Grid.Column="1" />
         <RichTextBox x:Name="FumenContent"
                      Padding="0,5" FontFamily="Consolas"
                      Foreground="#FFE8E8E8" TextChanged="FumenContent_TextChanged"
-                     Margin="105,30,10,91" HorizontalScrollBarVisibility="Auto"
+                     Margin="102,29,10,90" HorizontalScrollBarVisibility="Auto"
                      VerticalScrollBarVisibility="Visible"
                      SelectionChanged="FumenContent_SelectionChanged" Grid.ColumnSpan="2"
                      InputMethod.IsInputMethodEnabled="False"
                      AutoWordSelection="False"
-                     PreviewKeyDown="FumenContent_OnPreviewKeyDown">
+                     PreviewKeyDown="FumenContent_OnPreviewKeyDown" Grid.Row="1" Grid.Column="1">
             <RichTextBox.Resources>
                 <RoutedUICommand x:Key="PlayAndPause" Text="PlayAndPause" />
                 <RoutedUICommand x:Key="SaveFile" Text="SaveFile" />
@@ -142,13 +160,13 @@
             </RichTextBox.CommandBindings>
             <FlowDocument />
         </RichTextBox>
-        <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Left" Height="64" Margin="0,17,0,0"
+        <Label x:Name="TimeLabel" Content="0:00" HorizontalAlignment="Left" Height="64" Margin="0,16,0,0"
                VerticalAlignment="Top" Width="105" Foreground="White" FontFamily="Bahnschrift Light" FontSize="50"
-               VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
-        <ComboBox x:Name="LevelSelector" Margin="10,117,0,0" SelectionChanged="ComboBox_SelectionChanged"
+               VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
+        <ComboBox x:Name="LevelSelector" Margin="7,116,0,0" SelectionChanged="ComboBox_SelectionChanged"
                   HorizontalAlignment="Left" Width="87" Height="21" VerticalAlignment="Top"
                   Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
-                  Template="{DynamicResource DarkComboBox}">
+                  Template="{DynamicResource DarkComboBox}" Grid.Row="1" Grid.Column="1">
 
             <ComboBoxItem Content="EASY" />
             <ComboBoxItem Content="BASIC" />
@@ -158,65 +176,65 @@
             <ComboBoxItem Content="Re:MASTER" />
             <ComboBoxItem Content="ORIGINAL" />
         </ComboBox>
-        <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="10,0,0,41"
+        <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="7,0,0,40"
                 VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomIn_Click"
                 Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
-                Template="{DynamicResource DarkButton}" />
-        <Button x:Name="WaveViewZoomOut" Content="-" HorizontalAlignment="Left" Height="24" Margin="10,0,0,10"
+                Template="{DynamicResource DarkButton}" Grid.Row="1" Grid.Column="1" />
+        <Button x:Name="WaveViewZoomOut" Content="-" HorizontalAlignment="Left" Height="24" Margin="7,0,0,9"
                 VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomOut_Click"
                 Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
-                Template="{DynamicResource DarkButton}" />
-        <Label Content="{lex:Loc Difficulty}" HorizontalAlignment="Left" Height="25" Margin="5,143,0,0"
-               VerticalAlignment="Top" Width="45" Foreground="White" />
-        <TextBox x:Name="LevelTextBox" HorizontalAlignment="Left" Height="25" Margin="50,143,0,0" TextWrapping="Wrap"
+                Template="{DynamicResource DarkButton}" Grid.Row="1" Grid.Column="1" />
+        <Label Content="{lex:Loc Difficulty}" HorizontalAlignment="Left" Height="25" Margin="2,142,0,0"
+               VerticalAlignment="Top" Width="45" Foreground="White" Grid.Row="1" Grid.Column="1" />
+        <TextBox x:Name="LevelTextBox" HorizontalAlignment="Left" Height="25" Margin="47,142,0,0" TextWrapping="Wrap"
                  VerticalAlignment="Top" Width="46" VerticalContentAlignment="Center"
                  TextChanged="LevelTextBox_TextChanged" Background="{DynamicResource ButtonsBackground}"
-                 Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Center" />
-        <Label Content="{lex:Loc Offset}" HorizontalAlignment="Left" Height="25" Margin="5,173,0,0"
-               VerticalAlignment="Top" Width="45" Foreground="White" />
-        <TextBox x:Name="OffsetTextBox" HorizontalAlignment="Left" Height="25" Margin="50,173,0,0" TextWrapping="Wrap"
+                 Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="1" />
+        <Label Content="{lex:Loc Offset}" HorizontalAlignment="Left" Height="25" Margin="2,172,0,0"
+               VerticalAlignment="Top" Width="45" Foreground="White" Grid.Row="1" Grid.Column="1" />
+        <TextBox x:Name="OffsetTextBox" HorizontalAlignment="Left" Height="25" Margin="47,172,0,0" TextWrapping="Wrap"
                  VerticalAlignment="Top" Width="46" VerticalContentAlignment="Center"
                  Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
                  HorizontalContentAlignment="Center" TextChanged="OffsetTextBox_TextChanged"
-                 MouseWheel="OffsetTextBox_MouseWheel" />
-        <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="58,0,0,91" Width="38"
+                 MouseWheel="OffsetTextBox_MouseWheel" Grid.Row="1" Grid.Column="1" />
+        <Button x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left" Margin="55,0,0,90" Width="38"
                 Click="PlayAndPauseButton_Click" Height="38" VerticalAlignment="Bottom"
                 Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
-                Template="{DynamicResource DarkButton}" />
-        <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="9,0,0,91"
+                Template="{DynamicResource DarkButton}" Grid.Row="1" Grid.Column="1" />
+        <Button x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38" Margin="6,0,0,90"
                 VerticalAlignment="Bottom" Width="38" Click="StopButton_Click"
                 Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
-                Template="{DynamicResource DarkButton}" />
-        <Label x:Name="NoteNowText" Content="行" HorizontalAlignment="Left" Margin="0,74,0,0" VerticalAlignment="Top"
-               Foreground="White" Width="105" HorizontalContentAlignment="Center" Height="25" />
-        <Button x:Name="Op_Button" Content="{lex:Loc RecMode}" Height="30" Margin="9,0,0,166"
+                Template="{DynamicResource DarkButton}" Grid.Row="1" Grid.Column="1" />
+        <Label x:Name="NoteNowText" Content="行" HorizontalAlignment="Left" Margin="0,73,0,0" VerticalAlignment="Top"
+               Foreground="White" Width="105" HorizontalContentAlignment="Center" Height="25" Grid.Row="1" Grid.ColumnSpan="2" />
+        <Button x:Name="Op_Button" Content="{lex:Loc RecMode}" Height="30" Margin="6,0,0,165"
                 VerticalAlignment="Bottom" RenderTransformOrigin="1.1,0.25" Click="Op_Button_Click"
                 HorizontalAlignment="Left" Width="87" Template="{DynamicResource DarkButton}"
                 Foreground="{DynamicResource ButtonForeground}" Background="{DynamicResource ButtonsBackground}"
-                ToolTip="{lex:Loc RecordModeDiscrp}" />
+                ToolTip="{lex:Loc RecordModeDiscrp}" Grid.Row="1" Grid.Column="1" />
         <Label Content="{lex:Loc TouchSpeed}" MouseUp="SettingLabel_MouseUp" HorizontalAlignment="Left" Height="24"
-               Margin="5,0,0,201" VerticalAlignment="Bottom" Width="80" Foreground="White"
-               RenderTransformOrigin="9.667,-2.284" ToolTip="{lex:Loc SpeedSettingTooltip}" />
+               Margin="2,0,0,200" VerticalAlignment="Bottom" Width="80" Foreground="White"
+               RenderTransformOrigin="9.667,-2.284" ToolTip="{lex:Loc SpeedSettingTooltip}" Grid.Row="1" Grid.Column="1" />
         <Label x:Name="ViewerTouchSpeed" MouseUp="SettingLabel_MouseUp" HorizontalAlignment="Left" Height="24"
-               Margin="65,0,0,201" Content="7.0" VerticalAlignment="Bottom" Width="35"
+               Margin="62,0,0,200" Content="7.0" VerticalAlignment="Bottom" Width="35"
                VerticalContentAlignment="Center" Foreground="{DynamicResource ButtonForeground}"
-               HorizontalContentAlignment="Center" ToolTip="{lex:Loc SpeedSettingTooltip}" />
+               HorizontalContentAlignment="Center" ToolTip="{lex:Loc SpeedSettingTooltip}" Grid.Row="1" Grid.Column="1" />
         <Label Content="{lex:Loc Speed}" MouseUp="SettingLabel_MouseUp" HorizontalAlignment="Left" Height="24"
-               Margin="5,0,0,227" VerticalAlignment="Bottom" Width="60" Foreground="White"
-               RenderTransformOrigin="9.667,-2.284" ToolTip="{lex:Loc SpeedSettingTooltip}" />
+               Margin="2,0,0,226" VerticalAlignment="Bottom" Width="60" Foreground="White"
+               RenderTransformOrigin="9.667,-2.284" ToolTip="{lex:Loc SpeedSettingTooltip}" Grid.Row="1" Grid.Column="1" />
         <Label x:Name="ViewerSpeed" MouseUp="SettingLabel_MouseUp" HorizontalAlignment="Left" Height="24"
-               Margin="65,0,0,227" Content="7.0" VerticalAlignment="Bottom" Width="35"
+               Margin="62,0,0,226" Content="7.0" VerticalAlignment="Bottom" Width="35"
                VerticalContentAlignment="Center" Foreground="{DynamicResource ButtonForeground}"
-               HorizontalContentAlignment="Center" ToolTip="{lex:Loc SpeedSettingTooltip}" />
+               HorizontalContentAlignment="Center" ToolTip="{lex:Loc SpeedSettingTooltip}" Grid.Row="1" Grid.Column="1" />
         <Label Content="{lex:Loc Brightness}" MouseUp="SettingLabel_MouseUp" HorizontalAlignment="Left" Height="24"
-               Margin="5,0,0,251" VerticalAlignment="Bottom" Width="60" Foreground="White"
-               RenderTransformOrigin="9.667,-2.284" ToolTip="{lex:Loc SpeedSettingTooltip}" />
-        <Label x:Name="ViewerCover" MouseUp="SettingLabel_MouseUp" Height="24" Margin="65,0,0,251" Content="0.6"
+               Margin="2,0,0,250" VerticalAlignment="Bottom" Width="60" Foreground="White"
+               RenderTransformOrigin="9.667,-2.284" ToolTip="{lex:Loc SpeedSettingTooltip}" Grid.Row="1" Grid.Column="1" />
+        <Label x:Name="ViewerCover" MouseUp="SettingLabel_MouseUp" Height="24" Margin="62,0,0,250" Content="0.6"
                VerticalAlignment="Bottom" VerticalContentAlignment="Center"
                Foreground="{DynamicResource ButtonForeground}" HorizontalAlignment="Left" Width="35"
-               HorizontalContentAlignment="Center" ToolTip="{lex:Loc SpeedSettingTooltip}" />
-        <Grid x:Name="PlbSpdAdjGrid" HorizontalAlignment="Left" Height="105" Margin="105,290,0,0"
-              VerticalAlignment="Top" Width="148" Visibility="Hidden">
+               HorizontalContentAlignment="Center" ToolTip="{lex:Loc SpeedSettingTooltip}" Grid.Row="1" Grid.Column="1" />
+        <Grid x:Name="PlbSpdAdjGrid" HorizontalAlignment="Left" Height="105" Margin="102,289,0,0"
+              VerticalAlignment="Top" Width="148" Visibility="Hidden" Grid.Row="1" Grid.Column="1">
             <Grid.Background>
                 <SolidColorBrush Color="#FF303030" Opacity="0.8" />
             </Grid.Background>
@@ -225,8 +243,8 @@
             <Label x:Name="PlbSpdLabel" Content="100%" Margin="34,46,34,20" Foreground="White" FontWeight="Bold"
                    FontSize="22" HorizontalContentAlignment="Center" />
         </Grid>
-        <Grid x:Name="FindGrid" Margin="0,30,29,0" Grid.Column="1" HorizontalAlignment="Right" Width="272" Height="69"
-              VerticalAlignment="Top" Visibility="Collapsed">
+        <Grid x:Name="FindGrid" Margin="0,29,28,0" Grid.Column="2" HorizontalAlignment="Right" Width="272" Height="69"
+              VerticalAlignment="Top" Visibility="Collapsed" Grid.Row="1">
             <Grid.Background>
                 <SolidColorBrush Color="Black" Opacity="0.2" />
             </Grid.Background>
@@ -243,8 +261,8 @@
             <TextBox x:Name="ReplaceText" HorizontalAlignment="Left" Height="22" Margin="10,37,0,0" TextWrapping="Wrap"
                      VerticalAlignment="Top" Width="231" VerticalContentAlignment="Center" />
         </Grid>
-        <StackPanel x:Name="OverrideModeTipsPopup" Margin="105,30,0,0" HorizontalAlignment="Left"
-                    VerticalAlignment="Top" Orientation="Horizontal" Visibility="Collapsed">
+        <StackPanel x:Name="OverrideModeTipsPopup" Margin="102,29,0,0" HorizontalAlignment="Left"
+                    VerticalAlignment="Top" Orientation="Horizontal" Visibility="Collapsed" Grid.Row="1" Height="0" Width="0" Grid.Column="1">
             <StackPanel.Background>
                 <SolidColorBrush Color="Black" Opacity="0.8" />
             </StackPanel.Background>
@@ -260,7 +278,7 @@
                 <TextBlock TextDecorations="Underline" FontSize="10" Text="{lex:Loc Key=WhatsThis}" />
             </Label>
         </StackPanel>
-        <Rectangle x:Name="Cover" Fill="#FF1F1F1F" Margin="0,19,0,0" Stroke="Black" Grid.ColumnSpan="2"
-                   d:IsHidden="True" />
+        <Rectangle x:Name="Cover" Fill="#FF1F1F1F" Margin="0,18,0,0" Stroke="Black" Grid.ColumnSpan="3"
+                   d:IsHidden="True" Grid.RowSpan="2" Grid.Row="1" />
     </Grid>
 </Window>

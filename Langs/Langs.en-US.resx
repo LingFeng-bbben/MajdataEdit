@@ -463,4 +463,16 @@ Click OK to start render.</value>
   <data name="SmoothSlideAnimeTooltip" xml:space="preserve">
     <value>When enabled, the Slide Track will disappear with the star instead of one judgment area after another.</value>
   </data>
+  <data name="SyntaxCheckLevel1" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="SyntaxCheckLevel2" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="SyntaxCheckLevel3" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="SyntaxDisplay" xml:space="preserve">
+    <value>Syntax Check</value>
+  </data>
 </root>

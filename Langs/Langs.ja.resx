@@ -493,4 +493,16 @@ Open Browser to download latest update of Majdata?</value>
     <value>When enabled, the Slide Track will disappear with the star instead of one judgment area after another.</value>
     <comment>Translation required</comment>
   </data>
+  <data name="SyntaxCheckLevel1" xml:space="preserve">
+    <value>無効にする</value>
+  </data>
+  <data name="SyntaxCheckLevel2" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="SyntaxCheckLevel3" xml:space="preserve">
+    <value>有効にする</value>
+  </data>
+  <data name="SyntaxDisplay" xml:space="preserve">
+    <value>構文チェック</value>
+  </data>
 </root>

@@ -455,4 +455,16 @@
   <data name="SmoothSlideAnimeTooltip" xml:space="preserve">
     <value>启用后，Slide轨迹会随着星星消失，而不是以判定区为单位消失</value>
   </data>
+  <data name="SyntaxCheckLevel1" xml:space="preserve">
+    <value>禁用</value>
+  </data>
+  <data name="SyntaxCheckLevel2" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="SyntaxCheckLevel3" xml:space="preserve">
+    <value>开启</value>
+  </data>
+  <data name="SyntaxDisplay" xml:space="preserve">
+    <value>语法检查</value>
+  </data>
 </root>
