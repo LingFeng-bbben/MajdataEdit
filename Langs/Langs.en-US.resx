@@ -475,4 +475,7 @@ Click OK to start render.</value>
   <data name="SyntaxDisplay" xml:space="preserve">
     <value>Syntax Check</value>
   </data>
+  <data name="InternalErr" xml:space="preserve">
+    <value>Internal Error</value>
+  </data>
 </root>

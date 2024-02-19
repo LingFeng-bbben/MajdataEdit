@@ -505,4 +505,7 @@ Open Browser to download latest update of Majdata?</value>
   <data name="SyntaxDisplay" xml:space="preserve">
     <value>構文チェック</value>
   </data>
+  <data name="InternalErr" xml:space="preserve">
+    <value>内部エラー</value>
+  </data>
 </root>

@@ -467,4 +467,7 @@
   <data name="SyntaxDisplay" xml:space="preserve">
     <value>语法检查</value>
   </data>
+  <data name="InternalErr" xml:space="preserve">
+    <value>内部错误</value>
+  </data>
 </root>

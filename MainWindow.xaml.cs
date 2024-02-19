@@ -299,27 +299,9 @@ public partial class MainWindow : Window
     }
     private void SyntaxCheckButton_Click(object sender, RoutedEventArgs e)
     {
-        var mcrWindow = new MuriCheckResult
-        {
-            Owner = this
-        };
-        var errList = SyntaxChecker.ErrorList;
-        errList.ForEach(e => 
-        {
-            e.positionY--;
-            mcrWindow.errorPosition.Add(e);
-            var eRow = new ListBoxItem
-            {
-                Content = e.eMessage,
-                Name = "rr" + mcrWindow.CheckResult_Listbox.Items.Count
-            };
-            eRow.AddHandler(PreviewMouseDoubleClickEvent,
-                new MouseButtonEventHandler(mcrWindow.ListBoxItem_PreviewMouseDoubleClick));
-            mcrWindow.CheckResult_Listbox.Items.Add(eRow);
-        });
-        mcrWindow.Show();
+        ShowErrorWindow();
     }
-    private void SyntaxCheckButton_Click(object sender, MouseButtonEventArgs e)
+    void ShowErrorWindow()
     {
         var mcrWindow = new MuriCheckResult
         {
@@ -340,6 +322,10 @@ public partial class MainWindow : Window
             mcrWindow.CheckResult_Listbox.Items.Add(eRow);
         });
         mcrWindow.Show();
+    }
+    private void SyntaxCheckButton_Click(object sender, MouseButtonEventArgs e)
+    {
+        ShowErrorWindow();
     }
     private void MenuItem_EditorSetting_Click(object? sender, RoutedEventArgs e)
     {

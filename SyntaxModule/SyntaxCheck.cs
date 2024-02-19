@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Automation;
-
+﻿
 namespace MajdataEdit.SyntaxModule
 {
     internal class SimaiErrorInfo : ErrorInfo
@@ -43,6 +36,15 @@ namespace MajdataEdit.SyntaxModule
         /// <param name="noteStr"></param>
         internal static async Task ScanAsync(string str)
         {
+            Action<string,int,int> addError = (s,x,y) =>
+            {
+                ErrorList.Add(new SimaiErrorInfo(x, y,
+                    string.Format(
+                        MainWindow.GetLocalizedString("SyntaxError"),
+                        s,
+                        y,
+                        x)));
+            };
             await Task.Run(() =>
             {
                 ErrorList.Clear();
@@ -65,10 +67,17 @@ namespace MajdataEdit.SyntaxModule
                     if (string.IsNullOrEmpty(simaiStr))
                         continue;
 
-                    var notes = simaiStr.Split("/");
+                    //分割多押与伪多押
+                    var notes = simaiStr.Split(new char[] { '/','`'});
                     for (int i = 0;i < notes.Length;i++)
                     {
                         var noteStr = notes[i];
+
+                        if (string.IsNullOrEmpty(noteStr))
+                        {
+                            addError(simaiStr, column, line);
+                            continue;
+                        }
                         if (i == 0 && !SpecialSyntaxCheck(ref noteStr, column, line))
                             continue;
                         else if (string.IsNullOrEmpty(noteStr))
@@ -105,11 +114,11 @@ namespace MajdataEdit.SyntaxModule
             int bpmTailCount = 0;
             int beatHeadCount = 0;
             int beatTailCount = 0;
-            int HSpeedHeadCount = 0;
-            int HSpeedTailCount = 0;
 
             int bpmFirstIndex = simaiStr.IndexOf('(');
             int beatFirstIndex = simaiStr.IndexOf('{');
+
+            int[]? tagIndex = FindHSpeedBody(simaiStr);
 
             Action<string> addError = s =>
             {
@@ -137,16 +146,6 @@ namespace MajdataEdit.SyntaxModule
                         break;
                     case '}':
                         beatTailCount++;
-                        break;
-                    case '<':
-                        if (i + 1 < simaiStr.Length && int.TryParse(simaiStr[(i + 1)..(i + 2)], out int j) && PointCheck(j))
-                            break;
-                        HSpeedHeadCount++;
-                        break;
-                    case '>':
-                        if (i + 1 < simaiStr.Length && int.TryParse(simaiStr[(i + 1)..(i + 2)], out j) && PointCheck(j))
-                            break;
-                        HSpeedTailCount++;
                         break;
                 }
             }
@@ -177,7 +176,7 @@ namespace MajdataEdit.SyntaxModule
                 return false;
             }
 
-            if (HSpeedHeadCount != HSpeedTailCount)
+            if (tagIndex is null)
             {
                 addError(simaiStr);
                 return false;
@@ -190,44 +189,43 @@ namespace MajdataEdit.SyntaxModule
             {
                 int bpmEndIndex = simaiStr.IndexOf(')');
                 int beatEndIndex = simaiStr.IndexOf('}');
-                int HSpeedStartIndex = simaiStr.IndexOf('<');
-                int HSpeedEndIndex = simaiStr.IndexOf('>');
-
+                
                 bool hadBpm = bpmFirstIndex != bpmEndIndex;
                 bool hadBeat = beatFirstIndex != beatEndIndex;
 
-                //HSpeed变速语法检查
-                if ((HSpeedStartIndex != -1 && HSpeedEndIndex != -1))
+                if((hadBpm || hadBeat) && simaiStr[0] is not ('(' or '{'))
                 {
-                    if(HSpeedEndIndex < HSpeedStartIndex)// 不知道是什么奇奇怪怪的东西，形如"> xxx <"
+                    addError(simaiStr);
+                    return false;
+                }               
+
+                //HSpeed变速语法检查
+                if(tagIndex.Length != 0)
+                {
+                    var tagHead = tagIndex[0];
+                    var tagTail = tagIndex[1];
+                    var body = simaiStr[(tagHead + 1)..tagTail];
+
+                    var s = body.Split("HS*");
+
+                    if (s.Length != 2)//正常情况分割后的得到的Array长度应当是2
+                    {
+                        addError(simaiStr);
+                        return false;
+                    }
+                    else if (!string.IsNullOrEmpty(s[0]))//正常情况第一个元素应当是Empty
+                    {
+                        addError(simaiStr);
+                        return false;
+                    }
+                    else if (!IsNum(s[1]))//第二个元素应当是Number
                     {
                         addError(simaiStr);
                         return false;
                     }
 
-                    var HSpeedStr = simaiStr[(HSpeedStartIndex + 1)..(HSpeedEndIndex)].Replace(" ","");
-                    var s = HSpeedStr.Split("HS*");
-
-                    if(HSpeedStr.Contains("HS*"))
-                    {
-                        if (s.Length != 2)
-                        {
-                            addError(simaiStr);
-                            return false;
-                        }
-                        else if (!string.IsNullOrEmpty(s[0]))
-                        {
-                            addError(simaiStr);
-                            return false;
-                        }
-                        else if (!IsNum(s[1]))
-                        {
-                            addError(simaiStr);
-                            return false;
-                        }
-
-                        simaiStr = simaiStr.Remove(HSpeedStartIndex, (HSpeedEndIndex - HSpeedStartIndex) + 1);
-                    }
+                    //删除"<HS*1.0>"字符串，传递给NoteSyntaxChecker进行Note语法检查
+                    simaiStr = simaiStr.Remove(tagHead, (tagTail - tagHead) + 1);
                 }
 
                 //有头无尾
@@ -235,6 +233,28 @@ namespace MajdataEdit.SyntaxModule
                 {
                     addError(simaiStr);
                     return false;
+                }
+
+                //(){}或{}()
+                if (hadBpm && hadBeat)
+                {
+                    //(){}
+                    if (bpmEndIndex < beatFirstIndex && (beatFirstIndex != bpmEndIndex + 1))
+                    {
+                        addError(simaiStr);
+                        return false;
+                    }
+                    else if(bpmEndIndex < beatFirstIndex && (beatFirstIndex == bpmEndIndex + 1))
+                    { 
+                        // noting to do
+                    }
+                    //{}()
+                    else if (beatEndIndex < bpmFirstIndex && (bpmFirstIndex != beatEndIndex + 1))
+                    {
+                        addError(simaiStr);
+                        return false;
+                    }
+
                 }
 
                 if (hadBeat && !IsInteger(simaiStr[(beatFirstIndex+1)..(beatEndIndex)]))
@@ -252,6 +272,63 @@ namespace MajdataEdit.SyntaxModule
                 
             }
             return true;
+        }
+        /// <summary>
+        /// 寻找HSpeed的主体部分
+        /// </summary>
+        /// <param name="simaiStr"></param>
+        /// <returns>
+        /// HSpeed主体头和尾的索引，未找到返回Empty，HS语法错误返回null
+        /// </returns>
+        static int[]? FindHSpeedBody(string simaiStr)
+        {
+            //<HS*>
+            simaiStr = simaiStr.Replace(" ", "");
+            List<int> bodyHead = new();
+            List<int> bodyTail = new();
+            int? tagHead = null;
+            int? tagTail = null;            
+            
+            for(int i = 0;i < simaiStr.Length;i++)
+            {
+                if(i + 3 < simaiStr.Length)
+                {
+                    var s = simaiStr[i..(i + 3)];
+                    if(s == "HS*")
+                    {
+                        if (tagHead != null)
+                            return null;
+                        tagHead = i;
+                        tagTail = i + 2;
+                    }
+                }
+                switch(simaiStr[i])
+                {
+                    case '<':
+                        bodyHead.Add(i);
+                        break;
+                    case '>':
+                        bodyTail.Add(i);
+                        break;
+                }
+            }
+
+            bool hadTag = tagHead is not null;
+            if (hadTag)
+            {
+                int head = bodyHead.Where(h => h < tagHead).DefaultIfEmpty(-1).Max();
+                int tail = bodyTail.Where(t => t > tagTail).DefaultIfEmpty(-1).Min();
+
+                if (bodyHead.Count == 0 || bodyTail.Count == 0)
+                    return null;
+                if (head == -1 || tail == -1)
+                    return null;
+
+                return new int[] { head, tail };
+
+            }
+
+            return Array.Empty<int>();
         }
         /// <summary>
         /// 检查Note语句的Body部分是否正确(譬如是否存在重复的"["或"]")
@@ -307,7 +384,7 @@ namespace MajdataEdit.SyntaxModule
                 if (HoldSyntaxCheck(noteStr))
                     return true;
             }
-            else if (IsSlide(noteStr))
+            else if (IsSlide(ref noteStr))
             {
                 if (SlideSyntaxCheck(noteStr))
                     return true;
@@ -334,7 +411,13 @@ namespace MajdataEdit.SyntaxModule
         {
             //特殊：2h之类的短Hold，前面已经检查过一次，无需再次检查
             if (holdStr.Length <= 4)
+            {
+                //防止出现2h[],2h[,2hxx这种傻蛋情况
+                foreach (var s in holdStr[2..])
+                    if (s is not ('b' or 'x'))
+                        return false;
                 return true;
+            }
 
             int[]? bodyIndex = BodySyntaxCheck(holdStr);
             if (bodyIndex is null)//body部分错误
@@ -698,7 +781,7 @@ namespace MajdataEdit.SyntaxModule
                 return SimaiNoteType.Tap;
             else if (IsHold(s))
                 return SimaiNoteType.Hold;
-            else if (IsSlide(s))
+            else if (IsSlide(ref s))
                 return SimaiNoteType.Slide;
             else if (IsTouch(s))
                 return SimaiNoteType.Touch;
@@ -719,11 +802,24 @@ namespace MajdataEdit.SyntaxModule
             if (!PointCheck(index))//错误键位直接返回
                 return false;
 
+            if(s.Contains("$"))
+            {
+                var f = s.IndexOf("$");
+                var l = s.LastIndexOf("$");
+
+                if (f == l && s[1] == '$')
+                    s = s.Remove(1, 1);
+                else if (Math.Abs(f - l) == 1 && s[1..3] == "$$")
+                    s = s.Remove(1, 2);
+                else 
+                    return false;
+            }
+
             if (s.Length == 1)
                 return true;
             else if(s.Length == 2)// e.g. 28 , 2b , 2x
             {
-                if (s[1] is 'b' or 'x')
+                if (s[1] is ('b' or 'x'))
                     return true;
                 else
                     return int.TryParse(s, out int i) && (PointCheck(i % 10) && PointCheck(i / 10));
@@ -746,14 +842,15 @@ namespace MajdataEdit.SyntaxModule
         static bool IsHold(string s)
         {
             int index = 0;
-            string header = s.Split("[")[0];
+            var _s = s.Split("[");
+            string header = _s[0];
             bool isTouch = header[0] == 'C';
 
             if (!isTouch && !int.TryParse(s[0..1], out index))//总是检查第1位
                 return false;
             if (!isTouch && !PointCheck(index))//错误键位直接返回
                 return false;
-            if (s.Length < 2)
+            if (s.Length < 2 || header.Length < 2)
                 return false;
             else if (header is ("Ch" or "C1h" or "Chf" or "C1hf"))//TouchHold特例
                 return true;
@@ -779,7 +876,7 @@ namespace MajdataEdit.SyntaxModule
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        static bool IsSlide(string s)
+        static bool IsSlide(ref string s)
         {
             int index;
             var types = SlideTypeList.Skip(2).ToArray();
@@ -789,6 +886,15 @@ namespace MajdataEdit.SyntaxModule
                 return false;
             if (!PointCheck(index))//错误键位直接返回
                 return false;
+
+            if (header.Contains("?") || header.Contains("!"))
+                if (header[1] is '?' or '!')
+                {
+                    header = header.Remove(1, 1);
+                    s = s.Remove(1, 1);
+                }
+                else
+                    return false;
 
             if (header.Length == 1)// e.g. 1-8处理后header为1
                 return true;

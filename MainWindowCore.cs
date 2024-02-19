@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using DiscordRPC;
 using MajdataEdit.AutoSaveModule;
+using MajdataEdit.SyntaxModule;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -327,12 +328,30 @@ public partial class MainWindow : Window
         SyntaxCheck();
     }
 
-    async void SyntaxCheck()
+    internal async void SyntaxCheck()
     {
-        await SyntaxModule.SyntaxChecker.ScanAsync(GetRawFumenText());
-        SetErrCount(SyntaxModule.SyntaxChecker.ErrorList.Count);
+        if (editorSetting!.SyntaxCheckLevel == 0)
+        {
+            SetErrCount(GetLocalizedString("SyntaxCheckLevel1"));
+            return;
+        }
+#if DEBUG
+        await SyntaxChecker.ScanAsync(GetRawFumenText());
+        SetErrCount(SyntaxChecker.ErrorList.Count);
+#else
+        try
+        {
+            await SyntaxChecker.ScanAsync(GetRawFumenText());
+            SetErrCount(SyntaxChecker.ErrorList.Count);
+        }
+        catch
+        {
+            SetErrCount(GetLocalizedString("InternalErr"));
+        }
+#endif
+
     }
-    void SetErrCount(int eCount) => Dispatcher.Invoke(() => ErrCount.Content = $"{eCount}");
+    void SetErrCount<T>(T eCount) => Dispatcher.Invoke(() => ErrCount.Content = $"{eCount}");
     private void ReadWaveFromFile()
     {
         var useOgg = File.Exists(maidataDir + "/track.ogg");
@@ -966,7 +985,6 @@ public partial class MainWindow : Window
         Op_Button.IsEnabled = false;
         isPlaying = true;
         isPlan2Stop = false;
-
         PlayAndPauseButton.Content = "  ▌▌ ";
         var CusorTime = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition()); //scan first
 
@@ -1091,11 +1109,26 @@ public partial class MainWindow : Window
         if (isPlaying)
             TogglePause();
         else
+        {
+            if (lastEditorState != EditorControlMethod.Pause && 
+                editorSetting!.SyntaxCheckLevel == 2 && 
+                SyntaxChecker.ErrorList.Count != 0)
+            {
+                ShowErrorWindow();
+                return;
+            }
             TogglePlay(playMethod);
+        }
+            
     }
 
     private void TogglePlayAndStop(PlayMethod playMethod = PlayMethod.Normal)
     {
+        if (editorSetting!.SyntaxCheckLevel == 2 && SyntaxChecker.ErrorList.Count != 0)
+        {
+            ShowErrorWindow();
+            return;
+        }
         if (isPlaying)
             ToggleStop();
         else
