@@ -1,4 +1,6 @@
 ﻿
+using System.Windows.Navigation;
+
 namespace MajdataEdit.SyntaxModule
 {
     enum InfomationLevel
@@ -62,7 +64,7 @@ namespace MajdataEdit.SyntaxModule
                 int column = 1;                
                 var simaiChart = str.Split(",");
 
-                if (simaiChart.Last() == "E")//移除结尾E
+                if (simaiChart.Last().Replace("\n","") == "E")//移除结尾E
                     simaiChart = simaiChart.SkipLast(1).ToArray();
                 else
                     addInfo("", -1, -1, "SyntaxWarning", InfomationLevel.Warning);
@@ -869,22 +871,34 @@ namespace MajdataEdit.SyntaxModule
                 return false;
             else if (header is ("Ch" or "C1h" or "Chf" or "C1hf"))//TouchHold特例
                 return true;
-            else if (header[1] != 'h')//第2位不是"h"直接返回
-                return false;
+            //Hold严格判定：第二位必须是'h'，'b'，'x'不限制位置
+            //妥协一下，改为松判定
+            //else if (header[1] != 'h')//第2位不是"h"直接返回
+            //    return false;
 
-            if (header.Length == 2)// e.g. 2h
-                return true;
-            else if (header.Length == 3)// e.g. 2hb,2hx
-                return s[2] is 'b' or 'x';
-            else if (header.Length == 4)// e.g. 2hbx,2hxb
+            //Hold松判定：'h','b','x'不限定位置
+            return header.Length switch
             {
-                var isBreak = s[2] is 'b' || s[3] is 'b';
-                var isHanabi = s[2] is 'x' || s[3] is 'x';
+                2 => header[1] is 'h',
+                3 => header.Contains('h') && (header.Contains('b') || header.Contains('x')),
+                4 => header.Contains('h') && header.Contains('b') && header.Contains('x'),
+                _ => false
+            };
 
-                return isBreak && isHanabi;
-            }
+            //Hold严格判定：第二位必须是'h'，'b'，'x'不限制位置
+            //if (header.Length == 2)// e.g. 2h
+            //    return true;
+            //else if (header.Length == 3)// e.g. 2hb,2hx
+            //    return s[2] is 'b' or 'x';
+            //else if (header.Length == 4)// e.g. 2hbx,2hxb
+            //{
+            //    var isBreak = s[2] is 'b' || s[3] is 'b';
+            //    var isHanabi = s[2] is 'x' || s[3] is 'x';
 
-            return false;
+            //    return isBreak && isHanabi;
+            //}
+
+            //return false;
         }
         /// <summary>
         /// 判断是否为Slide，不检查Slide参数，只检查头部
