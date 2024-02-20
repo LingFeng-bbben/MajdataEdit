@@ -1,56 +1,71 @@
 ﻿
 namespace MajdataEdit.SyntaxModule
 {
+    enum InfomationLevel
+    {
+        Warning,
+        Error
+    }
+    enum DirectionType
+    {
+        /// <summary>
+        /// 顺时针
+        /// </summary>
+        Clockwise,
+        /// <summary>
+        /// 同一直线
+        /// </summary>
+        Opposite,
+        /// <summary>
+        /// 逆时针
+        /// </summary>
+        Anticlockwise
+    }
     internal class SimaiErrorInfo : ErrorInfo
     {
         public string eMessage;
-        public SimaiErrorInfo(int _posX, int _posY, string eMessage) : base(_posX, _posY)
+        public InfomationLevel Level;
+        public SimaiErrorInfo(int _posX, int _posY, string eMessage,InfomationLevel level = InfomationLevel.Error) : base(_posX, _posY)
         {
             this.eMessage = eMessage;
+            this.Level = level;
         }
     }
     internal static class SyntaxChecker
     {
-        static List<SimaiTimingPoint> NoteList;
         static readonly string[] SlideTypeList = { "qq", "pp", "q", "p", "w", "z", "s", "V", "v", "<", ">", "^", "-" };
         static readonly char[] SensorList = { 'A','B','C','D','E'};
         internal static List<SimaiErrorInfo> ErrorList = new();
-        enum DirectionType
-        {
-            /// <summary>
-            /// 顺时针
-            /// </summary>
-            Clockwise,
-            /// <summary>
-            /// 同一直线
-            /// </summary>
-            Opposite,
-            /// <summary>
-            /// 逆时针
-            /// </summary>
-            Anticlockwise
-        }
+
+        public static int GetErrorCount() => ErrorList.Where(e => e.Level is InfomationLevel.Error).Count();
         /// <summary>
         /// 检查原始Simai文本
         /// </summary>
         /// <param name="noteStr"></param>
         internal static async Task ScanAsync(string str)
         {
-            Action<string,int,int> addError = (s,x,y) =>
+            Action<string, int, int,string, InfomationLevel> addInfo = (s, x, y, localStr,level) =>
             {
                 ErrorList.Add(new SimaiErrorInfo(x, y,
                     string.Format(
-                        MainWindow.GetLocalizedString("SyntaxError"),
+                        MainWindow.GetLocalizedString(localStr),
                         s,
                         y,
-                        x)));
+                        x), level));
             };
+            Action<string, int, int> addError = (s, x, y) => addInfo(s,x,y, "SyntaxError",InfomationLevel.Error);
+
             await Task.Run(() =>
             {
                 ErrorList.Clear();
                 int line = 1;
-                int column = 1;
+                int column = 1;                
                 var simaiChart = str.Split(",");
+
+                if (simaiChart.Last() == "E")//移除结尾E
+                    simaiChart = simaiChart.SkipLast(1).ToArray();
+                else
+                    addInfo("", -1, -1, "SyntaxWarning", InfomationLevel.Warning);
 
                 foreach (var s in simaiChart)
                 {
@@ -93,9 +108,9 @@ namespace MajdataEdit.SyntaxModule
         /// </summary>
         internal static void Scan()
         {
-            NoteList = SimaiProcess.notelist;
+            var noteList = SimaiProcess.notelist;
 
-            foreach (var note in NoteList)
+            foreach (var note in noteList)
             {
                 var raw = note.notesContent;
                 var notes = raw.Split("/");
@@ -391,8 +406,8 @@ namespace MajdataEdit.SyntaxModule
             }
             else if (IsTouch(noteStr))
                 return true;
-            else if(noteStr == "E")
-                return true;
+            //else if(noteStr == "E")
+            //    return true;
             ErrorList.Add(new SimaiErrorInfo(posX, posY,
                     string.Format(
                         MainWindow.GetLocalizedString("SyntaxError"),
@@ -923,17 +938,17 @@ namespace MajdataEdit.SyntaxModule
             if (s.Length is not (1 or 2 or 3))//Touch长度只能是1,2或3 ; e.g. C,B1,B1f
                 return false;
 
-            if (s.Length == 1)
+            if (s.Length == 1)// C
                 return s[0] == 'C';
-            else if (!SensorList.Contains(sensor))
+            else if (!SensorList.Contains(sensor))// 判断触控区号是否合法
                 return false;
-            else if (s.Length == 2 && s[0] == 'C')// C1
-                return s[1] == '1';
+            else if (s.Length == 2 && s[0] == 'C')// C1 or Cf
+                return s[1] is '1' or 'f';
             else if (s.Length == 3 && s[0] == 'C')// C1f
                 return s[1] == '1' && s[2] == 'f';
-            else if (s.Length == 3)
+            else if (s.Length == 3)// A1f B1f
                 return s[2] == 'f' && int.TryParse(s[1..2], out int i) && PointCheck(i);
-            else
+            else//A1 B1
                 return int.TryParse(s[1..2], out int i) && PointCheck(i);
         }
         /// <summary>

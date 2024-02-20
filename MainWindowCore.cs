@@ -337,7 +337,7 @@ public partial class MainWindow : Window
         }
 #if DEBUG
         await SyntaxChecker.ScanAsync(GetRawFumenText());
-        SetErrCount(SyntaxChecker.ErrorList.Count);
+        SetErrCount(SyntaxChecker.GetErrorCount());
 #else
         try
         {
@@ -1112,7 +1112,7 @@ public partial class MainWindow : Window
         {
             if (lastEditorState != EditorControlMethod.Pause && 
                 editorSetting!.SyntaxCheckLevel == 2 && 
-                SyntaxChecker.ErrorList.Count != 0)
+                SyntaxChecker.GetErrorCount() != 0)
             {
                 ShowErrorWindow();
                 return;
@@ -1124,7 +1124,7 @@ public partial class MainWindow : Window
 
     private void TogglePlayAndStop(PlayMethod playMethod = PlayMethod.Normal)
     {
-        if (editorSetting!.SyntaxCheckLevel == 2 && SyntaxChecker.ErrorList.Count != 0)
+        if (editorSetting!.SyntaxCheckLevel == 2 && SyntaxChecker.GetErrorCount() != 0)
         {
             ShowErrorWindow();
             return;

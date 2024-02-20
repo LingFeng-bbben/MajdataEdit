@@ -470,4 +470,7 @@
   <data name="InternalErr" xml:space="preserve">
     <value>内部错误</value>
   </data>
+  <data name="SyntaxWarning" xml:space="preserve">
+    <value>[警告] 谱面应当以"E"结尾："{0}"({1}L,{2}C)</value>
+  </data>
 </root>
