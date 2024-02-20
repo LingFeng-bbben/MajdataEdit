@@ -162,7 +162,7 @@
         <Label Grid.Row="9" Grid.Column="0"
             Content="{lex:Loc Key=SyntaxDisplay}" VerticalAlignment="Top" />
         <ComboBox x:Name="SyntaxCheckLevel"
-            Grid.Row="9" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="114,1,0,0" SelectedIndex="2">
+            Grid.Row="9" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="114,1,0,0" SelectedIndex="1">
             <ComboBoxItem Content="{lex:Loc Key=SyntaxCheckLevel1}" />
             <ComboBoxItem Content="{lex:Loc Key=SyntaxCheckLevel2}" />
             <ComboBoxItem Content="{lex:Loc Key=SyntaxCheckLevel3}" />
