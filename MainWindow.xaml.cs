@@ -490,7 +490,7 @@ public partial class MainWindow : Window
         SetSavedState(true);
         SimaiProcess.Serialize(GetRawFumenText());
         DrawWave();
-        //SyntaxCheck();
+        SyntaxCheck();
     }
 
     private void LevelTextBox_TextChanged(object sender, TextChangedEventArgs e)
