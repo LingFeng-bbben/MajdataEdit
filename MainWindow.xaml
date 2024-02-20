@@ -33,12 +33,21 @@
         <Label x:Name="ErrCount" Grid.Column="1" Content="0" 
             Foreground="White" 
             HorizontalAlignment="Left" HorizontalContentAlignment="Center"
-            Margin="6,236,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="86" PreviewMouseDoubleClick="SyntaxCheckButton_Click"/>
+            Margin="44,201,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="53" Height="25" PreviewMouseDoubleClick="SyntaxCheckButton_Click"/>
 
-        <Label x:Name="ErrCount_Label" Grid.Column="1" Content="Error(s)" 
+        <Label x:Name="ErrCount_Label" Content="Error" 
                Foreground="White" 
-               HorizontalAlignment="Left" HorizontalContentAlignment="Center"
-               Margin="6,211,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="86" PreviewMouseDoubleClick="SyntaxCheckButton_Click"/>
+               HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+               Margin="2,201,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="45" PreviewMouseDoubleClick="SyntaxCheckButton_Click" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0.647"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
 
         <Image x:Name="MusicWave" Height="74" VerticalAlignment="Bottom" MouseWheel="MusicWave_MouseWheel"
                PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove"
