@@ -11,8 +11,10 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using DiscordRPC;
 using MajdataEdit.AutoSaveModule;
@@ -848,8 +850,12 @@ public partial class MainWindow : Window
                             pen.Color = Color.LightPink;
 
                         var xRight = x + (float)(noteD.holdTime / step) * linewidth;
+
+                        //1h[0:1]
+                        if (!float.IsNormal(xRight)) xRight = ushort.MaxValue;
                         if (xRight - x < 1f) xRight = x + 5;
                         graphics.DrawLine(pen, x, y, xRight, y);
+
                     }
 
                     if (noteD.noteType == SimaiNoteType.TouchHold)
@@ -857,6 +863,7 @@ public partial class MainWindow : Window
                         pen.Width = 3;
                         var xDelta = (float)(noteD.holdTime / step) * linewidth / 4f;
                         //Console.WriteLine("HoldPixel"+ xDelta);
+                        if (!float.IsNormal(xDelta)) xDelta = ushort.MaxValue;
                         if (xDelta < 1f) xDelta = 1;
 
                         pen.Color = Color.FromArgb(200, 255, 75, 0);
@@ -894,6 +901,10 @@ public partial class MainWindow : Window
                         pen.DashStyle = DashStyle.Dot;
                         var xSlide = (float)(noteD.slideStartTime / step - startindex) * linewidth;
                         var xSlideRight = (float)(noteD.slideTime / step) * linewidth + xSlide;
+
+                        if (!float.IsNormal(xSlideRight)) xSlideRight = ushort.MaxValue;
+                        if (!float.IsNormal(xSlide)) xSlide = ushort.MaxValue;
+
                         graphics.DrawLine(pen, xSlide, y, xSlideRight, y);
                         pen.DashStyle = DashStyle.Solid;
                     }

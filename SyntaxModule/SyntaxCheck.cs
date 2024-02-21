@@ -1,4 +1,5 @@
 ﻿
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 
 namespace MajdataEdit.SyntaxModule
@@ -64,10 +65,13 @@ namespace MajdataEdit.SyntaxModule
                 int column = 1;                
                 var simaiChart = str.Split(",");
 
-                if (simaiChart.Last().Replace("\n","") == "E")//移除结尾E
-                    simaiChart = simaiChart.SkipLast(1).ToArray();
-                else
-                    addInfo("", -1, -1, "SyntaxWarning", InfomationLevel.Warning);
+                if(!string.IsNullOrEmpty(str))
+                {
+                    if (simaiChart.Last().Replace("\n", "") == "E")//移除结尾E
+                        simaiChart = simaiChart.SkipLast(1).ToArray();
+                    else
+                        addInfo("", -1, -1, "SyntaxWarning", InfomationLevel.Warning);
+                }
 
                 foreach (var s in simaiChart)
                 {
@@ -449,14 +453,14 @@ namespace MajdataEdit.SyntaxModule
             if (body.Contains("#"))
             {
                 if (body[0] == '#')
-                    return double.TryParse(body[1..], out double i);
+                    return double.TryParse(body[1..], out double i) && i >= 0;
                 else
                 {
                     var splitBody = body.Split("#");
                     if (splitBody.Length != 2)//正确格式: 150#4:1
                         return false;
                     else
-                        return RatioSyntaxCheck(splitBody[1]) && double.TryParse(splitBody[0], out double i);
+                        return RatioSyntaxCheck(splitBody[1]) && (double.TryParse(splitBody[0], out double i) && i > 0);
                 }
             }
             else
@@ -608,8 +612,8 @@ namespace MajdataEdit.SyntaxModule
                                 if (!RatioSyntaxCheck(body))
                                     return false;
                                 break;
-                            case 1:
-                            case 2:
+                            case 1://[150#8:1]
+                            case 2://[3##8:1] 或 [3##1]
                                 var param = body.Split("#");
                                 var bpmStr = param[0];
                                 var length = paramType == 2 ? param[2] : param[1];
@@ -618,8 +622,16 @@ namespace MajdataEdit.SyntaxModule
                                     return false;
                                 if (!IsNum(length) && !RatioSyntaxCheck(length))
                                     return false;
-                                break;
-                            case 3:
+                                if (!RatioSyntaxCheck(length) && int.Parse(length) < 0)
+                                    return false;
+
+                                return paramType switch
+                                {
+                                    1 => double.Parse(bpmStr) > 0,
+                                    2 => double.Parse(bpmStr) >= 0,
+                                    _ => false
+                                };
+                            case 3://[3##150#8:1]
                                 param = body.Split("#");
                                 var startLength = param[0];
                                 bpmStr = param[2];
@@ -631,6 +643,9 @@ namespace MajdataEdit.SyntaxModule
                                     return false;
                                 if (!RatioSyntaxCheck(length))
                                     return false;
+                                if (double.Parse(bpmStr) <= 0 || double.Parse(startLength) < 0)
+                                    return false;
+
                                 break;
                         }
                         return true;
@@ -783,7 +798,7 @@ namespace MajdataEdit.SyntaxModule
             if (s.Length != 2)
                 return false;
 
-            return int.TryParse(s[0], out int i) && int.TryParse(s[1], out i);
+            return (int.TryParse(s[0], out int i) && i > 0) && (int.TryParse(s[1], out i) && i >= 0);
         }
         /// <summary>
         /// 判断是否为Note
