@@ -264,13 +264,14 @@ public partial class MainWindow : Window
     private void MenuItem_InfomationEdit_Click(object? sender, RoutedEventArgs e)
     {
         var infoWindow = new Infomation();
+        SetSavedState(false);
         infoWindow.ShowDialog();
         TheWindow.Title = GetWindowsTitleString(SimaiProcess.title!);
     }
 
-    private void MenuItem_SimaiWiki_Click(object? sender, RoutedEventArgs e)
+    private void MenuItem_Majnet_Click(object? sender, RoutedEventArgs e)
     {
-        Process.Start(new ProcessStartInfo() { FileName = "https://w.atwiki.jp/simai/pages/25.html", UseShellExecute = true });
+        Process.Start(new ProcessStartInfo() { FileName = "https://majdata.net", UseShellExecute = true });
         //maidata.txtの譜面書式
     }
 
