@@ -210,9 +210,6 @@
   <data name="SetTitle" xml:space="preserve">
     <value>タイトルを設定</value>
   </data>
-  <data name="SimaiWiki" xml:space="preserve">
-    <value>SimaiWiki</value>
-  </data>
   <data name="SoftRender" xml:space="preserve">
     <value>ソフトウェア・レンダリング・モードで動作</value>
   </data>

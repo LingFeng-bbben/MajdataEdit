@@ -210,9 +210,6 @@
   <data name="SetTitle" xml:space="preserve">
     <value>SetTitle</value>
   </data>
-  <data name="SimaiWiki" xml:space="preserve">
-    <value>SimaiWiki</value>
-  </data>
   <data name="SoftRender" xml:space="preserve">
     <value>Launching with software rendering.</value>
   </data>

@@ -100,7 +100,7 @@
                 <MenuItem x:Name="SyntaxCheckButton" Header="{lex:Loc SyntaxDisplay}" Click="SyntaxCheckButton_Click"
                           IsEnabled="False" />
             </MenuItem>
-            <MenuItem Header="{lex:Loc SimaiWiki}" Click="MenuItem_SimaiWiki_Click"
+            <MenuItem Header="Majnet" Click="MenuItem_Majnet_Click"
                       Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
             <MenuItem Header="{lex:Loc Github}" Click="MenuItem_GitHub_Click"
                       Foreground="{DynamicResource ButtonForeground}" Template="{DynamicResource DarkMenuItem}" />
