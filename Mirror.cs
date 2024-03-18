@@ -260,6 +260,10 @@ internal static class Mirror
                 {
                     result.Append(specialMap[c]);
                 }
+                else if (int.TryParse(c.ToString(), out int i) && normalMap.ContainsKey(c))
+                {
+                    result.Append(normalMap[c]);
+                }
                 else
                 {
                     result.Append(c);
@@ -271,7 +275,7 @@ internal static class Mirror
                 if (normalMap.ContainsKey(c))
                 {
                     result.Append(normalMap[c]);
-                } 
+                }
                 else
                 {
                     result.Append(c);
@@ -289,6 +293,8 @@ internal static class Mirror
                 isInBracket = false;
             }
             // 记录是否是一个特殊前缀 若是 则下面的字符需要使用特别的映射
+            // 在左右或上下镜像中，用于D、E区Touch的特殊处理
+            // 在45旋转中，本意是对Simai的弱智">"，"<"进行特殊处理，但没有判断本Note是否为Tap
             if (specialPrefix.Contains(c))
             {
                 isSpecialPrefix = true;
