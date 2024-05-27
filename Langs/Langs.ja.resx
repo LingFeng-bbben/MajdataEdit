@@ -490,4 +490,7 @@ Open Browser to download latest update of Majdata?</value>
     <value>When enabled, the Slide Track will disappear with the star instead of one judgment area after another.</value>
     <comment>Translation required</comment>
   </data>
+  <data name="TextSpectrogram" xml:space="preserve">
+    <value>スペクトラム</value>
+  </data>
 </root>

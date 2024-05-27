@@ -29,6 +29,11 @@
                Grid.ColumnSpan="2" SizeChanged="MusicWave_SizeChanged" />
         <Line StrokeThickness="3" Y2="56" Height="74" VerticalAlignment="Bottom" Stroke="Red" Y1="15" Grid.Column="1"
               HorizontalAlignment="Left" Width="45" />
+        <CheckBox x:Name="SpectrogramCheck" Content="{lex:Loc TextSpectrogram}" HorizontalAlignment="Left" Height="21"
+                  Margin="9,0,0,65" VerticalAlignment="Bottom" Width="87"
+                  Foreground="{DynamicResource ButtonForeground}" HorizontalContentAlignment="Right"
+                  Click="SpectrogramCheck_Click" Background="{DynamicResource ButtonsBackground}"
+                  Template="{DynamicResource DarkCheck}" />
 
         <Menu Height="19" VerticalAlignment="Top" Background="{DynamicResource ButtonsBackground}"
               Foreground="{DynamicResource ButtonForeground}" Grid.ColumnSpan="2">
