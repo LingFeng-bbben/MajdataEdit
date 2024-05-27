@@ -676,8 +676,8 @@ public partial class MainWindow : Window
                 float sampleRate = 0f;
                 Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_FREQ, ref sampleRate);
                 var spectrogram = new SpectrogramGenerator((int)sampleRate, fftSize: 1024, stepSize: 500, maxFreq: 3000);
-                var _startindex = (int)((currentTime - deltatime) / (songLength / bgmRAW.Length));
-                var _stopindex = (int)((currentTime + deltatime) / (songLength / bgmRAW.Length));
+                var _startindex = (int)((currentTime - deltatime) / (songLength / bgmRAW.Length)) - 500; //Bias a stepSize
+                var _stopindex = (int)((currentTime + deltatime) / (songLength / bgmRAW.Length)) + 500; //Bias a stepSize
                 double[] subWaveLevels = new double[_stopindex - _startindex];
                 for (int i = _startindex; i < _stopindex; i++)
                 {
