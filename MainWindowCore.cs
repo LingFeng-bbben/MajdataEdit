@@ -19,6 +19,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Semver;
+using Spectrogram;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Fx;
 using WPFLocalizeExtension.Engine;
@@ -44,6 +45,8 @@ public partial class MainWindow : Window
 
     //float[] wavedBs;
     private readonly short[][] waveRaws = new short[3][];
+    private short[] bgmRAW;
+    public bool enableSpec = false;
     public Timer chartChangeTimer = new(1000); // 谱面变更延迟解析]\
     private readonly Timer currentTimeRefreshTimer = new(100);
 
@@ -343,7 +346,7 @@ public partial class MainWindow : Window
             var bgmInfo = Bass.BASS_SampleGetInfo(bgmSample);
             var freq = bgmInfo.freq;
             var sampleCount = (long)(songLength * freq * 2);
-            var bgmRAW = new short[sampleCount];
+            bgmRAW = new short[sampleCount];
             Bass.BASS_SampleGetData(bgmSample, bgmRAW);
 
             waveRaws[0] = new short[sampleCount / 20 + 1];
@@ -654,7 +657,8 @@ public partial class MainWindow : Window
             var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
 
             graphics.Clear(Color.FromArgb(100, 0, 0, 0));
-
+            
+            
             var resample = (int)deltatime - 1;
             if (resample > 1 && resample <= 3) resample = 1;
             if (resample > 3) resample = 2;
@@ -666,19 +670,44 @@ public partial class MainWindow : Window
             var linewidth = backBitmap.Width / (float)(stopindex - startindex);
             var pen = new Pen(Color.Green, linewidth);
             var points = new List<PointF>();
-            for (var i = startindex; i < stopindex; i = i + 1)
+            if (enableSpec)
             {
-                if (i < 0) i = 0;
-                if (i >= waveLevels.Length - 1) break;
-
-                var x = (i - startindex) * linewidth;
-                var y = waveLevels[i] / 65535f * height + height / 2;
-
-                points.Add(new PointF(x, y));
+                //Draw Spectrogram TODO: Performance needs to be optimized
+                float sampleRate = 0f;
+                Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_FREQ, ref sampleRate);
+                var spectrogram = new SpectrogramGenerator((int)sampleRate, fftSize: 1024, stepSize: 500, maxFreq: 3000);
+                var _startindex = (int)((currentTime - deltatime) / (songLength / bgmRAW.Length)) - 500; //Bias a stepSize
+                var _stopindex = (int)((currentTime + deltatime) / (songLength / bgmRAW.Length)) + 500; //Bias a stepSize
+                double[] subWaveLevels = new double[_stopindex - _startindex];
+                for (int i = _startindex; i < _stopindex; i++)
+                {
+                    var index = i - _startindex;
+                    if (i < 0) i = 0;
+                    if (i >= bgmRAW.Length - 1) break;
+                    subWaveLevels[index] = (float)bgmRAW[i] / 2f;
+                }
+                spectrogram.Add(subWaveLevels);
+                
+                graphics.CompositingMode = CompositingMode.SourceOver;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.DrawImage(spectrogram.GetBitmap(), 0, 0, backBitmap.Width, backBitmap.Height);
             }
+            else
+            {
+                for (var i = startindex; i < stopindex; i = i + 1)
+                {
+                    if (i < 0) i = 0;
+                    if (i >= waveLevels.Length - 1) break;
 
-            graphics.DrawLines(pen, points.ToArray());
+                    var x = (i - startindex) * linewidth;
+                    var y = waveLevels[i] / 65535f * height + height / 2;
 
+                    points.Add(new PointF(x, y));
+                }
+
+                graphics.DrawLines(pen, points.ToArray());
+            }
+            
             //Draw Bpm lines
             var lastbpm = -1f;
             var bpmChangeTimes = new List<double>(); //在什么时间变成什么值

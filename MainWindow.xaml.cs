@@ -496,6 +496,12 @@ public partial class MainWindow : Window
     {
         FumenContent.Focus();
     }
+    
+    private void SpectrogramCheck_Click(object sender, RoutedEventArgs e)
+    {
+        enableSpec = !enableSpec;
+        DrawWave();
+    }
 
     private void Op_Button_Click(object sender, RoutedEventArgs e)
     {

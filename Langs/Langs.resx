@@ -126,4 +126,10 @@
     <data name="FIles" xml:space="preserve">
     <value>sdadad</value>
   </data>
+    <data name="TextFollow" xml:space="preserve">
+        <value />
+    </data>
+    <data name="TextSpectrogram" xml:space="preserve">
+        <value />
+    </data>
 </root>

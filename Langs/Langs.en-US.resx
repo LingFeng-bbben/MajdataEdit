@@ -460,4 +460,7 @@ Click OK to start render.</value>
   <data name="SmoothSlideAnimeTooltip" xml:space="preserve">
     <value>When enabled, the Slide Track will disappear with the star instead of one judgment area after another.</value>
   </data>
+  <data name="TextSpectrogram" xml:space="preserve">
+    <value>TextSpectrogram</value>
+  </data>
 </root>
