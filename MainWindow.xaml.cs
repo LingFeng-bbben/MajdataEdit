@@ -500,6 +500,7 @@ public partial class MainWindow : Window
     private void SpectrogramCheck_Click(object sender, RoutedEventArgs e)
     {
         enableSpec = !enableSpec;
+        InitWave();
         DrawWave();
     }
 

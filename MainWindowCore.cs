@@ -78,6 +78,7 @@ public partial class MainWindow : Window
     private readonly Timer visualEffectRefreshTimer = new(1);
 
     private WriteableBitmap? WaveBitmap;
+    private WriteableBitmap? SpectrogramBitmap;
 
     //*TEXTBOX CONTROL
     private string GetRawFumenText()
@@ -625,16 +626,35 @@ public partial class MainWindow : Window
 
     private void InitWave()
     {
+        if (enableSpec)
+        {
+            // 绘制频率频谱图
+            MusicSpectrogram.Visibility = Visibility.Visible;
+            TheWindow.Height += 74;
+            TheWindow.MinHeight = 520 + 74;
+        }
+        else
+        {
+            MusicSpectrogram.Visibility = Visibility.Collapsed;
+            TheWindow.MinHeight = 520;
+            TheWindow.Height -= 74;
+        }
+        
         var width = (int)Width - 2;
         var height = (int)MusicWave.Height;
+        
         WaveBitmap = new WriteableBitmap(width, height, 72, 72, PixelFormats.Pbgra32, null);
         MusicWave.Source = WaveBitmap;
+
+        SpectrogramBitmap = new WriteableBitmap(width, height, 72, 72, PixelFormats.Pbgra32, null);
+        MusicSpectrogram.Source = SpectrogramBitmap;
     }
 
     private void DrawWave()
     {
         if (isDrawing) return;
         if (WaveBitmap == null) return;
+        if (enableSpec && SpectrogramBitmap == null) return;
 
         Dispatcher.Invoke(() =>
         {
@@ -647,31 +667,17 @@ public partial class MainWindow : Window
                 isDrawing = false;
                 return;
             }
-
-            WaveBitmap.Lock();
-
-            //the process starts
-            var backBitmap = new Bitmap(width, height, WaveBitmap.BackBufferStride,
-                PixelFormat.Format32bppArgb, WaveBitmap.BackBuffer);
-            var graphics = Graphics.FromImage(backBitmap);
+            
             var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
-
-            graphics.Clear(Color.FromArgb(100, 0, 0, 0));
             
-            
-            var resample = (int)deltatime - 1;
-            if (resample > 1 && resample <= 3) resample = 1;
-            if (resample > 3) resample = 2;
-            var waveLevels = waveRaws[resample];
-
-            var step = songLength / waveLevels.Length;
-            var startindex = (int)((currentTime - deltatime) / step);
-            var stopindex = (int)((currentTime + deltatime) / step);
-            var linewidth = backBitmap.Width / (float)(stopindex - startindex);
-            var pen = new Pen(Color.Green, linewidth);
-            var points = new List<PointF>();
             if (enableSpec)
             {
+                SpectrogramBitmap.Lock();
+                
+                var spectrogramBackBitmap = new Bitmap(width, height, SpectrogramBitmap.BackBufferStride,
+                    PixelFormat.Format32bppArgb, SpectrogramBitmap.BackBuffer);
+                var spectrogramGraphics = Graphics.FromImage(spectrogramBackBitmap);
+                
                 //Draw Spectrogram TODO: Performance needs to be optimized
                 float sampleRate = 0f;
                 Bass.BASS_ChannelGetAttribute(bgmStream, BASSAttribute.BASS_ATTRIB_FREQ, ref sampleRate);
@@ -688,25 +694,47 @@ public partial class MainWindow : Window
                 }
                 spectrogram.Add(subWaveLevels);
                 
-                graphics.CompositingMode = CompositingMode.SourceOver;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.DrawImage(spectrogram.GetBitmap(), 0, 0, backBitmap.Width, backBitmap.Height);
+                spectrogramGraphics.CompositingMode = CompositingMode.SourceOver;
+                spectrogramGraphics.CompositingQuality = CompositingQuality.HighQuality;
+                spectrogramGraphics.DrawImage(spectrogram.GetBitmap(), 0, 0, spectrogramBackBitmap.Width, spectrogramBackBitmap.Height);
+                
+                SpectrogramBitmap.AddDirtyRect(new Int32Rect(0, 0, SpectrogramBitmap.PixelWidth, SpectrogramBitmap.PixelHeight));
+                SpectrogramBitmap.Unlock();
             }
-            else
+
+            WaveBitmap.Lock();
+
+            //the process starts
+            var backBitmap = new Bitmap(width, height, WaveBitmap.BackBufferStride,
+                PixelFormat.Format32bppArgb, WaveBitmap.BackBuffer);
+            var graphics = Graphics.FromImage(backBitmap);
+
+            graphics.Clear(Color.FromArgb(100, 0, 0, 0));
+            
+            
+            var resample = (int)deltatime - 1;
+            if (resample > 1 && resample <= 3) resample = 1;
+            if (resample > 3) resample = 2;
+            var waveLevels = waveRaws[resample];
+
+            var step = songLength / waveLevels.Length;
+            var startindex = (int)((currentTime - deltatime) / step);
+            var stopindex = (int)((currentTime + deltatime) / step);
+            var linewidth = backBitmap.Width / (float)(stopindex - startindex);
+            var pen = new Pen(Color.Green, linewidth);
+            var points = new List<PointF>();
+            for (var i = startindex; i < stopindex; i = i + 1)
             {
-                for (var i = startindex; i < stopindex; i = i + 1)
-                {
-                    if (i < 0) i = 0;
-                    if (i >= waveLevels.Length - 1) break;
+                if (i < 0) i = 0;
+                if (i >= waveLevels.Length - 1) break;
 
-                    var x = (i - startindex) * linewidth;
-                    var y = waveLevels[i] / 65535f * height + height / 2;
+                var x = (i - startindex) * linewidth;
+                var y = waveLevels[i] / 65535f * height + height / 2;
 
-                    points.Add(new PointF(x, y));
-                }
-
-                graphics.DrawLines(pen, points.ToArray());
+                points.Add(new PointF(x, y));
             }
+
+            graphics.DrawLines(pen, points.ToArray());
             
             //Draw Bpm lines
             var lastbpm = -1f;

@@ -328,14 +328,17 @@
         </Grid>
 
         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0, 15, 0, 0">
-            <Image x:Name="MusicWave" Height="74" VerticalAlignment="Bottom" MouseWheel="MusicWave_MouseWheel"
+            <Image x:Name="MusicWave" Height="74" VerticalAlignment="Top" MouseWheel="MusicWave_MouseWheel"
                    PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove"
-                   Grid.ColumnSpan="2" SizeChanged="MusicWave_SizeChanged" />
+                   SizeChanged="MusicWave_SizeChanged" />
+            <Image x:Name="MusicSpectrogram" Height="74" Margin="0, 74, 0, 0" VerticalAlignment="Top" MouseWheel="MusicWave_MouseWheel"
+                   PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove"
+                   SizeChanged="MusicWave_SizeChanged" Visibility="Collapsed" />
             <Line StrokeThickness="3" Y2="56" Height="74" VerticalAlignment="Center" Stroke="Red" Y1="15"
                   HorizontalAlignment="Center" Width="45" />
 
-            <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="10,0,0,41"
-                    VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomIn_Click"
+            <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0"
+                    VerticalAlignment="Top" Width="24" Click="WaveViewZoomIn_Click"
                     Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
                     Template="{DynamicResource DarkButton}" />
             <Button x:Name="WaveViewZoomOut" Content="-" HorizontalAlignment="Left" Height="24" Margin="10,0,0,10"
