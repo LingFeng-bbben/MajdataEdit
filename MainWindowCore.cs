@@ -630,14 +630,16 @@ public partial class MainWindow : Window
         {
             // 绘制频率频谱图
             MusicSpectrogram.Visibility = Visibility.Visible;
-            TheWindow.Height += 74;
+            var winHeight = TheWindow.Height;
             TheWindow.MinHeight = 520 + 74;
+            TheWindow.Height = winHeight + 74;
         }
         else
         {
             MusicSpectrogram.Visibility = Visibility.Collapsed;
+            var winHeight = TheWindow.Height;
             TheWindow.MinHeight = 520;
-            TheWindow.Height -= 74;
+            TheWindow.Height = winHeight - 74;
         }
         
         var width = (int)Width - 2;
@@ -654,7 +656,6 @@ public partial class MainWindow : Window
     {
         if (isDrawing) return;
         if (WaveBitmap == null) return;
-        if (enableSpec && SpectrogramBitmap == null) return;
 
         Dispatcher.Invoke(() =>
         {
@@ -670,7 +671,7 @@ public partial class MainWindow : Window
             
             var currentTime = Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream));
             
-            if (enableSpec)
+            if (enableSpec && SpectrogramBitmap != null)
             {
                 SpectrogramBitmap.Lock();
                 

@@ -211,14 +211,13 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Left"
-                            Width="38"
-                            Click="PlayAndPauseButton_Click" Height="38"
+                    <Button Grid.Column="0" x:Name="StopButton" Content="◼" HorizontalAlignment="Left" Height="38"
+                            VerticalAlignment="Bottom" Width="38" Click="StopButton_Click"
                             Background="{DynamicResource ButtonsBackground}"
                             Foreground="{DynamicResource ButtonForeground}"
                             Template="{DynamicResource DarkButton}" />
-                    <Button Grid.Column="1" x:Name="StopButton" Content="◼" HorizontalAlignment="Right" Height="38"
-                            VerticalAlignment="Bottom" Width="38" Click="StopButton_Click"
+                    <Button Grid.Column="1" x:Name="PlayAndPauseButton" Content="▶" HorizontalAlignment="Right"
+                            Width="38" Click="PlayAndPauseButton_Click" Height="38"
                             Background="{DynamicResource ButtonsBackground}"
                             Foreground="{DynamicResource ButtonForeground}"
                             Template="{DynamicResource DarkButton}" />
@@ -331,18 +330,19 @@
             <Image x:Name="MusicWave" Height="74" VerticalAlignment="Top" MouseWheel="MusicWave_MouseWheel"
                    PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove"
                    SizeChanged="MusicWave_SizeChanged" />
-            <Image x:Name="MusicSpectrogram" Height="74" Margin="0, 74, 0, 0" VerticalAlignment="Top" MouseWheel="MusicWave_MouseWheel"
+            <Image x:Name="MusicSpectrogram" Height="74" Margin="0, 74, 0, 0" VerticalAlignment="Top"
+                   MouseWheel="MusicWave_MouseWheel"
                    PreviewMouseLeftButtonDown="MusicWave_PreviewMouseLeftButtonDown" MouseMove="MusicWave_MouseMove"
-                   SizeChanged="MusicWave_SizeChanged" Visibility="Collapsed" />
+                   Visibility="Collapsed" />
             <Line StrokeThickness="3" Y2="56" Height="74" VerticalAlignment="Center" Stroke="Red" Y1="15"
-                  HorizontalAlignment="Center" Width="45" />
+                  HorizontalAlignment="Center" />
 
             <Button x:Name="WaveViewZoomIn" Content="+" HorizontalAlignment="Left" Height="24" Margin="10,10,0,0"
                     VerticalAlignment="Top" Width="24" Click="WaveViewZoomIn_Click"
                     Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
                     Template="{DynamicResource DarkButton}" />
-            <Button x:Name="WaveViewZoomOut" Content="-" HorizontalAlignment="Left" Height="24" Margin="10,0,0,10"
-                    VerticalAlignment="Bottom" Width="24" Click="WaveViewZoomOut_Click"
+            <Button x:Name="WaveViewZoomOut" Content="-" HorizontalAlignment="Left" Height="24" Margin="10,44,0,0"
+                    VerticalAlignment="Top" Width="24" Click="WaveViewZoomOut_Click"
                     Background="{DynamicResource ButtonsBackground}" Foreground="{DynamicResource ButtonForeground}"
                     Template="{DynamicResource DarkButton}" />
         </Grid>
