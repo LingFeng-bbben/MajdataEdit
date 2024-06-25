@@ -120,7 +120,7 @@ internal static class SimaiProcess
 
     private static string GetValue(string varline)
     {
-        return varline.Split('=')[1];
+        return varline.Substring(varline.IndexOf("=") + 1);
     }
 
     /// <summary>
