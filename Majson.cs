@@ -102,6 +102,7 @@ public class EditorSetting
     public float playSpeed = 7.5f;
     public string PlayStopKey = "Ctrl+Shift+x";
     public int RenderMode = 0; //0=硬件渲染(默认)，1=软件渲染
+    public int SyntaxCheckLevel = 1; //0=禁用，1=警告(默认)，2=启用
     public string SaveKey = "Ctrl+s";
     public string SendViewerKey = "Ctrl+Shift+z";
     public float touchSpeed = 7.5f;

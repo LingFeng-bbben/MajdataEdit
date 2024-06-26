@@ -11,10 +11,14 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
+using System.Windows.Threading;
 using DiscordRPC;
 using MajdataEdit.AutoSaveModule;
+using MajdataEdit.SyntaxModule;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -320,10 +324,36 @@ public partial class MainWindow : Window
         VolumnSetting.IsEnabled = true;
         MenuMuriCheck.IsEnabled = true;
         Menu_ExportRender.IsEnabled = true;
+        SyntaxCheckButton.IsEnabled = true;
         AutoSaveManager.Of().SetAutoSaveEnable(true);
         SetSavedState(true);
+        SyntaxCheck();
     }
 
+    internal async void SyntaxCheck()
+    {
+        if (editorSetting!.SyntaxCheckLevel == 0)
+        {
+            SetErrCount(GetLocalizedString("SyntaxCheckLevel1"));
+            return;
+        }
+#if DEBUG
+        await SyntaxChecker.ScanAsync(GetRawFumenText());
+        SetErrCount(SyntaxChecker.GetErrorCount());
+#else
+        try
+        {
+            await SyntaxChecker.ScanAsync(GetRawFumenText());
+            SetErrCount(SyntaxChecker.ErrorList.Count);
+        }
+        catch
+        {
+            SetErrCount(GetLocalizedString("InternalErr"));
+        }
+#endif
+
+    }
+    void SetErrCount<T>(T eCount) => Dispatcher.Invoke(() => ErrCount.Content = $"{eCount}");
     private void ReadWaveFromFile()
     {
         var useOgg = File.Exists(maidataDir + "/track.ogg");
@@ -567,6 +597,7 @@ public partial class MainWindow : Window
     private void ChartChangeTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         Console.WriteLine("TextChanged");
+        SyntaxCheck();
         Dispatcher.Invoke(
             delegate
             {
@@ -819,8 +850,12 @@ public partial class MainWindow : Window
                             pen.Color = Color.LightPink;
 
                         var xRight = x + (float)(noteD.holdTime / step) * linewidth;
+
+                        //1h[0:1]
+                        if (!float.IsNormal(xRight)) xRight = ushort.MaxValue;
                         if (xRight - x < 1f) xRight = x + 5;
                         graphics.DrawLine(pen, x, y, xRight, y);
+
                     }
 
                     if (noteD.noteType == SimaiNoteType.TouchHold)
@@ -828,6 +863,7 @@ public partial class MainWindow : Window
                         pen.Width = 3;
                         var xDelta = (float)(noteD.holdTime / step) * linewidth / 4f;
                         //Console.WriteLine("HoldPixel"+ xDelta);
+                        if (!float.IsNormal(xDelta)) xDelta = ushort.MaxValue;
                         if (xDelta < 1f) xDelta = 1;
 
                         pen.Color = Color.FromArgb(200, 255, 75, 0);
@@ -865,6 +901,10 @@ public partial class MainWindow : Window
                         pen.DashStyle = DashStyle.Dot;
                         var xSlide = (float)(noteD.slideStartTime / step - startindex) * linewidth;
                         var xSlideRight = (float)(noteD.slideTime / step) * linewidth + xSlide;
+
+                        if (!float.IsNormal(xSlideRight)) xSlideRight = ushort.MaxValue;
+                        if (!float.IsNormal(xSlide)) xSlide = ushort.MaxValue;
+
                         graphics.DrawLine(pen, xSlide, y, xSlideRight, y);
                         pen.DashStyle = DashStyle.Solid;
                     }
@@ -956,7 +996,6 @@ public partial class MainWindow : Window
         Op_Button.IsEnabled = false;
         isPlaying = true;
         isPlan2Stop = false;
-
         PlayAndPauseButton.Content = "  ▌▌ ";
         var CusorTime = SimaiProcess.Serialize(GetRawFumenText(), GetRawFumenPosition()); //scan first
 
@@ -1081,11 +1120,26 @@ public partial class MainWindow : Window
         if (isPlaying)
             TogglePause();
         else
+        {
+            if (lastEditorState != EditorControlMethod.Pause && 
+                editorSetting!.SyntaxCheckLevel == 2 && 
+                SyntaxChecker.GetErrorCount() != 0)
+            {
+                ShowErrorWindow();
+                return;
+            }
             TogglePlay(playMethod);
+        }
+            
     }
 
     private void TogglePlayAndStop(PlayMethod playMethod = PlayMethod.Normal)
     {
+        if (editorSetting!.SyntaxCheckLevel == 2 && SyntaxChecker.GetErrorCount() != 0)
+        {
+            ShowErrorWindow();
+            return;
+        }
         if (isPlaying)
             ToggleStop();
         else
