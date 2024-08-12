@@ -1210,7 +1210,8 @@ public partial class MainWindow : Window
             control = EditorControlMethod.Continue,
             startAt = StartAt.Ticks,
             startTime = (float)Bass.BASS_ChannelBytes2Seconds(bgmStream, Bass.BASS_ChannelGetPosition(bgmStream)),
-            audioSpeed = GetPlaybackSpeed()
+            audioSpeed = GetPlaybackSpeed(),
+            editorPlayMethod = editorSetting.editorPlayMethod
         };
         var json = JsonConvert.SerializeObject(request);
         var response = WebControl.RequestPOST("http://localhost:8013/", json);
@@ -1266,6 +1267,7 @@ public partial class MainWindow : Window
             request.comboStatusType = editorSetting!.comboStatusType;
             request.audioSpeed = GetPlaybackSpeed();
             request.smoothSlideAnime = editorSetting!.SmoothSlideAnime;
+            request.editorPlayMethod = editorSetting.editorPlayMethod;
         });
 
         json = JsonConvert.SerializeObject(request);
