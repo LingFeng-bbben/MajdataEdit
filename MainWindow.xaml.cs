@@ -13,6 +13,7 @@ using DiscordRPC.Logging;
 using MajdataEdit.AutoSaveModule;
 using Microsoft.Win32;
 using Un4seen.Bass;
+using MajdataEdit.SyntaxModule;
 using Timer = System.Timers.Timer;
 
 namespace MajdataEdit;
@@ -297,7 +298,36 @@ public partial class MainWindow : Window
         };
         muriCheck.Show();
     }
-
+    private void SyntaxCheckButton_Click(object sender, RoutedEventArgs e)
+    {
+        ShowErrorWindow();
+    }
+    void ShowErrorWindow()
+    {
+        var mcrWindow = new MuriCheckResult
+        {
+            Owner = this
+        };
+        var errList = SyntaxChecker.ErrorList;
+        errList.ForEach(e =>
+        {
+            e.positionY--;
+            mcrWindow.errorPosition.Add(e);
+            var eRow = new ListBoxItem
+            {
+                Content = e.eMessage,
+                Name = "rr" + mcrWindow.CheckResult_Listbox.Items.Count
+            };
+            eRow.AddHandler(PreviewMouseDoubleClickEvent,
+                new MouseButtonEventHandler(mcrWindow.ListBoxItem_PreviewMouseDoubleClick));
+            mcrWindow.CheckResult_Listbox.Items.Add(eRow);
+        });
+        mcrWindow.Show();
+    }
+    private void SyntaxCheckButton_Click(object sender, MouseButtonEventArgs e)
+    {
+        ShowErrorWindow();
+    }
     private void MenuItem_EditorSetting_Click(object? sender, RoutedEventArgs e)
     {
         var esp = new EditorSettingPanel
@@ -461,6 +491,7 @@ public partial class MainWindow : Window
         SetSavedState(true);
         SimaiProcess.Serialize(GetRawFumenText());
         DrawWave();
+        SyntaxCheck();
     }
 
     private void LevelTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -509,7 +540,6 @@ public partial class MainWindow : Window
         esp.Owner = this;
         esp.ShowDialog();
     }
-
     #endregion
 
     #region RichTextbox events
@@ -618,5 +648,8 @@ public partial class MainWindow : Window
         DrawWave();
     }
 
+
     #endregion
+
+    
 }

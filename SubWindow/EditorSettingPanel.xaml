@@ -11,13 +11,13 @@
         Background="{DynamicResource WindowBackground}"
         Title="Editor Setting" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
         Topmost="True"
-        Loaded="Window_Loaded" Closing="Window_Closing" Height="323.667">
+        Loaded="Window_Loaded" Closing="Window_Closing" Height="361">
     <Window.Resources>
 
     </Window.Resources>
 
 
-    <Grid Margin="8,5">
+    <Grid Margin="0,5,0,57">
         <Grid.Resources>
             <Style TargetType="{x:Type Label}">
                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -123,13 +123,13 @@
             <ComboBoxItem Content="{lex:Loc Key=ComboDisplayCScoreDownDedeluxe}" />
         </ComboBox>
 
-        <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+        <StackPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="5,25,-5,8">
             <CheckBox x:Name="AutoUpdate" VerticalAlignment="Center" />
             <Label
         Content="{lex:Loc Key=AutoCheckUpdate}" />
         </StackPanel>
 
-        <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+        <StackPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="5,39,-5,-17">
             <CheckBox x:Name="SmoothSlideAnime" VerticalAlignment="Center" />
             <Label
         Content="{lex:Loc Key=EnableSmoothSlideAnime}" />
@@ -147,7 +147,7 @@
 
 
         <StackPanel Orientation="Horizontal"
-                    Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                    Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="6,55,0,-55">
             <Button x:Name="Save_Button" Content="{lex:Loc Key=Save}"
                     Width="70" Height="28" Margin="0,5,10,5"
                     Foreground="{DynamicResource ButtonForeground}"
@@ -159,6 +159,14 @@
                     Background="{DynamicResource ButtonsBackground}"
                     Click="Cancel_Button_Click" />
         </StackPanel>
+        <Label Grid.Row="9" Grid.Column="0"
+            Content="{lex:Loc Key=SyntaxDisplay}" VerticalAlignment="Top" />
+        <ComboBox x:Name="SyntaxCheckLevel"
+            Grid.Row="9" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="114,1,0,0" SelectedIndex="1">
+            <ComboBoxItem Content="{lex:Loc Key=SyntaxCheckLevel1}" />
+            <ComboBoxItem Content="{lex:Loc Key=SyntaxCheckLevel2}" />
+            <ComboBoxItem Content="{lex:Loc Key=SyntaxCheckLevel3}" />
+        </ComboBox>
     </Grid>
 
 </Window>
