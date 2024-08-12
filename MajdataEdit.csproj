@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
 
-        <Version>4.3.1</Version>
+        <Version>4.4.0</Version>
         <Company></Company>
         <Authors>bbben</Authors>
         <PackageProjectUrl>https://github.com/LingFeng-bbben/MajdataEdit</PackageProjectUrl>
