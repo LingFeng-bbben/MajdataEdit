@@ -490,4 +490,37 @@ Open Browser to download latest update of Majdata?</value>
     <value>When enabled, the Slide Track will disappear with the star instead of one judgment area after another.</value>
     <comment>Translation required</comment>
   </data>
+  <data name="SyntaxCheckLevel1" xml:space="preserve">
+    <value>無効にする</value>
+  </data>
+  <data name="SyntaxCheckLevel2" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="SyntaxCheckLevel3" xml:space="preserve">
+    <value>有効にする</value>
+  </data>
+  <data name="SyntaxDisplay" xml:space="preserve">
+    <value>構文チェック</value>
+  </data>
+  <data name="InternalErr" xml:space="preserve">
+    <value>内部エラー</value>
+  </data>
+  <data name="SyntaxWarning" xml:space="preserve">
+    <value>[警告] チャートは「E」で終わる必要があります : "{0}"({1}L,{2}C)</value>
+  </data>
+  <data name="PlayMethod" xml:space="preserve">
+    <value>自動遊び</value>
+  </data>
+  <data name="PlayMethodClassic" xml:space="preserve">
+    <value>初期設定</value>
+  </data>
+  <data name="PlayMethodDisabled" xml:space="preserve">
+    <value>しない</value>
+  </data>
+  <data name="PlayMethodDJAuto" xml:space="preserve">
+    <value>シミュレーション (DJAuto)</value>
+  </data>
+  <data name="PlayMethodRandom" xml:space="preserve">
+    <value>シミュレーション (ランダム)</value>
+  </data>
 </root>

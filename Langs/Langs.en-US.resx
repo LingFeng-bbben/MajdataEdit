@@ -460,4 +460,19 @@ Click OK to start render.</value>
   <data name="SmoothSlideAnimeTooltip" xml:space="preserve">
     <value>When enabled, the Slide Track will disappear with the star instead of one judgment area after another.</value>
   </data>
+  <data name="PlayMethod" xml:space="preserve">
+    <value>Auto Play Method</value>
+  </data>
+  <data name="PlayMethodClassic" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="PlayMethodDisabled" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="PlayMethodDJAuto" xml:space="preserve">
+    <value>Simulated (DJAuto)</value>
+  </data>
+  <data name="PlayMethodRandom" xml:space="preserve">
+    <value>Simulated (Random)</value>
+  </data>
 </root>

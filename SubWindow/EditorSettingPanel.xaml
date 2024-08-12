@@ -11,7 +11,7 @@
         Background="{DynamicResource WindowBackground}"
         Title="Editor Setting" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
         Topmost="True"
-        Loaded="Window_Loaded" Closing="Window_Closing" Height="323.667">
+        Loaded="Window_Loaded" Closing="Window_Closing" Height="Auto">
     <Window.Resources>
 
     </Window.Resources>
@@ -43,6 +43,7 @@
         </Grid.Resources>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -90,7 +91,7 @@
         <TextBox x:Name="ViewerCover"
                  Grid.Row="3" Grid.Column="1"
                  Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
-                 Text="0.6"
+                 Text="0.6"    
                  MouseWheel="ViewerCover_MouseWheel" />
 
         <Label Grid.Row="4" Grid.Column="0"
@@ -123,11 +124,17 @@
             <ComboBoxItem Content="{lex:Loc Key=ComboDisplayCScoreDownDedeluxe}" />
         </ComboBox>
 
-        <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <CheckBox x:Name="AutoUpdate" VerticalAlignment="Center" />
-            <Label
-        Content="{lex:Loc Key=AutoCheckUpdate}" />
-        </StackPanel>
+        <Label Grid.Row="7" Grid.Column="0"
+       Content="{lex:Loc Key=PlayMethod}" />
+        <ComboBox x:Name="PlayMethod"
+          Grid.Row="7" Grid.Column="1">
+            <ComboBoxItem Content="{lex:Loc Key=PlayMethodClassic}" />
+            <ComboBoxItem Content="{lex:Loc Key=PlayMethodDJAuto}" />
+            <ComboBoxItem Content="{lex:Loc Key=PlayMethodRandom}" />
+            <ComboBoxItem Content="{lex:Loc Key=PlayMethodDisabled}" />
+        </ComboBox>
+
+        
 
         <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
             <CheckBox x:Name="SmoothSlideAnime" VerticalAlignment="Center" />
@@ -144,10 +151,15 @@
                 <TextBlock TextDecorations="Underline" FontSize="12" Text="{lex:Loc Key=WhatsThis}" />
             </Label>
         </StackPanel>
-
+        
+        <StackPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <CheckBox x:Name="AutoUpdate" VerticalAlignment="Center" />
+            <Label
+            Content="{lex:Loc Key=AutoCheckUpdate}" />
+        </StackPanel>
 
         <StackPanel Orientation="Horizontal"
-                    Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                    Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
             <Button x:Name="Save_Button" Content="{lex:Loc Key=Save}"
                     Width="70" Height="28" Margin="0,5,10,5"
                     Foreground="{DynamicResource ButtonForeground}"
