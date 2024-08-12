@@ -475,4 +475,22 @@ Click OK to start render.</value>
   <data name="PlayMethodRandom" xml:space="preserve">
     <value>Simulated (Random)</value>
   </data>
+  <data name="SyntaxCheckLevel1" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="SyntaxCheckLevel2" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="SyntaxCheckLevel3" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="SyntaxDisplay" xml:space="preserve">
+    <value>Syntax Check</value>
+  </data>
+  <data name="InternalErr" xml:space="preserve">
+    <value>Internal Error</value>
+  </data>
+  <data name="SyntaxWarning" xml:space="preserve">
+    <value>[Warning] The chart should end with "E" : "{0}"({1}L,{2}C)</value>
+  </data>
 </root>

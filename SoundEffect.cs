@@ -735,7 +735,7 @@ public partial class MainWindow
             else
             {
                 // 不够播完 等待后停止
-                var stopPlayingTimer = new Timer((int)(extraTime4AllPerfect * 1000))
+                var stopPlayingTimer = new Timer(double.IsNormal(extraTime4AllPerfect)? (int)(extraTime4AllPerfect * 1000) : int.MaxValue)
                 {
                     AutoReset = false
                 };

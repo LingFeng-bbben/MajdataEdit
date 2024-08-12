@@ -17,7 +17,7 @@
     </Window.Resources>
 
 
-    <Grid Margin="8,5">
+    <Grid Margin="0,5,0,57">
         <Grid.Resources>
             <Style TargetType="{x:Type Label}">
                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -136,7 +136,7 @@
 
         
 
-        <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+        <StackPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="5,39,-5,-17">
             <CheckBox x:Name="SmoothSlideAnime" VerticalAlignment="Center" />
             <Label
         Content="{lex:Loc Key=EnableSmoothSlideAnime}" />
@@ -171,6 +171,14 @@
                     Background="{DynamicResource ButtonsBackground}"
                     Click="Cancel_Button_Click" />
         </StackPanel>
+        <Label Grid.Row="9" Grid.Column="0"
+            Content="{lex:Loc Key=SyntaxDisplay}" VerticalAlignment="Top" />
+        <ComboBox x:Name="SyntaxCheckLevel"
+            Grid.Row="9" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="114,1,0,0" SelectedIndex="1">
+            <ComboBoxItem Content="{lex:Loc Key=SyntaxCheckLevel1}" />
+            <ComboBoxItem Content="{lex:Loc Key=SyntaxCheckLevel2}" />
+            <ComboBoxItem Content="{lex:Loc Key=SyntaxCheckLevel3}" />
+        </ComboBox>
     </Grid>
 
 </Window>

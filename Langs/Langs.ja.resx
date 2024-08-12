@@ -508,7 +508,7 @@ Open Browser to download latest update of Majdata?</value>
   <data name="SyntaxWarning" xml:space="preserve">
     <value>[警告] チャートは「E」で終わる必要があります : "{0}"({1}L,{2}C)</value>
   </data>
-  <data name="PlayMethod" xml:space="preserve">
+    <data name="PlayMethod" xml:space="preserve">
     <value>自動遊び</value>
   </data>
   <data name="PlayMethodClassic" xml:space="preserve">
