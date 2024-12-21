@@ -528,7 +528,7 @@ namespace MajdataEdit.SyntaxModule
                     if (typeList.Contains(_slideStr[i]))
                     {
                         slideType = _slideStr[i..(i + 1)];
-                        if (_slideStr[i] == _slideStr[i + 1])//用于检查"pp"与"qq"
+                        if ((i + 1 < _slideStr.Length) && _slideStr[i] == _slideStr[i + 1])//用于检查"pp"与"qq"
                         {
                             slideType += _slideStr[i + 1];
                             i += 2;
@@ -549,7 +549,7 @@ namespace MajdataEdit.SyntaxModule
                         i++;
                     }
                     //获取Slide路径终点
-                    if (IsInteger(_slideStr[i..(i + 1)]))
+                    if (i < _slideStr.Length && IsInteger(_slideStr[i..(i + 1)]))
                         endPoint = int.Parse(_slideStr[i..(i + 1)]);
                     else
                         return false;
